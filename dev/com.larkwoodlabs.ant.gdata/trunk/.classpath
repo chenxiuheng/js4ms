@@ -3,5 +3,8 @@
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="lib" path="/jars-javamail/ext/mail.jar"/>
+	<classpathentry kind="lib" path="/jars-google-gdata/ext/lib/gdata-sites-2.0.jar"/>
+	<classpathentry kind="lib" path="/jars-apache-ant/ext/ant.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
