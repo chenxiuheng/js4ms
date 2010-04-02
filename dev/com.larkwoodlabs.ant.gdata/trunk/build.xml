@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project name="com.larkwoodlabs.ant.gdata" basedir="." default="build">
+
+    <property environment="env"/>
+    
+    <property file="${user.home}.properties"/>
+    <property file="build.properties"/>
+
+	<property name="domain" value="larkwoodlabs.com"/>
+	<property name="site" value="development"/>
+    <property name="cabinet-page-id" value="8380277376934732277"/>
+    <property name="jar-entry-id" value="1182864349777776169"/>
+
+	<property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.6"/>
+    <property name="source" value="1.6"/>
+
+    <property name="version.major" value="0"/>
+    <property name="version.minor" value="1"/>
+    <property name="version.maint" value="0"/>
+    <property name="release" value="${version.major}.${version.minor}.${version.maint}"/>
+
+    <property name="jar-name" value="gdata-tasks.jar"/>
+
+
+	<property name="ECLIPSE_HOME" value="../../"/>
+
+	<!-- Construct project class path -->
+    <property name="jars-javamail.location" value="../jars-javamail"/>
+    <property name="jars-google-gdata.location" value="../jars-google-gdata"/>
+    <property name="jars-apache-ant.location" value="../jars-apache-ant"/>
+
+    <path id="com.larkwoodlabs.ant.gdata.classpath">
+        <pathelement location="bin"/>
+        <pathelement location="${jars-javamail.location}/ext/mail.jar"/>
+        <pathelement location="${jars-google-gdata.location}/ext/lib/gdata-sites-2.0.jar"/>
+        <pathelement location="${jars-apache-ant.location}/ext/ant.jar"/>
+    </path>
+
+	<!-- Import SVNAnt task -->
+    <path id="svnant.classpath">
+        <fileset dir= "../jars-svnant/ext" >
+            <include name= "*.jar" />
+        </fileset>
+    </path>
+    <typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="svnant.classpath" /> 
+
+
+	<target name="init">
+
+    	<!-- Construct product version string -->
+        <svn>
+              <status path="." revisionProperty="revision"/>
+        </svn> 
+        <tstamp/>
+        <property name="timestamp" value="${DSTAMP}${TSTAMP}"/>
+        <property name="version" value="${release}.${revision}.${timestamp}"/>
+    	<echo message="Product version: ${version}"/>
+
+    	<!-- Construct output directory tree -->
+    	<mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src/main/java">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src/test/java">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+
+    </target>
+    
+    <target name="clean">
+        <delete dir="bin"/>
+        <delete dir="lib"/>
+    </target>
+
+    <target  name="cleanall" depends="clean"/>
+
+    <target name="build" depends="build-subprojects,build-project,build-jar" />
+
+    <target name="build-subprojects"/>
+   
+    <target name="build-project" depends="init">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
+            <src path="src/main/java"/>
+            <classpath refid="com.larkwoodlabs.ant.gdata.classpath"/>
+        </javac>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
+            <src path="src/test/java"/>
+            <classpath refid="com.larkwoodlabs.ant.gdata.classpath"/>
+        </javac>
+    </target>
+
+    <target name="build-refprojects" description="Build all projects which reference this project. Useful to propagate changes." />
+    
+    <target name="init-eclipse-compiler" description="copy Eclipse compiler jars to ant lib directory">
+        <copy todir="${ant.library.dir}">
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </copy>
+        <unzip dest="${ant.library.dir}">
+            <patternset includes="jdtCompilerAdapter.jar"/>
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </unzip>
+    </target>
+
+    <target name="build-eclipse-compiler" description="compile project with Eclipse compiler">
+        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <antcall target="build"/>
+    </target>
+
+    <target name="build-jar" description="Construct jar file" depends="init">
+        <mkdir dir="lib"/>
+  
+        <jar destfile="lib/${jar-name}">
+            <fileset dir="bin">
+                <include name="**/*.class"/>
+                <exclude name="**/test/*.class"/>
+            </fileset>
+            <manifest>
+                <attribute name="Built-By" value="${user.name}"/>
+                <attribute name="Implementation-Vendor" value="${vendor}"/>
+                <attribute name="Implementation-Title" value="Google Data Ant Tasks"/>
+                <attribute name="Implementation-Version" value="${version}_${DSTAMP}"/> 
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="taskdef" depends="build-jar">
+        <taskdef name="upload" classname="com.larkwoodlabs.ant.gdata.SitesUploadTask">
+            <classpath>
+                <pathelement location="lib/${jar-name}"/>
+            </classpath>
+        </taskdef>
+    </target>
+    
+    <target name="deploy-jar" depends="taskdef">
+        <input message="Please enter user name:" addproperty="username"/>
+        <input message="Please enter user password:" addproperty="password"/>
+        <input message="Please enter domain:" addproperty="domain"/>
+        <input message="Please enter site:" addproperty="site"/>
+        <upload domain="${domain}"
+                site="${site}"
+                username="${username}"
+                password="${password}"
+                title="${jar-name}"
+                description="${version}"
+                entryId="${jar-entry-id}"
+                mimetype="application/java-archive"
+                filename="lib/${jar-name}"/>
+    </target>
+</project>
