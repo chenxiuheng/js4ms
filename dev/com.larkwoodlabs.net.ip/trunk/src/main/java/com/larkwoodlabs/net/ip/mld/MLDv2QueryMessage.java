@@ -34,119 +34,125 @@ import com.larkwoodlabs.util.buffer.parser.MissingParserException;
 import com.larkwoodlabs.util.logging.Logging;
 
 /**
- * <pre>
- * 5.1.  Multicast Listener Query Message
+ * A Multicast Listener Query Message as described in
+ * [<a href="http://tools.ietf.org/html/rfc3810">RFC-3810</a>].
  * 
+ * <h2>5.1.  Multicast Listener Query Message</h2>
  *    Multicast Listener Queries are sent by multicast routers in Querier
  *    State to query the multicast listening state of neighboring
  *    interfaces.  Queries have the following format:
- * 
- *      0                   1                   2                   3
- *      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
- *     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- *     |  Type = 130   |      Code     |           Checksum            |
- *     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- *     |    Maximum Response Code      |           Reserved            |
- *     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- *     |                                                               |
- *                                                               *
- *     |                                                               |
- *                       Multicast Address                       *
- *     |                                                               |
- *                                                               *
- *     |                                                               |
- *     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- *     | Resv  |S| QRV |     QQIC      |     Number of Sources (N)     |
- *     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- *     |                                                               |
- *                                                               *
- *     |                                                               |
- *                       Source Address [1]                      *
- *     |                                                               |
- *                                                               *
- *     |                                                               |
- *     +-                                                             -+
- *     |                                                               |
- *                                                               *
- *     |                                                               |
- *                       Source Address [2]                      *
- *     |                                                               |
- *                                                               *
- *     |                                                               |
- *     +-                              .                              -+
- *     .                               .                               .
- *     .                               .                               .
- *     +-                                                             -+
- *     |                                                               |
- *                                                               *
- *     |                                                               |
- *                       Source Address [N]                      *
- *     |                                                               |
- *                                                               *
- *     |                                                               |
- *     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- * 
- * 5.1.1.  Code
+ * <pre> 
+ *   0               1               2               3
+ *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *  |  Type = 130   |      Code     |           Checksum            |
+ *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *  |    Maximum Response Code      |           Reserved            |
+ *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *  |                                                               |
+ *  +                                                               +
+ *  |                                                               |
+ *  +                      Multicast Address                        +
+ *  |                                                               |
+ *  +                                                               +
+ *  |                                                               |
+ *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *  | Resv  |S| QRV |     QQIC      |     Number of Sources (N)     |
+ *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *  |                                                               |
+ *  +                                                               +
+ *  |                                                               |
+ *  +                      Source Address [1]                       +
+ *  |                                                               |
+ *  +                                                               +
+ *  |                                                               |
+ *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *  |                                                               |
+ *  +                                                               +
+ *  |                                                               |
+ *  +                      Source Address [2]                       +
+ *  |                                                               |
+ *  +                                                               +
+ *  |                                                               |
+ *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *  .                               .                               .
+ *  .                               .                               .
+ *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *  |                                                               |
+ *  +                                                               +
+ *  |                                                               |
+ *  +                      Source Address [N]                       +
+ *  |                                                               |
+ *  +                                                               +
+ *  |                                                               |
+ *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ * </pre>
+ * <h3>5.1.1.  Code</h3>
  * 
  *    Initialized to zero by the sender; ignored by receivers.
  * 
- * 5.1.2.  Checksum
+ * <h3>5.1.2.  Checksum</h3>
  * 
  *    The standard ICMPv6 checksum; it covers the entire MLDv2 message,
  *    plus a &quot;pseudo-header&quot; of IPv6 header fields [RFC2463].  For
  *    computing the checksum, the Checksum field is set to zero.  When a
  *    packet is received, the checksum MUST be verified before processing
- *    it.
+ *    it.<p>
+ *    See {@link #getChecksum()}, {@link #setChecksum(short)},
+ *    {@link #calculateChecksum(ByteBuffer, int, byte[], byte[])} and
+ *    {@link #verifyChecksum(ByteBuffer, byte[], byte[])}.
  * 
- * 5.1.3.  Maximum Response Code
+ * <h3>5.1.3.  Maximum Response Code</h3>
  * 
  *    The Maximum Response Code field specifies the maximum time allowed
  *    before sending a responding Report.  The actual time allowed, called
  *    the Maximum Response Delay, is represented in units of milliseconds,
- *    and is derived from the Maximum Response Code as follows:
+ *    and is derived from the Maximum Response Code as follows:<p>
  * 
  *    If Maximum Response Code &lt; 32768,
- *       Maximum Response Delay = Maximum Response Code
+ *       Maximum Response Delay = Maximum Response Code<p>
  * 
  *    If Maximum Response Code &gt;=32768, Maximum Response Code represents a
  *    floating-point value as follows:
- * 
- *        0 1 2 3 4 5 6 7 8 9 A B C D E F
- *       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- *       |1| exp |          mant         |
- *       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- * 
- *    Maximum Response Delay = (mant | 0x1000) &lt;&lt; (exp+3)
- * 
+ * <pre>
+ *     0 1 2 3 4 5 6 7 8 9 A B C D E F
+ *    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *    |1| exp |          mant         |
+ *    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ * </pre>
+ *    Maximum Response Delay = (mant | 0x1000) &lt;&lt; (exp+3)<p>
+ *    
  *    Small values of Maximum Response Delay allow MLDv2 routers to tune
  *    the &quot;leave latency&quot; (the time between the moment the last node on a
  *    link ceases to listen to a specific multicast address and the moment
  *    the routing protocol is notified that there are no more listeners for
  *    that address).  Larger values, especially in the exponential range,
- *    allow the tuning of the burstiness of MLD traffic on a link.
+ *    allow the tuning of the burstiness of MLD traffic on a link.<p>
+ *    See {@link #getMaximumResponseDelay()} and {@link #setMaximumResponseDelay(short)}.
  * 
- * 5.1.4.  Reserved
+ * <h3>5.1.4.  Reserved</h3>
  * 
  *    Initialized to zero by the sender; ignored by receivers.
  * 
- * 
- * 5.1.5.  Multicast Address
+ * <h3>5.1.5.  Multicast Address</h3>
  * 
  *    For a General Query, the Multicast Address field is set to zero.  For
  *    a Multicast Address Specific Query or Multicast Address and Source
  *    Specific Query, it is set to the multicast address being queried (see
- *    section 5.1.10, below).
+ *    section 5.1.10, below).<p>
+ *    See {@link #getGroupAddress()}, {@link #setGroupAddress(byte[])}
+ *    and {@link #setGroupAddress(InetAddress)}.
  * 
- * 5.1.7.  S Flag (Suppress Router-Side Processing)
+ * <h3>5.1.7.  S Flag (Suppress Router-Side Processing)</h3>
  * 
  *    When set to one, the S Flag indicates to any receiving multicast
  *    routers that they have to suppress the normal timer updates they
  *    perform upon hearing a Query.  Nevertheless, it does not suppress the
  *    querier election or the normal &quot;host-side&quot; processing of a Query that
  *    a router may be required to perform as a consequence of itself being
- *    a multicast listener.
+ *    a multicast listener.<p>
+ *    See {@link #getSuppressRouterSideProcessing()} and {@link #setSuppressRouterSideProcessing(boolean)}.
  * 
- * 5.1.8.  QRV (Querier's Robustness Variable)
+ * <h3>5.1.8.  QRV (Querier's Robustness Variable)</h3>
  * 
  *    If non-zero, the QRV field contains the [Robustness Variable] value
  *    used by the Querier.  If the Querier's [Robustness Variable] exceeds
@@ -156,34 +162,36 @@ import com.larkwoodlabs.util.logging.Logging;
  *    their own [Robustness Variable] value, unless that most recently
  *    received QRV was zero, in which case they use the default [Robustness
  *    Variable] value specified in section 9.1, or a statically configured
- *    value.
+ *    value.<p>
+ *    See {@link #getQuerierRobustnessVariable()} and {@link #setQuerierRobustnessVariable(byte)}.
  * 
- * 5.1.9.  QQIC (Querier's Query Interval Code)
+ * <h3>5.1.9.  QQIC (Querier's Query Interval Code)</h3>
  * 
  *    The Querier's Query Interval Code field specifies the [Query
  *    Interval] used by the Querier.  The actual interval, called the
  *    Querier's Query Interval (QQI), is represented in units of seconds,
- *    and is derived from the Querier's Query Interval Code as follows:
+ *    and is derived from the Querier's Query Interval Code as follows:<p>
  * 
- *    If QQIC &lt; 128, QQI = QQIC
+ *    If QQIC &lt; 128, QQI = QQIC<p>
  * 
  *    If QQIC &gt;= 128, QQIC represents a floating-point value as follows:
- * 
+ * <pre>
  *        0 1 2 3 4 5 6 7
- *       +-+-+-+-+-+-+-+-+
- *       |1| exp | mant  |
- *       +-+-+-+-+-+-+-+-+
- * 
- *    QQI = (mant | 0x10) &lt;&lt; (exp + 3)
- * 
+ *    +-+-+-+-+-+-+-+-+
+ *    |1| exp | mant  |
+ *    +-+-+-+-+-+-+-+-+
+ * </pre>
+ *    QQI = (mant | 0x10) &lt;&lt; (exp + 3)<p>
  * 
  *    Multicast routers that are not the current Querier adopt the QQI
  *    value from the most recently received Query as their own [Query
  *    Interval] value, unless that most recently received QQI was zero, in
  *    which case the receiving routers use the default [Query Interval]
- *    value specified in section 9.2.
+ *    value specified in section 9.2.<p>
+ *    See {@link #getQuerierQueryIntervalCode()}, {@link #setQuerierQueryIntervalCode(byte)},
+ *    {@link #getQueryIntervalTime()} and {@link #setQueryIntervalTime(int)}.
  * 
- * 5.1.10.  Number of Sources (N)
+ * <h3>5.1.10.  Number of Sources (N)</h3>
  * 
  *    The Number of Sources (N) field specifies how many source addresses
  *    are present in the Query.  This number is zero in a General Query or
@@ -195,14 +203,17 @@ import com.larkwoodlabs.util.logging.Logging;
  *    includes the Router Alert option consume 48 octets; the MLD fields up
  *    to the Number of Sources (N) field consume 28 octets; thus, there are
  *    1424 octets left for source addresses, which limits the number of
- *    source addresses to 89 (1424/16).
+ *    source addresses to 89 (1424/16).<p>
+ *    See {@link #getNumberOfSources()}.
  * 
- * 5.1.11.  Source Address [i]
+ * <h3>5.1.11.  Source Address [i]</h3>
  * 
  *    The Source Address [i] fields are a vector of n unicast addresses,
- *    where n is the value in the Number of Sources (N) field.
+ *    where n is the value in the Number of Sources (N) field.<p>
+ *    See {@link #getSource(int)}, {@link #getSourceIterator()},
+ *    {@link #addSource(byte[])} and {@link #addSource(InetAddress)}.
  * 
- * 5.1.12.  Additional Data
+ * <h3>5.1.12.  Additional Data</h3>
  * 
  *    If the Payload Length field in the IPv6 header of a received Query
  *    indicates that there are additional octets of data present, beyond
@@ -210,14 +221,14 @@ import com.larkwoodlabs.util.logging.Logging;
  *    octets in the computation to verify the received MLD Checksum, but
  *    MUST otherwise ignore those additional octets.  When sending a Query,
  *    an MLDv2 implementation MUST NOT include additional octets beyond the
- *    fields described above.
- * 
- * </pre>
+ *    fields described above.<p>
  * 
  * @author Gregory Bumgardner
  * 
  */
 public final class MLDv2QueryMessage extends MLDQueryMessage {
+
+    /*-- Inner Classes ------------------------------------------------------*/
 
     public static class Parser implements MLDMessage.ParserType {
 

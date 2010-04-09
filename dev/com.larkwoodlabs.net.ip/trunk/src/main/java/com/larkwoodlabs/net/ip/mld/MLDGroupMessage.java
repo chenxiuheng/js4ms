@@ -24,6 +24,12 @@ import com.larkwoodlabs.common.exceptions.ParseException;
 import com.larkwoodlabs.util.buffer.fields.ByteArrayField;
 import com.larkwoodlabs.util.logging.Logging;
 
+/**
+ * Base class for Mulicast Listener Discovery Message classes
+ * that use the multicast group address field.
+ *
+ * @author Gregory Bumgardner
+ */
 public abstract class MLDGroupMessage extends MLDMessage {
 
     /*-- Static Variables ---------------------------------------------------*/

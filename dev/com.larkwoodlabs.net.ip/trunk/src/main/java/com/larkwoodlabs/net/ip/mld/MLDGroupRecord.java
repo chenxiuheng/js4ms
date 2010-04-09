@@ -31,44 +31,221 @@ import com.larkwoodlabs.util.buffer.fields.ByteField;
 import com.larkwoodlabs.util.buffer.fields.ShortField;
 import com.larkwoodlabs.util.logging.Logging;
 
-
+/**
+ * A Multicast Address Record from a Multicast Listener Report Message as
+ * described in [<a href="http://tools.ietf.org/html/rfc3810">RFC-3810</a>].
+ * 
+ * <h3>5.2.4. Multicast Address Record</h3>
+ * 
+ * Each Multicast Address Record is a block of fields that contain information
+ * on the sender listening to a single multicast address on the interface from
+ * which the Report is sent.
+ * <p>
+ * Each Multicast Address Record has the following internal format:
+ * <pre>
+ *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *  |  Record Type  |  Aux Data Len |     Number of Sources (N)     |
+ *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *  |                                                               |
+ *  +                                                               +
+ *  |                                                               |
+ *  +                     Multicast Address                         +
+ *  |                                                               |
+ *  +                                                               +
+ *  |                                                               |
+ *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *  |                                                               |
+ *  +                                                               +
+ *  |                                                               |
+ *  +                      Source Address [1]                       +
+ *  |                                                               |
+ *  +                                                               +
+ *  |                                                               |
+ *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *  |                                                               |
+ *  +                                                               +
+ *  |                                                               |
+ *  +                      Source Address [2]                       +
+ *  |                                                               |
+ *  +                                                               +
+ *  |                                                               |
+ *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *  .                               .                               .
+ *  .                               .                               .
+ *  .                               .                               .
+ *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *  |                                                               |
+ *  +                                                               +
+ *  |                                                               |
+ *  +                      Source Address [N]                       +
+ *  |                                                               |
+ *  +                                                               +
+ *  |                                                               |
+ *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *  |                                                               |
+ *  .                                                               .
+ *  .                         Auxiliary Data                        .
+ *  .                                                               .
+ *  |                                                               |
+ *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ * </pre>
+ * 
+ * <h3>5.2.5. Record Type</h3>
+ * 
+ * It specifies the type of the Multicast Address Record. See section 5.2.12 for
+ * a detailed description of the different possible Record Types.
+ * See {@link #getType()}, {@link #MODE_IS_INCLUDE}, {@link #MODE_IS_EXCLUDE}, 
+ * {@link #CHANGE_TO_INCLUDE_MODE}, {@link #CHANGE_TO_EXCLUDE_MODE},
+ * {@link #ALLOW_NEW_SOURCES} and {@link #BLOCK_OLD_SOURCES}.
+ * 
+ * <h3>5.2.6. Aux Data Len</h3>
+ * 
+ * The Aux Data Len field contains the length of the Auxiliary Data Field in
+ * this Multicast Address Record, in units of 32-bit words. It may contain zero,
+ * to indicate the absence of any auxiliary data.
+ * See {@link #getAuxDataLength()}.
+ * 
+ * <h3>5.2.7. Number of Sources (N)</h3>
+ * 
+ * The Number of Sources (N) field specifies how many source addresses are
+ * present in this Multicast Address Record.
+ * See {@link #getNumberOfSources()}.
+ * 
+ * <h3>5.2.8. Multicast Address</h3>
+ * 
+ * The Multicast Address field contains the multicast address to which this
+ * Multicast Address Record pertains.
+ * See {@link #getGroupAddress()}, {@link #setGroupAddress(byte[])}
+ * and {@link #setGroupAddress(InetAddress)}.
+ * 
+ * <h3>5.2.9. Source Address [i]</h3>
+ * 
+ * The Source Address [i] fields are a vector of n unicast addresses, where n is
+ * the value in this record's Number of Sources (N) field.
+ * See {@link #getSource(int)}, {@link #addSource(byte[])}
+ * and {@link #addSource(InetAddress)}.
+ * 
+ * <h3>5.2.10. Auxiliary Data</h3>
+ * 
+ * The Auxiliary Data field, if present, contains additional information that
+ * pertain to this Multicast Address Record. The protocol specified in this
+ * document, MLDv2, does not define any auxiliary data. Therefore,
+ * implementations of MLDv2 MUST NOT include any auxiliary data (i.e., MUST set
+ * the Aux Data Len field to zero) in any transmitted Multicast Address Record,
+ * and MUST ignore any such data present in any received Multicast Address
+ * Record. The semantics and the internal encoding of the Auxiliary Data field
+ * are to be defined by any future version or extension of MLD that uses this
+ * field.
+ * See {@link #getAuxData()}.
+ * 
+ * <h3>5.2.12. Multicast Address Record Types</h3>
+ * 
+ * There are a number of different types of Multicast Address Records that may
+ * be included in a Report message:
+ * <ul>
+ *   <li>A "Current State Record" is sent by a node in response to a Query
+ *       received on an interface. It reports the current listening state of that
+ *       interface, with respect to a single multicast address. The Record Type of a
+ *       Current State Record may be one of the following two values:<p>
+ *     <dl>
+ *       <dt>{@link #MODE_IS_INCLUDE} = 1
+ *       <dd>Indicates that the interface has a filter mode of INCLUDE for the
+ *           specified multicast address. The Source Address [i] fields in this Multicast
+ *           Address Record contain the interface's source list for the specified
+ *           multicast address. A MODE_IS_INCLUDE Record is never sent with an empty
+ *           source list.
+ *       <dt>{@link #MODE_IS_EXCLUDE} = 2
+ *       <dd>Indicates that the interface has a filter mode of EXCLUDE for the
+ *           specified multicast address. The Source Address [i] fields in this Multicast
+ *           Address Record contain the interface's source list for the specified
+ *           multicast address, if it is non-empty.
+ *     </dl>
+ *   <li>A "Filter Mode Change Record" is sent by a node whenever a local
+ *       invocation of IPv6MulticastListen causes a change of the filter mode (i.e., a
+ *       change from INCLUDE to EXCLUDE, or from EXCLUDE to INCLUDE) of the
+ *       interface-level state entry for a particular multicast address, whether the
+ *       source list changes at the same time or not. The Record is included in a
+ *       Report sent from the interface on which the change occurred. The Record Type
+ *       of a Filter Mode Change Record may be one of the following two values:<p>
+ *     <dl>
+ *       <dt>{@link #CHANGE_TO_INCLUDE_MODE} = 3
+ *       <dd>Indicates that the interface has changed to INCLUDE filter mode for the
+ *           specified multicast address. The Source Address [i] fields in this Multicast
+ *           Address Record contain the interface's new source list for the specified
+ *           multicast address, if it is non-empty.
+ *       <dt>{@link #CHANGE_TO_EXCLUDE_MODE} = 4
+ *       <dd>Indicates that the interface has changed to EXCLUDE filter mode for the
+ *           specified multicast address. The Source Address [i] fields in this Multicast
+ *           Address Record contain the interface's new source list for the specified
+ *           multicast address, if it is non-empty.
+ *     </dl>
+ *   <li>A "Source List Change Record" is sent by a node whenever a local
+ *       invocation of IPv6MulticastListen causes a change of source list that is
+ *       *not* coincident with a change of filter mode, of the interface-level state
+ *       entry for a particular multicast address. The Record is included in a Report
+ *       sent from the interface on which the change occurred. The Record Type of a
+ *       Source List Change Record may be one of the following two values:<p>
+ *     <dl>
+ *       <dt>{@link #ALLOW_NEW_SOURCES} = 5
+ *       <dd>Indicates that the Source Address [i] fields in this Multicast Address
+ *           Record contain a list of the additional sources that the node wishes to
+ *           listen to, for packets sent to the specified multicast address. If the change
+ *           was to an INCLUDE source list, these are the addresses that were added to the
+ *           list; if the change was to an EXCLUDE source list, these are the addresses
+ *           that were deleted from the list.
+ *       <dt>{@link #BLOCK_OLD_SOURCES} = 6
+ *       <dd>Indicates that the Source Address [i] fields in this Multicast Address
+ *           Record contain a list of the sources that the node no longer wishes to listen
+ *           to, for packets sent to the specified multicast address. If the change was to
+ *           an INCLUDE source list, these are the addresses that were deleted from the
+ *           list; if the change was to an EXCLUDE source list, these are the addresses
+ *           that were added to the list.
+ *     </dl>
+ *     If a change of source list results in both allowing new sources and blocking
+ *     old sources, then two Multicast Address Records are sent for the same
+ *     multicast address, one of type ALLOW_NEW_SOURCES and one of type BLOCK_OLD_SOURCES.
+ * </ul>
+ * <p>
+ * 
+ * @author Gregory Bumgardner
+ */
 public final class MLDGroupRecord extends BufferBackedObject {
 
     /**
-     * MODE_IS_INCLUDE - indicates that the interface has a filter mode of
-     * INCLUDE for the specified multicast address. The Source Address [i]
-     * fields in this Group Record contain the interface's source list for
+     * Record type used to indicate that the interface has a filter mode of
+     * INCLUDE for a specified multicast address. The Source Address [i]
+     * fields in the Group Record contain the interface's source list for
      * the specified multicast address, if it is non-empty.
      */
     public final static byte MODE_IS_INCLUDE = 1;
 
     /**
-     * MODE_IS_EXCLUDE - indicates that the interface has a filter mode of
-     * EXCLUDE for the specified multicast address. The Source Address [i]
-     * fields in this Group Record contain the interface's source list for
+     * Record type used to indicate that the interface has a filter mode of
+     * EXCLUDE for a specified multicast address. The Source Address [i]
+     * fields in the Group Record contain the interface's source list for
      * the specified multicast address, if it is non-empty.
      */
     public final static byte MODE_IS_EXCLUDE = 2;
 
     /**
-     * CHANGE_TO_INCLUDE_MODE - indicates that the interface changed to
-     * INCLUDE filter mode for the specified address. The Source Address [i]
-     * fields this Group Record contain the interface's new list for the
+     * Record type used to indicate that the interface changed to
+     * INCLUDE filter mode for a specified address. The Source Address [i]
+     * fields the Group Record contain the interface's new list for the
      * specified multicast address, if it is non-empty.
      */
     public final static byte CHANGE_TO_INCLUDE_MODE = 3;
 
     /**
-     * CHANGE_TO_EXCLUDE_MODE - indicates that the interface has changed to
+     * Record type used to indicate that the interface has changed to
      * EXCLUDE filter mode for the specified multicast address. The Source
-     * Address [i] fields in this Group Record contain the interface's new
+     * Address [i] fields in the Group Record contain the interface's new
      * source list for the specified multicast address, if it is non-empty.
      */
     public final static byte CHANGE_TO_EXCLUDE_MODE = 4;
 
     /**
-     * ALLOW_NEW_SOURCES - indicates that the Source Address [i] fields in
-     * this Group Record contain a list of the additional sources that the
+     * Record type used to indicate that the Source Address [i] fields in
+     * the Group Record contain a list of the additional sources that the
      * system wishes to hear from, for packets sent to the specified
      * multicast address. If the change was to an INCLUDE source list, these
      * are the addresses that were added to the list; if the change was to
@@ -78,8 +255,8 @@ public final class MLDGroupRecord extends BufferBackedObject {
     public final static byte ALLOW_NEW_SOURCES = 5;
 
     /**
-     * BLOCK_OLD_SOURCES - indicates that the Source Address [i] fields in
-     * this Group Record contain a list of the sources that the system no
+     * Record type used to indicate that the Source Address [i] fields in
+     * the Group Record contain a list of the sources that the system no
      * longer wishes to hear from, for packets sent to the specified
      * multicast address. If the change was to an INCLUDE source list, these
      * are the addresses that were deleted from the list; if the change was
@@ -115,6 +292,11 @@ public final class MLDGroupRecord extends BufferBackedObject {
     private Vector<byte[]> sources = new Vector<byte[]>();
     private ByteBuffer auxData;
 
+    /**
+     * 
+     * @param type
+     * @param groupAddress
+     */
     public MLDGroupRecord(byte type, byte[] groupAddress) {
         this(type, groupAddress, null);
         
@@ -123,6 +305,12 @@ public final class MLDGroupRecord extends BufferBackedObject {
         }
     }
 
+    /**
+     * 
+     * @param type
+     * @param groupAddress
+     * @param auxData
+     */
     public MLDGroupRecord(byte type, byte[] groupAddress, ByteBuffer auxData) {
         super(BASE_RECORD_LENGTH);
         
@@ -139,6 +327,11 @@ public final class MLDGroupRecord extends BufferBackedObject {
         }
     }
 
+    /**
+     * 
+     * @param buffer
+     * @throws ParseException
+     */
     public MLDGroupRecord(ByteBuffer buffer) throws ParseException {
         super(consume(buffer, BASE_RECORD_LENGTH));
         
