@@ -43,7 +43,7 @@ import com.larkwoodlabs.util.buffer.parser.MissingParserException;
 import com.larkwoodlabs.util.logging.Logging;
 
 /**
- * An IPv4 datagram header. See [RFC-791].
+ * An IPv4 packet as described in [<a href="http://tools.ietf.org/html/rfc791">RFC-791</a>].
  * 
  * <pre>
  *   0                   1                   2                   3   
@@ -74,8 +74,13 @@ import com.larkwoodlabs.util.logging.Logging;
  *     bit words, and thus points to the beginning of the data.  Note that
  *     the minimum value for a correct header is 5.
  * 
- *   <h2>Type of Service:  8 bits</h2>
+ *   <h2>Type of Service or Differentiated Services Field:  8 bits</h2>
  * 
+ *     <i>Note: The original definition of the TOS field has been superseded.
+ *     This field has be relabeled in part to become the Differentiated
+ *     Services Code Point as described in
+ *     [<a href="http://tools.ietf.org/html/rfc2474">RFC-2474</a>].</i><p>
+ *     
  *     The Type of Service provides an indication of the abstract
  *     parameters of the quality of service desired.  These parameters are
  *     to be used to guide the selection of the actual service parameters
@@ -122,15 +127,14 @@ import com.larkwoodlabs.util.logging.Logging;
  *     provided on networks such as AUTODIN II, ARPANET, SATNET, and PRNET
  *     is given in &quot;Service Mappings&quot; [8].<p>
  * 
- * 
  *     The Network Control precedence designation is intended to be used
  *     within a network only.  The actual use and control of that
  *     designation is up to each network. The Internetwork Control
  *     designation is intended for use by gateway control originators only.
  *     If the actual use of these precedence designations is of concern to
  *     a particular network, it is the responsibility of that network to
- *     control the access to, and use of, those precedence designations.
- * 
+ *     control the access to, and use of, those precedence designations.<p>
+ *     
  *   <h2>Total Length:  16 bits</h2>
  * 
  *     Total Length is the length of the datagram, measured in octets,
