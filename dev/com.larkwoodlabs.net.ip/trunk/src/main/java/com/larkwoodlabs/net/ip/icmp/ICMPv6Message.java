@@ -34,6 +34,7 @@ import com.larkwoodlabs.util.buffer.parser.MissingParserException;
 import com.larkwoodlabs.util.logging.Logging;
 
 /**
+ * An ICMPv6 message as described in [<a href="http://tools.ietf.org/html/rfc2463">RFC-2463</a>].
  * <pre>
  *  0               1               2               3
  * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
