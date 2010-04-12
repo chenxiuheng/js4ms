@@ -35,11 +35,10 @@ import com.larkwoodlabs.util.buffer.parser.MissingParserException;
 import com.larkwoodlabs.util.logging.Logging;
 
 /**
- * Base class for IGMP Messages. Handles common IGMP header serialization.<p/>
- * See
- * <a href="http://www.ietf.org/rfc/rfc1112.txt">[RFC-1112]</a>,
- * <a href="http://www.ietf.org/rfc/rfc2236.txt">[RFC-2236]</a> and
- * <a href="http://www.ietf.org/rfc/rfc3376.txt">[RFC-3376]</a>.
+ * Base class for IGMP Messages as described in
+ * [<a href="http://www.ietf.org/rfc/rfc1112.txt">RFC-1112</a>],
+ * [<a href="http://www.ietf.org/rfc/rfc2236.txt">RFC-2236</a>] and
+ * [<a href="http://www.ietf.org/rfc/rfc3376.txt">RFC-3376</a>].
  * 
  * <pre>
  *      0                   1                   2                   3
@@ -49,32 +48,32 @@ import com.larkwoodlabs.util.logging.Logging;
  *     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  *     |                             ...                               |
  *     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ * </pre>
+ * <h3>Type</h3>
+ *  <ul>
+ *    <li>0x11 V2/V3 Membership Query       [RFC-2236] and [RFC-3376]
+ *    <li>0x12 Version 1 Membership Report  [RFC-1112]
+ *    <li>0x16 Version 2 Membership Report  [RFC-2236]
+ *    <li>0x17 Version 2 Leave Group        [RFC-2236]
+ *    <li>0x22 Version 3 Membership Report  [RFC-3376]
+ *  </ul>
+ *  See {@link #MessageType}, {@link #getType()} and {@link #setType(byte)}.
  * 
- * Type
+ * <h3>Max Response Time (or Reserved)</h3>
  * 
- *    0x11 V2/V3 Membership Query       [RFC-2236] and [RFC-3376]
- *    0x12 Version 1 Membership Report  [RFC-1112]
- *    0x16 Version 2 Membership Report  [RFC-2236]
- *    0x17 Version 2 Leave Group        [RFC-2236]
- *    0x22 Version 3 Membership Report  [RFC-3376]
+ *    The Max Resp Time field is meaningful only in Membership Query messages.<p>
+ *    See {@link #MaxRespCode}, {@link #getMaxRespCode()}, and {@link #setMaxRespCode()}.
  * 
- * Max Response Time (or Reserved)
- * 
- *    The Max Resp Time field is meaningful only in Membership Query messages.
- * 
- * Checksum
+ * <h3>Checksum</h3>
  * 
  *    The checksum is the 16-bit one's complement of the one's complement
  *    sum of the whole IGMP message (the entire IP payload).  For computing
  *    the checksum, the checksum field is set to zero.  When transmitting
  *    packets, the checksum MUST be computed and inserted into this field.
  *    When receiving packets, the checksum MUST be verified before
- *    processing a packet.
- * </pre>
- * @see {@link #MessageType}, {@link #getType()} and {@link #setType(byte)}
- * @see {@link #MaxRespCode}, {@link #getMaxRespCode()}, and {@link #setMaxRespCode()}
- * @see {@link #Checksum}, {@link #getChecksum()}, {@link #setChecksum()}, and {@link #verifyChecksum()}
- * <p/>
+ *    processing a packet.<p>
+ *    See {@link #Checksum}, {@link #getChecksum()}, {@link #setChecksum()}, and {@link #verifyChecksum()}.
+ * 
  * @author Gregory Bumgardner
  */
 public abstract class IGMPMessage extends BufferBackedObject implements IPMessage {

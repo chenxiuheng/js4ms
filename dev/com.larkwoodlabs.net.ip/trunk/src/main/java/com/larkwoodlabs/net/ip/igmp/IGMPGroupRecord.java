@@ -189,33 +189,6 @@ import com.larkwoodlabs.util.logging.Logging;
  *    blocking old sources, then two Group Records are sent for the same
  *    multicast address, one of type ALLOW_NEW_SOURCES and one of type
  *    BLOCK_OLD_SOURCES.
- * 
- *    We use the term &quot;State-Change Record&quot; to refer to either a Filter-
- *    Mode-Change Record or a Source-List-Change Record.
- * 
- *    Unrecognized Record Type values MUST be silently ignored.
- * 
- * 4.2.15. Notation for Group Records
- * 
- *    In the rest of this document, we use the following notation to
- *    describe the contents of a Group Record pertaining to a particular
- *    multicast address:
- * 
- *       IS_IN ( x )  -  Type MODE_IS_INCLUDE, source addresses x
- *       IS_EX ( x )  -  Type MODE_IS_EXCLUDE, source addresses x
- *       TO_IN ( x )  -  Type CHANGE_TO_INCLUDE_MODE, source addresses x
- *       TO_EX ( x )  -  Type CHANGE_TO_EXCLUDE_MODE, source addresses x
- *       ALLOW ( x )  -  Type ALLOW_NEW_SOURCES, source addresses x
- *       BLOCK ( x )  -  Type BLOCK_OLD_SOURCES, source addresses x
- * 
- *    where x is either:
- * 
- *    o a capital letter (e.g., &quot;A&quot;) to represent the set of source
- *      addresses, or
- * 
- *    o a set expression (e.g., &quot;A+B&quot;), where &quot;A+B&quot; means the union of sets
- *      A and B, &quot;A*B&quot; means the intersection of sets A and B, and &quot;A-B&quot;
- *      means the removal of all elements of set B from set A.
  * </pre>
  */
 public final class IGMPGroupRecord extends BufferBackedObject {
