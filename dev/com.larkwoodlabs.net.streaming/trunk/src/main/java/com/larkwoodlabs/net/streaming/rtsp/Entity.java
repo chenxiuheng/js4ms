@@ -23,6 +23,11 @@ import java.util.logging.Logger;
 
 import com.larkwoodlabs.util.logging.LoggableBase;
 
+/**
+ * An HTTP request/response entity whose content is retrieved from an InputStream.
+ *
+ * @author Gregory Bumgardner
+ */
 public class Entity extends LoggableBase {
 
     /*-- Static Variables ----------------------------------------------------*/
@@ -31,36 +36,73 @@ public class Entity extends LoggableBase {
 
     private static final int BUFFER_SIZE = 2048;
 
+    
+    /*-- Member Variables ----------------------------------------------------*/
+
     protected InputStream content;
     protected String contentType;
     protected String contentEncoding;
     protected int contentLength;
     protected boolean isConsumed;
     
+
+    /*-- Member Functions ----------------------------------------------------*/
+
+    /**
+     * Protected constructor.
+     */
     protected Entity() {
         this(null,-1,null,null);
     }
 
+    /**
+     * 
+     * @param content
+     */
     public Entity(final InputStream content) {
         this(content, -1);
     }
 
+    /**
+     * Constructs an HTTP entity.
+     * @param content - The content of the entity.
+     * @param contentLength - The content length of the entity.
+     */
     public Entity(final InputStream content, final int contentLength) {
         this(content, contentLength, null, null);
     }
 
+    /**
+     * Constructs an HTTP entity.
+     * @param content - The content of the entity.
+     * @param contentLength - The content length of the entity.
+     * @param contentType - The content type of the entity.
+     */
     public Entity(final InputStream content,
                   final int contentLength,
                   final String contentType) {
         this(content, contentLength, contentType, null);
     }
 
+    /**
+     * Constructs an HTTP entity.
+     * @param content - The content of the entity.
+     * @param contentType - The content type of the entity.
+     * @param contentEncoding - The content encoding of the entity.
+     */
     public Entity(final InputStream content,
                   final String contentType,
                   final String contentEncoding) {
         this(content, -1, contentType, contentEncoding);
     }
 
+    /**
+     * Constructs an HTTP entity.
+     * @param content - The content of the entity.
+     * @param contentLength - The content length of the entity.
+     * @param contentType - The content type of the entity.
+     * @param contentEncoding - The content encoding of the entity.
+     */
     public Entity(final InputStream content,
                   final int contentLength,
                   final String contentType,
@@ -82,7 +124,7 @@ public class Entity extends LoggableBase {
         super.log(logger);
         logState(logger);
     }
-    
+
     private void logState(Logger logger) {
         logger.info(ObjectId + " : content-length = " + this.contentLength);
         if (this.contentType != null) {
@@ -93,26 +135,53 @@ public class Entity extends LoggableBase {
         }
     }
 
+    /**
+     * Returns the content length of the entity.
+     * Used to set the value of the Content-Length HTTP header.
+     * Returns -1 if no length was specified.
+     */
     public int getContentLength() {
         return this.contentLength;
     }
 
+    /**
+     * Returns the content type of the entity.
+     * Used to set the Content-Type HTTP header.
+     * Returns <code>null</code> if no content type was specified.
+     */
     public String getContentType() {
         return this.contentType;
     }
 
+    /**
+     * Returns the content encoding of the entity.
+     * Used to set the Content-Encoding HTTP header.
+     * Returns <code>null</code> if no content encoding was specified.
+     */
     public String getContentEncoding() {
         return this.contentEncoding;
     }
 
+    /**
+     * Indicates whether the entity has been consumed (the InputStream has reached EOF).
+     */
     public boolean isConsumed() {
         return this.isConsumed;
     }
 
+    /**
+     * Indicates whether the entity is currently streaming (the InputStream has not reached EOF).
+     */
     public boolean isStreaming() {
         return !this.isConsumed;
     }
+    
 
+    /**
+     * Writes this entity to the specified OutputStream.
+     * @param outstream - The output stream that will receive the entity.
+     * @throws IOException
+     */
     public void writeTo(final OutputStream outstream) throws IOException {
         InputStream instream = this.content;
         byte[] buffer = new byte[BUFFER_SIZE];
@@ -138,6 +207,10 @@ public class Entity extends LoggableBase {
         this.isConsumed = true;
     }
 
+    /**
+     * Consumes (reads) the remaining entity content.
+     * @throws IOException
+     */
     public void consumeContent() throws IOException {
         byte[] buffer = new byte[BUFFER_SIZE];
         while (this.content.read(buffer) != -1) {

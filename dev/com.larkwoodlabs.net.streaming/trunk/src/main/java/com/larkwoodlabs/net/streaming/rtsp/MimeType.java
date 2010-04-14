@@ -16,6 +16,11 @@
 
 package com.larkwoodlabs.net.streaming.rtsp;
 
+/**
+ * Provides static declarations of some common MIME type strings.
+ *
+ * @author Gregory Bumgardner
+ */
 public class MimeType {
 
     public static class text {

@@ -24,7 +24,6 @@ import com.larkwoodlabs.util.logging.Logging;
 
 /**
  * Describes the preferred or actual transport characteristics of a media stream.
- * An RTSP server implementation may not recognize or support some transport options.
  * 
  * @author Gregory Bumgardner
  */
@@ -32,26 +31,49 @@ public class TransportDescription {
     
     /*-- Inner Classes -------------------------------------------------------*/
 
+    /**
+     * Enumeration of streaming protocols.
+     */
     enum Protocol {
+        /** Use Real-time Transport Protocol (RTP). */
         RTP
     };
 
+    /**
+     * Enumeration of streaming protocol profiles.
+     */
     enum Profile {
+        /** Use RTP profile for audio and video conferences with minimal session control. */
         AVP
     };
     
+    /**
+     * Enumeration of streaming transports.
+     */
     enum Transport {
+        /** Use User Datagram Protocol. */
         UDP,
+        /** Use Transmission Control Protocol. */
         TCP
     };
 
+    /**
+     * Enumeration of streaming distribution types.
+     */
     enum Distribution {
+        /** Use unicast destination addresses */
         unicast,
+        /** Use multicast destination addresses */
         multicast
     };
 
+    /**
+     * Enumeration of streaming modes.
+     */
     enum Mode {
+        /** Request play mode. */
         PLAY,
+        /** Request record mode. */
         RECORD 
     };
 
@@ -251,6 +273,9 @@ public class TransportDescription {
         parseTransportHeader(header);
     }
     
+    /**
+     * Constructs a default instance.
+     */
     public TransportDescription() {
         
     }
@@ -259,137 +284,259 @@ public class TransportDescription {
         logger.info(ObjectId + " : " + getHeaderValue());
     }
 
+    /**
+     * Sets the protocol attribute value.
+     * @param protocol - The new protocol value.
+     */
     public void setProtocol(Protocol protocol) {
         this.isProtocolSpecified = true;
         this.protocol = protocol;
     }
 
+    /**
+     * Returns <code>true</code> if a protocol was specified in the transport header
+     * or was explicitly set with a call to {@link #setProtocol(Protocol)} and <code>false</code>
+     * if not specified or set.
+     */
     public boolean isProtocolSpecified() {
         return this.isProtocolSpecified;
     }
     
+    /**
+     * Gets the current protocol attribute value.
+     */
     public Protocol getProtocol() {
         return this.protocol;
     }
 
+    /**
+     * Sets the profile attribute value.
+     * @param profile - The new profile value.
+     */
     public void setProfile(Profile profile) {
         this.isProfileSpecified = true;
         this.profile = profile;
     }
 
+    /**
+     * Returns <code>true</code> if a profile was specified in the transport header
+     * or was explicitly set with a call to {@link #setProfile(Profile)} and <code>false</code>
+     * if not specified or set.
+     */
     public boolean isProfileSpecified() {
         return this.isProfileSpecified;
     }
-    
+
+    /**
+     * Gets the current profile attribute value.
+     */
     public Profile getProfile() {
         return this.profile;
     }
 
+    /**
+     * Sets the transport attribute value.
+     * @param transport - The new transport value.
+     */
     public void setTransport(Transport transport) {
         this.isTransportSpecified = true;
         this.transport = transport;
     }
 
+    /**
+     * Returns <code>true</code> if a transport was specified in the transport header
+     * or was explicitly set with a call to {@link #setTransport(Transport)} and <code>false</code>
+     * if not specified or set.
+     */
     public boolean isTransportSpecified() {
         return this.isTransportSpecified;
     }
 
+    /**
+     * Gets the current transport attribute value.
+     */
     public Transport getTransport() {
         return this.transport;
     }
     
-
+    /**
+     * Sets the distribution attribute value.
+     * @param distribution - The new distribution value.
+     */
     public void setDistribution(Distribution distribution) {
         this.isDistributionSpecified = true;
         this.distribution = distribution;
     }
 
+    /**
+     * Returns <code>true</code> if a distribution parameter appeared in the transport header
+     * or was explicitly set with a call to {@link #setDistribution(Distribution)} and <code>false</code>
+     * if not specified or set.
+     */
     public boolean isDistributionSpecified() {
         return this.isDistributionSpecified;
     }
 
+    /**
+     * Gets the current distribution attribute value.
+     */
     public Distribution getDistribution() {
         return this.distribution;
     }
     
+    /**
+     * Sets the destination address attribute value.
+     * @param destination - The new destination address.
+     */
     public void setDestination(InetAddress destination) {
         this.isDestinationSpecified = true;
         this.destination = destination;
     }
 
+    /**
+     * Returns <code>true</code> if a destination address was specified in the transport header
+     * or was explicitly set with a call to {@link #setDestination(InetAddress)} and <code>false</code>
+     * if not specified or set.
+     */
     public boolean isDestinationSpecified() {
         return this.isDestinationSpecified;
     }
 
+    /**
+     * Gets the current destination address attribute value.
+     */
     public InetAddress getDestination() {
         return this.destination;
     }
 
+    /**
+     * Sets the source address attribute value.
+     * @param source - The new source address.
+     */
     public void setSource(InetAddress source) {
         this.isSourceSpecified = true;
         this.source = source;
     }
 
+    /**
+     * Returns <code>true</code> if a source address was specified in the transport header
+     * or was explicitly set with a call to {@link #setSource(InetAddress)} and <code>false</code>
+     * if not specified or set.
+     */
     public boolean isSourceSpecified() {
         return this.isSourceSpecified;
     }
 
+    /**
+     * Gets the current source address attribute value.
+     */
     public InetAddress getSource() {
         return this.source;
     }
 
+    /**
+     * Sets the multicast layer count attribute value.
+     * @param layers - The new layer count value.
+     */
     public void setLayers(int layers) {
         this.isLayersSpecified = true;
         this.layers = layers;
     }
 
+    /**
+     * Returns <code>true</code> if a layer count was specified in the transport header
+     * or was explicitly set with a call to {@link #setLayers(int)} and <code>false</code>
+     * if not specified or set.
+     */
     public boolean isLayersSpecified() {
         return this.isLayersSpecified;
     }
 
+    /**
+     * Gets the current multicast layer count attribute value.
+     */
     public int getLayers() {
         return this.layers;
     }
 
+    /**
+     * Sets the mode attribute value.
+     * @param mode - The new streaming mode.
+     */
     public void setMode(Mode mode) {
         this.isModeSpecified = true;
         this.mode = mode;
     }
 
+    /**
+     * Returns <code>true</code> if a mode was specified in the transport header
+     * or was explicitly set with a call to {@link #setMode(Mode)} and <code>false</code>
+     * if not specified or set.
+     */
     public boolean isModeSpecified() {
         return this.isModeSpecified;
     }
 
+    /**
+     * Gets the current mode attribute value.
+     */
     public Mode getMode() {
         return this.mode;
     }
 
+    /**
+     * Sets the record append attribute value.
+     * @param append - The new record append value.
+     */
     public void setAppend(boolean append) {
         this.isAppendSpecified = true;
         this.append = append;
     }
 
+    /**
+     * Returns <code>true</code> if the append parameter appeared in the transport header
+     * or was explicitly set with a call to {@link #setAppend(boolean)} and <code>false</code>
+     * if not specified or set.
+     */
     public boolean isAppendSpecified() {
         return this.isAppendSpecified;
     }
-
+    
+    /**
+     * Gets the record append attribute value.
+     */
     public boolean getAppend() {
         return this.append;
     }
 
+    /**
+     * Sets the TTL attribute value.
+     * @param ttl - The new TTL value.
+     */
     public void setTTL(int ttl) {
         this.isLayersSpecified = true;
         this.ttl = ttl;
     }
 
+    /**
+     * Returns <code>true</code> if the TTL parameter was specified in the transport header
+     * or was explicitly set with a call to {@link #setTTL(int)} and <code>false</code>
+     * if not specified or set.
+     */
     public boolean isTTLSpecified() {
         return this.isTTLSpecified;
     }
 
+    /**
+     * Gets the TTL attribute value.
+     */
     public int getTTL() {
         return this.ttl;
     }
     
+    /**
+     * Returns the number of ports required for each stream (typically two for RTP/RTCP).
+     */
     public int getPortsPerStream() {
         int portsPerStream = 1;
         if (this.protocol == Protocol.RTP) {
@@ -398,87 +545,163 @@ public class TransportDescription {
         return portsPerStream;
     }
 
+    /**
+     * Sets the client port range.
+     * @param firstStreamPort - The first port (e.g. even port for RTP packet stream).
+     * @param streamCount - Number of separate RTP/RTCP streams that form the media stream (typically one).
+     */
     public void setClientPortRange(int firstStreamPort, int streamCount) {
         this.isClientPortSpecified = true;
         this.firstClientStreamPort = firstStreamPort;
         this.clientStreamCount = streamCount;
     }
 
+    /**
+     * Returns <code>true</code> if a client port range was specified in the transport header
+     * or was explicitly set with a call to {@link #setClientPortRange(int, int)} and <code>false</code>
+     * if not specified or set.
+     */
     public boolean isClientPortSpecified() {
         return this.isClientPortSpecified;
     }
 
+    /**
+     * Gets the current first client stream port number.
+     */
     public int getFirstClientStreamPort() {
         return this.firstClientStreamPort;
     }
 
+    /**
+     * Gets the current client stream count.
+     */
     public int getClientStreamCount() {
         return this.clientStreamCount;
     }
 
+    /**
+     * Sets the multicast port range.
+     * @param firstStreamPort - The first port (e.g. even port for RTP packet stream).
+     * @param streamCount - Number of separate RTP/RTCP streams that form the media stream (typically one).
+     */
     public void setMulticastPortRange(int firstStreamPort, int streamCount) {
         this.isMulticastPortSpecified = true;
         this.firstMulticastStreamPort = firstStreamPort;
         this.multicastStreamCount = streamCount;
     }
 
+    /**
+     * Returns <code>true</code> if a multicast port range was specified in the transport header
+     * or was explicitly set with a call to {@link #setMulticastPortRange(int, int)} and <code>false</code>
+     * if not specified or set.
+     */
     public boolean isMulticastPortSpecified() {
         return this.isMulticastPortSpecified;
     }
 
+    /**
+     * Gets the current first multicast stream port number.
+     */
     public int getFirstMulticastStreamPort() {
         return this.firstMulticastStreamPort;
     }
 
+    /**
+     * Gets the current multicast stream count.
+     */
     public int getMulticastStreamCount() {
         return this.multicastStreamCount;
     }
 
+    /**
+     * Sets the server port range.
+     * @param firstStreamPort - The first port (e.g. even port for RTP packet stream).
+     * @param streamCount - Number of separate RTP/RTCP streams that form the media stream (typically one).
+     */
     public void setServerPortRange(int firstStreamPort, int streamCount) {
         this.isServerPortSpecified = true;
         this.firstServerStreamPort = firstStreamPort;
         this.serverStreamCount = streamCount;
     }
 
+    /**
+     * Returns <code>true</code> if a server port range was specified in the transport header
+     * or was explicitly set with a call to {@link #setServerPortRange(int, int)} and <code>false</code>
+     * if not specified or set.
+     */
     public boolean isServerPortSpecified() {
         return this.isServerPortSpecified;
     }
 
+    /**
+     * Gets the current first server stream port number.
+     */
     public int getFirstServerStreamPort() {
         return this.firstServerStreamPort;
     }
 
+    /**
+     * Gets the current server stream count.
+     */
     public int getServerStreamCount() {
         return this.serverStreamCount;
     }
 
+    /**
+     * Sets the interleaved channel range.
+     * @param firstStreamChannel - The first channel number (e.g. even number for RTP packet stream).
+     * @param streamCount - Number of separate RTP/RTCP streams that form the media stream (typically one).
+     */
     public void setInterleavedChannelRange(int firstStreamChannel, int streamCount) {
         this.isInterleavedChannelSpecified = true;
         this.firstInterleavedStreamChannel = firstStreamChannel;
         this.interleavedStreamCount = streamCount;
     }
 
+    /**
+     * Returns <code>true</code> if an interleaved channel range was specified in the transport header
+     * or was explicitly set with a call to {@link #setInterleavedChannelRange(int, int)} and <code>false</code>
+     * if not specified or set.
+     */
     public boolean isInterleavedChannelSpecified() {
         return this.isInterleavedChannelSpecified;
     }
 
+    /**
+     * Gets the current first interleaved channel number.
+     */
     public int getFirstInterleavedStreamChannel() {
         return this.firstInterleavedStreamChannel;
     }
 
+    /**
+     * Gets the current interleaved channel count.
+     */
     public int getInterleavedStreamCount() {
         return this.interleavedStreamCount;
     }
 
+    /**
+     * Sets the synchronization source identifier (SSRC) attribute value.
+     * @param ssrc - The new SSRC value.
+     */
     public void setSSRC(int ssrc) {
         this.isSSRCSpecified = true;
         this.ssrc = ssrc;
     }
 
+    /**
+     * Returns <code>true</code> if an SSRC was specified in the transport header
+     * or was explicitly set with a call to {@link #setSSRC(int)} and <code>false</code>
+     * if not specified or set.
+     */
     public boolean isSSRCSpecified() {
         return this.isSSRCSpecified;
     }
 
+    /**
+     * Gets the current synchronization source identifier (SSRC) attribute value.
+     */
     public int getSSRC() {
         return this.ssrc;
     }
@@ -640,6 +863,11 @@ public class TransportDescription {
     }
 
 
+    /**
+     * Parses a transport specification and sets internal attributes accordingly.
+     * @param transport - The transport specification (e.g. RTP/AVP/TCP).
+     * @throws RtspException If the transport specification contains an unrecognized protocol, profile or transport.
+     */
     private void parseTransport(String transport) throws RtspException {
         String[] fields = transport.split("/");
         if (fields.length > 0) {

@@ -34,6 +34,7 @@ import com.larkwoodlabs.util.logging.Logging;
 
 
 /**
+ * Handles serialization and dispatching of RTSP messages and interleaved RTP/RTCP packets exchanged over a {@link Connection}.
  * @author Gregory Bumgardner
  */
 public abstract class ConnectionHandler 
@@ -63,7 +64,7 @@ public abstract class ConnectionHandler
     /*-- Member Functions ----------------------------------------------------*/
 
     /**
-     * 
+     * Constructs a handler for the specified connection.
      * @param context
      * @param connection
      */
@@ -71,14 +72,25 @@ public abstract class ConnectionHandler
         this.connection = connection;
     }
     
+    /**
+     * Closes this handler and associated connection.
+     * @throws IOException
+     */
     public void close() throws IOException {
         this.connection.close();
     }
 
+    /**
+     * Returns the connection managed by this handler.
+     * @return
+     */
     public Connection getConnection() {
         return this.connection;
     }
     
+    /**
+     * Continuously receives and dispatches incoming RTSP messages and interleaved RTP/RTCP packets.
+     */
     @Override
     public void run() {
 
@@ -156,12 +168,24 @@ public abstract class ConnectionHandler
         }
     }
 
+    /**
+     * Sets the connection by this handler.
+     * Used to switch connections following construction of an HTTP tunnel.
+     * @see {@link ServerTunnelConnection}
+     * @param connection
+     */
     protected void reconnect(final Connection connection) {
         synchronized (this.lock) {
             this.connection = connection;
         }
     }
     
+    /**
+     * Adds an RTP/RTCP packet channel to the connection.
+     * The handler will forward packets it receives with the specified channel number to the given output channel.
+     * @param channelNumber - The interleaved channel number associated with this packet channel.
+     * @param channel - An {@link OutputChannel} that will receive unparsed RTP/RTCP packets.
+     */
     public void addPacketChannel(final int channelNumber, final OutputChannel<ByteBuffer> channel) {
         if (this.packetChannels == null) {
             this.packetChannels = new HashMap<Integer, OutputChannel<ByteBuffer>>();
@@ -169,12 +193,21 @@ public abstract class ConnectionHandler
         this.packetChannels.put(channelNumber, channel);
     }
 
+    /**
+     * Removes an {@link OutputChannel} that previously registered using {@link #addPacketChannel(int, OutputChannel)}
+     * from the connection.
+     * @param channelNumber - The interleaved channel number associated with the packet channel.
+     */
     public void removePacketChannel(final int channelNumber) {
         if (this.packetChannels != null) {
             this.packetChannels.remove(channelNumber);
         }
     }
-
+    
+    /**
+     * Reads and dispatches RTSP messages and interleaved RTP/RTCP packets from the connection InputStream.
+     * @throws Exception
+     */
     public void listen() throws Exception {
 
         if (logger.isLoggable(Level.FINER)) {
@@ -374,6 +407,11 @@ public abstract class ConnectionHandler
         }
     }
     
+    /**
+     * Dispatches an incoming RTSP request message.
+     * @param request - The RTSP request message to dispatch.
+     * @throws Exception
+     */
     private void dispatchRequest(Request request) throws Exception {
 
         if (logger.isLoggable(Level.FINER)) {
@@ -384,8 +422,18 @@ public abstract class ConnectionHandler
         handleRequest(request);
     }
 
+    /**
+     * Abstract method that must be overridden to handle incoming RTSP request messages.
+     * @param request - The incoming RTSP request message.
+     * @throws Exception
+     */
     protected abstract void handleRequest(Request request) throws Exception;
-    
+
+    /**
+     * Dispatches an incoming RTSP response message.
+     * @param response - The RTSP response message to dispatch.
+     * @throws Exception
+     */
     private void dispatchResponse(Response response) throws Exception {
 
         if (logger.isLoggable(Level.FINER)) {
@@ -396,8 +444,20 @@ public abstract class ConnectionHandler
         handleResponse(response);
     }
     
+    /**
+     * Abstract method that must be overridden to handle incoming RTSP response messages.
+     * @param request - The incoming RTSP response message.
+     * @throws Exception
+     */
     protected abstract void handleResponse(final Response response) throws Exception;
     
+    /**
+     * Dispatches an incoming RTP/RTCP packet.
+     * @param channelNumber - The interleaved channel number associated with the packet.
+     * @param packet - The unparsed packet.
+     * @throws RtspException
+     * @throws InterruptedException
+     */
     private void dispatchPacket(int channelNumber, ByteBuffer packet) throws RtspException, InterruptedException {
 
         if (logger.isLoggable(Level.FINER)) {
@@ -407,6 +467,13 @@ public abstract class ConnectionHandler
         handlePacket(channelNumber, packet);
     }
 
+    /**
+     * Sends incoming packet to registered packet channel for specified channel number, if one exists.
+     * @param channelNumber - The interleaved channel number associated with the packet.
+     * @param packet - The unparsed packet.
+     * @throws RtspException If the {@link OutputChannel#send(Object, int)} method throws an IOException.
+     * @throws InterruptedException If the calling thread is interrupted while waiting to deliver the packet.
+     */
     protected void handlePacket(final int channelNumber, final ByteBuffer packet) throws RtspException, InterruptedException {
         if (this.packetChannels != null) {
             OutputChannel<ByteBuffer> channel = this.packetChannels.get(channelNumber);
@@ -421,6 +488,11 @@ public abstract class ConnectionHandler
         }
     }
     
+    /**
+     * Sends an RTSP request to the client.
+     * @param request - The RTSP request to be sent.
+     * @throws IOException
+     */
     protected void sendRequest(final Request request) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
@@ -433,6 +505,11 @@ public abstract class ConnectionHandler
         }
     }
     
+    /**
+     * Sends an RTSP response to the client.
+     * @param response - The RTSP response to be sent.
+     * @throws IOException
+     */
     public void sendResponse(final Response response) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
@@ -445,6 +522,11 @@ public abstract class ConnectionHandler
         }
     }
     
+    /**
+     * Enables or disables packet delivery to the client.
+     * Used to unblock thread waiting in {@link #sendPacket(int, ByteBuffer)}.
+     * @param isEnabled
+     */
     public void enablePacketDelivery(boolean isEnabled) {
         synchronized (this.monitor) {
             if (this.isPacketDeliveryEnabled != isEnabled) {
@@ -459,6 +541,13 @@ public abstract class ConnectionHandler
         }
     }
 
+    /**
+     * Sends an RTP/RTCP packet to the client as an interleaved data message.
+     * @param channel - The interleaved channel number
+     * @param packet - The unparsed RTP/RTCP packet.
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public void sendPacket(final int channel, final ByteBuffer packet) throws IOException, InterruptedException {
 
         /*

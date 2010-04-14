@@ -63,6 +63,11 @@ final class MediaStream {
 
     /*-- Member Functions ----------------------------------------------------*/
 
+    /**
+     * 
+     * @param streamIndex - The track ID used to identify the stream.
+     * @param description
+     */
     public MediaStream(final int streamIndex,
                        final MediaStreamDescription description) {
 

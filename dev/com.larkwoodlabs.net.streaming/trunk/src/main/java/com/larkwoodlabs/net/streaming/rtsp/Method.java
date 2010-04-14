@@ -16,6 +16,9 @@
 
 package com.larkwoodlabs.net.streaming.rtsp;
 
+/**
+ * An enumeration of RTSP methods.
+ */
 public enum Method {
     ANNOUNCE,
     DESCRIBE,

@@ -31,10 +31,19 @@ import com.larkwoodlabs.net.amt.SourceFilter;
 import com.larkwoodlabs.net.udp.UdpDatagram;
 import com.larkwoodlabs.util.logging.Logging;
 
+/**
+ * An packet source that uses an {@link AmtMulticastEndpoint} to join and
+ * receive multicast packet streams.
+ *
+ * @author Gregory Bumgardner
+ */
 public final class MulticastPacketSource extends PacketSource {
 
     /*-- Inner Classes -------------------------------------------------------*/
 
+    /**
+     * Simple transform that returns the payload of a {@link UdpDatagram} as a result.
+     */
     final static class Transform implements MessageTransform<UdpDatagram, ByteBuffer> {
 
         public Transform() {

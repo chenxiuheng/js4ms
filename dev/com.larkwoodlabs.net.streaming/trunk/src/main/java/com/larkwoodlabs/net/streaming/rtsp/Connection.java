@@ -26,8 +26,7 @@ import java.util.logging.Logger;
 import com.larkwoodlabs.util.logging.Logging;
 
 /**
- * 
- *
+ * A persistent client-server connection. 
  *
  * @author Gregory Bumgardner
  */
@@ -50,9 +49,11 @@ public abstract class Connection  {
     /*-- Member Functions ----------------------------------------------------*/
 
     /**
-     * 
-     * @param inputStream
-     * @param outputStream
+     * Protected constructor used by derived classes to specify the input stream, output stream,
+     * and client host address for the connection.
+     * @param remoteAddress - The client host address.
+     * @param inputStream - The stream that will be used to receive data from the client.
+     * @param outputStream - The stream that will be used to send data to the client.
      */
     protected Connection(final InetAddress remoteAddress, final InputStream inputStream, final OutputStream outputStream) {
 
@@ -65,13 +66,16 @@ public abstract class Connection  {
         this.outputStream = outputStream;
     }
     
-
+    /**
+     * Returns the host address of the connected client.
+     * @return
+     */
     public InetAddress getRemoteAddress() {
         return this.remoteAddress;
     }
 
     /**
-     * 
+     * Returns an input stream that can be used to receive data from the client.
      * @return
      */
     public final InputStream getInputStream() {
@@ -79,7 +83,7 @@ public abstract class Connection  {
     }
 
     /**
-     * 
+     * Returns an output stream that can be used to send data to the client.
      * @return
      */
     public final OutputStream getOutputStream() {
@@ -87,8 +91,8 @@ public abstract class Connection  {
     }
 
     /**
-     * Disables the connection InputStream. Data received from connection
-     * peer is silently discarded.
+     * Disables the connection InputStream.
+     * Data received from connection peer is silently discarded.
      * Used to provide non-abortive shutdown of connection.
      * The InputStream will return EOF (-1) if an attempt is made to read
      * from the stream after this method has been called.

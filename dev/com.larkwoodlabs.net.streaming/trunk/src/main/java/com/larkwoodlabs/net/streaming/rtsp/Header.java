@@ -26,7 +26,16 @@ import java.util.regex.Pattern;
 
 import com.larkwoodlabs.common.exceptions.ParseException;
 
+/**
+ * An HTTP/RTSP message header.
+ * This class is used to parse and serialize HTTP/RTSP message headers.
+ * It also provides static declarations for common header names and several common header values. 
+ * 
+ * @author Gregory Bumgardner
+ */
 public class Header {
+
+    /*-- Static Variables ----------------------------------------------------*/
 
     public static final String ACCEPT = "Accept";
     public static final String ACCEPT_ENCODING = "Accept-Encoding";
@@ -80,9 +89,6 @@ public class Header {
     public static final Header PRAGMA_IS_NO_CACHE = new Header(Header.PRAGMA, "no-cache");
     public static final Header CONTENT_TYPE_IS_JSON = new Header(Header.CONTENT_TYPE, MimeType.application.json);
  
-    protected final String name;
-    protected String value;
-
     public static final SimpleDateFormat DATE_FORMAT_RFC_1123;
     
     static {
@@ -90,6 +96,14 @@ public class Header {
         DATE_FORMAT_RFC_1123.setTimeZone(TimeZone.getTimeZone("GMT"));
     }
 
+
+    /*-- Static Functions ----------------------------------------------------*/
+
+    /**
+     * Constructs a Header instance from the specified string.
+     * @param string - A string containing a single HTTP header record.
+     * @throws ParseException
+     */
     public static final Header parse(final String string) throws ParseException {
         Matcher matcher = pattern.matcher(string);
         if (!matcher.matches()) {
@@ -98,32 +112,69 @@ public class Header {
         return new Header(matcher.group(1),matcher.group(2).trim());
     }
 
+
+    /*-- Member Variables ----------------------------------------------------*/
+
+    protected final String name;
+    protected String value;
+
+
+    /*-- Member Functions ----------------------------------------------------*/
+
+    /**
+     * Constructs a header with the specified name and an empty value.
+     * @param name - The header name.
+     */
     public Header(final String name) {
         this.name = name;
         this.value = "";
     }
 
+    /**
+     * Constructs a header with the specfied name and value.
+     * @param name - The header name.
+     * @param value - The header value.
+     */
     public Header(final String name, final String value) {
         this.name = name;
         this.value = value;
     }
     
+    /**
+     * Returns the header name.
+     */
     public String getName() {
         return this.name;
     }
 
+    /**
+     * Returns the header value.
+     */
     public String getValue() {
         return this.value;
     }
 
+    /**
+     * Sets the header value.
+     * @param value - The header value.
+     */
     public void setValue(final String value) {
         this.value = value;
     }
     
+    /**
+     * Appends a string to the current header value.
+     * @param value - The string to appeand to the header value.
+     */
     public void appendFragment(final String value) {
         this.value += value;
     }
 
+    /**
+     * Sets or appends a value to the current header.
+     * Multiple values are comma-separated.
+     * @param value - The value to set or append.
+     */
     public void appendValue(final String value) {
         if (this.value.length() > 0) {
             this.value += "," + value;
@@ -133,11 +184,26 @@ public class Header {
         }
     }
 
+    /**
+     * Returns a string representation of the header.
+     * The value returned has the following format:
+     * <pre>
+     *  "&lt;header-name&gt;: &lt;header-value&gt;"
+     * </pre>
+     */
     @Override
     public String toString() {
         return this.name + ": " + this.value;
     }
 
+    /**
+     * Writes the header to the specified OutputStream.
+     * The header name and value is encoded as UTF-8 and serialized as follows:
+     * <pre>
+     *  &lt;header-name&gt; + ": "  + &lt;header-value&gt; + CRLF
+     * </pre>
+     * @param outstream - The destination OutputStream
+     */
     public void writeTo(final OutputStream outstream) throws IOException {
         outstream.write(this.name.getBytes("UTF8"));
         outstream.write(':');
