@@ -23,8 +23,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * 
- *
+ * Base class for RTSP request and response messages.
  *
  * @author Gregory Bumgardner
  */
@@ -32,6 +31,9 @@ public abstract class RtspMessage {
 
     /*-- Inner Classes -------------------------------------------------------*/
 
+    /**
+     * An enumeration of RTSP message types.
+     */
     enum Type {
         Unknown,
         Request,
@@ -49,12 +51,13 @@ public abstract class RtspMessage {
     
     protected boolean isSent = false;
     
+
     /*-- Member Functions ----------------------------------------------------*/
     
     /**
-     * 
-     * @param headers
-     * @param entity
+     * Constructs an RTSP message from the specified collection of message headers and entity.
+     * @param headers - A collection of message headers. May be <code>null</code>.
+     * @param entity - A message entity (the payload). May be <code>null</code>.
      */
     protected RtspMessage(final LinkedHashMap<String,Header> headers, final Entity entity) {
         if (headers == null) {
@@ -66,6 +69,12 @@ public abstract class RtspMessage {
         this.entity = entity;
     }
     
+    /**
+     * Constructs an RTSP message from the specified collection of message headers and entity.
+     * @param handler - The connection handler that received this message.
+     * @param headers - A collection of message headers. May be <code>null</code>.
+     * @param entity - A message entity (the payload). May be <code>null</code>.
+     */
     protected RtspMessage(final ConnectionHandler handler,
                           final LinkedHashMap<String,Header> headers,
                           final Entity entity) {
@@ -79,52 +88,77 @@ public abstract class RtspMessage {
         this.entity = entity;
     }
 
+    /**
+     * Constructs an RTSP message with no headers and no entity.
+     */
     protected RtspMessage() {
         this.headers = new LinkedHashMap<String,Header>();
         this.entity = null;
     }
     
+    /**
+     * Returns the message {@link Type}.
+     */
     public abstract Type getType();
-    
+
+    /**
+     * Gets the {@link ProtocolVersion} of this message.
+     * @return
+     */
     public abstract ProtocolVersion getProtocolVersion();
     
+    /**
+     * Gets the {@link ConnectionHandler} that received this message, or <code>null</code> if not set.
+     */
     public ConnectionHandler getConnectionHandler() {
         return this.handler;
     }
 
+    /**
+     * Sets the {@link ConnectionHandler} that received this message.
+     * @param handler - The new connection handler.
+     */
     public void setConnectionHandler(ConnectionHandler handler) {
         this.handler = handler;
     }
 
+    /**
+     * Indicates whether this message has been "sent".
+     * This flag is initially set to <code>false</code> and is set to <code>true</code>
+     * when the {@link #writeTo(OutputStream)} method is called.
+     */
     public boolean isSent() {
         return this.isSent;
     }
 
+    /**
+     * Used to mark whether this message has been "sent".
+     * @param isSent - The new value for the "is-sent" property.
+     */
     public void isSent(boolean isSent) {
         this.isSent = isSent;
     }
 
     /**
-     * 
-     * @return
+     * Returns an iterator for a collection of names that identify the
+     * {@link Header} objects currently attached to this message.
      */
     public Iterator<String> getHeaderNames() {
         return this.headers.keySet().iterator();
     }
     
     /**
-     * 
-     * @param name
-     * @return
+     * Indicates whether a header with the specified name is currently attached to this messsage.
+     * @param name - The name of a message header. Header names are case-insensitive.
      */
     public boolean containsHeader(final String name) {
         return this.headers.containsKey(name.toLowerCase());
     }
     
     /**
-     * 
-     * @param name
-     * @return
+     * Returns the {@link Header} identified by the specified name if a header
+     * with that name is currently attached to this message.
+     * @param name - The name of a message header. Header names are case-insensitive.
      */
     public Header getHeader(final String name) {
         return this.headers.get(name.toLowerCase());
@@ -134,7 +168,7 @@ public abstract class RtspMessage {
      * Adds a header to this message.
      * If a header with the same name is already attached to this message,
      * that header is replaced.
-     * @param header
+     * @param header - The header to be set.
      */
     public void setHeader(final Header header) {
         this.headers.put(header.getName().toLowerCase(),header);
@@ -144,8 +178,8 @@ public abstract class RtspMessage {
      * Adds a header to this message.
      * If a header with the same name is already attached to this message,
      * the value carried by the new header is appended to the value of
-     * the existing header.
-     * @param header
+     * the existing header (see {@link Header#appendValue(String)}).
+     * @param header - The header to be added.
      */
     public void addHeader(final Header header) {
         Header current = this.headers.get(header.getName().toLowerCase());
@@ -157,45 +191,66 @@ public abstract class RtspMessage {
         }
     }
 
+    /**
+     * Removes a header from this message.
+     * @param name - The name of a message header. Header names are case-insensitive.
+     */
     public void removeHeader(final String name) {
         this.headers.remove(name.toLowerCase());
     }
 
+    /**
+     * Removes all headers from this message.
+     */
     public void removeHeaders() {
         this.headers.clear();
     }
 
     /**
-     * 
-     * @return
+     * Gets the entity attached to this message or <code>null</code> if no entity is attached.
      */
     public Entity getEntity() {
         return this.entity;
     }
     
     /**
-     * 
-     * @param entity
+     * Sets or clears the entity for this message.
+     * @param entity - The entity to attach to the message. May be <code>null</code>.
      */
     public void setEntity(Entity entity) {
         this.entity = entity;
     }
 
+    /**
+     * Consumes the entity attached to this message (if any).
+     * See {@link Entity#consumeContent()}.
+     * @throws IOException
+     */
     public void consumeContent() throws IOException {
         if (this.entity != null && !this.entity.isConsumed()) {
             this.entity.consumeContent();
         }
     }
 
+    /**
+     * Writes this message to the specified OutputStream.
+     * This method sets the "is-sent" property of the message to <code>true</code>.
+     * @param outstream - The destination OutputStream for the message.
+     * @throws IOException If an I/O occurs.
+     */
     public final void writeTo(OutputStream outstream) throws IOException {
         doWriteTo(outstream);
         this.isSent = true;
     }
 
     /**
-     * 
-     * @param outstream
-     * @throws IOException
+     * Writes this message to the specified OutputStream.
+     * Override in derived class to handle message specific output (the first line).
+     * Derived class implementations must call this method after writing the
+     * first line so any headers or entity attached to the message can be written
+     * to the stream.
+     * @param outstream - The destination OutputStream for the message.
+     * @throws IOException If an I/O occurs.
      */
     protected void doWriteTo(OutputStream outstream) throws IOException {
 

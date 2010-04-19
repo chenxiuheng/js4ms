@@ -20,17 +20,51 @@ package com.larkwoodlabs.net.streaming.rtsp;
  * An enumeration of RTSP methods.
  */
 public enum Method {
+
+    /** See [<a href="http://tools.ietf.org/html/rfc2326#page-32">RFC-2236, Section 10.3</a>].*/ 
     ANNOUNCE,
+
+    /** See [<a href="http://tools.ietf.org/html/rfc2326#page-31">RFC-2236, Section 10.2</a>].*/ 
     DESCRIBE,
+
+    /**
+     * See [<a href="http://tools.ietf.org/html/rfc2068#page-50">RFC-2068, Section 9.3</a>].
+     * Used to establish server->client HTTP tunnel for TCP transport.
+     * See <a href="http://developer.apple.com/quicktime/icefloe/dispatch028.html">Tunnelling RTSP and RTP through HTTP<a>.
+     */ 
     GET,
+
+    /** See [<a href="http://tools.ietf.org/html/rfc2326#page-37">RFC-2236, Section 10.8</a>].*/ 
     GET_PARAMETER,
+
+    /** See [<a href="http://tools.ietf.org/html/rfc2326#page-30">RFC-2236, Section 10.1</a>].*/ 
     OPTIONS,
+
+    /** See [<a href="http://tools.ietf.org/html/rfc2326#page-36">RFC-2236, Section 10.6</a>].*/ 
     PAUSE,
+
+    /** See [<a href="http://tools.ietf.org/html/rfc2326#page-34">RFC-2236, Section 10.5</a>].*/ 
     PLAY,
+
+    /**
+     * See [<a href="http://tools.ietf.org/html/rfc2068#page-51">RFC-2068, Section 9.5</a>].
+     * Used to establish client->server HTTP tunnel for TCP transport.
+     * See <a href="http://developer.apple.com/quicktime/icefloe/dispatch028.html">Tunnelling RTSP and RTP through HTTP<a>.
+     */ 
     POST,
+
+    /** See [<a href="http://tools.ietf.org/html/rfc2326#page-39">RFC-2236, Section 10.11</a>].*/ 
     RECORD,
+
+    /** See [<a href="http://tools.ietf.org/html/rfc2326#page-39">RFC-2236, Section 10.10</a>].*/ 
     REDIRECT,
+
+    /** See [<a href="http://tools.ietf.org/html/rfc2326#page-33">RFC-2236, Section 10.4</a>].*/ 
     SETUP,
+
+    /** See [<a href="http://tools.ietf.org/html/rfc2326#page-38">RFC-2236, Section 10.9</a>].*/ 
     SET_PARAMETER,
+
+    /** See [<a href="http://tools.ietf.org/html/rfc2326#page-37">RFC-2236, Section 10.7</a>].*/ 
     TEARDOWN;
 }

@@ -20,7 +20,11 @@ import java.nio.ByteBuffer;
 
 import com.larkwoodlabs.channels.OutputChannel;
 
-
+/**
+ * An {@link OutputChannel} that will receive incoming media packets.
+ *
+ * @author Gregory Bumgardner
+ */
 public abstract class PacketSink implements OutputChannel<ByteBuffer> {
 
 }

@@ -16,6 +16,11 @@
 
 package com.larkwoodlabs.net.streaming.rtsp;
 
+/**
+ * An enumeration of message protocols that may be used to communicate with an RTSP server.
+ *
+ * @author Gregory Bumgardner
+ */
 public enum Protocol {
     HTTP,
     RTSP

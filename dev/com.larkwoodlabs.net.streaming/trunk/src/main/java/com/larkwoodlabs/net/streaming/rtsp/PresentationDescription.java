@@ -24,14 +24,27 @@ import java.util.logging.Logger;
 
 import com.larkwoodlabs.util.logging.Logging;
 
+/**
+ * Describes a single media presentation consisting of one or more media streams (audio, video, data).
+ * A presentation description is identified by a URI and typically possesses an external representation
+ * whose format is identified by a MIME type (e.g. <code>application/sdp</code>).
+ *
+ * @author Gregory Bumgardner
+ */
 public abstract class PresentationDescription {
 
     /*-- Inner Classes -------------------------------------------------------*/
     
+    /**
+     * Factory for presentation description objects.
+     */
     public static class Factory {
 
         /*-- Inner Classes -------------------------------------------------------*/
 
+        /**
+         * Base class for concrete description factory classes.
+         */
         public static abstract class AbstractFactory {
             public abstract boolean constructs(URI uri) throws RtspException;
             public abstract PresentationDescription construct(URI uri) throws RtspException;
@@ -45,6 +58,12 @@ public abstract class PresentationDescription {
         
         /*-- Member Functions ----------------------------------------------------*/
 
+        /**
+         * Constructs a presentation description given a URI.
+         * This method iterates over the collection of registered factories
+         * until it finds a factory that indicates that it can construct
+         * a description based on the specified URI.
+         */
         PresentationDescription construct(URI uri) throws RtspException {
             for (AbstractFactory factory : factories) {
                 if (factory.constructs(uri)) {
@@ -93,25 +112,41 @@ public abstract class PresentationDescription {
 
     /*-- Member Functions ----------------------------------------------------*/
     
+    /**
+     * Constructs a presentation description that is identified by the specified URI.
+     */
     protected PresentationDescription(URI uri) {
         this.uri = uri;
     }
     
+    /**
+     * Returns the URI used to identify this presentation description.
+     */
     public final URI getUri() {
         return this.uri;
     }
 
+    /**
+     * Returns a string use to construct a stream control URI (e.g. "trackID").
+     */
     public abstract String getStreamControlIdentifier();
 
+    /**
+     * Returns the time and date that the presentation description was created
+     * or last modified, if available. 
+     */
     public abstract Date getDateLastModified();
     
     /**
      * Indicates whether the presentation can produce a description in the 
      * format identified by the specified MIME type. 
-     * @param mimeType - the format requested by the client (e.g. application/sdp).
+     * @param mimeType - the format requested by the client (e.g. <code>application/sdp</code>).
      */
     public abstract boolean isSupported(String mimeType);
     
+    /**
+     * Returns the MIME type of the presentation description (e.g. <code>application/sdp</code>).
+     */
     public abstract String getMimeType();
 
     /**
@@ -122,9 +157,23 @@ public abstract class PresentationDescription {
      */
     public abstract String describe(String mimeType) throws RtspException;
     
-    
+    /**
+     * Returns <code>true</code> if a presentation constructed from this
+     * presentation description can be paused, and <code>false</code> if not.
+     * Live presentations and presentations distributed via multicast generally
+     * cannot be paused, though the RTSP server may still accept a pause request
+     * (the streams are not actually paused - the stream delivery is stopped). 
+     * @return
+     */
     public abstract boolean isPauseAllowed();
     
+    /**
+     * Returns the media stream description for the stream identified by the specified index.
+     * @param streamIndex - A numerical index that identifies a stream.
+     *                      The stream index is typically assigned in the order that each stream
+     *                      definition appears within the external presentation description.
+     * @throws RtspException If there is no stream description associated with the specified index.
+     */
     public MediaStreamDescription getStreamDescription(int streamIndex) throws RtspException {
         MediaStreamDescription streamDescription = this.streamDescriptions.elementAt(streamIndex);
         if (streamDescription == null) {

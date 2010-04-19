@@ -32,8 +32,9 @@ import com.larkwoodlabs.net.udp.UdpDatagram;
 import com.larkwoodlabs.util.logging.Logging;
 
 /**
- * An packet source that uses an {@link AmtMulticastEndpoint} to join and
- * receive multicast packet streams.
+ * A packet source for streams sent to a multicast address.
+ * This class uses the Automatic Multicast Tunneling (AMT) protocol to join and
+ * receive the multicast packet stream (via an {@link AmtMulticastEndpoint} object).
  *
  * @author Gregory Bumgardner
  */
@@ -72,9 +73,13 @@ public final class MulticastPacketSource extends PacketSource {
     /*-- Member Functions ----------------------------------------------------*/
 
     /**
-     * 
-     * @param outputChannel
-     * @throws IOException 
+     * Constructs a packet source for a stream sent to a multicast address.
+     * @param sourcePort - The destination port of the packet stream.
+     * @param filter - A source filter that identifies the any-source multicast (ASM) destination address 
+     *                 or source-specific multicast (SSM) destination address and source host address(es)
+     *                 of the packet stream.
+     * @param outputChannel - The channel that will receive packets as they arrive.
+     * @throws IOException - If an I/O error occurred while constructing the multicast endpoint.
      */
     public MulticastPacketSource(final int sourcePort,
                                  final SourceFilter filter,

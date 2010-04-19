@@ -22,6 +22,11 @@ import java.util.logging.Logger;
 
 import com.larkwoodlabs.util.logging.Logging;
 
+/**
+ * Represents an active media presentation consisting of one or more media streams (audio, video, data).
+ *
+ * @author Gregory Bumgardner
+ */
 abstract class Presentation {
 
     /*-- Static Constants ----------------------------------------------------*/
@@ -36,11 +41,13 @@ abstract class Presentation {
     protected final String ObjectId = Logging.identify(this);
 
 
-    /*-- Static Functions ----------------------------------------------------*/
-
 
     /*-- Member Functions ----------------------------------------------------*/
 
+    /**
+     * Constructs a presentation that is described by a {@link PresentationDescription}.
+     * @param presentationDescription - The presentation description.
+     */
     protected Presentation(PresentationDescription presentationDescription) {
 
         if (logger.isLoggable(Level.FINER)) {
@@ -50,6 +57,9 @@ abstract class Presentation {
         this.presentationDescription = presentationDescription;
     }
 
+    /**
+     * Gets the {@link PresentationDescription} that describes this presentation.
+     */
     public final PresentationDescription getDescription() {
         return this.presentationDescription;
     }

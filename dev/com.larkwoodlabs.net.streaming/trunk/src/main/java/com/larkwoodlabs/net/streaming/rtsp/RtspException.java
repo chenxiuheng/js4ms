@@ -20,39 +20,88 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
+/**
+ * An exception used to report recoverable errors that occur while handling an RTSP request.
+ * An RTSP exception carries a {@link StatusCode} and error message that can be sent in an RTSP response.
+ * 
+ * @author Gregory Bumgardner
+ */
 public final class RtspException extends Exception {
+
+    /*-- Static Variables ----------------------------------------------------*/
 
     private static final long serialVersionUID = -1089201947642565979L;
 
+
+    /*-- Member Variables ----------------------------------------------------*/
+
     StatusCode statusCode;
-    
+
+    /*-- Member Functions ----------------------------------------------------*/
+
+    /**
+     * Constructs an RTSP exception from the specified status code number.
+     * The status code number converted into a {@link StatusCode} value by
+     * calling the {@link StatusCode#getByCode()} method.
+     * @param statusCode - The status code number that will be returned in an RTSP response.
+     */
     public RtspException(int statusCode) {
         this.statusCode = StatusCode.getByCode(statusCode);
     }
     
+    /**
+     * Constructs an RTSP exception from the specified status code.
+     * @param statusCode - The status code that will be carried by the exception.
+     */
     public RtspException(StatusCode statusCode) {
         this.statusCode = statusCode;
     }
-    
+
+    /**
+     * Constructs an RTSP exception from the specified status code and message.
+     * @param statusCode - The status code that will be carried by the exception.
+     * @param message - A descriptive error message.
+     */
     public RtspException(StatusCode statusCode, String message) {
         super(message);
         this.statusCode = statusCode;
     }
-    
+
+    /**
+     * Constructs an RTSP exception from the specified status code and Throwable cause.
+     * @param statusCode - The status code that will be carried by the exception.
+     * @param cause - A Throwable representing the root cause for the exception.
+     */
     public RtspException(StatusCode statusCode, Throwable cause) {
         super(cause);
         this.statusCode = statusCode;
     }
 
+    /**
+     * Constructs an RTSP exception from the specified status code, message and Throwable cause.
+     * @param statusCode - The status code that will be carried by the exception.
+     * @param message - A descriptive error message.
+     * @param cause - A Throwable representing the root cause for the exception.
+     */
     public RtspException(StatusCode statusCode, String message, Throwable cause) {
         super(message, cause);
         this.statusCode = statusCode;
     }
 
+    /**
+     * Returns the {@link StatusCode} carried by this exception.
+     */
     public StatusCode getStatusCode() {
         return this.statusCode;
     }
 
+    /**
+     * Static convenience function that logs and constructs an {@link RTSPException}
+     * from the specified status code.
+     * @param statusCode - The status code that will be carried by the exception.
+     * @param objectId - An object identifier that will appear in the log message.
+     * @param logger - The Logger used to log a message describing the exception.
+     */
     public static RtspException create(final StatusCode statusCode,
                                        final String objectId,
                                        final Logger logger) {
@@ -62,6 +111,14 @@ public final class RtspException extends Exception {
         return new RtspException(statusCode);
     }
 
+    /**
+     * Static convenience function that logs and constructs an {@link RTSPException}
+     * from the specified status code and descriptive error message.
+     * @param statusCode - The status code that will be carried by the exception.
+     * @param message - A descriptive error message.
+     * @param objectId - An object identifier that will appear in the log message.
+     * @param logger - The Logger used to log a message describing the exception.
+     */
     public static RtspException create(final StatusCode statusCode,
                                        final String message,
                                        final String objectId,
@@ -72,6 +129,14 @@ public final class RtspException extends Exception {
         return new RtspException(statusCode, message);
     }
 
+    /**
+     * Static convenience function that logs and constructs an {@link RTSPException}
+     * from the specified status code and Throwable cause.
+     * @param statusCode - The status code that will be carried by the exception.
+     * @param cause - A Throwable representing the root cause for the exception.
+     * @param objectId - An object identifier that will appear in the log message.
+     * @param logger - The Logger used to log a message describing the exception.
+     */
     public static RtspException create(final StatusCode statusCode,
                                        final Throwable cause,
                                        final String objectId,
@@ -83,6 +148,15 @@ public final class RtspException extends Exception {
         return new RtspException(statusCode, cause);
     }
 
+    /**
+     * Static convenience function that logs and constructs an {@link RTSPException}
+     * from the specified status code, message and Throwable cause.
+     * @param statusCode - The status code that will be carried by the exception.
+     * @param message - A descriptive error message.
+     * @param cause - A Throwable representing the root cause for the exception.
+     * @param objectId - An object identifier that will appear in the log message.
+     * @param logger - The Logger used to log a message describing the exception.
+     */
     public static RtspException create(final StatusCode statusCode,
                                        final String message,
                                        final Throwable cause,
@@ -107,6 +181,11 @@ public final class RtspException extends Exception {
         logger.fine(objectId + " <---- Cause");
     }
     
+    /**
+     * Constructs a {@link Response} object from this exception.
+     * An entity containing an error message and stack trace will be added to the response
+     * if an error message or Throwable cause is specified when this exception was constructed.
+     */
     public Response createResponse() {
         Response response = new Response(this.statusCode);
         String entity = getMessage() + "\n";
@@ -119,7 +198,12 @@ public final class RtspException extends Exception {
         response.setEntity(new StringEntity(entity));
         return response;
     }
-    
+
+    /**
+     * Uses the status code and any error message or Throwable cause associated with this
+     * exception to set the status code and entity of the specified {@link Response}.
+     * @param response - The response that is to be modified to report the RTSP error described by this exception.
+     */
     public void setResponse(Response response) {
         response.setStatusCode(this.statusCode);
         String entity = getMessage() + "\n";
