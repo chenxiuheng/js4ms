@@ -33,7 +33,13 @@ import java.util.logging.Logger;
 
 import com.larkwoodlabs.util.logging.Logging;
 
-
+/**
+ * An RTSP server.
+ * This class waits for incoming client connection requests and delegates the handling of
+ * each new connection to a {@link ServerConnectionHandler}.
+ *
+ * @author Gregory Bumgardner
+ */
 public final class Server implements Runnable {
 
     /*-- Static Variables ----------------------------------------------------*/
@@ -54,6 +60,9 @@ public final class Server implements Runnable {
     /*-- Static Functions ----------------------------------------------------*/
 
 
+    /**
+     * Returns a default set of server configuration properties.
+     */
     public static Properties getDefaultConfiguration() {
 
         Properties configuration = new Properties();
@@ -69,6 +78,12 @@ public final class Server implements Runnable {
         return configuration;
     }
 
+    /**
+     * Constructs a Server instance that is initialized using the properties
+     * contained in the specified property file.
+     * @param propertiesFileName - A file containing server configuration properties.
+     * @throws IOException If an I/O error occurs when accessing the properties file.
+     */
     public static Server create(final String propertiesFileName) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
@@ -86,7 +101,11 @@ public final class Server implements Runnable {
         return new Server(configuration);
     }
 
-    public static Server create(final Properties configuration) throws IOException {
+    /**
+     * Constructs a Server instance that is initialized using the specified properties.
+     * @param configuration - A set of server configuration properties.
+     */
+    public static Server create(final Properties configuration) {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(" [static] ", "Server.create", configuration));
@@ -95,17 +114,23 @@ public final class Server implements Runnable {
         return new Server(configuration);
     }
 
+    /**
+     * Returns the server name that will be sent in RTSP responses.
+     */
     public static String getName() {
         return SERVER_NAME;
     }
 
+    /**
+     * Returns the server version that will be sent in RTSP responses.
+     */
     public static String getVersion() {
         return SERVER_VERSION;
     }
 
+
     /*-- Member Variables ----------------------------------------------------*/
 
-    
     private final String ObjectId = Logging.identify(this);
     
     private ServerSocket serverSocket = null;
@@ -126,9 +151,10 @@ public final class Server implements Runnable {
     /*-- Member Functions ----------------------------------------------------*/
 
     /**
-     * 
+     * Constructs a server using the specified configuration properties.
+     * @param configuration - A set of configuration properties.
      */
-    protected Server(final Properties configuration) throws IOException {
+    protected Server(final Properties configuration) {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "Server.Server"));
@@ -148,10 +174,20 @@ public final class Server implements Runnable {
 
     }
     
+    /**
+     * Constructs a new ServerSocket instance for this server.
+     * Callers can use exceptions thrown by this method to detect when a
+     * server socket has already been bound to the configured port.
+     * @throws IOException If an I/O error occurs during ServerSocket construction.
+     */
     public void bind() throws IOException {
         this.serverSocket = new ServerSocket(Integer.parseInt(this.configuration.getProperty("PORT_BINDING")));
     }
 
+    /**
+     * Starts the server.
+     * @throws IOException If an I/O error occurs.
+     */
     public void start() throws IOException {
 
         if (this.serverSocket == null) {
@@ -162,8 +198,9 @@ public final class Server implements Runnable {
     }
 
     /**
-     * 
+     * Executes the main server processing loop.
      */
+    @Override
     public void run() {
 
         if (logger.isLoggable(Level.FINER)) {
@@ -271,6 +308,9 @@ public final class Server implements Runnable {
         }
     }
 
+    /**
+     * Stops the server.
+     */
     public void stop() {
         try {
             if (this.serverSocket != null) {
@@ -285,64 +325,122 @@ public final class Server implements Runnable {
         }
     }
 
+    /**
+     * Executes a runnable using a thread in the server thread pool.
+     * @param runnable - The runnable to be executed.
+     */
     void execute(Runnable runnable) {
         this.threadPool.execute(runnable);
     }
 
+    /**
+     * Schedules a TimerTask for execution in the server Timer thread.
+     * @param timerTask - The TimerTask to be scheduled for execution.
+     * @param delay - The task execution delay in milliseconds.
+     */
     void schedule(TimerTask timerTask, long delay) {
         this.taskTimer.schedule(timerTask, delay);
     }
 
+    /**
+     * Schedules a TimerTask for repeated execution in the server Timer thread.
+     * @param timerTask - The TimerTask to be scheduled for execution.
+     * @param delay - The task execution delay in milliseconds.
+     * @param period - The task execution period in milliseconds.
+     */
     void schedule(TimerTask timerTask, long delay, long period) {
         this.taskTimer.schedule(timerTask, delay);
     }
 
+    /**
+     * Indicates whether a tunnel connection with the specified session cookie identifier exists.
+     * @param sessionCookie - An HTTP tunnel connection identifier as specified
+     *                        in an RTSP <code>x-sessioncookie</code> header. 
+     */
     boolean containsOutputConnection(String sessionCookie) {
         synchronized (this.outputConnections) {
             return this.outputConnections.containsKey(sessionCookie);
         }
     }
 
+    /**
+     * Returns the tunnel connection identified by the specified session cookie identifer.
+     * @param sessionCookie - An HTTP tunnel connection identifier as specified
+     *                        in an RTSP <code>x-sessioncookie</code> header.
+     */
     Connection getOutputConnection(String sessionCookie) {
         synchronized (this.outputConnections) {
             return this.outputConnections.get(sessionCookie);
         }
     }
     
+    /**
+     * Adds the specified tunnel connection to the internal collection of tunnel connections.
+     * @param sessionCookie - An HTTP tunnel connection identifier as specified
+     *                        in an RTSP <code>x-sessioncookie</code> header.
+     * @param connection - The tunnel connection.
+     */
     void addOutputConnection(String sessionCookie, Connection connection) {
         synchronized (this.outputConnections) {
             this.outputConnections.put(sessionCookie, connection);
         }
     }
 
+    /**
+     * Removes the tunnel connection identified by the specified session cookie identifer.
+     * @param sessionCookie - An HTTP tunnel connection identifier as specified
+     *                        in an RTSP <code>x-sessioncookie</code> header.
+     */
     Connection removeOutputConnection(String sessionCookie) {
         synchronized (this.outputConnections) {
             return this.outputConnections.remove(sessionCookie);
         }
     }
 
+    /**
+     * Removes the specified connection from the internal collection of client connections.
+     * @param connection - The {@link Connection} to be removed.
+     */
     void removeConnection(Connection connection) {
         this.connections.remove(connection);
     }
 
+    /**
+     * Adds a new RTSP session to the internal collection of active RTSP sessions.
+     * @param session - A new RTSP {@link Session}.
+     */
     void addSession(Session session) {
         synchronized (this.sessions) {
             this.sessions.put(session.getSessionId(), session);
         }
     }
 
+    /**
+     * Indicates whether an RTSP session with the specified session identifier is contained
+     * in the collection of active RTSP sessions.
+     * @param sessionId - The session identifier as specified in an RTSP <code>Session</code> header.
+     */
     boolean containsSession(String sessionId) {
         synchronized (this.sessions) {
             return this.sessions.containsKey(sessionId);
         }
     }
     
+    /**
+     * Returns the RTSP session identified by the specified session identifier.
+     * @param sessionId - The session identifier as specified in an RTSP <code>Session</code> header.
+     */
     Session getSession(String sessionId) {
         synchronized (this.sessions) {
             return this.sessions.get(sessionId);
         }
     }
     
+    /**
+     * Removes the RTSP session identified by the specified session identifier
+     * from the internal collection of active sessions.
+     * @param sessionId - The session identifier as specified in an RTSP <code>Session</code> header.
+     */
     void removeSession(String sessionId) {
         synchronized (this.sessions) {
             this.sessions.remove(sessionId);

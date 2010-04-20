@@ -24,6 +24,12 @@ import java.util.logging.Level;
 
 import com.larkwoodlabs.util.logging.Logging;
 
+/**
+ * Handles server-side processing of RTSP messages received on the {@link Connection} created
+ * when an external client opens a connection to the RTSP {@link Server}.
+ *
+ * @author Gregory Bumgardner
+ */
 public class ServerConnectionHandler extends ConnectionHandler {
 
 
@@ -37,8 +43,8 @@ public class ServerConnectionHandler extends ConnectionHandler {
     /*-- Member Functions ----------------------------------------------------*/
 
     /**
-     * 
-     * @param serverConnection
+     * Constructs a connection handler for the specified {@link Server} and server-side {@link Connection}.
+     * @param serverConnection - The server-side connection, typically a {@link ServerSocketConnection}.
      */
     public ServerConnectionHandler(final Server server, final Connection serverConnection) {
         super(serverConnection);
@@ -53,7 +59,10 @@ public class ServerConnectionHandler extends ConnectionHandler {
         this.service = new Service(server);
     }
     
-    
+    /**
+     * Handles a single RTSP or HTTP request.
+     * @param request - The request message.
+     */
     @Override
     public void handleRequest(final Request request) throws Exception {
 
@@ -79,6 +88,17 @@ public class ServerConnectionHandler extends ConnectionHandler {
         }
     }
     
+    /**
+     * Handles an HTTP {@link Method#GET GET} request.
+     * A GET request message that carries an <code>x_rtsp_tunnelled</code> header is
+     * used by clients to construct the server-to-client side of an HTTP tunnel.
+     * The tunnel request must also carry an <code>x-sessioncookie</code> header that
+     * identifies the connection to it can be matched with a subsequent HTTP POST request.
+     * A GET request message that targets certain predefined URL paths are used to 
+     * request other types of server response.
+     * @param request - An HTTP {@link Method#GET GET} request message. 
+     * @throws IOException If an I/O error occurs while handling the request.
+     */
     void handleGet(final Request request) throws IOException {
         
         if (logger.isLoggable(Level.FINER)) {
@@ -146,6 +166,14 @@ public class ServerConnectionHandler extends ConnectionHandler {
         }
     }
     
+    /**
+     * Handles an HTTP {@link Method#GET GET} message that requests the server
+     * to echo the first query string parameter in the request URL back to the
+     * client in the response.
+     * Typically used to check whether the RTSP server is running.
+     * @param request - An HTTP GET request with a URL containing the path "<code>/echo</code>" followed by a query string.
+     * @param response - An HTTP response whose entity will be set to the requested echo string.
+     */
     void handleEchoRequest(Request request, Response response) {
 
         if (logger.isLoggable(Level.FINER)) {
@@ -172,6 +200,19 @@ public class ServerConnectionHandler extends ConnectionHandler {
         }
     }
 
+    /**
+     * Handles an HTTP {@link Method#GET GET} message that requests the server
+     * to transmit status information back to the client in the response.
+     * If the request carries the query string parameter "<code>callback</code>",
+     * the response is formatted as a JavaScript call to the function named in the
+     * callback parameter with a parameter consisting of a JSON message describing
+     * the current status.
+     * @param request - An HTTP GET request with a URL containing the path "<code>/status</code>"
+     *                  followed by an optional query string containing a <code>callback</code> parameter.
+     * @param response - An HTTP response whose entity is set according to the requested
+     *                   format for the status response.
+     * @throws IOException
+     */
     void handleStatusRequest(Request request, Response response) throws IOException {
         URI uri = request.getRequestLine().getUri();
         String query = uri.getQuery();
@@ -180,6 +221,8 @@ public class ServerConnectionHandler extends ConnectionHandler {
             return;
         }
 
+        // TODO: Add support for simple HTML response, perhaps generated from embedded resource files.
+        
         String callbackFuncName = null;
         String[] parameters = query.split("&");
         for (String parameter : parameters) {
@@ -206,6 +249,15 @@ public class ServerConnectionHandler extends ConnectionHandler {
         response.setEntity(new StringEntity(callbackFuncName+"({'time':'"+(new Date().getTime()) + "'});\n"));
     }
 
+    /**
+     * Handles an HTTP {@link Method#POST POST} request.
+     * A POST request message that carries an <code>x_rtsp_tunnelled</code> header is
+     * used by clients to construct the client-to-server side of an HTTP tunnel.
+     * The tunnel request must also carry an <code>x-sessioncookie</code> header that
+     * identifies the server-to-client connection constructed in response to an HTTP GET request.
+     * @param request - An HTTP {@link Method#GET GET} request message. 
+     * @throws IOException If an I/O error occurs while handling the request.
+     */
     void handlePost(final Request request) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
@@ -230,7 +282,7 @@ public class ServerConnectionHandler extends ConnectionHandler {
                 // Future requests, responses and interleaved RTP/RTCP packets
                 // will be sent over this connection.
 
-                //this.connection.shutdownOutput();
+                //this.connection.shutdownOutput(); // This does not work as it kills both streams.
                 reconnect(new ServerTunnelConnection(this.server,
                                                      sessionCookie.getValue(),
                                                      this.inputConnection,
@@ -249,20 +301,14 @@ public class ServerConnectionHandler extends ConnectionHandler {
         }
     }
     
-
-
     @Override
     public void handleResponse(final Response response) {
-        // TODO Auto-generated method stub
         this.service.serviceResponse(response);
         
     }
 
-
     @Override
     public void handlePacket(final int channel, final ByteBuffer packet) {
-        // TODO Auto-generated method stub
-        
     }
     
 }

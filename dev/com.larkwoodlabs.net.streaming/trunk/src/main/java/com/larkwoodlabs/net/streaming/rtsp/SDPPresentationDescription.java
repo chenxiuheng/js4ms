@@ -48,10 +48,19 @@ import com.larkwoodlabs.net.Precondition;
 import com.larkwoodlabs.net.amt.SourceFilter;
 import com.larkwoodlabs.util.logging.Logging;
 
+/**
+ * An RTSP media presentation created from a Session Description Protocol (SDP) description.
+ * A presentation description is identified by a URI and possesses an external representation
+ * whose format is identified by the MIME type <code>application/sdp</code>.
+ * @author Gregory Bumgardner
+ */
 final class SDPPresentationDescription extends PresentationDescription {
 
     /*-- Inner Classes -------------------------------------------------------*/
     
+    /**
+     * Factory that constructs a presentation description from an SDP description identified by a URI.
+     */
     public static class Factory extends PresentationDescription.Factory.AbstractFactory {
 
         @Override
@@ -63,6 +72,9 @@ final class SDPPresentationDescription extends PresentationDescription {
         public PresentationDescription construct(URI uri) throws RtspException {
 
             final String ObjectId = "[ static ]";
+
+            // TODO: Add capability to fetch SDP from an RTSP server. Requires RTSP client implementation.
+            
             if (uri.getScheme().equals("http")) {
                 // Fetch file from web server
                 String path = uri.getPath();
@@ -73,7 +85,7 @@ final class SDPPresentationDescription extends PresentationDescription {
                         HttpURLConnection urlConnection = ((HttpURLConnection)new URL(resourceUrl).openConnection());
                         if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
     
-                            //String lastModified = urlConnection.getHeaderField(Header.Last_Modified);
+                            // TODO: String lastModified = urlConnection.getHeaderField(Header.Last_Modified);
     
                             int contentLength = urlConnection.getContentLength();
     
@@ -124,7 +136,7 @@ final class SDPPresentationDescription extends PresentationDescription {
                         }
                         else {
                             // GET failed
-                            // TODO create RtspException with same status code - but not all HTTP codes are present in StatusCode!
+                            // TODO: create RtspException with same status code - but not all HTTP codes are present in StatusCode!
                             StatusCode.getByCode(urlConnection.getResponseCode());
                         }
                     }
@@ -133,7 +145,7 @@ final class SDPPresentationDescription extends PresentationDescription {
                     }
                     catch (IOException e) { 
                         // GET failed
-                        // throw RtspException with something
+                        // TODO: throw RtspException with something?
                     }
 
                 }
@@ -147,13 +159,9 @@ final class SDPPresentationDescription extends PresentationDescription {
 
     }
     
-    /*-- Static Constants ----------------------------------------------------*/
-
-    public static final String STREAM_CONTROL_IDENTIFIER = "trackID=";
-
     /*-- Static Variables ----------------------------------------------------*/
 
-    /*-- Static Functions ----------------------------------------------------*/
+    public static final String STREAM_CONTROL_IDENTIFIER = "trackID=";
 
 
     /*-- Member Variables ----------------------------------------------------*/
@@ -164,6 +172,13 @@ final class SDPPresentationDescription extends PresentationDescription {
 
     /*-- Member Functions ----------------------------------------------------*/
 
+    /**
+     * Constructs a presentation description with the specified source URI and
+     * the SDP session description that was retrieved using that URI.
+     * @param uri - The URI used to fetch the SDP session description.
+     * @param sessionDescription - The SDP session description.
+     * @throws RtspException If the session description is malformed or specifies an unsupported media type or transport.
+     */
     protected SDPPresentationDescription(URI uri, /*Date lastModified,*/ SessionDescription sessionDescription) throws RtspException {
         super(uri);
         if (logger.isLoggable(Level.FINER)) {
@@ -181,6 +196,9 @@ final class SDPPresentationDescription extends PresentationDescription {
         initStreamDescriptions(sessionDescription);
     }
     
+    /**
+     * Returns the SDP session description.
+     */
     public SessionDescription getSessionDescription() {
         return this.sessionDescription;
     }
@@ -192,14 +210,22 @@ final class SDPPresentationDescription extends PresentationDescription {
     }
     */
 
+    /**
+     * Returns <code>true</code> if the specified MIME type is <code>application/sdp</code>
+     * and <code>false</code> if otherwise.
+     * @param mimeType - A string containing a MIME type name.
+     */
     @Override
     public final boolean isSupported(String mimeType) {
-        return mimeType.equals("application/sdp");
+        return mimeType.equals(MimeType.application.sdp);
     }
-    
+
+    /**
+     * Returns the string "<code>application/sdp</code>".
+     */
     @Override
     public final String getMimeType() {
-        return "application/sdp";
+        return MimeType.application.sdp;
     }
 
     @Override
@@ -225,6 +251,10 @@ final class SDPPresentationDescription extends PresentationDescription {
         }
     }
 
+    /**
+     * Returns a client-side proxy description for this presentation description.
+     * @throws RtspException If a proxy representation cannot be generated for this presentation description.
+     */
     public SessionDescription getClientSideDescription() throws RtspException {
         if (this.clientSideDescription == null) {
             this.clientSideDescription = constructClientSideDescription();
@@ -232,6 +262,10 @@ final class SDPPresentationDescription extends PresentationDescription {
         return this.clientSideDescription;
     }
     
+    /**
+     * Returns a client-side proxy description for this presentation description.
+     * @throws RtspException If a proxy representation cannot be generated for this presentation description.
+     */
     @SuppressWarnings("unchecked")
     private SessionDescription constructClientSideDescription() throws RtspException {
 
@@ -368,6 +402,10 @@ final class SDPPresentationDescription extends PresentationDescription {
     }
 
     /**
+     * Construct an {@link SDPMediaStreamDescription} for each media stream description
+     * contained in the specified SDP session description.
+     * @param sessionDescription - An SDP session description.
+     * @throws RtspException If the session description is malformed or describes an unsupported media stream type or format.
      */
     private final void initStreamDescriptions(SessionDescription sessionDescription) throws RtspException {
         

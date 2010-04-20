@@ -150,10 +150,11 @@ public abstract class PresentationDescription {
     public abstract String getMimeType();
 
     /**
-     * Returns presentation description as a string to be included in the
-     * server response to an RTSP client DESCRIBE request.
-     * @param mimeType - the format requested by the client (e.g. application/sdp).
-     * @throws RtspException 
+     * Returns a string containing a serialized representation of the
+     * proxy presentation description suitable for transmission to an RTSP client
+     * in response to a DESCRIBE request.
+     * @param mimeType - The format requested by the client (e.g. <code>application/sdp</code>).
+     * @throws RtspException If a suitable client-side description cannot be generated for this presentation description.
      */
     public abstract String describe(String mimeType) throws RtspException;
     

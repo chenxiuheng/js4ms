@@ -31,24 +31,32 @@ import com.larkwoodlabs.net.streaming.rtsp.TransportDescription.Protocol;
 import com.larkwoodlabs.net.streaming.rtsp.TransportDescription.Transport;
 import com.larkwoodlabs.util.logging.Logging;
 
+/**
+ * An RTSP media stream description created from a Session Description Protocol (SDP) media description.
+ *
+ * @author Gregory Bumgardner
+ */
 final class SDPMediaStreamDescription extends MediaStreamDescription {
     
-    /*-- Inner Classes -------------------------------------------------------*/
-    /*-- Static Constants ----------------------------------------------------*/
-    /*-- Static Variables ----------------------------------------------------*/
-    /*-- Static Functions ----------------------------------------------------*/
     /*-- Member Variables ----------------------------------------------------*/
     
-    SessionDescription sessionDescription;
-    MediaDescription mediaDescription;
+    private SessionDescription sessionDescription;
+    private MediaDescription mediaDescription;
 
-    //private int ttl;
-    
     private InetAddress relayDiscoveryAddress;
 
 
     /*-- Member Functions ----------------------------------------------------*/
 
+    /**
+     * Constructs a media stream decription from the specified SDP session and media descriptions.
+     * @param sessionDescription - An SDP session description.
+     * @param mediaDescription - An SDP media description.
+     * @param filters - A vector of {@link SourceFilter} objects generated from SDP <code>source-filter</code> attribute records.
+     * @param ttl - The time-to-live value for the media stream.
+     * @param relayDiscoveryAddress - The AMT relay discovery address as specified in an SDP <code>x-amt-relay-anycast</code> attribute record.
+     * @throws RtspException If the SDP elements describe a unsupported transport.
+     */
     public SDPMediaStreamDescription(SessionDescription sessionDescription,
                                      MediaDescription mediaDescription,
                                      Vector<SourceFilter> filters,
@@ -137,14 +145,23 @@ final class SDPMediaStreamDescription extends MediaStreamDescription {
         }
     }
     
+    /**
+     * Returns the SDP session description.
+     */
     public SessionDescription getSessionDescription() {
         return this.sessionDescription;
     }
-    
+
+    /**
+     * Returns the SDP media description.
+     */
     public MediaDescription getMediaDescription() {
         return this.mediaDescription;
     }
 
+    /**
+     * Returns the AMT relay discovery address.
+     */
     public InetAddress getRelayDiscoveryAddress() {
         return this.relayDiscoveryAddress;
     }
