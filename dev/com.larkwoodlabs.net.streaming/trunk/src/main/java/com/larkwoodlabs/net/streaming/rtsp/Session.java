@@ -31,8 +31,22 @@ import com.larkwoodlabs.util.logging.LoggableBase;
 import com.larkwoodlabs.util.logging.Logging;
 
 
+/**
+ * An RTSP session controller that handles 
+ * {@link Method#SETUP SETUP},
+ * {@link Method#TEARDOWN TEARDOWN},
+ * {@link Method#PLAY PLAY},
+ * {@link Method#PAUSE PAUSE},
+ * {@link Method#OPTIONS OPTIONS}, and
+ * {@link Method#DESCRIBE DESCRIBE} requests.
+ *
+ * @author Gregory Bumgardner
+ */
 public final class Session extends LoggableBase {
 
+    /**
+     * An enumeration of media stream transport types.
+     */
     enum ConnectionType {
         Unknown,
         UDP,
@@ -43,15 +57,27 @@ public final class Session extends LoggableBase {
 
     public static final Logger logger = Logger.getLogger(Session.class.getName());
 
-    static int sessionTimeoutPeriod = 20000; // TODO: 60000;
+    /**
+     * The global session timeout period.
+     * See [<a href="http://tools.ietf.org/html/rfc2326#page-57">RFC-2326, Section 12.37</a>]
+     */
+    static int sessionTimeoutPeriod = 60000; // Default;
     
 
     /*-- Static Functions ----------------------------------------------------*/
 
+    /**
+     * Sets the global session timeout period.
+     * See [<a href="http://tools.ietf.org/html/rfc2326#page-57">RFC-2326, Section 12.37</a>]
+     * @param period - The timeout in milliseconds.
+     */
     public static void setSessionTimeoutPeriod(final int period) {
         sessionTimeoutPeriod = period;
     }
-    
+
+    /**
+     * Gets the global session timeout period in milliseconds.
+     */
     public static int getSessionTimeoutPeriod() {
         return sessionTimeoutPeriod;
     }
@@ -86,10 +112,13 @@ public final class Session extends LoggableBase {
     /*-- Member Functions ----------------------------------------------------*/
 
     /**
+     * Constructs a Session for the specified {@link Server} and {@link PresentationDescription}.
+     * This constructor creates a pair of {@link OutputChannel} objects that are used to 
+     * receive RTP/RTCP packets from the client. It also starts the timer task that will close
+     * the Session should no client requests or packets be received within the session timeout period.
      * 
-     * @param manager
-     * @param presentationUri
-     * @param taskTimer
+     * @param server - The {@link Server} for which this Session is being created.
+     * @param description - The {@link PresentationDescription} for this Session.
      */
     public Session(final Server server, final PresentationDescription description) {
         this.sessionId = String.valueOf(hashCode());
@@ -128,14 +157,28 @@ public final class Session extends LoggableBase {
         return logger;
     }
     
+    /**
+     * Returns the session identifier that was generated when this Session was constructed.
+     * A session identifier is sent to the client in response to the initial
+     * {@link Method#SETUP SETUP} request. The client will attach a <code>Session</code> message
+     * header that carries this value in subsequent requests that target this Session.
+     */
     public String getSessionId() {
         return this.sessionId;
     }
 
+    /**
+     * Returns the {@link PresentationDescription} that describes this Session.
+     */
     public PresentationDescription getPresentationDescription() {
         return this.description;
     }
 
+    /**
+     * Closes this Session.
+     * This method closes all packet input and output streams and cancels the session timeout task.
+     * @throws InterruptedException If the calling thread is interrupted while closing the session.
+     */
     public void close() throws InterruptedException {
 
         if (logger.isLoggable(Level.FINER)) {
@@ -164,6 +207,22 @@ public final class Session extends LoggableBase {
 
     }
     
+    /**
+     * Handles session-specific RTSP requests for
+     * {@link Method#SETUP SETUP},
+     * {@link Method#TEARDOWN TEARDOWN},
+     * {@link Method#PLAY PLAY},
+     * {@link Method#PAUSE PAUSE},
+     * {@link Method#OPTIONS OPTIONS}, and
+     * {@link Method#DESCRIBE DESCRIBE}.
+     * This method restarts the session timeout timer and dispatches each request
+     * to the appropriate handler method.
+     * @param request - The incoming RTSP request.
+     * @param response - The outgoing RTSP response.
+     * @throws IOException If an I/O error occurs.
+     * @throws InterruptedException If a thread interrupt occurs.
+     * @throws RtspException If request is malformed or cannot be satisfied.
+     */
     public void handleRequest(Request request, Response response) throws InterruptedException, IOException, RtspException {
 
         if (logger.isLoggable(Level.FINER)) {
@@ -196,6 +255,12 @@ public final class Session extends LoggableBase {
         }
     }
     
+    /**
+     * Handles a session-specific response.
+     * This method currently does nothing.
+     * @param request - The original request.
+     * @param response - The incoming response.
+     */
     public void handleResponse(Request request, Response response) {
 
         if (logger.isLoggable(Level.FINER)) {
@@ -204,10 +269,24 @@ public final class Session extends LoggableBase {
         
     }
     
+    /**
+     * Handles a session-specific RTSP {@link Method#OPTIONS OPTIONS} request.
+     * Clients typically send periodic OPTIONS requests to restart the session timeout timer.
+     * @param request - The incoming RTSP OPTIONS request.
+     * @param response - The outgoing RTSP response.
+     */
     void handleOptions(Request request, Response response) {
         response.setHeader(new Header("Public","DESCRIBE, SETUP, TEARDOWN, PLAY" + (this.description.isPauseAllowed() ? ", PAUSE" : "")));
     }
     
+    /**
+     * Handles a session-specific RTSP {@link Method#DESCRIBE DESCRIBE} request.
+     * Most RTSP clients do not send session-specific DESCRIBE requests as
+     * they will have already sent a DESCRIBE prior to sending the first
+     * {@link Method#SETUP SETUP} request that initiates the session.
+     * @param request - The incoming RTSP DESCRIBE request.
+     * @param response - The outgoing RTSP response.
+     */
     void handleDescribe(Request request, Response response) throws RtspException {
 
         String sdp = this.description.describe(MimeType.application.sdp);
@@ -226,6 +305,18 @@ public final class Session extends LoggableBase {
    
     }
 
+    /**
+     * Handles an RTSP media stream {@link Method#SETUP SETUP} request.
+     * The first SETUP request that is received for a presentation results
+     * in the creation of this Session object. The first and all subsequent
+     * SETUP requests targeting this session are handled within this method.
+     * 
+     * @param request - The incoming RTSP SETUP request.
+     * @param response - The outgoing RTSP response.
+     * @throws InterruptedException If the calling thread is interrupted while processing the request.
+     * @throws IOException If an I/O error occurs.
+     * @throws RtspException If the setup request cannot be satisfied.
+     */
     void handleSetup(Request request, Response response) throws InterruptedException, IOException, RtspException {
 
         if (logger.isLoggable(Level.FINER)) {
@@ -259,6 +350,16 @@ public final class Session extends LoggableBase {
         }
     }
 
+    /**
+     * Handles an RTSP {@link Method#PLAY PLAY} request.
+     * If the media streams are distributed using multicast, the PLAY request causes
+     * this session to join the multicast destination group(s),
+     * effectively enabling the delivery of media packets from the media source.
+     * @param request - The incoming RTSP PLAY request.
+     * @param response - The outgoing RTSP response.
+     * @throws InterruptedException If the calling thread is interrupted while processing the request.
+     * @throws IOException If an I/O error occurs.
+     */
     void handlePlay(Request request, Response response) throws InterruptedException, IOException {
 
         if (logger.isLoggable(Level.FINER)) {
@@ -297,6 +398,16 @@ public final class Session extends LoggableBase {
 
     }
     
+    /**
+     * Handles an RTSP {@link Method#PAUSE PAUSE} request.
+     * If the media streams are distributed using multicast, the PAUSE request causes
+     * this session to leave the multicast destination group(s),
+     * effectively disabling the delivery of media packets from the media source.
+     * @param request - The incoming RTSP PAUSE request.
+     * @param response - The outgoing RTSP response.
+     * @throws InterruptedException If the calling thread is interrupted while processing the request.
+     * @throws IOException If an I/O error occurs.
+     */
     void handlePause(Request request, Response response) throws InterruptedException, IOException {
         
         if (logger.isLoggable(Level.FINER)) {
@@ -308,6 +419,15 @@ public final class Session extends LoggableBase {
         }
     }
     
+    /**
+     * Handles an RTSP {@link Method#TEARDOWN TEARDOWN} request.
+     * A TEARDOWN request closes this Session. See {@link #close()}.
+     * The RTSP response will include a <code>Connection: close</code> header to
+     * indicate to the client that it can close the RTSP control connection.
+     * @param request - The incoming RTSP TEARDOWN request.
+     * @param response - The outgoing RTSP response.
+     * @throws InterruptedException If the calling thread is interrupted while processing the request.
+     */
     void handleTeardown(Request request, Response response) throws InterruptedException {
         
         if (logger.isLoggable(Level.FINER)) {
@@ -319,6 +439,10 @@ public final class Session extends LoggableBase {
         close();
     }
     
+    /**
+     * Restarts the session timeout timer.
+     * This method is called for every request received from the client.
+     */
     private void restartTimeout() {
 
         if (this.sessionTimeoutTask != null) {
@@ -345,6 +469,20 @@ public final class Session extends LoggableBase {
         }
     }
     
+    /**
+     * Attempts to construct a {@link MediaStream} from a {@link MediaStreamDescription} using
+     * transport preferences as specified in the <code>Transport</code> header sent by the client.
+     * A description of the actual transport setup is returned to the client in a
+     * <code>Transport</code> message header.
+     * @param streamIndex - The stream index. Used to retrieve a {@link MediaStreamDescription}
+     *                      from the {@link PresentationDescription} associated with this session.
+     * @param request - The incoming RTSP SETUP request.
+     * @param response - The outgoing RTSP response.
+     * @throws RtspException If the server cannot satisfy the request due to an internal error
+     *                       or unsupported transport preferences.
+     * @throws IOException If an I/O error occurs.
+     * @throws InterruptedException If the calling thread is interrupted while processing the request.
+     */
     void setupStream(int streamIndex, Request request, Response response) throws RtspException, IOException, InterruptedException {
 
         if (logger.isLoggable(Level.FINER)) {

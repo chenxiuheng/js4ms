@@ -22,15 +22,29 @@ import java.util.logging.Level;
 
 import com.larkwoodlabs.util.logging.Logging;
 
+/**
+ * A server-side connection with a remote client.
+ *
+ * @author Gregory Bumgardner
+ */
 public class ServerSocketConnection extends SocketConnection {
 
     private final Server server;
-    
+
+    /**
+     * Constructs a server-side socket connection for the specified server and socket.
+     * @param server - The server responsible for constructing the connection and socket.
+     * @param socket - The Socket created by a call to ServerSocket.accept().
+     * @throws IOException If an I/O error occurs accessing the socket streams.
+     */
     public ServerSocketConnection(Server server, Socket socket) throws IOException {
         super(socket);
         this.server = server;
     }
 
+    /**
+     * Closes this connection and removes it from active connection collection managed by the {@link Server}.
+     */
     @Override
     public void close() throws IOException {
         

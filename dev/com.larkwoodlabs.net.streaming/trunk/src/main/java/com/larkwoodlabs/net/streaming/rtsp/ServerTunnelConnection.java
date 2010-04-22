@@ -22,6 +22,19 @@ import java.util.logging.Level;
 import com.larkwoodlabs.io.Base64InputStream;
 import com.larkwoodlabs.util.logging.Logging;
 
+/**
+ * A server-side connection with a remote client that uses 
+ * separate connections for input and output.<p>
+ * A server tunnel connection is constructed in response to an
+ * HTTP tunneling request from an RTSP client. The output connection
+ * is the connection that received an open-ended HTTP GET request and the input
+ * connection is the connection that received a matching HTTP POST request.
+ * The GET and POST requests are matched using the identifier specified in
+ * an <code>x-sessioncookie</code> message header.
+ * See <a href="http://developer.apple.com/quicktime/icefloe/dispatch028.html">Tunnelling RTSP and RTP through HTTP<a>.
+ *
+ * @author Gregory Bumgardner
+ */
 public final class ServerTunnelConnection extends Connection {
     
 
@@ -36,11 +49,14 @@ public final class ServerTunnelConnection extends Connection {
     private final Connection outputConnection;
     
     
+    /*-- Member Functions ----------------------------------------------------*/
+
     /**
-     * 
-     * @param sessionCookie
-     * @param inputStream
-     * @param outputStream
+     * @param server - The server responsible for constructing this connection.
+     * @param sessionCookie - An tunnel connection identifier typically specified
+     *                        by a client in an <code>x-sessioncookie</code> header. 
+     * @param inputConnection - The connection used to receive messages from a client.
+     * @param outputStream - The connection used to send messages to a client.
      */
     public ServerTunnelConnection(Server server,
                                   final String sessionCookie,
@@ -68,6 +84,12 @@ public final class ServerTunnelConnection extends Connection {
         this.outputConnection.shutdownOutput();
     }
 
+    /**
+     * Closes the input and output connections and removes the connection identified
+     * by the session cookie from the collection of active tunnel connections managed
+     * by the {@link Server}.
+     * @throws IOException If an I/O error occurs while closing the connection.
+     */
     @Override
     public void close() throws IOException {
 
