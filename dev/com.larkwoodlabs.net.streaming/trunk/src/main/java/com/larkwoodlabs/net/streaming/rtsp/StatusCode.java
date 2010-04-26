@@ -16,6 +16,14 @@
 
 package com.larkwoodlabs.net.streaming.rtsp;
 
+/**
+ * An enumeration of RTSP and HTTP status codes sent or received by RTSP participants.
+ * A StatusCode enumerator is carries an integer status code number and English reason phrase.
+ * See [<a href="http://tools.ietf.org/html/rfc2326#page-22">RFC-2326, Section 7.1.1</a>] and
+ * [<a href="http://tools.ietf.org/html/rfc2326#page-41">RFC-2326, Section 11</a>].
+ * 
+ * @author Gregory Bumgardner
+ */
 public enum StatusCode {
 
     Unrecognized(0, "Unrecognized"),
@@ -90,24 +98,47 @@ public enum StatusCode {
 
     private int code;
     private String reasonPhrase;
+    
+    /**
+     * Constructs an enumerator from an integer code and reason phrase.
+     * @param code - The integer value of the status code.
+     * @param reasonPhrase - The associated reason phrase.
+     */
     StatusCode(int code, String reasonPhrase) {
         this.code = code;
         this.reasonPhrase = reasonPhrase;
     }
     
+    /**
+     * Returns the integer value for this status code.
+     */
     public int getCode() {
         return this.code;
     }
     
+    /**
+     * Returns a StatusCode representing the status class for this status code.
+     * The status classes are identified by the status codes {@link #Redirection}, {@link #OK}, {@link #MultipleChoices},
+     * {@link #BadRequest} and {@link #ServerError}.
+     */
     public StatusCode getStatusClass() {
         return getStatusClass(getCode());
     }
 
+    /**
+     * Returns the reason phrase for this status code.
+     */
     public String getReasonPhrase() {
         return this.reasonPhrase;
     }
     
-    
+    /**
+     * Returns the StatusCode that carries the specified integer code value or the
+     * StatusCode representing the status class of the specified code if no matching
+     * StatusCode exists.
+     * @param code - The integer status code.
+     * @throws IllegalArgumentException If the code value falls outside of the range 100-599.
+     */
     public static StatusCode getByCode(final int code) {
         for (StatusCode value : StatusCode.values()) {
             if (value.getCode() == code) return value;
@@ -120,6 +151,11 @@ public enum StatusCode {
         throw new IllegalArgumentException("unrecognized status code");
     }
     
+    /**
+     * Returns a StatusCode representing the status class for the specified integer status code.
+     * @param code The integer status code.
+     * @throws IllegalArgumentException If the code value falls outside of the range 100-599.
+     */
     public static StatusCode getStatusClass(final int code) {
         if (code < 100) return Informational;
         if (code >= 100 && code < 200) return Success;

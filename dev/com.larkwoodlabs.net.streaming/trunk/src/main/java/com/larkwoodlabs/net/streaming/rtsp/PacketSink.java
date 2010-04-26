@@ -21,7 +21,7 @@ import java.nio.ByteBuffer;
 import com.larkwoodlabs.channels.OutputChannel;
 
 /**
- * An {@link OutputChannel} that will receive incoming media packets.
+ * An {@link OutputChannel} used to send incoming media packets to an RTSP participant.
  *
  * @author Gregory Bumgardner
  */

@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 import com.larkwoodlabs.util.logging.LoggableBase;
 
 /**
- * An HTTP request/response entity whose content is retrieved from an InputStream.
+ * An RTSP or HTTP request/response entity whose content is retrieved from an InputStream.
  *
  * @author Gregory Bumgardner
  */

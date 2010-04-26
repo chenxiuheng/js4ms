@@ -27,11 +27,20 @@ import com.larkwoodlabs.net.udp.UdpDatagram;
 import com.larkwoodlabs.net.udp.UdpEndpoint;
 import com.larkwoodlabs.net.udp.UdpInputChannel;
 
+/**
+ * A {@link PacketSource} that receives media packets from an RTSP participant
+ * via a {@link UdpEndpoint} and delivers those packets to an {@link OutputChannel}.
+ *
+ * @author Gregory Bumgardner
+ */
 public class UdpPacketSource extends PacketSource {
 
     
     /*-- Inner Classes -------------------------------------------------------*/
 
+    /**
+     * Transform used to extract the media packet from a {@link UdpDatagram}.
+     */
     final static class Transform implements MessageTransform<UdpDatagram, ByteBuffer> {
 
         public Transform() {
@@ -51,6 +60,10 @@ public class UdpPacketSource extends PacketSource {
     
     /*-- Member Functions ----------------------------------------------------*/
 
+    /**
+     * Constructs a packet source that will receive media packets from a UDP endpoint
+     * and send them to an {@link OutputChannel}.
+     */
     protected UdpPacketSource(final UdpEndpoint udpEndpoint,
                               final OutputChannel<ByteBuffer> outputChannel) throws IOException {
         super();

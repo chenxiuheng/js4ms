@@ -24,10 +24,22 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 
 
+/**
+ * A {@link PacketSink} used to send incoming media packets to an RTSP participant
+ * using a UDP DatagramSocket.
+ *
+ * @author Gregory Bumgardner
+ */
 public final class UdpPacketSink extends PacketSink {
 
     private final DatagramSocket socket;
     
+    /**
+     * Constructs a packet sink that can be used to send media packets via UDP
+     * to the specified destination address and port.
+     * @param remoteAddress - The IP address and port of the receiving host.
+     * @throws IOException If an I/O occurs during construction of the underlying DatagramSocket.
+     */
     public UdpPacketSink(InetSocketAddress remoteAddress) throws IOException {
         this.socket = new DatagramSocket(0);
         this.socket.connect(remoteAddress);
@@ -43,6 +55,5 @@ public final class UdpPacketSink extends PacketSink {
     public void close(boolean isCloseAll) throws IOException, InterruptedException {
         this.socket.close();
     }
-    
     
 }

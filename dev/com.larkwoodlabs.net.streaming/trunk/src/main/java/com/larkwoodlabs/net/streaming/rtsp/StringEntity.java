@@ -21,6 +21,11 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.logging.Logger;
 
+/**
+ * An RTSP or HTTP request/response entity whose content is retrieved from a String.
+ *
+ * @author Gregory Bumgardner
+ */
 public class StringEntity extends Entity {
 
     public static final String US_ASCII =   "US-ASCII";
@@ -32,14 +37,36 @@ public class StringEntity extends Entity {
 
     private final String source;
     
+    /**
+     * Constructs an entity from the specified String that will produce a
+     * <code>Content Type</code> header value of <code>text/plain</code>
+     * and <code>charset</code> of ISO-8859-1.
+     * @param content - The entity content.
+     */
     public StringEntity(String content) {
         this(content, MimeType.text.plain, ISO_8859_1, true);
     }
 
+    /**
+     * Constructs an entity from the specified String that will produce a
+     * <code>Content Type</code> header value set to the specified content type
+     * and <code>charset</code> of ISO-8859-1.
+     * @param content - The entity content.
+     */
     public StringEntity(String content, String contentType) {
         this(content, contentType, ISO_8859_1, true);
     }
 
+    /**
+     * Constructs an entity from the specified String that will produce a
+     * <code>Content Type</code> header value set to the specified content type
+     * and an optional <code>charset</code> parameter set to the specified
+     * character set name.
+     * The <code>charset</code> parameter is only added to the <code>Content Type</code>
+     * header if the <code>addCharset</code> parameter is <code>true</code>.
+     * 
+     * @param content - The entity content.
+     */
     public StringEntity(String content, String contentType, String characterSet, boolean addCharset) throws IllegalArgumentException {
         super();
         this.source = content;

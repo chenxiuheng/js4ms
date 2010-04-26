@@ -20,11 +20,25 @@ import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.nio.ByteBuffer;
 
+/**
+ * A {@link PacketSink} used to send incoming media packets to an RTSP participant
+ * using the TCP {@link Connection} managed by a {@link ConnectionHandler}.
+ * The packets are sent over an RTSP control connection using the mechanism described
+ * in [<a href="http://tools.ietf.org/html/rfc2326#page-40">RFC-2326, Section 10.12</a>].
+ *
+ * @author Gregory Bumgardner
+ */
 public final class TcpPacketSink extends PacketSink {
 
     private final int channelNumber;
     private final ConnectionHandler handler;
     
+    /**
+     * Constructs an TCP packet sink that can be used to send interleaved media packets using
+     * the specified channel number and connection handler.
+     * @param channelNumber - The channel number used to label the interleaved packets.
+     * @param handler - The {@link ConnectionHandler} used to send the packets.
+     */
     public TcpPacketSink(final int channelNumber, final ConnectionHandler handler) {
         this.channelNumber = channelNumber;
         this.handler = handler;
