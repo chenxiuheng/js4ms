@@ -30,7 +30,7 @@ import com.larkwoodlabs.util.logging.LoggableBase;
 import com.larkwoodlabs.util.logging.Logging;
 
 /**
- *
+ * A representation of a UDP datagram.
  *
  * @author Gregory Bumgardner
  */
