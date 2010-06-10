@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp spec="1.0+" href="AmtProxyApplet.jnlp" codebase="http://sites.google.com/site/amtproxy">
+    <information>
+        <title>AMT Proxy Server</title>
+        <vendor>Greg Bumgardner</vendor>
+        <homepage href="http://sites.google.com/site/amtproxy" />
+        <description>RTSP Server for Multicast Streaming over AMT</description>
+    </information>
+    <security>
+      <all-permissions/>
+    </security>
+    <resources>
+        <!-- Application Resources -->
+        <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se" />
+        <jar href="AmtProxyApplet.jar" version="0.0.1.48" main="true"/>
+    </resources>
+    <applet-desc 
+         name="AMT Proxy Server Applet"
+         main-class="AmtProxyApplet"
+         width="1"
+         height="1">
+     </applet-desc>
+</jnlp>         
