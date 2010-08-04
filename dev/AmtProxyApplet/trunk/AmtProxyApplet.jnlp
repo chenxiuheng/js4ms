@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jnlp spec="1.0+" href="AmtProxyApplet.jnlp" codebase="http://sites.google.com/site/amtproxy">
+<jnlp spec="1.0+" href="AmtProxyApplet.jnlp" codebase="">
     <information>
-        <title>AMT Proxy Server</title>
+        <title>AMT Proxy Server Applet</title>
         <vendor>Greg Bumgardner</vendor>
         <homepage href="http://sites.google.com/site/amtproxy" />
-        <description>RTSP Server for Multicast Streaming over AMT</description>
+        <description>RTSP Server applet for multicast streaming over AMT</description>
     </information>
     <security>
       <all-permissions/>
@@ -12,7 +12,8 @@
     <resources>
         <!-- Application Resources -->
         <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se" />
-        <jar href="AmtProxyApplet.jar" version="0.0.1.48" main="true"/>
+        <jar href="AmtProxyApplet.jar" version="0.0.1.55" main="true"/>
+        <jar href="jain-sdp-1.0.100.jar"/>
     </resources>
     <applet-desc 
          name="AMT Proxy Server Applet"
