@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp spec="1.0+" href="" codebase="http://10.21.73.125/AmtProxy">
+  <information>
+    <title>AMT Proxy Server Application</title>
+    <vendor>Gregory Bumgardner</vendor>
+    <description>RTSP Proxy Server for multicast streaming over AMT</description>
+  </information>
+  <offline-allowed/>
+  <security>
+    <all-permissions/>
+  </security>
+  <resources>
+    <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se" />
+    <jar href="AmtProxy.jar" version="@APPLET_VERSION@" main="true"/>
+    <jar href="jain-sdp-1.0.100.jar"/>
+    <property name="jnlp.versionEnabled" value="true"/>
+  </resources>
+  <application-desc main-class="AmtProxy" />
+</jnlp>

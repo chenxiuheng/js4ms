@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>AMT RTSP Proxy Server</title>
+<script src="deployJava.js" language="JavaScript" type="text/javascript"></script>
+</head>
+<body>
+<center>
+<table width="60%">
+<tr>
+<td>
+<h1>AMT RTSP Proxy Server</h1>
+The AMT RTSP Proxy Server can be started as an independent process via Java Web Start.
+Once the server has been started, RTSP clients can use it to access a multicast
+streaming media presentation. The proxy server listens for RTSP requests on port 8054.
+The HTTP URL for an SDP description for a stream must be passed as the query string
+value in the RTSP URL. For example:
+<p>
+<code style="color:green">rtsp://127.0.0.1:8054/?&lt;sdp-url&gt;</code>
+</p>
+<p>
+On Windows, Java Web Start will start a windowless process with the name 
+"javaws.exe". At present, it can only be stopped by killing the process 
+directly. On Mac OS X, the server will run as a minimal application with
+a menu that can be used to stop it.
+</p>
+<p>
+The proxy server does not accept SDP descriptions for unicast 
+presentations. The connection records in the SDP must specify multicast 
+addresses and any SDP description that contains an SSM connection 
+address must include a source-filter attribute record that applies to 
+that address. The proxy server can only fetch SDP descriptions using 
+from an http: URL - it cannot yet act as an RTSP client to fetch SDP 
+descriptions from another RTSP server.
+</p>
+<p>
+Click on the button below to launch an instance of the proxy server.<br>
+</p>
+<p>
+<script>
+    var anchor = document.createElement("a");
+    anchor.href = "AmtProxy.jnlp";
+    deployJava.createWebStartLaunchButton(anchor.href, "1.6+");
+</script>
+</p>
+<p>
+Note: The server will fail to start if another server instance is already running,
+including one started by a running applet.
+</p>
+<p>
+Sample SDP files can be found <a href="/SDPs">here</a>.
+The SDP files configured for AMT are organized by AMT relay address.
+</p>
+<p>
+To play the streams described by the SDP files, start the appropriate media player and
+select the menu option for opening a URL. Copy the link location of the desired SDP
+file and append it to the local host RTSP URL for the proxy:
+</p>
+<blockquote>
+<code id="url" style="color:green"></code>
+</blockquote>
+<script>
+anchor = document.createElement("a");
+anchor.href = "/SDPs/SSM-AMT/172.18.175.175/BBC2.sdp";
+document.getElementById("url").innerHTML = "rtsp://127.0.0.1:8054/?" + anchor.href
+</script>
+<p>
+If using VLC, you can also use a play list (.xspf file) to identify multiple streams for playout.
+Select the menu option to open a FILE or URL. Enter the file path or HTTP url for an .xspf file:
+</p>
+<blockquote>
+<code id="playlist" style="color:green"></code>
+</blockquote>
+<script>
+anchor = document.createElement("a");
+anchor.href = "/SDPs/SSM-AMT/172.18.175.175/playlist.xspf";
+document.getElementById("playlist").innerHTML = anchor.href
+</script>
+Once the play list is loaded, the <b>|&lt;&lt;</b> and <b>&gt;&gt;|</b> buttons to switch between streams.
+</td>
+</tr>
+</table>
+</center>
+</body>
+</html>
