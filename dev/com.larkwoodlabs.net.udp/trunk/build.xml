@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. -->
+<project basedir="." default="build" name="com.larkwoodlabs.net.udp">
+    <property environment="env"/>
+    <property name="AmtProxy.location" value="../AmtProxy"/>
+    <property name="AmtProxyApplet.location" value="../AmtProxyApplet"/>
+    <property name="com.larkwoodlabs.net.amt.location" value="../com.larkwoodlabs.net.amt"/>
+    <property name="com.larkwoodlabs.net.streaming.location" value="../com.larkwoodlabs.net.streaming"/>
+    <property name="ECLIPSE_HOME" value="../../"/>
+    <property name="com.larkwoodlabs.common.location" value="../com.larkwoodlabs.common"/>
+    <property name="com.larkwoodlabs.util.logging.location" value="../com.larkwoodlabs.util.logging"/>
+    <property name="com.larkwoodlabs.channels.location" value="../com.larkwoodlabs.channels"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.6"/>
+    <property name="source" value="1.6"/>
+    <path id="com.larkwoodlabs.util.logging.classpath">
+        <pathelement location="${com.larkwoodlabs.util.logging.location}/bin"/>
+    </path>
+    <path id="com.larkwoodlabs.common.classpath">
+        <pathelement location="${com.larkwoodlabs.common.location}/bin"/>
+    </path>
+    <path id="com.larkwoodlabs.channels.classpath">
+        <pathelement location="${com.larkwoodlabs.channels.location}/bin"/>
+        <path refid="com.larkwoodlabs.util.logging.classpath"/>
+        <path refid="com.larkwoodlabs.common.classpath"/>
+    </path>
+    <path id="com.larkwoodlabs.net.udp.classpath">
+        <pathelement location="bin"/>
+        <path refid="com.larkwoodlabs.channels.classpath"/>
+        <path refid="com.larkwoodlabs.util.logging.classpath"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src/main/java">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src/test/java">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target depends="clean" name="cleanall">
+        <ant antfile="${com.larkwoodlabs.common.location}/build.xml" dir="${com.larkwoodlabs.common.location}" inheritAll="false" target="clean"/>
+        <ant antfile="${com.larkwoodlabs.util.logging.location}/build.xml" dir="${com.larkwoodlabs.util.logging.location}" inheritAll="false" target="clean"/>
+        <ant antfile="${com.larkwoodlabs.channels.location}/build.xml" dir="${com.larkwoodlabs.channels.location}" inheritAll="false" target="clean"/>
+    </target>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects">
+        <ant antfile="${com.larkwoodlabs.common.location}/build.xml" dir="${com.larkwoodlabs.common.location}" inheritAll="false" target="build-project">
+            <propertyset>
+                <propertyref name="build.compiler"/>
+            </propertyset>
+        </ant>
+        <ant antfile="${com.larkwoodlabs.util.logging.location}/build.xml" dir="${com.larkwoodlabs.util.logging.location}" inheritAll="false" target="build-project">
+            <propertyset>
+                <propertyref name="build.compiler"/>
+            </propertyset>
+        </ant>
+        <ant antfile="${com.larkwoodlabs.channels.location}/build.xml" dir="${com.larkwoodlabs.channels.location}" inheritAll="false" target="build-project">
+            <propertyset>
+                <propertyref name="build.compiler"/>
+            </propertyset>
+        </ant>
+    </target>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
+            <src path="src/main/java"/>
+            <classpath refid="com.larkwoodlabs.net.udp.classpath"/>
+        </javac>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
+            <src path="src/test/java"/>
+            <classpath refid="com.larkwoodlabs.net.udp.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects">
+        <ant antfile="${AmtProxy.location}/build.xml" dir="${AmtProxy.location}" inheritAll="false" target="clean"/>
+        <ant antfile="${AmtProxy.location}/build.xml" dir="${AmtProxy.location}" inheritAll="false" target="build">
+            <propertyset>
+                <propertyref name="build.compiler"/>
+            </propertyset>
+        </ant>
+        <ant antfile="${AmtProxyApplet.location}/build.xml" dir="${AmtProxyApplet.location}" inheritAll="false" target="clean"/>
+        <ant antfile="${AmtProxyApplet.location}/build.xml" dir="${AmtProxyApplet.location}" inheritAll="false" target="build">
+            <propertyset>
+                <propertyref name="build.compiler"/>
+            </propertyset>
+        </ant>
+        <ant antfile="${com.larkwoodlabs.net.amt.location}/build.xml" dir="${com.larkwoodlabs.net.amt.location}" inheritAll="false" target="clean"/>
+        <ant antfile="${com.larkwoodlabs.net.amt.location}/build.xml" dir="${com.larkwoodlabs.net.amt.location}" inheritAll="false" target="build">
+            <propertyset>
+                <propertyref name="build.compiler"/>
+            </propertyset>
+        </ant>
+        <ant antfile="${com.larkwoodlabs.net.streaming.location}/build.xml" dir="${com.larkwoodlabs.net.streaming.location}" inheritAll="false" target="clean"/>
+        <ant antfile="${com.larkwoodlabs.net.streaming.location}/build.xml" dir="${com.larkwoodlabs.net.streaming.location}" inheritAll="false" target="build">
+            <propertyset>
+                <propertyref name="build.compiler"/>
+            </propertyset>
+        </ant>
+    </target>
+    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
+        <copy todir="${ant.library.dir}">
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </copy>
+        <unzip dest="${ant.library.dir}">
+            <patternset includes="jdtCompilerAdapter.jar"/>
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </unzip>
+    </target>
+    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
+        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <antcall target="build"/>
+    </target>
+</project>
