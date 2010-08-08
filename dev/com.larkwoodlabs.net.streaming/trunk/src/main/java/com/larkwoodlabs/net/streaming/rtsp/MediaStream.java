@@ -242,7 +242,7 @@ final class MediaStream {
             int serverPort = firstSourcePort;
             for (int j = 0; j < portsPerStream; j++) {
                 PacketSink clientEndpoint = new UdpPacketSink(new InetSocketAddress(preference.isDestinationSpecified() ? preference.getDestination() : remoteAddress, clientPort++));
-                PacketSource serverEndpoint = new MulticastPacketSource(serverPort++, filter, clientEndpoint);
+                PacketSource serverEndpoint = new MulticastPacketSource(serverPort++, this.description.getRelayDiscoveryAddress(), filter, clientEndpoint);
                 this.sources.add(serverEndpoint);
             }
         }

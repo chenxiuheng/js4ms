@@ -43,8 +43,6 @@ final class SDPMediaStreamDescription extends MediaStreamDescription {
     private SessionDescription sessionDescription;
     private MediaDescription mediaDescription;
 
-    private InetAddress relayDiscoveryAddress;
-
 
     /*-- Member Functions ----------------------------------------------------*/
 
@@ -62,7 +60,8 @@ final class SDPMediaStreamDescription extends MediaStreamDescription {
                                      Vector<SourceFilter> filters,
                                      int ttl,
                                      InetAddress relayDiscoveryAddress) throws RtspException {
-        super();
+
+        super(filters, relayDiscoveryAddress);
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "SDPMediaStreamDescription.SDPMediaStreamDescription", sessionDescription));
@@ -70,9 +69,7 @@ final class SDPMediaStreamDescription extends MediaStreamDescription {
             
         this.sessionDescription = sessionDescription;
         this.mediaDescription = mediaDescription;
-        this.filters = filters;
         //this.ttl = ttl;
-        this.relayDiscoveryAddress = relayDiscoveryAddress;
         
         init();
     }

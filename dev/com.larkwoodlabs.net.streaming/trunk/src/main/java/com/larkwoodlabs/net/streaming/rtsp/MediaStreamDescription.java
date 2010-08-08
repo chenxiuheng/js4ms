@@ -16,6 +16,7 @@
 
 package com.larkwoodlabs.net.streaming.rtsp;
 
+import java.net.InetAddress;
 import java.util.Iterator;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -49,6 +50,8 @@ public abstract class MediaStreamDescription {
     
     Vector<SourceFilter> filters = null;
     
+    InetAddress relayDiscoveryAddress;
+
     int firstSourcePort;
     int sourcePortCount;
     
@@ -61,8 +64,12 @@ public abstract class MediaStreamDescription {
      * profile of {@link TransportDescription.Profile#AVP AVP},
      * transport of {@link TransportDescription.Transport#UDP UDP}, and
      * distribution of {@link TransportDescription.Distribution#multicast multicast}.
+     * relay discovery address retrieved from 
      */
-    protected MediaStreamDescription() {
+    protected MediaStreamDescription(final Vector<SourceFilter> filters,
+                                     final InetAddress relayDiscoveryAddress) {
+        this.filters = filters;
+        this.relayDiscoveryAddress = relayDiscoveryAddress;
     }
 
     /**
@@ -136,4 +143,10 @@ public abstract class MediaStreamDescription {
         return this.sourcePortCount;
     }
     
+    /**
+     * Returns the relay discovery address (if any).
+     */
+    public InetAddress getRelayDiscoveryAddress() {
+        return this.relayDiscoveryAddress;
+    }
 }

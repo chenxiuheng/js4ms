@@ -67,7 +67,7 @@ public final class MulticastPacketSource extends PacketSource {
     
     final SourceFilter filter;
     
-    final AmtMulticastEndpoint amtEndpoint;
+    AmtMulticastEndpoint amtEndpoint;
 
     
     /*-- Member Functions ----------------------------------------------------*/
@@ -81,22 +81,62 @@ public final class MulticastPacketSource extends PacketSource {
      * @param outputChannel - The channel that will receive packets as they arrive.
      * @throws IOException - If an I/O error occurred while constructing the multicast endpoint.
      */
+    protected MulticastPacketSource(final SourceFilter filter) throws IOException {
+        super();
+        
+        this.filter = filter;
+        
+    }
+
+    /**
+     * Constructs a packet source for a stream sent to a multicast address.
+     * @param sourcePort - The destination port of the packet stream.
+     * @param filter - A source filter that identifies the any-source multicast (ASM) destination address 
+     *                 or source-specific multicast (SSM) destination address and source host address(es)
+     *                 of the packet stream.
+     * @param outputChannel - The channel that will receive packets as they arrive.
+     * @throws IOException - If an I/O error occurred while constructing the multicast endpoint.
+     */
     public MulticastPacketSource(final int sourcePort,
                                  final SourceFilter filter,
                                  final OutputChannel<ByteBuffer> outputChannel) throws IOException {
-        super();
+        this(filter);
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "MulticastPacketSource.MulticastPacketSource", filter, sourcePort, outputChannel));
         }
 
-        this.filter = filter;
-        
         this.amtEndpoint = new AmtMulticastEndpoint(sourcePort,
                                                     new OutputChannelTransform<UdpDatagram, ByteBuffer>(outputChannel,
                                                                                                         new Transform()));
     }
 
+
+    /**
+     * Constructs a packet source for a stream sent to a multicast address.
+     * @param sourcePort - The destination port of the packet stream.
+     * @param relayDiscoveryAddress - The anycast or unicast address used to access an AMT relay.
+     * @param filter - A source filter that identifies the any-source multicast (ASM) destination address 
+     *                 or source-specific multicast (SSM) destination address and source host address(es)
+     *                 of the packet stream.
+     * @param outputChannel - The channel that will receive packets as they arrive.
+     * @throws IOException - If an I/O error occurred while constructing the multicast endpoint.
+     */
+    public MulticastPacketSource(final int sourcePort,
+                                 final InetAddress relayDiscoveryAddress,
+                                 final SourceFilter filter,
+                                 final OutputChannel<ByteBuffer> outputChannel) throws IOException {
+        this(filter);
+        
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer(Logging.entering(ObjectId, "MulticastPacketSource.MulticastPacketSource", filter, sourcePort, outputChannel));
+        }
+        
+        this.amtEndpoint = new AmtMulticastEndpoint(sourcePort,
+                                                    relayDiscoveryAddress,
+                                                    new OutputChannelTransform<UdpDatagram, ByteBuffer>(outputChannel,
+                                                                                                        new Transform()));
+    }
 
     @Override
     public void doStart() throws IOException {
