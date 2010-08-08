@@ -309,7 +309,7 @@ public final class AmtProxyApplet extends Applet {
         }
     }
     
-    private void setLoggerLevels() {
+    private static void setLoggerLevels() {
         
         Handler[] handlers = Logger.getLogger("").getHandlers();
         for ( int index = 0; index < handlers.length; index++ ) {
@@ -319,13 +319,13 @@ public final class AmtProxyApplet extends Applet {
         }
         
         logger.setLevel(Level.FINER);
-        Server.logger.setLevel(Level.FINER);
-        Logger.getLogger("com.larkwoodlabs.net.streaming.rtsp.ConnectionHandler").setLevel(Level.FINER);
-        Logger.getLogger("com.larkwoodlabs.net.streaming.rtsp.ServerTunnelConnection").setLevel(Level.FINER);
-        Logger.getLogger("com.larkwoodlabs.net.streaming.rtsp.Session").setLevel(Level.FINER);
-        Logger.getLogger("com.larkwoodlabs.net.amt.AmtInterface").setLevel(Level.FINER);
-        Logger.getLogger("com.larkwoodlabs.net.amt.ChannelMembershipManager").setLevel(Level.FINER);
-        Logger.getLogger("com.larkwoodlabs.net.amt.InterfaceMembershipManager").setLevel(Level.FINER);
+        com.larkwoodlabs.net.streaming.rtsp.Server.logger.setLevel(Level.FINER);
+        com.larkwoodlabs.net.streaming.rtsp.ConnectionHandler.logger.setLevel(Level.FINER);
+        com.larkwoodlabs.net.streaming.rtsp.ServerTunnelConnection.logger.setLevel(Level.FINER);
+        com.larkwoodlabs.net.streaming.rtsp.Session.logger.setLevel(Level.FINER);
+        com.larkwoodlabs.net.amt.AmtInterface.logger.setLevel(Level.FINER);
+        com.larkwoodlabs.net.amt.ChannelMembershipManager.logger.setLevel(Level.FINER);
+        com.larkwoodlabs.net.amt.InterfaceMembershipManager.logger.setLevel(Level.FINER);
     }
 
     
