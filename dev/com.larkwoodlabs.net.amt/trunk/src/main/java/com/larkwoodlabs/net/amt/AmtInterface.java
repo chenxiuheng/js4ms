@@ -28,11 +28,11 @@ import com.larkwoodlabs.net.ip.IPPacket;
 import com.larkwoodlabs.net.udp.UdpDatagram;
 import com.larkwoodlabs.util.logging.Logging;
 
-final class AmtInterface {
+public final class AmtInterface {
 
     /*-- Static Variables ----------------------------------------------------*/
 
-    static final Logger logger = Logger.getLogger(AmtInterface.class.getName());
+    public static final Logger logger = Logger.getLogger(AmtInterface.class.getName());
 
 
     /*-- Member Variables ---------------------------------------------------*/

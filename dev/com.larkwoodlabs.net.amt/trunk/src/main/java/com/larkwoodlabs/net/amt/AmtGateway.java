@@ -31,7 +31,7 @@ import com.larkwoodlabs.util.logging.Logging;
  * 
  * @author Gregory Bumgardner
  */
-final class AmtGateway {
+public final class AmtGateway {
 
     /*-- Static Variables ---------------------------------------------------*/
 

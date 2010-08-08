@@ -21,7 +21,6 @@ import java.net.InetAddress;
 import java.util.HashSet;
 import java.util.logging.Logger;
 
-import com.larkwoodlabs.net.Precondition;
 import com.larkwoodlabs.util.logging.Logging;
 
 
@@ -47,6 +46,9 @@ final public class SourceFilter {
 
     /*-- Inner Classes ------------------------------------------------------*/
 
+    /**
+     * An enumeration of filter modes.
+     */
     public enum Mode {
 
         INCLUDE(MODE_IS_INCLUDE),
@@ -67,7 +69,6 @@ final public class SourceFilter {
 
     private final InetAddress groupAddress;
     private SourceFilter.Mode mode;
-    private boolean isSSM;
     
     private HashSet<InetAddress> sources = new HashSet<InetAddress>();
     
@@ -75,17 +76,17 @@ final public class SourceFilter {
     /*-- Member Functions ---------------------------------------------------*/
 
     /**
-     * Constructs a filter with a mode of INCLUDE and an empty source list.
-     * @param groupAddress
+     * Constructs a filter with a mode of {@link Mode#INCLUDE INCLUDE} and an empty source list.
+     * @param groupAddress - The address of the multicast group whose source filter
+     *                       state is described by this object.
      */
     public SourceFilter(final InetAddress groupAddress) {
         this.mode = Mode.INCLUDE;
         this.groupAddress = groupAddress;
-        this.isSSM = Precondition.isSSMMulticastAddress(groupAddress);
     }
 
     /**
-     * 
+     * Logs the values for private members using the specified logger.
      * @param logger
      */
     public void log(final Logger logger) {
@@ -99,7 +100,7 @@ final public class SourceFilter {
     }
 
     /**
-     * 
+     * Returns the current {@link SourceFilter.Mode Mode}.
      * @return
      */
     public SourceFilter.Mode getMode() {
@@ -107,49 +108,47 @@ final public class SourceFilter {
     }
 
     /**
-     * 
-     * @param mode
+     * Sets the filter {@link SourceFilter.Mode Mode}.
+     * @param mode - The new filter mode.
      */
     public void setMode(final SourceFilter.Mode mode) {
         this.mode = mode;
     }
 
     /**
-     * 
-     * @return
+     * Returns the address of the multicast group whose filter state is
+     * described by this object.
      */
     public InetAddress getGroupAddress() {
         return this.groupAddress;
     }
 
     /**
-     * 
-     * @return
+     * Returns a reference to the current source list.
      */
     public HashSet<InetAddress> getSourceSet() {
         return this.sources;
     }
 
     /**
-     * 
-     * @param newSourceSet
+     * Replaces the current source list with a new source list.
+     * @param newSourceSet - The new source list.
      */
     public void setSourceSet(final HashSet<InetAddress> newSourceSet) {
         this.sources = newSourceSet;
     }
 
     /**
-     * 
-     * @return
+     * Returns <code>true</code> if the filter's source list is empty. 
      */
     public boolean isEmpty() {
         return this.sources.isEmpty();
     }
 
     /**
-     * 
-     * @param sourceAddress
-     * @return
+     * Indicates whether the specified source address is excluded based on the
+     * current state of the filter.
+     * @param sourceAddress - The source address to check.
      */
     public boolean isExcluded(final InetAddress sourceAddress) {
         return (this.mode == Mode.EXCLUDE && this.sources.contains(sourceAddress)) ||
@@ -157,9 +156,9 @@ final public class SourceFilter {
     }
 
     /**
-     * 
-     * @param sourceAddress
-     * @return
+     * Indicates whether the specified source address is included based on the
+     * current state of the filter.
+     * @param sourceAddress - The source address to check.
      */
     public boolean isIncluded(final InetAddress sourceAddress) {
         return (this.mode == Mode.INCLUDE && this.sources.contains(sourceAddress)) ||
@@ -226,7 +225,7 @@ final public class SourceFilter {
             this.mode = Mode.INCLUDE;
             this.sources.clear();
         }
-        else if (this.isSSM) {
+        else if (!isEmpty()) {
             this.sources.clear();
         }
         else {
@@ -236,9 +235,10 @@ final public class SourceFilter {
     }
 
     /**
-     * 
-     * @param sourceAddress
-     * @throws IOException
+     * Adds the specified source address to the source list to indicate
+     * an SSM join for the source and source filter group.
+     * @param sourceAddress - The source address component of an (S,G) pair to be added to this filter.
+     * @throws IOException If the specified source address is already contained in the filter source list.
      */
     public void join(final InetAddress sourceAddress) throws IOException {
         if (!this.sources.contains(sourceAddress)) {
@@ -250,9 +250,10 @@ final public class SourceFilter {
     }
     
     /**
-     * 
-     * @param sourceAddress
-     * @throws IOException
+     * Removes the specified source address from the source list to indicate
+     * an SSM leave for the source and source filter group.
+     * @param sourceAddress - The source address component of an (S,G) pair to be removed from this filter.
+     * @throws IOException If the specified source address is not contained in the filter source list.
      */
     public void leave(final InetAddress sourceAddress) throws IOException {
         if (this.sources.contains(sourceAddress)) {

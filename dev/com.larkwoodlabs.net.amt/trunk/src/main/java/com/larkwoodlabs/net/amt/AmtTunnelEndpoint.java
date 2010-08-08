@@ -37,7 +37,7 @@ import com.larkwoodlabs.net.udp.UdpOutputChannel;
 import com.larkwoodlabs.net.udp.UdpSocketEndpoint;
 import com.larkwoodlabs.util.logging.Logging;
 
-final class AmtTunnelEndpoint implements Runnable {
+public final class AmtTunnelEndpoint implements Runnable {
 
         /*-- Static Variables ---------------------------------------------------*/
     

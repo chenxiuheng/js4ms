@@ -29,12 +29,12 @@ import com.larkwoodlabs.channels.OutputChannel;
 import com.larkwoodlabs.util.logging.LoggableBase;
 import com.larkwoodlabs.util.logging.Logging;
 
-final class InterfaceMembershipManager
+public final class InterfaceMembershipManager
             extends LoggableBase {
 
     /*-- Static Variables ---------------------------------------------------*/
 
-    static final Logger logger = Logger.getLogger(InterfaceMembershipManager.class.getName());
+    public static final Logger logger = Logger.getLogger(InterfaceMembershipManager.class.getName());
 
 
     /*-- Member Variables ---------------------------------------------------*/
