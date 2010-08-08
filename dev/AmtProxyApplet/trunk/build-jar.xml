@@ -1,0 +1,114 @@
+<?eclipse.ant.import?>
+<project>
+    <property name="version.major" value="0"/>
+    <property name="version.minor" value="0"/>
+    <property name="version.maint" value="1"/>
+    <property name="applet.name" value="AmtProxyApplet"/>
+    <property name="applet.class" value="${applet.name}"/>
+    <property name="applet.jar" value="${applet.name}.jar"/>
+    <property name="dist.dir" value="./www"/>
+    <property name="codebase" value=""/>
+    <property name="homepage" value=""/>
+    <property name="vendor" value="Cisco"/>
+    <property name="description" value="AMT Proxy Applet"/>
+    <property name="AC_QuickTime.location" value="../AC_QuickTime"/>
+    <property name="deployJava.location" value="../deployJava"/>
+
+    <target name="jar" description="constructs jar file" depends="build">
+        <tstamp/>
+        <buildnumber file="build.number"/>
+        <property name="applet.version" value="${version.major}.${version.minor}.${version.maint}.${build.number}"/>
+
+        <delete file="${dist.dir}/${applet.jar}"/>
+  
+		<jar destfile="${dist.dir}/${applet.jar}">
+			<fileset dir="${com.larkwoodlabs.util.logging.location}/bin">
+				<include name="**/*.class" />
+				<exclude name="**/test/*.class" />
+			</fileset>
+			<fileset dir="${com.larkwoodlabs.common.location}/bin">
+				<include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+			</fileset>
+			<fileset dir="${com.larkwoodlabs.util.buffer.location}/bin">
+				<include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+			</fileset>
+			<fileset dir="${com.larkwoodlabs.net.location}/bin">
+				<include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+			</fileset>
+			<fileset dir="${com.larkwoodlabs.channels.location}/bin">
+				<include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+			</fileset>
+			<fileset dir="${com.larkwoodlabs.net.udp.location}/bin">
+				<include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+			</fileset>
+			<fileset dir="${com.larkwoodlabs.util.location}/bin">
+				<include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+			</fileset>
+			<fileset dir="${com.larkwoodlabs.io.location}/bin">
+				<include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+			</fileset>
+			<fileset dir="${com.larkwoodlabs.net.ip.location}/bin">
+				<include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+			</fileset>
+			<fileset dir="${com.larkwoodlabs.util.task.location}/bin">
+				<include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+			</fileset>
+			<fileset dir="${com.larkwoodlabs.net.amt.location}/bin">
+				<include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+			</fileset>
+			<fileset dir="${com.larkwoodlabs.net.streaming.location}/bin">
+				<include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+			</fileset>
+            <fileset dir="bin">
+                <include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+            </fileset>
+            <manifest>
+                <attribute name="Main-Class" value="${applet.class}"/>
+                <attribute name="Built-By" value="${user.name}"/>
+                <attribute name="Implementation-Vendor" value="${vendor}"/>
+                <attribute name="Implementation-Title" value="${applet.name}"/>
+                <attribute name="Implementation-Version" value="${applet.version}_${DSTAMP}"/> 
+            </manifest>
+        </jar>
+
+        <delete file="${dist.dir}/${applet.name}.jnlp"/>
+        <copy file="${applet.name}.jnlp" toFile="${dist.dir}/${applet.name}.jnlp">
+            <filterset>
+                <filter token="APPLET_VERSION" value="${applet.version}"/>
+            </filterset>
+        </copy>
+    </target>
+
+    <target name="signJarForTesting" description="signs jar file for testing" depends="jar">
+        <copy file="${jars-jain-sdp.location}/ext/jain-sdp-1.0.100.jar" toDir="${dist.dir}"/>
+        <signjar jar="${dist.dir}/${applet.jar}" keystore="keystore" storepass="testpass" alias="testkey"/>
+        <signjar jar="${dist.dir}/jain-sdp-1.0.100.jar" keystore="keystore" storepass="testpass" alias="testkey" />
+    </target>
+    
+    <target name="signJarForDeployment" description="signs jar file for deployment" depends="jar">
+        <copy file="${jars-jain-sdp.location}/ext/jain-sdp-1.0.100.jar" toDir="${dist.dir}"/>
+        <input message="Please enter keystore file path:" addproperty="keystore"/>
+        <input message="Please enter keystore password:" addproperty="keypass"/>
+        <input message="Please enter key name:" addproperty="alias"/>
+        <signjar jar="${dist.dir}/${applet.jar}" keystore="${keystore}" storepass="${keypass}" alias="${alias}" />
+        <signjar jar="${dist.dir}/jain-sdp-1.0.100.jar" keystore="${keystore}" storepass="${keypass}" alias="${alias}" />
+    </target>
+
+    <target name="deployForTesting" description="deploy files to web directory for testing" depends="signJarForTesting">
+        <copy file="${AC_QuickTime.location}/ext/AC_QuickTime.js" toDir="${dist.dir}"/>
+        <copy file="${deployJava.location}/ext/deployJava.js" toDir="${dist.dir}"/>
+    </target>
+
+</project>

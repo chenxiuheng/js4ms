@@ -12,7 +12,7 @@
     <resources>
         <!-- Application Resources -->
         <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se" />
-        <jar href="AmtProxyApplet.jar" version="0.0.1.55" main="true"/>
+        <jar href="AmtProxyApplet.jar" version="@APPLET_VERSION@" main="true"/>
         <jar href="jain-sdp-1.0.100.jar"/>
     </resources>
     <applet-desc 
@@ -20,5 +20,5 @@
          main-class="AmtProxyApplet"
          width="1"
          height="1">
-     </applet-desc>
+    </applet-desc>
 </jnlp>         
