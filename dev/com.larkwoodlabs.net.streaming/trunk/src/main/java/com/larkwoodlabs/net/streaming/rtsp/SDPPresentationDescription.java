@@ -21,6 +21,8 @@ import gov.nist.javax.sdp.fields.ConnectionAddress;
 import gov.nist.javax.sdp.fields.ConnectionField;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -65,9 +67,46 @@ final class SDPPresentationDescription extends PresentationDescription {
 
         @Override
         public boolean constructs(URI uri) throws RtspException {
-            return uri.getScheme().equals("http") && uri.getPath().endsWith(".sdp");
+            String scheme = uri.getScheme();
+            return (scheme.equals("http") || scheme.equals("file")) && uri.getPath().endsWith(".sdp");
         }
         
+        public PresentationDescription construct(URI uri, InputStream inputStream) throws RtspException, IOException {
+
+            final String ObjectId = "[ static ]";
+
+            StringBuilder sb = new StringBuilder();
+            String line;
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine(" ----> Server-side SDP");
+                while ((line = reader.readLine()) != null) {
+                    logger.fine(" : " + line);
+                    sb.append(line).append("\r\n");
+                }
+                logger.fine(" <---- Server-side SDP");
+            }
+            else {
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line).append("\r\n");
+                }
+            }
+
+            SessionDescription sessionDescription;
+
+            try {
+                sessionDescription = SdpFactory.getInstance().createSessionDescription(sb.toString());
+                return new SDPPresentationDescription(uri, /*lastModified,*/ sessionDescription);
+            }
+            catch (SdpParseException e) {
+                throw RtspException.create(StatusCode.BadRequest,
+                                           "cannot parse session description - " + e.getMessage(),
+                                           ObjectId, logger);
+            }
+        }
+
         @Override
         public PresentationDescription construct(URI uri) throws RtspException {
 
@@ -75,20 +114,19 @@ final class SDPPresentationDescription extends PresentationDescription {
 
             // TODO: Add capability to fetch SDP from an RTSP server. Requires RTSP client implementation.
             
-            if (uri.getScheme().equals("http")) {
-                // Fetch file from web server
-                String path = uri.getPath();
-                if (path != null && path.endsWith(".sdp")) {
-                                        
+            // Fetch file from web server
+            String path = uri.getPath();
+            if (path != null && path.endsWith(".sdp")) {
+                                    
+                if (uri.getScheme().equals("http")) {
                     try {
-                        String resourceUrl = uri.toString();
-                        HttpURLConnection urlConnection = ((HttpURLConnection)new URL(resourceUrl).openConnection());
+                        HttpURLConnection urlConnection = ((HttpURLConnection)uri.toURL().openConnection());
                         if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-    
+
                             // TODO: String lastModified = urlConnection.getHeaderField(Header.Last_Modified);
-    
+
                             int contentLength = urlConnection.getContentLength();
-    
+
                             if (contentLength == -1) {
                                 // TODO;
                                 throw RtspException.create(StatusCode.BadRequest,
@@ -100,34 +138,8 @@ final class SDPPresentationDescription extends PresentationDescription {
 
                                 InputStream inputStream = new FixedLengthInputStream(urlConnection.getInputStream(), contentLength);
         
-                                StringBuilder sb = new StringBuilder();
-                                String line;
                                 try {
-                                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
-                                    if (logger.isLoggable(Level.FINE)) {
-                                        logger.fine(" ----> Server-side SDP");
-                                        while ((line = reader.readLine()) != null) {
-                                            logger.fine(" : " + line);
-                                            sb.append(line).append("\r\n");
-                                        }
-                                        logger.fine(" <---- Server-side SDP");
-                                    }
-                                    else {
-                                        while ((line = reader.readLine()) != null) {
-                                            sb.append(line).append("\r\n");
-                                        }
-                                    }
-                                    SessionDescription sessionDescription;
-    
-                                    try {
-                                        sessionDescription = SdpFactory.getInstance().createSessionDescription(sb.toString());
-                                        return new SDPPresentationDescription(uri, /*lastModified,*/ sessionDescription);
-                                    }
-                                    catch (SdpParseException e) {
-                                        throw RtspException.create(StatusCode.BadRequest,
-                                                                   "cannot parse session description - " + e.getMessage(),
-                                                                   ObjectId, logger);
-                                    }
+                                    return construct(uri, inputStream);
                                 }
                                 finally {
                                     inputStream.close();
@@ -141,14 +153,26 @@ final class SDPPresentationDescription extends PresentationDescription {
                         }
                     }
                     catch (ConnectException e) {
-                        throw RtspException.create(StatusCode.NotFound, "cannot fetch session description - " + e.getMessage() + ":" + e.getMessage(), ObjectId, logger);
+                        throw RtspException.create(StatusCode.NotFound, "cannot fetch session description - " + e.getMessage(), ObjectId, logger);
                     }
                     catch (IOException e) { 
                         // GET failed
-                        // TODO: throw RtspException with something?
+                        throw RtspException.create(StatusCode.ServerError, "cannot read session description - " + e.getClass().getSimpleName() + ": " + e.getMessage(), ObjectId, logger);
                     }
-
                 }
+                else if (uri.getScheme().equals("file")) {
+                    try {
+                        InputStream inputStream = new FileInputStream(uri.getSchemeSpecificPart());
+                        return construct(uri, inputStream);
+                    }
+                    catch (FileNotFoundException e) {
+                        throw RtspException.create(StatusCode.NotFound, "cannot read session description - file not found : " + e.getMessage(), ObjectId, logger);
+                    }
+                    catch (IOException e) {
+                        throw RtspException.create(StatusCode.ServerError, "cannot read session description - " + e.getClass().getSimpleName() + ": " + e.getMessage(), ObjectId, logger);
+                    }
+                }
+
             }
 
             logger.fine(Logging.identify(Presentation.class) + " the URI specified in the request cannot be used to fetch an SDP description");
