@@ -33,11 +33,6 @@ import com.larkwoodlabs.util.logging.Logging;
  */
 public class SocketConnection extends Connection {
 
-    /*-- Static Variables ----------------------------------------------------*/
-
-    public static final Logger logger = Logger.getLogger(SocketConnection.class.getName());
-
-
     /*-- Member Variables ----------------------------------------------------*/
 
     final Socket socket;
