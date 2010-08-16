@@ -124,13 +124,15 @@ public class ServerConnectionHandler extends ConnectionHandler {
             else if (path.equals("/status")) {
                 handleStatusRequest(request, response);
             }
+            else if (path.equals("/action")) {
+                handleActionRequest(request, response);
+            }
             else {
                 response.setStatusCode(StatusCode.Forbidden);
                 response.setHeader(new Header(Header.CONTENT_LENGTH,"0"));
                 response.addHeader(Header.CONNECTION_IS_CLOSE);
+                sendResponse(response);
             }
-
-            sendResponse(response);
         }
         else if (accept.getValue().contains(MimeType.application.x_rtsp_tunnelled)) {
             // Setup Server-Client tunnel
@@ -173,8 +175,9 @@ public class ServerConnectionHandler extends ConnectionHandler {
      * Typically used to check whether the RTSP server is running.
      * @param request - An HTTP GET request with a URL containing the path "<code>/echo</code>" followed by a query string.
      * @param response - An HTTP response whose entity will be set to the requested echo string.
+     * @throws IOException 
      */
-    void handleEchoRequest(Request request, Response response) {
+    void handleEchoRequest(Request request, Response response) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "ServerConnectionHandler.handleEchoRequest", request, response));
@@ -198,6 +201,8 @@ public class ServerConnectionHandler extends ConnectionHandler {
         else {
             response.setHeader(new Header(Header.CONTENT_LENGTH,"0"));
         }
+
+        sendResponse(response);
     }
 
     /**
@@ -214,6 +219,11 @@ public class ServerConnectionHandler extends ConnectionHandler {
      * @throws IOException
      */
     void handleStatusRequest(Request request, Response response) throws IOException {
+
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer(Logging.entering(ObjectId, "ServerConnectionHandler.handleStatusRequest", request, response));
+        }
+
         URI uri = request.getRequestLine().getUri();
         String query = uri.getQuery();
         if (query == null || query.length() == 0) {
@@ -247,6 +257,51 @@ public class ServerConnectionHandler extends ConnectionHandler {
         response.addHeader(new Header(Header.CONTENT_TYPE, MimeType.text.javascript));
         
         response.setEntity(new StringEntity(callbackFuncName+"({'time':'"+(new Date().getTime()) + "'});\n"));
+
+        sendResponse(response);
+    }
+
+    public void handleActionRequest(Request request, Response response) throws IOException {
+
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer(Logging.entering(ObjectId, "ServerConnectionHandler.handleActionRequest", request, response));
+        }
+
+        URI uri = request.getRequestLine().getUri();
+        String query = uri.getQuery();
+        if (query == null || query.length() == 0) {
+            response.setStatus(StatusCode.BadRequest,"query string for action request cannot be empty");
+            return;
+        }
+
+        String[] parameters = query.split("&");
+        for (String parameter : parameters) {
+
+            String action = null;
+            String[] arguments = null;
+
+            if (parameter.indexOf("=") != -1) {
+                String[] pair = parameter.split("=");
+                action = pair[0];
+                if (pair.length == 2) {
+                    arguments = pair[1].split(",");
+                }
+            }
+            else {
+                action = parameter;
+            }
+
+            if (action.equals("shutdown")) {
+                response.setEntity(new StringEntity(new Date().toString()+": shutting down RTSP relay..."));
+                sendResponse(response);
+                this.server.stop();
+            }
+            else {
+                response.setStatus(StatusCode.BadRequest,"unrecognized action '"+action+"'");
+                sendResponse(response);
+            }
+            break;
+        }
     }
 
     /**
