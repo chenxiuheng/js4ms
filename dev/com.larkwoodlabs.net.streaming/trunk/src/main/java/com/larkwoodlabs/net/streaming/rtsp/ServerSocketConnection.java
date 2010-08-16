@@ -52,8 +52,11 @@ public class ServerSocketConnection extends SocketConnection {
             logger.finer(Logging.entering(ObjectId, "ServerSocketConnection.close"));
         }
 
-        super.close();
-
-        this.server.removeConnection(this);
+        try {
+            super.close();
+        }
+        finally {
+            this.server.removeConnection(this);
+        }
     }
 }
