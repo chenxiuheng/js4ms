@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp spec="1.0+" href="$$name" codebase="$$codebase">
+  <information>
+    <title>@TITLE@</title>
+    <vendor>@VENDOR@</vendor>
+    <description>@DESCRIPTION@</description>
+  </information>
+  <offline-allowed/>
+  <security>
+    <all-permissions/>
+  </security>
+  <resources>
+    <j2se version="1.6.0_10+" href="http://java.sun.com/products/autodl/j2se" />
+    <jar href="@JAR_FILE@" version="@JAR_VERSION@" main="true"/>
+    <jar href="jain-sdp-1.0.100.jar"/>
+    <property name="jnlp.versionEnabled" value="true"/>
+  </resources>
+  <application-desc main-class="@MAIN_CLASS@" />
+</jnlp>

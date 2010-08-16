@@ -1,0 +1,87 @@
+<?eclipse.ant.import?>
+<project>
+
+	<property file="app.properties" />
+
+	<import file="gen-version.xml" />
+	
+	<target name="build-jar" description="builds jar file" depends="gen-version">
+
+        <property name="app.jar.name" value="${app.name}.jar"/>
+        <property name="app.jar.file" value="${app.name}__V${app.version}.jar"/>
+
+		<!-- Delete all existing versions of the jar file -->
+        <delete>
+        	<fileset dir="WebContent" includes="${app.name}*.jar"/>
+     	</delete>
+  
+		<jar destfile="WebContent/${app.jar.file}">
+			<fileset dir="${com.larkwoodlabs.util.logging.location}/bin">
+				<include name="**/*.class" />
+				<exclude name="**/test/*.class" />
+			</fileset>
+			<fileset dir="${com.larkwoodlabs.common.location}/bin">
+				<include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+			</fileset>
+			<fileset dir="${com.larkwoodlabs.util.buffer.location}/bin">
+				<include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+			</fileset>
+			<fileset dir="${com.larkwoodlabs.net.location}/bin">
+				<include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+			</fileset>
+			<fileset dir="${com.larkwoodlabs.channels.location}/bin">
+				<include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+			</fileset>
+			<fileset dir="${com.larkwoodlabs.net.udp.location}/bin">
+				<include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+			</fileset>
+			<fileset dir="${com.larkwoodlabs.util.location}/bin">
+				<include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+			</fileset>
+			<fileset dir="${com.larkwoodlabs.io.location}/bin">
+				<include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+			</fileset>
+			<fileset dir="${com.larkwoodlabs.net.ip.location}/bin">
+				<include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+			</fileset>
+			<fileset dir="${com.larkwoodlabs.util.task.location}/bin">
+				<include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+			</fileset>
+			<fileset dir="${com.larkwoodlabs.net.amt.location}/bin">
+				<include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+			</fileset>
+			<fileset dir="${com.larkwoodlabs.net.streaming.location}/bin">
+				<include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+			</fileset>
+            <fileset dir="${com.larkwoodlabs.RtspMulticastRelayApp.location}/bin">
+                <include name="**/*.class" />
+            </fileset>
+            <manifest>
+                <attribute name="Main-Class" value="${app.class}"/>
+                <attribute name="Built-By" value="${user.name}"/>
+                <attribute name="Implementation-Vendor" value="${app.vendor}"/>
+                <attribute name="Implementation-Title" value="${app.name}"/>
+                <attribute name="Implementation-Version" value="${app.version}"/> 
+            </manifest>
+        </jar>
+
+    </target>
+
+	<target name="clean-jar">
+        <delete>
+            <fileset dir="WebContent" includes="*.jar"/>
+        </delete>
+	</target>
+
+</project>

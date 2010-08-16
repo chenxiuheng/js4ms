@@ -1,0 +1,29 @@
+<?eclipse.ant.import?>
+<project>
+
+    <import file="build-jar.xml" />
+
+    <property name="jnlp.file" value="${app.class}.jnlp" />
+
+	<target name="build-jnlp" depends="build-jar">
+
+        <delete file="WebContent/${jnlp.file}"/>
+        
+        <copy file="template.jnlp" toFile="WebContent/${jnlp.file}">
+            <filterset>
+                <filter token="TITLE" value="${app.title}"/>
+                <filter token="VENDOR" value="${app.vendor}"/>
+                <filter token="DESCRIPTION" value="${app.description}"/>
+                <filter token="JAR_FILE" value="${app.jar.name}"/>
+                <filter token="JAR_VERSION" value="${app.version}"/>
+                <filter token="MAIN_CLASS" value="${app.package}.${app.class}"/>
+            </filterset>
+        </copy>
+
+    </target>
+
+    <target name="clean-jnlp">
+        <delete file="WebContent/${jnlp.file}" />
+    </target>
+
+</project>

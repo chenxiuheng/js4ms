@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="build" name="RtspMulticastRelayApp">
+
+	<property environment="env"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+
+    <property name="com.larkwoodlabs.common.location" value="../com.larkwoodlabs.common"/>
+    <property name="com.larkwoodlabs.util.location" value="../com.larkwoodlabs.util"/>
+    <property name="com.larkwoodlabs.io.location" value="../com.larkwoodlabs.io"/>
+    <property name="com.larkwoodlabs.util.logging.location" value="../com.larkwoodlabs.util.logging"/>
+    <property name="com.larkwoodlabs.util.buffer.location" value="../com.larkwoodlabs.util.buffer"/>
+    <property name="com.larkwoodlabs.net.location" value="../com.larkwoodlabs.net"/>
+    <property name="com.larkwoodlabs.net.ip.location" value="../com.larkwoodlabs.net.ip"/>
+    <property name="com.larkwoodlabs.channels.location" value="../com.larkwoodlabs.channels"/>
+    <property name="com.larkwoodlabs.net.udp.location" value="../com.larkwoodlabs.net.udp"/>
+    <property name="com.larkwoodlabs.util.task.location" value="../com.larkwoodlabs.util.task"/>
+    <property name="com.larkwoodlabs.net.amt.location" value="../com.larkwoodlabs.net.amt"/>
+    <property name="com.larkwoodlabs.net.streaming.location" value="../com.larkwoodlabs.net.streaming"/>
+    <property name="com.larkwoodlabs.RtspMulticastRelayApp.location" value="../com.larkwoodlabs.RtspMulticastRelayApp"/>
+    <property name="jars-jain-sdp.location" value="../jars-jain-sdp"/>
+
+	<import file="deploy-war.xml"/>
+
+	<target name="init"></target>
+
+	<target name="clean" depends="clean-war,clean-jnlp,clean-jar"></target>
+
+	<target name="cleanall" depends="clean"></target>
+
+	<target name="build" depends="build-war"/>
+	
+    <target name="deploy" depends="deploy-war"/>
+
+</project>

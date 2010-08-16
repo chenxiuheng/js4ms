@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre1.6.0_05">
+		<attributes>
+			<attribute name="owner.project.facets" value="java"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.larkwoodlabs.channels"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.larkwoodlabs.common"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.larkwoodlabs.io"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.larkwoodlabs.net"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.larkwoodlabs.net.amt"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.larkwoodlabs.net.ip"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.larkwoodlabs.net.streaming"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.larkwoodlabs.net.udp"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.larkwoodlabs.util"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.larkwoodlabs.util.buffer"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.larkwoodlabs.util.logging"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.larkwoodlabs.util.task"/>
+	<classpathentry kind="var" path="JAVAWS_JAR"/>
+	<classpathentry kind="lib" path="/jars-jain-sdp/ext/jain-sdp-1.0.100.jar"/>
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>
