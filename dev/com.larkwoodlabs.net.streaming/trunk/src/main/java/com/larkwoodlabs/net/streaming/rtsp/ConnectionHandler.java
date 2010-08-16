@@ -128,7 +128,6 @@ public abstract class ConnectionHandler
             if (logger.isLoggable(Level.FINE)) {
                 logger.fine(ObjectId + " connection handler exiting for " + e.getClass().getName() + ": " + e.getMessage());
             }
-            return;
         }
         catch (SocketException e) {
             // The connection socket was closed by another thread while this thread was waiting on I/O.
