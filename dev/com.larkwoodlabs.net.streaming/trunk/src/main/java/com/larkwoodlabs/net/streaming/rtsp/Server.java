@@ -28,9 +28,11 @@ import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.larkwoodlabs.util.logging.LogFormatter;
 import com.larkwoodlabs.util.logging.Logging;
 
 /**
@@ -146,7 +148,12 @@ public final class Server implements Runnable {
     private final ExecutorService threadPool;
     
     private final Properties configuration;
+
+    private Object lock = new Object();
     
+    private Object notifier = new Object();
+    
+    private boolean isRunning = false;
 
     /*-- Member Functions ----------------------------------------------------*/
 
@@ -167,7 +174,7 @@ public final class Server implements Runnable {
         this.threadPool = Executors.newCachedThreadPool(new ThreadFactory() {
             public Thread newThread(Runnable r) {
                 Thread t = new Thread(r);
-                t.setDaemon(true);
+                //t.setDaemon(true);
                 return t;
             }
         });
@@ -190,11 +197,27 @@ public final class Server implements Runnable {
      */
     public void start() throws IOException {
 
-        if (this.serverSocket == null) {
-            bind();
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer(Logging.entering(ObjectId, "Server.start"));
         }
+
+        synchronized(this.lock) {
+
+            if (!this.isRunning) {
         
-        execute(this);
+                if (logger.isLoggable(Level.INFO)) {
+                    logger.info(ObjectId + " starting server");
+                }
+        
+                this.isRunning = true;
+
+                if (this.serverSocket == null) {
+                    bind();
+                }
+                
+                execute(this);
+            }
+        }
     }
 
     /**
@@ -204,10 +227,10 @@ public final class Server implements Runnable {
     public void run() {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "RtspServer.run"));
+            logger.finer(Logging.entering(ObjectId, "Server.run"));
         }
 
-        while (!Thread.currentThread().isInterrupted()) {
+        while (this.isRunning) {
 
             Socket socket;
             try {
@@ -220,7 +243,9 @@ public final class Server implements Runnable {
             }
             catch (IOException e) {
                 if (this.serverSocket == null || this.serverSocket.isClosed()) {
-                    logger.info(ObjectId + " server socket closed");
+                    if (logger.isLoggable(Level.FINE)) {
+                        logger.fine(ObjectId + " server socket closed");
+                    }
                 }
                 else {
                     logger.warning(ObjectId + " cannot accept client connection - " + e.getClass().getName() + ":" + e.getMessage());
@@ -233,11 +258,11 @@ public final class Server implements Runnable {
                 break;
             }
 
-            if (!Thread.currentThread().isInterrupted()) {
+            if (this.isRunning) {
 
-                if (logger.isLoggable(Level.FINE)) {
-                    logger.fine(ObjectId +
-                                " incoming connection from " +
+                if (logger.isLoggable(Level.INFO)) {
+                    logger.info(ObjectId +
+                                " accepting incoming connection from " +
                                 Logging.address(socket.getInetAddress()));
                 }
                 
@@ -267,7 +292,13 @@ public final class Server implements Runnable {
         }
 
         if (logger.isLoggable(Level.FINE)) {
-            logger.fine(ObjectId + " closing open client connections...");
+            logger.fine(ObjectId + " canceling timer tasks...");
+        }
+
+        this.taskTimer.cancel();
+
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine(ObjectId + " closing open client sessions...");
         }
         
         synchronized (this.sessions) {
@@ -286,6 +317,10 @@ public final class Server implements Runnable {
             this.sessions.clear();
         }
 
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine(ObjectId + " closing open client connections...");
+        }
+        
         synchronized (this.connections) {
 
             // Copy to avoid concurrent modification
@@ -302,9 +337,13 @@ public final class Server implements Runnable {
             }
             this.connections.clear();
         }
-
-        if (logger.isLoggable(Level.FINER)) {
-            logger.finer(ObjectId + " exiting Server thread");
+        
+        if (logger.isLoggable(Level.INFO)) {
+            logger.info(ObjectId + " server stopped");
+        }
+        
+        synchronized (this.notifier) {
+            this.notifier.notifyAll();
         }
     }
 
@@ -312,16 +351,48 @@ public final class Server implements Runnable {
      * Stops the server.
      */
     public void stop() {
-        try {
-            if (this.serverSocket != null) {
-                this.serverSocket.close();
-                this.serverSocket = null;
-            }
-            this.threadPool.shutdownNow();
+
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer(Logging.entering(ObjectId, "Server.stop"));
         }
-        catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        
+        synchronized (this.lock) {
+    
+            if (this.isRunning) {
+                
+                if (logger.isLoggable(Level.INFO)) {
+                    logger.info(ObjectId + " stopping server...");
+                }
+                
+                this.isRunning = false;
+        
+                if (this.serverSocket != null) {
+                    try {
+                        this.serverSocket.close();
+                    }
+                    catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                    this.serverSocket = null;
+                }
+        
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine(ObjectId + " shutting down thread pool...");
+                }
+        
+                this.threadPool.shutdownNow();
+            }
+        }
+    }
+    
+    /**
+     * Waits for the server to shutdown.
+     * @throws InterruptedException 
+     */
+    public void waitForShutdown() throws InterruptedException {
+        synchronized (this.notifier) {
+            this.notifier.wait();
         }
     }
 
@@ -447,4 +518,40 @@ public final class Server implements Runnable {
         }
     }
     
+    public static void main(final String[] args) {
+        
+        Handler[] handlers = Logger.getLogger("").getHandlers();
+        for ( int index = 0; index < handlers.length; index++ ) {
+            handlers[index].setLevel(Level.FINER);
+            handlers[index].setFormatter(new LogFormatter());
+        }
+        
+        logger.setLevel(Level.FINER);
+        com.larkwoodlabs.net.streaming.rtsp.Server.logger.setLevel(Level.FINER);
+        com.larkwoodlabs.net.streaming.rtsp.ConnectionHandler.logger.setLevel(Level.FINER);
+        com.larkwoodlabs.net.streaming.rtsp.Connection.logger.setLevel(Level.FINER);
+        com.larkwoodlabs.net.streaming.rtsp.Session.logger.setLevel(Level.FINER);
+        com.larkwoodlabs.net.amt.AmtInterface.logger.setLevel(Level.FINER);
+        com.larkwoodlabs.net.amt.ChannelMembershipManager.logger.setLevel(Level.FINER);
+        com.larkwoodlabs.net.amt.InterfaceMembershipManager.logger.setLevel(Level.FINER);
+        
+        try {
+            final Server server = Server.create(args.length > 0 ? args[0] : "");
+
+            Runtime.getRuntime().addShutdownHook(new Thread() {
+                @Override
+                public void run() {
+                    server.stop();
+                }
+            });
+            
+            server.start();
+        }
+        catch (IOException e) {
+            logger.severe("server initialization failed - " + e.getClass().getName() + ":" + e.getMessage());
+            e.printStackTrace();
+            System.exit(-1);
+        }
+
+    }
 }
