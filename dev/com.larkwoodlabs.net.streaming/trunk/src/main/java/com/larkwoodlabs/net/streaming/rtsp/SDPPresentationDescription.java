@@ -30,7 +30,7 @@ import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.URI;
-import java.net.URL;
+import java.net.URLDecoder;
 import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.StringTokenizer;
@@ -75,6 +75,13 @@ final class SDPPresentationDescription extends PresentationDescription {
 
             final String ObjectId = "[ static ]";
 
+            if (logger.isLoggable(Level.FINER)) {
+                logger.finer(Logging.entering(ObjectId,
+                                              "SDPPresentationDescription.construct",
+                                              uri.toString(),
+                                              inputStream));
+            }
+
             StringBuilder sb = new StringBuilder();
             String line;
 
@@ -110,7 +117,13 @@ final class SDPPresentationDescription extends PresentationDescription {
         @Override
         public PresentationDescription construct(URI uri) throws RtspException {
 
-            final String ObjectId = "[ static ]";
+            final String ObjectId = "[  static  ]";
+
+            if (logger.isLoggable(Level.FINER)) {
+                logger.finer(Logging.entering(ObjectId,
+                                              "SDPPresentationDescription.construct",
+                                              uri.toString()));
+            }
 
             // TODO: Add capability to fetch SDP from an RTSP server. Requires RTSP client implementation.
             
@@ -118,6 +131,10 @@ final class SDPPresentationDescription extends PresentationDescription {
             String path = uri.getPath();
             if (path != null && path.endsWith(".sdp")) {
                                     
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine(ObjectId + " fetching SDP from " + path);
+                }
+
                 if (uri.getScheme().equals("http")) {
                     try {
                         HttpURLConnection urlConnection = ((HttpURLConnection)uri.toURL().openConnection());
@@ -162,7 +179,7 @@ final class SDPPresentationDescription extends PresentationDescription {
                 }
                 else if (uri.getScheme().equals("file")) {
                     try {
-                        InputStream inputStream = new FileInputStream(uri.getSchemeSpecificPart());
+                        InputStream inputStream = new FileInputStream(URLDecoder.decode(uri.getSchemeSpecificPart(),"UTF8"));
                         return construct(uri, inputStream);
                     }
                     catch (FileNotFoundException e) {

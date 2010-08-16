@@ -192,7 +192,7 @@ public class Service {
 
             URI presentationUri;
             try {
-                presentationUri = new URI(query);
+                presentationUri = new URI(query.replaceAll(" ","+"));
             }
             catch(URISyntaxException e) {
                 throw RtspException.create(StatusCode.BadRequest, e.getMessage(), ObjectId, logger);
@@ -234,7 +234,7 @@ public class Service {
         }
         else {
             try {
-                presentationUri = new URI(request.getRequestLine().getUri().getQuery());
+                presentationUri = new URI(request.getRequestLine().getUri().getQuery().replace(" ", "+"));
             }
             catch(URISyntaxException e) {
                 response.setStatusCode(StatusCode.BadRequest);
