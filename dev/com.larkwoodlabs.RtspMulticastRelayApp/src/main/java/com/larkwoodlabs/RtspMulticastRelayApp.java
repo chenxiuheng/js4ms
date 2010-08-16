@@ -22,7 +22,7 @@ public class RtspMulticastRelayApp implements SingleInstanceListener {
 
     /*-- Static Variables ----------------------------------------------------*/
 
-    public static final Logger logger = Logger.getLogger(Server.class.getName());
+    public static final Logger logger = Logger.getLogger(RtspMulticastRelayApp.class.getName());
     
     private final String ObjectId = Logging.identify(this);
     
@@ -32,25 +32,27 @@ public class RtspMulticastRelayApp implements SingleInstanceListener {
         
     }
 
-    void start(final String[] args) throws IOException {
+    void run(final String[] args) throws IOException, InterruptedException {
 
-        logger.info("AMT proxy started");
+        logger.info(ObjectId + " starting relay...");
 
         try {
             this.server = Server.create(args.length > 0 ? args[0] : "");
         }
         catch (IOException e) {
-            logger.severe("AMT proxy initialization failed - " + e.getClass().getName() + ":" + e.getMessage());
+            logger.severe(ObjectId + " relay initialization failed - " + e.getClass().getName() + ":" + e.getMessage());
             e.printStackTrace();
             throw e;
         }
 
-        Runtime.getRuntime().addShutdownHook(new Thread() {
+        Thread shutdownHook = new Thread() {
             @Override
             public void run() {
                 shutdown();
             }
-        });
+        };
+        
+        Runtime.getRuntime().addShutdownHook(shutdownHook);
 
         try {
             this.server.start();
@@ -60,15 +62,21 @@ public class RtspMulticastRelayApp implements SingleInstanceListener {
             throw new Error(e);
         }
 
+        logger.info(ObjectId + " relay started");
+
+        this.server.waitForShutdown();
+
+        Runtime.getRuntime().removeShutdownHook(shutdownHook);
+
+        logger.info(ObjectId + " relay stopped");
     }
 
     void shutdown() {
 
-        logger.info("stopping AMT proxy");
+        logger.info(ObjectId + " stopping relay...");
 
         this.server.stop();
 
-        logger.info("AMT proxy stopped");
     }
 
     /**
@@ -89,46 +97,51 @@ public class RtspMulticastRelayApp implements SingleInstanceListener {
             //System.exit(-1);
         }        
 
+        setLoggerLevels();
+
         String className = RtspMulticastRelayApp.class.getSimpleName() + ".class";
         String classPath = RtspMulticastRelayApp.class.getResource(className).toString();
-        String manifestPath = classPath.substring(0, classPath.lastIndexOf("!") + 1) + "/META-INF/MANIFEST.MF";
-        Manifest manifest;
-        try {
-            manifest = new Manifest(new URL(manifestPath).openStream());
-            Attributes attr = manifest.getMainAttributes();
-            System.out.println("Built-By: "+attr.getValue("Built-By"));
-            System.out.println("Vendor: "+attr.getValue("Implementation-Vendor"));
-            System.out.println("Title: "+attr.getValue("Implementation-Title"));
-            System.out.println("Version: "+attr.getValue("Implementation-Version"));
-        }
-        catch (MalformedURLException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
-        catch (IOException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
-
-        setLoggerLevels();
-        
-        RtspMulticastRelayApp proxy = new RtspMulticastRelayApp();
-
-        if (isWebStart) {
-            singleInstanceService.addSingleInstanceListener((SingleInstanceListener)proxy);
+        if (classPath.indexOf("!") != -1) {
+            String manifestPath = classPath.substring(0, classPath.lastIndexOf("!") + 1) + "/META-INF/MANIFEST.MF";
+            Manifest manifest;
+            try {
+                manifest = new Manifest(new URL(manifestPath).openStream());
+                Attributes attr = manifest.getMainAttributes();
+                logger.info("[  static  ] Built-By: "+attr.getValue("Built-By"));
+                logger.info("[  static  ] Vendor: "+attr.getValue("Implementation-Vendor"));
+                logger.info("[  static  ] Title: "+attr.getValue("Implementation-Title"));
+                logger.info("[  static  ] Version: "+attr.getValue("Implementation-Version"));
+            }
+            catch (MalformedURLException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+            catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
         }
         
+        RtspMulticastRelayApp relay = new RtspMulticastRelayApp();
+
         try {
-            proxy.start(args);
+            if (isWebStart) {
+                logger.info("[ static ] registering as singleton application");
+                singleInstanceService.addSingleInstanceListener((SingleInstanceListener)relay);
+            }
+        
+            relay.run(args);
         }
-        catch (IOException e) {
+        catch (InterruptedException e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
-            System.exit(-1);
-            return;
         }
-
-        if (isWebStart) {
-            singleInstanceService.removeSingleInstanceListener((SingleInstanceListener)proxy);
+        finally {
+            if (isWebStart) {
+                logger.info("[static ] deregistering as singleton application");
+                singleInstanceService.removeSingleInstanceListener((SingleInstanceListener)relay);
+            }
         }
     }
 
@@ -146,9 +159,9 @@ public class RtspMulticastRelayApp implements SingleInstanceListener {
         }
         
         logger.setLevel(Level.FINER);
-        com.larkwoodlabs.net.streaming.rtsp.Server.logger.setLevel(Level.FINER);
+        com.larkwoodlabs.net.streaming.rtsp.Server.logger.setLevel(Level.FINE);
         com.larkwoodlabs.net.streaming.rtsp.ConnectionHandler.logger.setLevel(Level.FINER);
-        com.larkwoodlabs.net.streaming.rtsp.ServerTunnelConnection.logger.setLevel(Level.FINER);
+        com.larkwoodlabs.net.streaming.rtsp.Connection.logger.setLevel(Level.FINER);
         com.larkwoodlabs.net.streaming.rtsp.Session.logger.setLevel(Level.FINER);
         com.larkwoodlabs.net.amt.AmtInterface.logger.setLevel(Level.FINER);
         com.larkwoodlabs.net.amt.ChannelMembershipManager.logger.setLevel(Level.FINER);
