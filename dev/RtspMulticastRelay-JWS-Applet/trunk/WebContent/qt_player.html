@@ -1,0 +1,218 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Multicast Player (QuickTime)</title>
+<style>
+
+BODY {
+    margin:0px;
+}
+
+#container {
+    background-color:black;   
+}
+
+</style>
+<script src="http://developer.apple.com/internet/AC_Quicktime.js" language="JavaScript" type="text/javascript"></script>
+<script src="http://java.com/js/deployJava.js" language="JavaScript" type="text/javascript"></script>
+<script src="deployRelay.js" language="JavaScript" type="text/javascript"></script>>
+<script language="JavaScript" type="text/javascript">
+
+var params = {};
+var isIE = navigator.userAgent.indexOf('MSIE') !=-1;
+var rtspUrl = "rtsp://127.0.0.1:8054/?";
+
+function constructPlayer() {
+
+	document.getElementById("status").innerHTML = "loading player...";
+
+	var applet = document.getElementById("relay");
+
+    if ((isIE && applet.isActive()) || (!isIE && applet.isActive)) {
+
+       var id = "player";
+       
+       var src = "blank.mov";
+
+       parseQueryString();
+
+       var sdpUrl = params["sdp_url"];
+
+       var width = Number(params["width"]);
+       if (!width) width=640;
+
+       var height = Number(params["height"]);
+       if (!height) height=480;
+
+       height += 16;
+
+       var html;
+       
+       if (sdpUrl != null) {
+
+           document.getElementById("sdp-url").value = sdpUrl;
+
+           // Use anchor element to convert possible relative URL into absolute URL.
+           var anchor = document.createElement("a");
+           anchor.href = sdpUrl;
+           sdpUrl = anchor.href;
+
+           var qtsrc = rtspUrl + sdpUrl;
+           html = QT_GenerateOBJECTText_XHTML(
+                   src,
+                   String(width),
+                   String(height+16),
+                   "",
+                   "qtsrc", qtsrc,
+                   "obj#id", id,
+                   "emb#name", id,
+                   "emb#id", id+"_embed",
+                   "showlogo", "false",
+                   "bgcolor", "black",
+                   "scale", "aspect",
+                   'postdomevents', 'true',
+                   "autoplay", "true",
+                   "controller", "true");
+       }
+       else {
+
+           html = QT_GenerateOBJECTText_XHTML(
+                   src,
+                   String(width),
+                   String(height+16),
+                   "",
+                   "obj#id", id,
+                   "emb#name", id,
+                   "emb#id", id+"_embed",
+                   "showlogo", "false",
+                   "bgcolor", "black",
+                   "scale", "aspect",
+                   'postdomevents', 'true',
+                   "autoplay", "true",
+                   "controller", "true");
+       }
+
+             
+       var container = document.getElementById("container");
+       container.innerHTML=html;
+
+       // Don't bother with events - they don't work in IE without magic.
+       // addQTListeners();
+
+       document.getElementById("status").innerHTML = "";
+
+    }
+    else {
+        window.setTimeout("constructPlayer()",100);
+    }
+}
+
+function getPlayer() {
+    // Set the global player object
+    var player = document.getElementById('player_embed');
+    if (!player) {
+        player = document.getElementById('player');
+    }
+    return player;
+}
+
+function addListener(obj, evt, handler, captures) {
+    if ( document.addEventListener )
+        obj.addEventListener(evt, handler, captures);
+    else
+        obj.attachEvent('on' + evt, handler); // IE requires this form
+}
+
+function onEvent(evt) {
+    if (!evt) evt = window.event; // IE
+    // document.getElementById("status").innerHTML = "Event: " + evt.type;
+}
+
+
+function addQTListeners() {
+     var player = getPlayer();
+     addListener(player,'qt_begin',           onEvent, false);
+     addListener(player,'qt_abort',           onEvent, false);
+     addListener(player,'qt_canplay',         onEvent, false);
+     addListener(player,'qt_canplaythrough',  onEvent, false);
+     addListener(player,'qt_durationchange',  onEvent, false);
+     addListener(player,'qt_ended',           onEvent, false);
+     addListener(player,'qt_error',           onEvent, false);
+     addListener(player,'qt_load',            onEvent, false);
+     addListener(player,'qt_loadedfirstframe',onEvent, false);
+     addListener(player,'qt_loadedmetadata',  onEvent, false);
+     addListener(player,'qt_pause',           onEvent, false);
+     addListener(player,'qt_play',            onEvent,  false);
+     addListener(player,'qt_progress',        onEvent, false);
+     addListener(player,'qt_stalled',         onEvent, false);
+     addListener(player,'qt_timechanged',     onEvent, false);
+     addListener(player,'qt_volumechange',    onEvent, false);            
+     addListener(player,'qt_waiting',         onEvent, false);
+}
+
+function play(sdpUrl) {
+    var anchor = document.createElement("a");
+    anchor.href = sdpUrl;
+    sdpUrl = anchor.href;
+    var url = rtspUrl + sdpUrl;
+    var player = getPlayer();
+    player.SetURL(url);
+    if (player.GetURL() != url) {
+        // This a broken version of the player (e.g. 7.6.6)
+        params['sdp_url'] = sdpUrl;
+        constructPlayer();
+    }
+}
+
+function onAppletReady(id) {
+    constructPlayer();
+}
+
+function onAppletError(id, message) {
+}
+
+function onAppletFailover(id) {
+    getPlayer().SetURL(player.GetURL());
+}
+
+function parseQueryString() {
+
+	var url = window.location.toString();
+	url.match(/\?(.+)$/);
+
+	var queryParams = RegExp.$1;
+
+	// split up the query string and store in a associative array
+	queryParams = queryParams.split("&");
+
+	for(var i=0; i<queryParams.length; i++)
+	{
+	   var tmp = queryParams[i].split("=");
+	   params[tmp[0]] = unescape(tmp[1]);
+	}    
+}
+
+function constructApplet() {
+
+    document.getElementById("status").innerHTML = "loading applet...";
+
+    deployRelay("onAppletReady", "onAppletError", "onAppletFailover");
+
+}
+      </script>  
+</head>
+<body style="background-color:black;color:white;font-family:arial">
+<center>
+    <div>
+    SDP URL: <input id="sdp-url" type="text" size="80"></input>
+    <input type="button" value="Play" onclick="play(document.getElementById('sdp-url').value)"></input>
+    </div>
+    <div id="status" style="color:#E0E0E0"></div>
+    <div id='container'></div>
+    <script language="JavaScript" type="text/javascript">
+    constructApplet();
+    </script>
+</center>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<?eclipse.ant.import?>
+<project>
+
+    <import file="build-jar.xml" />
+
+    <property name="applet.jnlp.file" value="${applet.class}.jnlp" />
+    <property name="applet.jnlp.file" value="${applet.class}.jnlp" />
+    <property name="applet.version.file" value="version.xml" />
+
+	<target name="build-jnlp-only" depends="gen-jar-name">
+
+        <delete>
+            <fileset dir="WebContent" includes="*.jnlp"/>
+        </delete>
+        
+        <copy file="template.jnlp" toFile="WebContent/${applet.jnlp.file}">
+            <filterset>
+                <filter token="TITLE" value="${applet.title}"/>
+                <filter token="VENDOR" value="${applet.vendor}"/>
+                <filter token="DESCRIPTION" value="${applet.description}"/>
+                <filter token="JAR_FILE" value="${applet.jar.name}"/>
+                <filter token="JAR_VERSION" value="${applet.version}"/>
+                <filter token="MAIN_CLASS" value="${applet.package}.${applet.class}"/>
+            </filterset>
+        </copy>
+
+    </target>
+
+    <target name="build-version-only" depends="gen-jar-name">
+
+        <delete>
+            <fileset dir="WebContent" includes="version.xml"/>
+            <fileset dir="WebContent" includes="deployRelay.js"/>
+        </delete>
+        
+        <copy file="version.xml" toFile="WebContent/${applet.version.file}">
+            <filterset>
+                <filter token="JAR_FILE" value="${applet.jar.file}"/>
+                <filter token="CACHE_VERSION" value="${applet.version.cache}"/>
+            </filterset>
+        </copy>
+
+        <copy file="deployRelay.js" toFile="WebContent/deployRelay.js">
+            <filterset>
+                <filter token="CACHE_VERSION" value="${applet.version.cache}"/>
+            </filterset>
+        </copy>
+
+    </target>
+	
+	<target name="build-jnlp" depends="build-jar, build-jnlp-only, build-version-only" />
+
+    <target name="clean-jnlp">
+        <delete>
+            <fileset dir="WebContent" includes="*.jnlp"/>
+            <fileset dir="WebContent" includes="version.xml"/>
+            <fileset dir="WebContent" includes="deployRelay.js"/>
+        </delete>
+    </target>
+
+</project>

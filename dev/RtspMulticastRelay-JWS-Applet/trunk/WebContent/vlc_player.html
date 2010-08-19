@@ -1,0 +1,225 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Multicast Player (VLC)</title>
+<style>
+
+BODY {
+    margin:0px;
+}
+
+#container {
+    background-color:black;   
+}
+
+</style>
+<script src="http://java.com/js/deployJava.js" language="JavaScript" type="text/javascript"></script>
+<script language="JavaScript" type="text/javascript">
+
+var params = {};
+var isIE = navigator.userAgent.indexOf('MSIE') !=-1;
+var rtspUrl = "rtsp://127.0.0.1:8054/?";
+
+function constructPlayer() {
+
+    document.getElementById("status").innerHTML = "loading player...";
+
+    var applet = document.getElementById("relay");
+
+    if ((isIE && applet.isActive()) || (!isIE && applet.isActive)) {
+
+       var id = "player";
+       
+       parseQueryString();
+       
+       var sdpUrl = params["sdp_url"];
+       var mrl = null;
+       
+       if (sdpUrl != null) {
+           document.getElementById("sdp-url").value = sdpUrl;
+           var anchor = document.createElement("a");
+           anchor.href = sdpUrl;
+           sdpUrl = anchor.href;
+           mrl = rtspUrl + sdpUrl;
+       }
+       
+       var width = Number(params["width"]);
+       if (!width) width=640;
+
+       var height = Number(params["height"]);
+       if (!height) height=480;
+
+       var html;
+       
+       var html =
+            '<object classid="clsid:9BE31822-FDAD-461B-AD51-BE1D1C159921"'+
+            '        codebase="http://downloads.videolan.org/pub/videolan/vlc/latest/win32/axvlc.cab"'+
+            '        width="'+String(width)+'"' +
+            '        height="'+String(height)+'"'+
+            '        id="'+id+'"'+
+            '        events="True">'+
+            '    <param name="ShowDisplay" value="True" ></param>'+
+            '    <param name="AutoLoop" value="False"></param>'+
+            '    <param name="AutoPlay" value="True"></param>'+
+            (mrl != null ? '    <param name="MRL" value="' + mrl + '"></param>' : '') +
+            '    <embed type="application/x-vlc-plugin"'+
+            '           name="'+id+'"'+
+            '           id="'+id+'_embed"'+
+            '           autoplay="true"'+
+            '           loop="false"'+
+            '           width="'+String(width)+'"'+
+            '           height="'+String(height)+'"'+
+            '           events="true"'+
+            (mrl != null ? '           target="' + mrl + '"' : '') +
+            '    </embed>'+
+            '</object>';
+             
+       var container = document.getElementById("container");
+       container.innerHTML=html;
+
+       // addVLCListeners();
+
+       document.getElementById("status").innerHTML = "";
+
+    }
+    else {
+        window.setTimeout("constructPlayer()",100);
+    }
+}
+
+function getPlayer() {
+    // Set the global player object
+    var player = document.getElementById('player_embed');
+    if (!player) {
+        player = document.getElementById('player');
+    }
+    return player;
+}
+
+function addListener(obj, evt, handler, captures) {
+    if (obj.attachEvent) {
+        // Microsoft
+        obj.attachEvent("on" + evt, handler);
+    } else if (obj.addEventListener) {
+        // Mozilla: DOM level 2
+        obj.addEventListener(evt, handler, captures);
+    } else {
+        // DOM level 0
+        obj["on" + evt] = handler;
+    }
+}
+
+function onEvent(evt) {
+    if (!evt) evt = window.event; // IE
+    return;
+    var msg="";
+    for (i in evt) {
+        msg += i+"="+evt[i]+" ";
+    }
+    document.getElementById("status").innerHTML = "Event: " + msg;
+}
+
+
+function addVLCListeners() {
+     var player = getPlayer();
+     addListener('MediaPlayerNothingSpecial', onEvent, false);
+     addListener('MediaPlayerOpening', onEvent, false);
+     addListener('MediaPlayerBuffering', onEvent, false);
+     addListener('MediaPlayerPlaying', onEvent, false);
+     addListener('MediaPlayerPaused', onEvent, false);
+     addListener('MediaPlayerForward', onEvent, false);
+     addListener('MediaPlayerBackward', onEvent, false);
+     addListener('MediaPlayerEncounteredError', onEvent, false);
+     addListener('MediaPlayerEndReached', onEvent, false);
+     addListener('MediaPlayerTimeChanged', onEvent, false);
+     addListener('MediaPlayerPositionChanged', onEvent, false);
+     addListener('MediaPlayerSeekableChanged', onEvent, false);
+     addListener('MediaPlayerPausableChanged', onEvent, false);
+}
+
+function play(sdpUrl) {
+    var anchor = document.createElement("a");
+    anchor.href = sdpUrl;
+    sdpUrl = anchor.href;
+    var url = rtspUrl + sdpUrl;
+    var player = getPlayer();
+    if (/.xspf$/.test(url) == false) {
+       var id = player.playlist.add(url);
+       player.playlist.playItem(id);
+    }
+}
+
+function onAppletReady(id) {
+    constructPlayer();
+}
+
+function onAppletError(id, message) {
+}
+
+function onAppletFailover(id) {
+    //getPlayer().SetURL(player.GetURL());
+    getPlayer().playlist.prev();
+}
+
+function parseQueryString() {
+
+	var url = window.location.toString();
+	url.match(/\?(.+)$/);
+
+	var queryParams = RegExp.$1;
+
+	// split up the query string and store in a associative array
+	queryParams = queryParams.split("&");
+
+	for(var i=0; i<queryParams.length; i++)
+	{
+	   var tmp = queryParams[i].split("=");
+	   params[tmp[0]] = unescape(tmp[1]);
+	}    
+}
+
+function constructApplet() {
+
+    document.getElementById("status").innerHTML = "loading applet...";
+    
+    var anchor = document.createElement("a");
+    anchor.href = "RtspMulticastRelayApplet.jnlp";
+    var jnlp_abs_href = anchor.href;
+
+    var attributes = {
+    //        codebase: codebase,
+    //        code:'com.larkwoodlabs.RtspMulticastRelayApplet.class',
+    //        archive:'RtspMulticastRelayApplet.jar, jain-sdp-1.0.100.jar',
+            id:'relay',
+            name:'relay',
+            classloader_cache:false,
+            width:1,
+            height:1} ; 
+
+    var parameters = {
+            jnlp_href: jnlp_abs_href, //'RtspMulticastRelayApplet.jnlp', 
+            onready: 'onAppletReady',
+            onerror: 'onAppletError',
+            onfailover: 'onAppletFailover'} ; 
+
+
+    deployJava.runApplet(attributes, parameters, '1.6');
+
+}
+      </script>  
+</head>
+<body style="background-color:black;color:white;font-family:arial">
+<center>
+    <div>
+    SDP URL: <input id="sdp-url" type="text" size="80"></input>
+    <input type="button" value="Play" onclick="play(document.getElementById('sdp-url').value)"></input>
+    </div>
+    <div id="status" style="color:#E0E0E0"></div>
+    <div id='container'></div>
+    <script language="JavaScript" type="text/javascript">
+    constructApplet();
+    </script>
+</center>
+</body>
+</html>
