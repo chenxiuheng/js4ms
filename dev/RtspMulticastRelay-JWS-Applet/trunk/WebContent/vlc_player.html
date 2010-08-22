@@ -15,6 +15,7 @@ BODY {
 
 </style>
 <script src="http://java.com/js/deployJava.js" language="JavaScript" type="text/javascript"></script>
+<script src="deployRelay.js" language="JavaScript" type="text/javascript"></script>
 <script language="JavaScript" type="text/javascript">
 
 var params = {};
@@ -182,29 +183,8 @@ function parseQueryString() {
 function constructApplet() {
 
     document.getElementById("status").innerHTML = "loading applet...";
-    
-    var anchor = document.createElement("a");
-    anchor.href = "RtspMulticastRelayApplet.jnlp";
-    var jnlp_abs_href = anchor.href;
 
-    var attributes = {
-    //        codebase: codebase,
-    //        code:'com.larkwoodlabs.RtspMulticastRelayApplet.class',
-    //        archive:'RtspMulticastRelayApplet.jar, jain-sdp-1.0.100.jar',
-            id:'relay',
-            name:'relay',
-            classloader_cache:false,
-            width:1,
-            height:1} ; 
-
-    var parameters = {
-            jnlp_href: jnlp_abs_href, //'RtspMulticastRelayApplet.jnlp', 
-            onready: 'onAppletReady',
-            onerror: 'onAppletError',
-            onfailover: 'onAppletFailover'} ; 
-
-
-    deployJava.runApplet(attributes, parameters, '1.6');
+    deployRelay("onAppletReady", "onAppletError", "onAppletFailover");
 
 }
       </script>  
