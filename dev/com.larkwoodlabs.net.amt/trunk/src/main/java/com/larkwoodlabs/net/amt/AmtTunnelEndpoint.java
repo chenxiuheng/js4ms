@@ -266,18 +266,38 @@ public final class AmtTunnelEndpoint implements Runnable {
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "AmtMessageEndpoint.sendUpdate", packet, milliseconds));
         }
-        
+
         synchronized (this.lock) {
-            if (!this.isResponseReceived) {
+
+            /*
+             * We can only send the update message if a tunnel has been established;
+             * The gateway interface must receive a relay advertisement and initial query message before
+             * it can send an update.
+             * We can simply discard the update message if we cannot yet send it to the relay,
+             * since the first message that we will receive from the relay will be a membership query
+             * that will trigger generation of a new update message.
+             */
+
+            if (this.relayAddress == null) {
                 if (logger.isLoggable(Level.INFO)) {
-                    logger.info(ObjectId + " cannot send message because the relay has not responded to the last request");
+                    logger.info(ObjectId + " cannot send AMT update message because connection to AMT relay has not been established");
+                    return;
                 }
-                throw new PortUnreachableException();
+            }
+            else if (!this.isResponseReceived && this.isRequestSent) {
+                if (logger.isLoggable(Level.INFO)) {
+                    logger.info(ObjectId + " cannot send AMT update message because the AMT relay has not responded to the last AMT request");
+                }
+                return;
+            }
+            else if (!this.isRequestSent) {
+                logger.severe(ObjectId + " illegal attempt made to send AMT update message before AMT request has been sent");
+                throw new Error("illegal attempt made to send AMT query or update message before AMT request has been sent");
             }
         }
 
         AmtMembershipUpdateMessage message = new AmtMembershipUpdateMessage(this.lastResponseMac, this.lastRequestNonce, packet);
-        
+
         send(message);
     }
 
@@ -294,18 +314,12 @@ public final class AmtTunnelEndpoint implements Runnable {
             logger.finer(Logging.entering(ObjectId, "AmtMessageEndpoint.sendData", packet, milliseconds));
         }
 
-        synchronized (this.lock) {
-            if (!this.isResponseReceived) {
-                if (logger.isLoggable(Level.INFO)) {
-                    logger.info(ObjectId + " cannot send message because the relay has not responded to the last request");
-                }
-                throw new PortUnreachableException();
-            }
-        }
-
+        /* Data messages can only be sent to Relays and Gateways that have sent AMT request and update messages.
+         * This endpoint implementation does not yet provide support for sourcing mcast.
         AmtMulticastDataMessage message = new AmtMulticastDataMessage(packet);
         
         send(message);
+        */
     }
 
     /**
@@ -321,36 +335,17 @@ public final class AmtTunnelEndpoint implements Runnable {
             message.log(logger);
         }
 
-        if (this.relayAddress == null) {
-            if (logger.isLoggable(Level.INFO)) {
-                logger.info(ObjectId + " cannot send message because connection to relay has not been established");
-                message.log(logger);
-            }
 
-            throw new PortUnreachableException();
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine(ObjectId + " sending " + message.getClass().getSimpleName());
         }
 
-        if (this.isResponseReceived || message.getType() == AmtRequestMessage.MESSAGE_TYPE) {
+        ByteBuffer buffer = ByteBuffer.allocate(message.getTotalLength());
+        message.writeTo(buffer);
+        buffer.flip();
 
-            if (logger.isLoggable(Level.FINE)) {
-                logger.fine(ObjectId + " sending " + message.getClass().getSimpleName());
-            }
-
-            ByteBuffer buffer = ByteBuffer.allocate(message.getTotalLength());
-            message.writeTo(buffer);
-            buffer.flip();
-
-            send(new UdpDatagram(this.relayAddress, AMT_PORT, buffer));
-        }
-        else if (this.isRequestSent) {
-            if (logger.isLoggable(Level.INFO)) {
-                logger.info(ObjectId + " cannot send message because the relay has not responded to the last request");
-                message.log(logger);
-            }
-        }
-        else {
-            sendRequestMessage();
-        }
+        send(new UdpDatagram(this.relayAddress, AMT_PORT, buffer));
+        
     }
 
     /**
@@ -442,12 +437,12 @@ public final class AmtTunnelEndpoint implements Runnable {
                     endpoint.sendRelayDiscoveryMessage();
                 }
                 catch (Exception e) {
+                    // Schedule relay discovery task for immediate execution with short retry period
                     AmtTunnelEndpoint.logger.warning(ObjectId + " attempt to send periodic AMT Relay Discovery Message failed - " + e.getMessage());
                 }
             }
         };
 
-        // Schedule relay discovery task for immediate execution with short retry period
         this.taskTimer.schedule(this.relayDiscoveryTask, delay, period);
     }
 
@@ -496,6 +491,11 @@ public final class AmtTunnelEndpoint implements Runnable {
         this.lastRequestNonce = message.getRequestNonce();
 
         send(message);
+        
+        synchronized (this.lock) {
+            this.lastRequestNonce = message.getRequestNonce();
+            this.isRequestSent = true;
+        }
     }
 
     /**
@@ -510,7 +510,7 @@ public final class AmtTunnelEndpoint implements Runnable {
             logger.finer(Logging.entering(ObjectId, "AmtInterface.handle", message));
         }
 
-        synchronized (this) {
+        synchronized (this.lock) {
 
             if (message.getDiscoveryNonce() != this.lastDiscoveryNonce) {
 
@@ -538,15 +538,17 @@ public final class AmtTunnelEndpoint implements Runnable {
                 catch (UnknownHostException e) {
                     throw new Error(e);
                 }
-    
+
                 // Restart the normal periodic relay discovery task to refresh the relay address [AMT 7.1]
                 startRelayDiscoveryTask(DISCOVERY_DELAY, DISCOVERY_PERIOD);
-                
+
                 // Initiate request/query/report handshake with the relay so we
                 // have a response MAC and nonce for reception state change reports
                 sendRequestMessage();
+
             }
         }
+
 
         if (logger.isLoggable(Level.INFO)) {
             logger.info(ObjectId + " interface connected to AMT Relay " + Logging.address(this.relayAddress));
@@ -585,7 +587,6 @@ public final class AmtTunnelEndpoint implements Runnable {
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "AmtMessageEndpoint.handle", message));
         }
-        
         
         try {
             this.incomingDataChannel.send(message.getPacket(), Integer.MAX_VALUE);
