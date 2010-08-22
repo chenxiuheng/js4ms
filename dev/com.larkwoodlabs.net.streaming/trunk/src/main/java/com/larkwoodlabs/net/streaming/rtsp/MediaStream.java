@@ -194,7 +194,7 @@ final class MediaStream {
     }
 
     private TransportDescription setupUdpPacketStreams(final TransportDescription preference,
-                                                       final InetAddress remoteAddress) throws RtspException, IOException {
+                                                       /*final*/ InetAddress remoteAddress) throws RtspException, IOException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "MediaStream.setupUdpPacketStreams", preference));
@@ -226,6 +226,23 @@ final class MediaStream {
         else {
             firstClientPort = this.description.getFirstSourcePort() + streamIndex * portsPerStream;
             clientStreamCount = sourceStreamCount;
+        }
+
+        if (remoteAddress.isLoopbackAddress()) {
+            // Workaround for OS X (or QuickTime?) behavior where client
+            // connects from IPv6 loopback address when "localhost" is used in URL,
+            // when the relay attempts to send RTP/UDP packets to that address,
+            // an "port-unreachable" ICMP message is produced.
+            
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine(ObjectId + " translating remote loopback address from " + Logging.address(remoteAddress));
+            }
+            
+            // Replace the loopback address with the default host address
+            remoteAddress = InetAddress.getLocalHost();
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine(ObjectId + " to remote address " + Logging.address(remoteAddress));
+            }
         }
 
         // firstClientStreamPort specifies the port to use for the first client endpoint
