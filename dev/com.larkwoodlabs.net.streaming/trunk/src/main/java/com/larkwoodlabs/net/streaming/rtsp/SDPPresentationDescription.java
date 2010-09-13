@@ -47,6 +47,7 @@ import javax.sdp.SessionDescription;
 
 import com.larkwoodlabs.io.FixedLengthInputStream;
 import com.larkwoodlabs.net.Precondition;
+import com.larkwoodlabs.net.amt.AmtGateway;
 import com.larkwoodlabs.net.amt.SourceFilter;
 import com.larkwoodlabs.util.logging.Logging;
 
@@ -675,7 +676,7 @@ final class SDPPresentationDescription extends PresentationDescription {
         }
 
         // Look for relay discovery address attribute record
-        InetAddress relayDiscoveryAddress = null;
+        InetAddress relayDiscoveryAddress = AmtGateway.getDefaultRelayDiscoveryAddress();
         try {
             String anycastAddress = mediaDescription.getAttribute("x-amt-relay-anycast");
             if (anycastAddress == null) {
