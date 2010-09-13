@@ -1,4 +1,4 @@
-package com.larkwoodlabs.service;
+package com.larkwoodlabs.service;
 
 import java.io.IOException;
 import java.net.BindException;
@@ -24,8 +24,12 @@ import com.larkwoodlabs.util.logging.Logging;
 
 public class Service {
 
-    public static final Logger logger = Logger.getLogger(Service.class.getName());
-            
+    /*-- Inner Classes--- ----------------------------------------------------*/    public interface Factory {
+        Service construct(Properties properties);
+    }
+
+    /*-- Static Variables ----------------------------------------------------*/    public static final Logger logger = Logger.getLogger(Service.class.getName());
+
     public static final int     DEFAULT_SERVICE_PORT = 0;
     public static final int     DEFAULT_SOCKET_BUFFER_SIZE = 8 * 1024;
     public static final boolean DEFAULT_STALE_CONNECTION_CHECK = false;
@@ -42,34 +46,33 @@ public class Service {
     public static final String  SERVICE_KEEP_ALIVE_TIMEOUT_PROPERTY = SERVICE_PROPERTY_PREFIX + "keepalive.timeout";
     public static final String  SERVICE_CONSOLE_ENABLED_PROPERTY = SERVICE_PROPERTY_PREFIX + "console.enabled";
 
-    private final String ObjectId = Logging.identify(this);
+    /*-- Member Variables ----------------------------------------------------*/    private final String ObjectId = Logging.identify(this);
 
     boolean useKeepAlive = false;
-    
+
     ServerSocket socket;
-    
+
     boolean isStarted = false;
     Thread serviceThread;
-    
+
     HashMap<String,Connection> connections = new HashMap<String,Connection>();
-    
+
     ConnectionHandler.Factory connectionHandlerFactory;
-    
+
     private final ExecutorService threadPool;
 
     Object newConnection = new Object();
     Object noConnections = new Object();
-    
+
     String serviceName = Service.class.getSimpleName();
 
-    public Service(String serviceName) {
-        this(serviceName, new ConnectionHandler.Factory());
-    }
+    Properties properties;
 
-    public Service(String serviceName, ConnectionHandler.Factory connectionHandlerFactory) {
+    /*-- Member Functions  ----------------------------------------------------*/    /**     *      */    protected Service(String serviceName, Properties properties, ConnectionHandler.Factory connectionHandlerFactory) {
 
         this.serviceName = serviceName;
-        
+        this.properties = properties;
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "Service.Service", connectionHandlerFactory));
         }
@@ -84,24 +87,15 @@ public class Service {
             }
         });
     }
-
-    public String getServiceName() {
-        return this.serviceName;
-    }
-
-    public void setConnectionHandlerFactory(ConnectionHandler.Factory factory) {
-
-        this.connectionHandlerFactory = factory;
-    }
-    
+    /**     *      * @return     */
     public boolean start() {
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "Service.start"));
         }
-        
+
         if (!this.isStarted) {
-            
+
             try {
                 constructSocket();
             }
@@ -109,36 +103,36 @@ public class Service {
                 logger.severe(ObjectId + " cannot start service - attempt to construct socket failed");
                 return false;
             }
-    
+
             this.serviceThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     runService();
                 }
             }, this.serviceName + " service thread");
-    
+
             this.isStarted = true;
-            this.serviceThread.start(); 
+            this.serviceThread.start();
         }
 
         return true;
     }
-    
+    /**     *      */
     public void stop() {
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "Service.stop"));
         }
 
         if (this.isStarted) {
-            
+
             logger.fine(ObjectId + " stopping service...");
-            
+
             this.isStarted = false;
 
             // Set the interrupt state in the service thread
             this.serviceThread.interrupt();
-            
+
             // Interrupt the accept() call in the service thread
             if (!this.socket.isClosed()) {
                 try {
@@ -158,7 +152,7 @@ public class Service {
 
         }
     }
-    
+    /**     *      * @throws InterruptedException     */
     public void join() throws InterruptedException {
 
         if (logger.isLoggable(Level.FINER)) {
@@ -169,16 +163,16 @@ public class Service {
 
             boolean useKeepAlive = false;
 
-            String propertyValue = System.getProperty(SERVICE_USE_KEEP_ALIVE_PROPERTY);
+            String propertyValue = getProperty(SERVICE_USE_KEEP_ALIVE_PROPERTY).toString();
             if (propertyValue != null) {
                 useKeepAlive = Boolean.parseBoolean(propertyValue);
             }
 
             if (useKeepAlive) {
-                
+
                 int keepAliveTimeout = DEFAULT_KEEP_ALIVE_TIMEOUT;
 
-                propertyValue = System.getProperty(SERVICE_KEEP_ALIVE_TIMEOUT_PROPERTY);
+                propertyValue = getProperty(SERVICE_KEEP_ALIVE_TIMEOUT_PROPERTY).toString();
                 if (propertyValue != null) {
                     try {
                         keepAliveTimeout = Short.parseShort(propertyValue);
@@ -191,7 +185,7 @@ public class Service {
                 while (!this.socket.isClosed()) {
 
                     synchronized(newConnection) {
-    
+
                         logger.info(ObjectId+" starting keep-alive timer...");
 
                         try {
@@ -203,7 +197,7 @@ public class Service {
                         }
 
                         if (this.connections.size() == 0) {
-                            
+
                             logger.info(ObjectId+" keep-alive timer has expired");
 
                             stop();
@@ -213,7 +207,7 @@ public class Service {
 
                         logger.info(ObjectId+" keep-alive timeout canceled");
                     }
-    
+
                     logger.fine(ObjectId + " waiting for all keep-alive clients to disconnect...");
 
                     try {
@@ -241,9 +235,26 @@ public class Service {
             }
 
         }
-        
+
     }
-    
+    /**     *      * @return     */
+    public String getServiceName() {
+        return this.serviceName;
+    }
+    /**     *      * @param factory     */
+    public void setConnectionHandlerFactory(ConnectionHandler.Factory factory) {
+
+        this.connectionHandlerFactory = factory;
+    }
+    /**     *      * @param key     * @return     */
+    public Object getProperty(String key) {
+        return this.properties.getProperty(key);
+    }
+    /**     *      * @param key     * @param value     */
+    public void setProperty(String key, Object value) {
+        this.properties.put(key, value);
+    }
+    /**     *      */
     void runService() {
 
         if (logger.isLoggable(Level.FINER)) {
@@ -253,7 +264,7 @@ public class Service {
         logger.info(ObjectId + " entering service thread");
 
         while (!Thread.currentThread().isInterrupted() && !this.socket.isClosed()) {
-            
+
             Socket clientSocket;
             try {
 
@@ -263,7 +274,7 @@ public class Service {
 
                 Connection connection = new SocketConnection(this, clientSocket);
                 addConnection(connection);
-                
+
                 ConnectionHandler handler = this.connectionHandlerFactory.construct(connection);
                 //new Thread(handler).start();
 
@@ -290,25 +301,25 @@ public class Service {
 
     }
 
-    void addConnection(Connection connection) {
+    /**     *      * @param connection     */    void addConnection(Connection connection) {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "Service.addConnection", connection));
         }
 
         this.connections.put(connection.getIdentifier(),connection);
-        
+
         synchronized (this.newConnection) {
             this.newConnection.notifyAll();
         }
     }
-
+    /**     *      * @param identifier     */
     void removeConnection(String identifier) {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "Service.removeConnection", identifier));
         }
-        
+
         this.connections.remove(identifier);
         if (this.connections.size() == 0) {
             synchronized (this.noConnections) {
@@ -316,7 +327,7 @@ public class Service {
             }
         }
     }
-    
+    /**     *      */
     void closeConnections() {
 
         if (logger.isLoggable(Level.FINER)) {
@@ -333,7 +344,7 @@ public class Service {
                 e.printStackTrace();
             }
         }
-        
+
         connections.clear();
 
         synchronized (this.noConnections) {
@@ -341,8 +352,8 @@ public class Service {
         }
     }
 
-    void constructSocket() throws IOException {
-        
+    /**     *      * @throws IOException     */    void constructSocket() throws IOException {
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "Service.constructSocket"));
         }
@@ -351,7 +362,7 @@ public class Service {
 
         int servicePort = DEFAULT_SERVICE_PORT;
 
-        propertyValue = System.getProperty(SERVICE_SOCKET_PORT_PROPERTY);
+        propertyValue = getProperty(SERVICE_SOCKET_PORT_PROPERTY).toString();
         if (propertyValue != null) {
             try {
                 servicePort = Short.parseShort(propertyValue);
@@ -362,8 +373,8 @@ public class Service {
         }
 
         InetSocketAddress serviceSocketAddress;
-        
-        propertyValue = System.getProperty(SERVICE_SOCKET_ADDRESS_PROPERTY);
+
+        propertyValue = getProperty(SERVICE_SOCKET_ADDRESS_PROPERTY).toString();
         if (propertyValue != null) {
             try {
                 serviceSocketAddress = new InetSocketAddress(InetAddress.getByName(propertyValue),servicePort);
@@ -376,7 +387,7 @@ public class Service {
         else {
             serviceSocketAddress = new InetSocketAddress(servicePort);
         }
-        
+
         if (logger.isLoggable(Level.INFO)) {
             logger.info(ObjectId + " binding service socket to "+serviceSocketAddress.toString());
         }
@@ -384,12 +395,12 @@ public class Service {
         try {
 
             this.socket = new ServerSocket();
-            
+
             // This method will throw a BindException if the port is already bound to a socket.
             this.socket.bind(serviceSocketAddress);
-            
+
             logger.info(ObjectId+" socket address "+this.socket.getInetAddress().getHostAddress()+":"+this.socket.getLocalPort());
-            
+
         }
         catch(BindException e) {
             logger.warning(ObjectId+" port "+servicePort+ " is currently in use - another service instance may be running");
@@ -400,9 +411,9 @@ public class Service {
             throw e;
         }
     }
-
+    /**     *      */
     public static void setLoggerLevels() {
-        
+
         final String LOGGER_PROPERTY_PREFIX = "com.larkwoodlabs.logger.";
         final int prefixLength = LOGGER_PROPERTY_PREFIX.length();
 
@@ -412,7 +423,7 @@ public class Service {
             handlers[index].setLevel(Level.FINER);
             handlers[index].setFormatter(new LogFormatter());
         }
-        
+
         Properties properties = System.getProperties();
         Set<Map.Entry<Object,Object>> entries = properties.entrySet();
 
@@ -427,11 +438,11 @@ public class Service {
                 if (loggerName.length() == 0) {
                     logger.warning(" [static]   property '"+key+"' does not include a logger name");
                 }
-                
+
                 Level loggerLevel = Level.WARNING;
                 boolean loadClass = false;
                 String className = null;
-                
+
                 // Determine the name of the class that must be loaded force instantiation of the logger
                 String value = entry.getValue().toString();
                 String[] fields = value.split(";");
@@ -486,28 +497,24 @@ public class Service {
         }
     }
 
-    public interface Factory {
-        Service construct();
-    }
-
-    public static void startService(Factory serviceFactory) {
+    /**     *      * @param properties     * @param serviceFactory     */    public static void startService(Properties properties, Service.Factory serviceFactory) {
 
         Console console = null;
-        if (Boolean.parseBoolean(System.getProperty(SERVICE_CONSOLE_ENABLED_PROPERTY))) {
+        if (Boolean.parseBoolean(properties.getProperty(SERVICE_CONSOLE_ENABLED_PROPERTY))) {
             console = new Console("Test Service");
         }
 
         setLoggerLevels();
 
-        final Service service = serviceFactory.construct();
-        
+        final Service service = serviceFactory.construct(properties);
+
         Thread shutdownHook = new Thread() {
             @Override
             public void run() {
                 service.stop();
             }
         };
-        
+
         Runtime.getRuntime().addShutdownHook(shutdownHook);
 
         if (service.start()) {
@@ -520,7 +527,7 @@ public class Service {
                 service.stop();
             }
         }
-        
+
         if (console != null) {
             try {
                 logger.info(" [static]  Waiting for console window to close...");
@@ -530,20 +537,24 @@ public class Service {
                 Thread.currentThread().interrupt();
             }
         }
-        
+
         Runtime.getRuntime().removeShutdownHook(shutdownHook);
-        
+
     }
 
+    /**
+     * Entry point used to test minimal service interaction with keep-alive clients.
+     * @param args
+     */
     public static void main(String[] args) {
 
-        startService(new Factory() {
+        startService(System.getProperties(), new Factory() {
 
             @Override
-            public Service construct() {
-                return new Service("Test Service");
+            public Service construct(Properties properties) {
+                return new Service("Test Service", properties, new ConnectionHandler.Factory());
             }
-            
+
         });
     }
 }
