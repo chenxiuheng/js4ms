@@ -39,8 +39,9 @@ public abstract class Connection  {
     /*-- Member Variables ----------------------------------------------------*/
 
     protected final String ObjectId = Logging.identify(this);
-    
-    protected final Service service;
+
+    static int connectionIndex;
+
     protected String identifier;
     protected final InputStream inputStream;
     protected final OutputStream outputStream;
@@ -55,24 +56,26 @@ public abstract class Connection  {
      * @param inputStream - The stream that will be used to receive data from the client.
      * @param outputStream - The stream that will be used to send data to the client.
      */
-    protected Connection(final Service service, final String identifier, final InputStream inputStream, final OutputStream outputStream) {
+    protected Connection(final String identifier, final InputStream inputStream, final OutputStream outputStream) {
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "Connection.Connection", service, identifier, inputStream, outputStream));
+            logger.finer(Logging.entering(ObjectId, "Connection.Connection", identifier, inputStream, outputStream));
         }
 
-        this.service = service;
         this.inputStream = inputStream;
         this.outputStream = outputStream;
         this.identifier = identifier;
     }
 
-    protected Connection(final Service service, final InputStream inputStream, final OutputStream outputStream) {
-        this(service, null, inputStream, outputStream);
-        this.identifier = ObjectId;
+    protected Connection(final InputStream inputStream, final OutputStream outputStream) {
+        this("#"+String.valueOf(++connectionIndex), inputStream, outputStream);
     }
-    
+
     public final String getIdentifier() {
         return this.identifier;
+    }
+
+    final void setIdentifier(String identifier) {
+        this.identifier = identifier;
     }
 
     /**
@@ -112,16 +115,6 @@ public abstract class Connection  {
      * @throws IOException
      */
     public abstract void shutdownOutput() throws IOException;
-    
-    /**
-     * Closes the connection.
-     * The connection with the peer is aborted and any threads waiting
-     * to read from the connection will throw a SocketException.
-     * @throws IOException
-     */
-    public void close() throws IOException {
-        close(true);
-    }
 
     /**
      * Closes the connection.
@@ -129,10 +122,6 @@ public abstract class Connection  {
      * to read from the connection will throw a SocketException.
      * @throws IOException
      */
-    public void close(boolean removeConnection) throws IOException {
-        if (removeConnection) {
-            this.service.removeConnection(this.identifier);
-        }
-    }
+    public abstract void close() throws IOException;
 
 }

@@ -47,17 +47,16 @@ public class SocketConnection extends Connection {
      *                 In a client this object is constructed when the client connects to a server.
      * @throws IOException If an I/O error occurs when accessing properties of the socket.
      */
-    public SocketConnection(final Service service, final Socket socket) throws IOException {
-        super(service, new BufferedInputStream(socket.getInputStream()), new BufferedOutputStream(socket.getOutputStream()));
+    public SocketConnection(final Socket socket) throws IOException {
+        super(new BufferedInputStream(socket.getInputStream()), new BufferedOutputStream(socket.getOutputStream()));
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "SocketConnection.SocketConnection",service,socket));
+            logger.finer(Logging.entering(ObjectId, "SocketConnection.SocketConnection",socket));
         }
 
         this.socket = socket;
-        this.socket.setSoTimeout(0);
     }
-    
+
     /**
      * Returns the host address of the connected client.
      * @return
@@ -105,8 +104,6 @@ public class SocketConnection extends Connection {
             e.printStackTrace();
             throw e;
         }
-        
-        super.close();
     }
 
 }

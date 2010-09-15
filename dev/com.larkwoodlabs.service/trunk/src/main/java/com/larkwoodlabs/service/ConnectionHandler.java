@@ -35,8 +35,8 @@ import com.larkwoodlabs.util.logging.Logging;
 public class ConnectionHandler implements Runnable {
 
     static public class Factory {
-        public ConnectionHandler construct(Connection connection) {
-            return new ConnectionHandler(connection);
+        public ConnectionHandler construct(Service service, Connection connection) {
+            return new ConnectionHandler(service, connection);
         }
     }
 
@@ -50,6 +50,7 @@ public class ConnectionHandler implements Runnable {
 
     protected final Object lock = new Object();
 
+    protected Service service;
     protected Connection connection;
     
     protected boolean isRunning;
@@ -61,22 +62,9 @@ public class ConnectionHandler implements Runnable {
      * @param context
      * @param connection
      */
-    protected ConnectionHandler(final Connection connection) {
+    protected ConnectionHandler(final Service service, final Connection connection) {
+        this.service = service;
         this.connection = connection;
-        this.isRunning = false;
-    }
-    
-    /**
-     * Closes this handler and associated connection.
-     * @throws IOException
-     */
-    public void close() throws IOException {
-        if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "ConnectionHandler.close"));
-        }
-
-        this.isRunning = false;
-        this.connection.close();
     }
 
     /**
@@ -90,8 +78,9 @@ public class ConnectionHandler implements Runnable {
     }
     
     /**
-     * Sets the connection by this handler.
-     * Used to switch connections.
+     * Sets the connection managed by this handler.
+     * Used to switch connections, primarily for tunneling.
+     * If the previous connection is no longer needed it should be closed.
      * @param connection
      */
     protected void setConnection(final Connection connection) {
@@ -99,7 +88,7 @@ public class ConnectionHandler implements Runnable {
             this.connection = connection;
         }
     }
-    
+
     /**
      * Continuously receives and forwards incoming bytes.
      */
@@ -110,10 +99,8 @@ public class ConnectionHandler implements Runnable {
             logger.finer(Logging.entering(ObjectId, "ConnectionHandler.run"));
         }
 
-        this.isRunning = true;
-
         try {
-            while (this.isRunning) {
+            while (!Thread.currentThread().isInterrupted()) {
                 // Read and process one message from the input stream
                 processMessage();
             }
@@ -139,6 +126,8 @@ public class ConnectionHandler implements Runnable {
         catch (InterruptedException e) {
             if (logger.isLoggable(Level.FINE)) {
                 logger.fine(ObjectId + " connection handler thread was interrupted");
+                // Continue on to attempt to close the connection but set the flag to interrupt any subsequent waits
+                Thread.currentThread().interrupt();
             }
         }
         catch (Exception e) {
@@ -160,6 +149,9 @@ public class ConnectionHandler implements Runnable {
             }
             e.printStackTrace();
         }
+
+        this.service.removeConnection(connection);
+
     }
 
     /**
@@ -176,9 +168,9 @@ public class ConnectionHandler implements Runnable {
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "ConnectionHandler.processMessage"));
         }
-        
+
         InputStream inputStream = this.connection.getInputStream();
-        
+
         // Get first character in message 
         // Throws SocketException if the socket is closed by 
         // another thread while waiting in this call
