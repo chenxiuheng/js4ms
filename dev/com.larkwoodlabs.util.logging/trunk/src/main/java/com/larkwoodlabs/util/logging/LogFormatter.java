@@ -25,13 +25,17 @@ public class LogFormatter extends Formatter {
         
     private static final MessageFormat messageFormat = new MessageFormat("{0,date,HH:mm:ss.SSS} {1,number,00000000} {2} {3} {4} {5}\n");
     
-    private long startTime = System.currentTimeMillis();
+    private long startTime = 0;
 
     public LogFormatter() {
         super();
     }
     
     @Override public String format(LogRecord record) {
+
+        if (startTime == 0) {
+            this.startTime = record.getMillis();
+        }
 
         Object[] arguments = new Object[7];
 
