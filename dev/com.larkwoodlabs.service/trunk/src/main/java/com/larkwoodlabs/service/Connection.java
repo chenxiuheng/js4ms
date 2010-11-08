@@ -19,32 +19,53 @@ package com.larkwoodlabs.service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PushbackInputStream;
+import java.net.InetAddress;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.larkwoodlabs.util.logging.Logging;
+import com.larkwoodlabs.util.logging.Log;
 
 /**
- * A persistent client-server connection. 
+ * An abstract base class for persistent client-server connections. 
  *
- * @author Gregory Bumgardner
+ * @author gbumgard@cisco.com
  */
 public abstract class Connection  {
 
     /*-- Static Variables ----------------------------------------------------*/
 
+    /**
+     * The {@link Logger} for {@link Connection} objects.
+     */
     public static final Logger logger = Logger.getLogger(Connection.class.getName());
 
+    /**
+     * Global index used to create unique identifier for new connections.
+     */
+    static int connectionIndex;
 
     /*-- Member Variables ----------------------------------------------------*/
 
-    protected final String ObjectId = Logging.identify(this);
+    /**
+     * Helper object used to construct log messages.
+     */
+    protected final Log log = new Log(this);
 
-    static int connectionIndex;
-
+    /**
+     * Unique identifier used to retrieve connection instances managed by a {@link ConnectionManager}.
+     */
     protected String identifier;
-    protected final InputStream inputStream;
-    protected final OutputStream outputStream;
+
+    /**
+     * The InputStream used to read data from the connection.
+     */
+    protected PushbackInputStream inputStream;
+
+    /**
+     * The OutputStream used to send data over the connection.
+     */
+    protected OutputStream outputStream;
     
 
     /*-- Member Functions ----------------------------------------------------*/
@@ -52,16 +73,18 @@ public abstract class Connection  {
     /**
      * Protected constructor used by derived classes to specify the input stream, output stream,
      * and client host address for the connection.
-     * @param remoteAddress - The client host address.
+     * @param identifier - A String containing an identifier that is unique within
+     *                     the context of the associated Server instance.
      * @param inputStream - The stream that will be used to receive data from the client.
      * @param outputStream - The stream that will be used to send data to the client.
      */
     protected Connection(final String identifier, final InputStream inputStream, final OutputStream outputStream) {
+
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "Connection.Connection", identifier, inputStream, outputStream));
+            logger.finer(log.entry("Connection", identifier, inputStream, outputStream));
         }
 
-        this.inputStream = inputStream;
+        this.inputStream = new PushbackInputStream(inputStream);
         this.outputStream = outputStream;
         this.identifier = identifier;
     }
@@ -70,20 +93,43 @@ public abstract class Connection  {
         this("#"+String.valueOf(++connectionIndex), inputStream, outputStream);
     }
 
+    /**
+     * Gets the connection identifier.
+     * @return
+     */
     public final String getIdentifier() {
         return this.identifier;
     }
 
-    final void setIdentifier(String identifier) {
+    /**
+     * Sets the connection identifier. The identifier must be unique within
+     * the context of a {@link Server} instance.
+     * This method should not be used while the connection
+     * is registered with a {@link ConnectionManager}
+     * @param identifier - A String containing a unique identifier.
+     */
+    public final void setIdentifier(String identifier) {
         this.identifier = identifier;
     }
+
+    public abstract InetAddress getRemoteAddress();
 
     /**
      * Returns an input stream that can be used to receive data from the client.
      * @return
      */
-    public final InputStream getInputStream() {
+    public final PushbackInputStream getInputStream() {
         return this.inputStream;
+    }
+
+    /**
+     * Sets the input stream used to receive data.
+     * Typically used to bind this connection to the input stream of another connection
+     * for tunneling purposes.
+     * @param inputStream
+     */
+    public final void setInputStream(final PushbackInputStream inputStream) {
+        this.inputStream = inputStream;
     }
 
     /**
@@ -92,6 +138,16 @@ public abstract class Connection  {
      */
     public final OutputStream getOutputStream() {
         return this.outputStream;
+    }
+
+    /**
+     * Sets the output stream used to send data.
+     * Typically used to bind this connection to the output stream of another connection
+     * for tunneling purposes.
+     * @param inputStream
+     */
+    public final void setOutputStream(final OutputStream outputStream) {
+        this.outputStream = outputStream;
     }
 
     /**
