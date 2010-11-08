@@ -1,7 +1,7 @@
 function deployRelay(onready, onerror, onfailover) {
 	
 	var anchor = document.createElement("a");
-    anchor.href = "RtspMulticastRelayApplet.jnlp";
+    anchor.href = "/jws/applets/rtsprelay/RtspMulticastRelayApplet.jnlp";
     var codebase = anchor.href.substring(0,anchor.href.lastIndexOf('/')+1);
     var jnlp_abs_href = anchor.href;
     
