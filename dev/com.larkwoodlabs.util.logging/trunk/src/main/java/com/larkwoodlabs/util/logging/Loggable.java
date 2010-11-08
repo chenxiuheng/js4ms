@@ -26,6 +26,11 @@ import java.util.logging.Logger;
 public interface Loggable {
 
     /**
+     * Returns the Logger instance used by this object to generate log messages.
+     */
+    public Logger getLogger();
+
+    /**
      * Logs internal state of object using specified logger for output.
      * @param logger The logger object to use when generating log messages.
      */
