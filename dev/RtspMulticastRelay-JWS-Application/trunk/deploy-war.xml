@@ -12,7 +12,7 @@
         <input message="Please enter Tomcat manager URL:" addproperty="url" defaultvalue="http://localhost:8080/manager"/>
         <input message="Please enter manager user name:" addproperty="username" defaultvalue="admin"/>
         <input message="Please enter manager password:" addproperty="password" defaultvalue="admin"/>
-        <undeploy url="${url}" username="${username}" password="${password}" path="/jws/apps/rtsprelay" failonerror="false"/>
+        <undeploy url="${url}" username="${username}" password="${password}" path="${context.path}" failonerror="false"/>
         <deploy url="${url}" username="${username}" password="${password}" path="${context.path}" war="build/${war.file}" />
     </target>
 
