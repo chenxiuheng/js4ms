@@ -23,7 +23,6 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.logging.Level;
 
-import com.larkwoodlabs.util.logging.Logging;
 
 /**
  * A persistent client-server connection that uses the input and output streams
@@ -51,7 +50,7 @@ public class SocketConnection extends Connection {
         super(new BufferedInputStream(socket.getInputStream()), new BufferedOutputStream(socket.getOutputStream()));
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "SocketConnection.SocketConnection",socket));
+            logger.finer(log.entry("SocketConnection",socket));
         }
 
         this.socket = socket;
@@ -69,7 +68,7 @@ public class SocketConnection extends Connection {
     public void shutdownInput() throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "SocketConnection.shutdownInput"));
+            logger.finer(log.entry("shutdownInput"));
         }
 
         if (!this.socket.isInputShutdown()) {
@@ -81,7 +80,7 @@ public class SocketConnection extends Connection {
     public void shutdownOutput() throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "SocketConnection.shutdownInput"));
+            logger.finer(log.entry("shutdownOutput"));
         }
 
         if (!this.socket.isOutputShutdown()) {
@@ -93,14 +92,14 @@ public class SocketConnection extends Connection {
     public void close() throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "SocketConnection.close"));
+            logger.finer(log.entry("close"));
         }
 
         try {
             socket.close();
         }
         catch(IOException e) {
-            logger.warning(ObjectId+" cannot close socket connection");
+            logger.warning(log.msg("cannot close socket connection"));
             e.printStackTrace();
             throw e;
         }
