@@ -127,7 +127,12 @@ public final class Logging {
             return object.toString();
         }
         else {
-            return object.getClass().getSimpleName()+Logging.identify(object);
+            String name = object.getClass().getSimpleName();
+            if (name.length()==0) {
+                name = ((Class<?>)object.getClass().getSuperclass()).getSimpleName();
+            }
+            
+            return name+Logging.identify(object);
         }
     }
 
