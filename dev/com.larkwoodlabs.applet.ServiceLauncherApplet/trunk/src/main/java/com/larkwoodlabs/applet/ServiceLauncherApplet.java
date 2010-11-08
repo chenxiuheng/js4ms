@@ -3,70 +3,85 @@ package com.larkwoodlabs.applet;
 import java.applet.Applet;
 import java.io.File;
 import java.io.IOException;
-import java.net.ConnectException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
-import java.net.Socket;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
+import java.util.Properties;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.larkwoodlabs.service.ServiceLauncher;
+import com.larkwoodlabs.util.logging.LogFormatter;
 
 public class ServiceLauncherApplet extends Applet {
 
     private static final long serialVersionUID = 1L;
 
     static final String logPrefix = ServiceLauncherApplet.class.getSimpleName() + ": ";
-    
+
+    static final String JAVA_APPLICATION_LAUNCHER_PARAM = "JavaApplicationLauncher";
+    static final String SERVICE_CLASS_PATH_PARAM = "ServiceClassPath";
     static final String SERVICE_CLASS_NAME_PARAM = "ServiceClassName";
     static final String SERVICE_PORT_PARAM = "ServicePort";
     static final String USE_KEEP_ALIVE_PARAM = "UseKeepAlive";
-    static final String KEEP_ALIVE_PORT_PARAM = "KeepAlivePort";
     static final String CONNECTION_RETRY_COUNT_PARAM = "ConnectionRetryCount";
     static final String CONNECTION_RETRY_INTERVAL_PARAM = "ConnectionRetryInterval";
     static final String SERVICE_PROPERTIES_PARAM = "ServiceProperties";
 
     static final String SERVICE_PORT_PROPERTY = "com.larkwoodlabs.service.socket.port";
     static final String SERVICE_KEEP_ALIVE_ENABLED_PROPERTY = "com.larkwoodlabs.service.keepalive.enabled";
-    static final String SERVICE_KEEP_ALIVE_PORT_PROPERTY = "com.larkwoodlabs.service.keepalive.port";
 
+    static final String DEFAULT_JAVA_APPLICATION_LAUNCHER = "java";
+    static final int DEFAULT_SERVICE_PORT = 9999;
     static final int DEFAULT_CONNECTION_RETRY_COUNT = 10;
     static final int DEFAULT_CONNECTION_RETRY_INTERVAL = 1000;
 
     static final String PARAMETER_INFO[][] = { 
+        {JAVA_APPLICATION_LAUNCHER_PARAM, "String", "The name of the program used to launch java applications (default is 'java')"},
+        {SERVICE_CLASS_PATH_PARAM, "String", "The class path used to locate the service class (optional)"},
         {SERVICE_CLASS_NAME_PARAM, "String", "The name of the service class (required)"},
         {SERVICE_PORT_PARAM, "Integer", "The service port number. Passed to the service as property '"+SERVICE_PORT_PROPERTY+"'"},
         {USE_KEEP_ALIVE_PARAM, "Boolean", "Indicates whether the applet should open a keep-alive connection."},
-        {KEEP_ALIVE_PORT_PARAM, "Integer", "The port number to use when opening a 'keep-alive' connection. "+
-                                           "Passed to the service as the property value '"+SERVICE_KEEP_ALIVE_PORT_PROPERTY+"'. " +
-                                           "Default is value of '"+SERVICE_PORT_PROPERTY+"'."},
-        {CONNECTION_RETRY_COUNT_PARAM, "Integer", "The number of attempts the applet should take to open a keep-alive connection to a service instance."},
+        {CONNECTION_RETRY_COUNT_PARAM, "Integer", "The number of attempts the applet should make to open a keep-alive connection to a service instance."},
         {CONNECTION_RETRY_INTERVAL_PARAM, "Integer", "The time delay to use between connection attempts (in milliseconds)."},
         {SERVICE_PROPERTIES_PARAM,"comma-delimited list of name=value pairs", "Property values that will be passed to the service"}
     };
 
     String version;
 
-    boolean useKeepAlive = false;
-    int servicePort;
-    int keepAlivePort;
-    
-    Socket socket;
-    boolean isConnected = false;
-    
+    ServiceLauncher launcher;
+
+    /**
+     * 
+     */
     public ServiceLauncherApplet() {
         logVersionInfo();
         System.out.println(getAppletInfo());
+
+        Handler[] handlers = Logger.getLogger("").getHandlers();
+        for ( int index = 0; index < handlers.length; index++ ) {
+            // System.out.println("handler "+handlers[index].getClass().getName());
+            handlers[index].setLevel(Level.FINER);
+            handlers[index].setFormatter(new LogFormatter());
+        }
+        
+        ServiceLauncher.logger.setLevel(Level.FINER);
     }
 
+    /**
+     * 
+     */
     @Override
     public String getAppletInfo() {
         return this.getClass().getSimpleName() + " Version "+(this.version != null ? this.version + "\n" : "<unknown>\n");
     }
-    
+
+    /**
+     * 
+     */
     @Override
     public String[][] getParameterInfo() {
         return PARAMETER_INFO;
@@ -79,36 +94,58 @@ public class ServiceLauncherApplet extends Applet {
     public void init() {
 
         System.out.println(logPrefix + "init");
-        
-        applyProperties();
+
+        try {
+            this.launcher = new ServiceLauncher(getJavaApplicationLauncher(),
+                                                getServiceClassPath(),
+                                                getServiceClassName(),
+                                                getServicePort(),
+                                                getUseKeepAlive(),
+                                                getConnectionRetryCount(),
+                                                getConnectionRetryInterval(),
+                                                getServiceProperties());
+        }
+        catch (IllegalArgumentException e) {
+            // TODO
+            e.printStackTrace();
+        }
+        catch (ClassNotFoundException e) {
+            // TODO
+            e.printStackTrace();
+        }
 
     }
-    
+
+    /**
+     * 
+     */
     @Override
     public void start() {
 
         System.out.println(logPrefix + "start");
 
         try {
-            if (!isServiceStarted()) {
-                launchProcess();
-            }
+            this.launcher.start();
         }
         catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
     }
 
+    /**
+     * 
+     */
     @Override
     public void stop() {
-        
+
         System.out.println(logPrefix + "stop");
 
-        if (this.useKeepAlive) {
-            disconnect();
-        }
+        this.launcher.stop();
     }
 
+    /**
+     * 
+     */
     @Override
     public void destroy() {
 
@@ -116,6 +153,9 @@ public class ServiceLauncherApplet extends Applet {
 
     }
  
+    /**
+     * 
+     */
     void logVersionInfo() {
         
         String className = this.getClass().getSimpleName() + ".class";
@@ -144,229 +184,197 @@ public class ServiceLauncherApplet extends Applet {
         }
     }
 
-    void applyProperties() {
+    /**
+     * 
+     * @return
+     */
+    String getJavaApplicationLauncher() {
+        String javaVmName = DEFAULT_JAVA_APPLICATION_LAUNCHER;
+    
+        String propertyValue = getParameter(JAVA_APPLICATION_LAUNCHER_PARAM);
+        if (propertyValue != null) {
+            javaVmName = propertyValue;
+        }
 
-        this.servicePort = -1;
+        return javaVmName;
+    }
 
-        String servicePortParam = getParameter(SERVICE_PORT_PARAM);
-        if (servicePortParam != null) {
+    /**
+     * 
+     * @return
+     * @throws IllegalArgumentException
+     * @throws ClassNotFoundException 
+     */
+    String getServiceClassPath() throws IllegalArgumentException, ClassNotFoundException {
+
+        String propertyValue = getParameter(SERVICE_CLASS_PATH_PARAM);
+        if (propertyValue != null) {
+            return propertyValue;
+        }
+        else {
+            // Attempt to determine class location using class loader
+            String serviceClassName = getServiceClassName();
+
+            System.out.println(logPrefix + "attempting to load "+serviceClassName);
+
+            Class<?> serviceClass;
+
             try {
-                this.servicePort = Short.parseShort(servicePortParam);
+                serviceClass = Class.forName(serviceClassName);
             }
-            catch(NumberFormatException e) {
-                System.out.println(logPrefix + "value of applet parameter '"+SERVICE_PORT_PARAM+"' is not a valid port number!");
+            catch (ClassNotFoundException e) {
+                System.out.println(logPrefix + "cannot load class "+serviceClassName);
+                throw e;
             }
-        }
 
-        this.keepAlivePort = -1;
+            System.out.println(logPrefix + serviceClassName + " successfully loaded");
 
-        String keepAlivePortParam = getParameter(KEEP_ALIVE_PORT_PARAM);
-        if (keepAlivePortParam != null) {
+            System.out.println(logPrefix + " attempting to locate .jar file containing " + serviceClassName);
+
+            String jarFilePath;
+
             try {
-                this.keepAlivePort = Short.parseShort(keepAlivePortParam);
+                jarFilePath = new File(serviceClass.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath();
             }
-            catch(NumberFormatException e) {
-                System.out.println(logPrefix + "value of applet parameter '"+KEEP_ALIVE_PORT_PARAM+"' is not a valid port number!");
+            catch (URISyntaxException e) {
+                System.out.println(logPrefix + " cannot locate jar file for "+ serviceClassName + " - " + e.getMessage());
+                throw new ClassNotFoundException("cannot locate jar file for "+ serviceClassName);
             }
-        }
 
-        if (this.keepAlivePort == -1 && this.servicePort != -1) {
-            this.keepAlivePort = this.servicePort;
-        }
+            System.out.println(logPrefix + serviceClassName + " found in " + jarFilePath);
 
-        String useKeepAliveParam = getParameter(USE_KEEP_ALIVE_PARAM);
-        this.useKeepAlive = Boolean.parseBoolean(useKeepAliveParam) && this.keepAlivePort != -1;
+            return jarFilePath;
+        }
 
     }
 
-    public void launchProcess() throws InterruptedException {
-       
-        String className = getParameter(SERVICE_CLASS_NAME_PARAM);
-        
-        if (className == null) {
-            System.out.println(logPrefix + "applet parameter " + SERVICE_CLASS_NAME_PARAM + " not defined!");
-            return;
-        }
-        
-        System.out.println(logPrefix + "attempting to load "+className);
+    /**
+     * 
+     * @return
+     * @throws IllegalArgumentException
+     */
+    String getServiceClassName() throws IllegalArgumentException {
 
-        Class<?> processClass;
-
-        try {
-            processClass = Class.forName(className);
+        String propertyValue = getParameter(SERVICE_CLASS_NAME_PARAM);
+        if (propertyValue != null) {
+            return propertyValue;
         }
-        catch (ClassNotFoundException e1) {
-            System.out.println(logPrefix + "cannot load class "+className);
-            return;
-        }
-        
-        System.out.println(logPrefix + className + " successfully loaded");
-
-        System.out.println(logPrefix+"attempting to locate .jar file containing "+className);
-
-        String jarFilePath;
-        
-        try {
-            jarFilePath = new File(processClass.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath();
-        }
-        catch (URISyntaxException e) {
-            System.out.println(logPrefix+"cannot locate jar file for "+className + " - " + e.getMessage());
-            return;
+        else {
+            String message = "required applet parameter '"+SERVICE_CLASS_NAME_PARAM+"' is missing";
+            System.out.println(logPrefix + " " + message);
+            throw new IllegalArgumentException();
         }
 
-        System.out.println(logPrefix+className+" found in "+jarFilePath);
+    }
 
-        ArrayList<String> parameters = new ArrayList<String>();
-        parameters.add(System.getProperty("java.home")+File.separator+"bin"+File.separator+"java");
-        
-        if (this.servicePort != -1) {
-            parameters.add("-D"+SERVICE_PORT_PROPERTY+"="+this.servicePort);
+    /**
+     * 
+     * @return
+     * @throws IllegalArgumentException
+     */
+    int getServicePort() throws IllegalArgumentException {
+
+        int servicePort = DEFAULT_SERVICE_PORT;
+
+        String propertyValue = getParameter(SERVICE_PORT_PARAM);
+        if (propertyValue != null) {
+            try {
+                servicePort = Short.parseShort(propertyValue);
+            }
+            catch(NumberFormatException e) {
+                String message = "value of applet parameter '"+SERVICE_PORT_PARAM+"' is not an integer port number";
+                System.out.println(logPrefix + " " + message );
+                throw new IllegalArgumentException(message, e);
+            }
         }
-        
-        if (this.useKeepAlive) {
-            parameters.add("-D"+SERVICE_KEEP_ALIVE_ENABLED_PROPERTY+"=true");
-            
+        return servicePort;
+    }
+
+    /**
+     * 
+     * @return
+     */
+    boolean getUseKeepAlive() {
+        return Boolean.parseBoolean(getParameter(USE_KEEP_ALIVE_PARAM));
+    }
+
+    /**
+     * 
+     * @return
+     * @throws IllegalArgumentException
+     */
+    int getConnectionRetryCount() throws IllegalArgumentException {
+
+        int connectionRetryCount = DEFAULT_CONNECTION_RETRY_COUNT;
+
+        String propertyValue = getParameter(CONNECTION_RETRY_COUNT_PARAM);
+        if (propertyValue != null) {
+            try {
+                connectionRetryCount = Short.parseShort(propertyValue);
+                if (connectionRetryCount < 0) connectionRetryCount = 0;
+            }
+            catch(NumberFormatException e) {
+                String message = "value of applet parameter '"+CONNECTION_RETRY_COUNT_PARAM+"' is not an integer";
+                System.out.println(logPrefix + " " + message);
+                throw new IllegalArgumentException(message, e);
+            }
         }
 
-        if (this.keepAlivePort != -1) {
-            parameters.add("-D"+SERVICE_KEEP_ALIVE_PORT_PROPERTY+"="+this.keepAlivePort);
+        return connectionRetryCount;
+    }
+
+    /**
+     * 
+     * @return
+     * @throws IllegalArgumentException
+     */
+    int getConnectionRetryInterval() throws IllegalArgumentException {
+
+        int connectionRetryInterval = DEFAULT_CONNECTION_RETRY_INTERVAL;
+
+        String propertyValue = getParameter(CONNECTION_RETRY_INTERVAL_PARAM);
+        if (propertyValue != null) {
+            try {
+                connectionRetryInterval = Short.parseShort(propertyValue);
+                if (connectionRetryInterval < 0) connectionRetryInterval = 0;
+            }
+            catch(NumberFormatException e) {
+                String message = "value of applet parameter '"+CONNECTION_RETRY_INTERVAL_PARAM+"' is not an integer";
+                System.out.println(logPrefix + " " + message);
+                throw new IllegalArgumentException(message, e);
+            }
         }
 
-        
+        return connectionRetryInterval;
+    }
+
+    /**
+     * 
+     * @return
+     */
+    Properties getServiceProperties() {
+
+        Properties properties = new Properties();
+
+        properties.put(SERVICE_PORT_PROPERTY, String.valueOf(getServicePort()));
+
+        properties.put(SERVICE_KEEP_ALIVE_ENABLED_PROPERTY, String.valueOf(getUseKeepAlive()));
+
         String propertiesParam = getParameter(SERVICE_PROPERTIES_PARAM);
         if (propertiesParam != null) {
             String[] propertyAssignments = propertiesParam.split(",");
             for (String propertyAssignment : propertyAssignments) {
                 String[] pair = propertyAssignment.split("=");
                 if (pair.length == 1) {
-                    parameters.add("-D"+pair[0]);
+                    properties.setProperty(pair[0],"");
                 }
                 else if (pair.length == 2) {
-                    parameters.add("-D"+pair[0]+"="+pair[1]);
+                    properties.setProperty(pair[0],pair[1]);
                 }
             }
         }
-        
-        parameters.add("-jar");
-        parameters.add(jarFilePath);
 
-        try {
-            String[] commandLine = parameters.toArray(new String[parameters.size()]);
-
-            System.out.println(logPrefix+"attempting to launch service using:");
-            String message = "";
-            for (String s : commandLine) {
-                message += s+" ";
-            }
-            System.out.println(logPrefix+message);
-            
-            ProcessBuilder builder = new ProcessBuilder(commandLine);
-            builder.start();
-            System.out.println(logPrefix+"service launched");
-        }
-        catch (IOException e) {
-            System.out.println(logPrefix+"launch failed with exception:");
-            e.printStackTrace();
-            return;
-        }
-
-        if (this.useKeepAlive) {
-
-            int retryCount = DEFAULT_CONNECTION_RETRY_COUNT;
-
-            String propertyValue = getParameter(CONNECTION_RETRY_COUNT_PARAM);
-            if (propertyValue != null) {
-                try {
-                    retryCount = Short.parseShort(propertyValue);
-                    if (retryCount < 0) retryCount = 0;
-                }
-                catch(NumberFormatException e) {
-                    System.out.println(logPrefix + "value of applet parameter '"+CONNECTION_RETRY_COUNT_PARAM+"' is not a valid integer!");
-                }
-            }
-
-            int retryInterval = DEFAULT_CONNECTION_RETRY_INTERVAL;
-
-            propertyValue = getParameter(CONNECTION_RETRY_INTERVAL_PARAM);
-            if (propertyValue != null) {
-                try {
-                    retryInterval = Short.parseShort(propertyValue);
-                    if (retryInterval < 0) retryInterval = 0;
-                }
-                catch(NumberFormatException e) {
-                    System.out.println(logPrefix + "value of applet parameter '"+CONNECTION_RETRY_INTERVAL_PARAM+"' is not a valid integer!");
-                }
-            }
-
-            connect(retryCount, retryInterval);
-        }
-
-    }
-    
-    boolean isServiceStarted() throws InterruptedException {
-
-        System.out.println(logPrefix+"check for running service instance");
-
-        if (this.keepAlivePort != -1) {
-            if (connect(1, 0)) {
-                if (!this.useKeepAlive) {
-                    disconnect();
-                }
-                return true;
-            }
-        }
-        return false;
+        return properties;
     }
 
-    boolean connect(int retries, int retryInterval) throws InterruptedException {
-
-        if (this.isConnected) return true;
-
-        for (int i=0; i < retries; i++) {
-            System.out.println(logPrefix+"attempting to establish connection on port "+this.keepAlivePort);
-    
-            try {
-                this.socket = new Socket();
-                InetSocketAddress address = new InetSocketAddress(InetAddress.getLocalHost(),this.keepAlivePort);
-                System.out.println(logPrefix + "attempt "+(i+1)+" to connect running service at "+address.getHostName()+":"+address.getPort());
-                this.socket.connect(address);
-                System.out.println(logPrefix + "connected to running service instance");
-                this.isConnected = true;
-                this.socket.getInputStream();
-                return true;
-            }
-            catch(ConnectException e) {
-                System.out.println(logPrefix+"cannot connect to port "+this.keepAlivePort+" - " + e.getMessage());
-                Thread.sleep(retryInterval);
-            }
-            catch (UnknownHostException e) {
-                System.out.println(logPrefix + "cannot connect on port "+this.keepAlivePort+" - " + e.getMessage());
-                break;
-            }
-            catch (IOException e) {
-                System.out.println(logPrefix + "cannot connect on port "+this.keepAlivePort+" - " + e.getMessage());
-                e.printStackTrace();
-                break;
-            }
-        }
-        return false;
-    }
-    
-    void disconnect() {
-
-        if (this.isConnected) {
-
-            System.out.println(logPrefix+"closing service connection...");
-
-            this.isConnected = false;
-
-            try {
-                this.socket.close();
-            }
-            catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-    
 }
