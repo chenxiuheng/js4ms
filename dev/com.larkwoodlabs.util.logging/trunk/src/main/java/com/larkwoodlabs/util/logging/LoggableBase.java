@@ -30,10 +30,6 @@ public abstract class LoggableBase implements Loggable {
     public final String ClassId = this.getClass().getName();
     public final String ObjectId = Logging.identify(this);
 
-    /**
-     * Returns the Logger instance used by this object to generate log messages.
-     */
-    public abstract Logger getLogger();
     
     /**
      * Logs the internal state of this object using the logger returned by {@link #getLogger()}.
