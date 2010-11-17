@@ -52,7 +52,7 @@ public final class UdpOutputChannel implements OutputChannel<UdpDatagram> {
      * Call {@link UdpEndpoint#close()} to close the UDP endpoint.
      */
     @Override
-    public final void close(final boolean isCloseAll) {
+    public final void close() {
         // NO-OP
     }
 
