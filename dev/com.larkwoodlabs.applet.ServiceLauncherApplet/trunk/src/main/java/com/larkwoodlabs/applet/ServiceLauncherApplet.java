@@ -1,20 +1,21 @@
 package com.larkwoodlabs.applet;
 
 import java.applet.Applet;
-import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Properties;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
-import java.util.logging.Handler;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.larkwoodlabs.service.ServiceLauncher;
-import com.larkwoodlabs.util.logging.LogFormatter;
+import com.larkwoodlabs.service.jws.ServiceLauncher;
+import com.larkwoodlabs.util.logging.Log;
+import com.larkwoodlabs.util.logging.Logging;
 
 public class ServiceLauncherApplet extends Applet {
 
@@ -22,14 +23,15 @@ public class ServiceLauncherApplet extends Applet {
 
     static final String logPrefix = ServiceLauncherApplet.class.getSimpleName() + ": ";
 
-    static final String JAVA_APPLICATION_LAUNCHER_PARAM = "JavaApplicationLauncher";
-    static final String SERVICE_CLASS_PATH_PARAM = "ServiceClassPath";
-    static final String SERVICE_CLASS_NAME_PARAM = "ServiceClassName";
+    static final String SERVICE_JNLP_URL_PARAM = "ServiceJnlpUrl";
     static final String SERVICE_PORT_PARAM = "ServicePort";
     static final String USE_KEEP_ALIVE_PARAM = "UseKeepAlive";
     static final String CONNECTION_RETRY_COUNT_PARAM = "ConnectionRetryCount";
     static final String CONNECTION_RETRY_INTERVAL_PARAM = "ConnectionRetryInterval";
     static final String SERVICE_PROPERTIES_PARAM = "ServiceProperties";
+    static final String LOGGING_PROPERTIES_URI_PARAM = "LoggingPropertiesUri";
+    static final String ON_ERROR_URL_PARAM = "OnErrorUrl";
+    static final String ON_DISCONNECT_URL_PARAM = "OnDisconnectUrl";
 
     static final String SERVICE_PORT_PROPERTY = "com.larkwoodlabs.service.socket.port";
     static final String SERVICE_KEEP_ALIVE_ENABLED_PROPERTY = "com.larkwoodlabs.service.keepalive.enabled";
@@ -40,35 +42,30 @@ public class ServiceLauncherApplet extends Applet {
     static final int DEFAULT_CONNECTION_RETRY_INTERVAL = 1000;
 
     static final String PARAMETER_INFO[][] = { 
-        {JAVA_APPLICATION_LAUNCHER_PARAM, "String", "The name of the program used to launch java applications (default is 'java')"},
-        {SERVICE_CLASS_PATH_PARAM, "String", "The class path used to locate the service class (optional)"},
-        {SERVICE_CLASS_NAME_PARAM, "String", "The name of the service class (required)"},
+        {SERVICE_JNLP_URL_PARAM, "String", "The service .jnlp file URL (required)"},
         {SERVICE_PORT_PARAM, "Integer", "The service port number. Passed to the service as property '"+SERVICE_PORT_PROPERTY+"'"},
         {USE_KEEP_ALIVE_PARAM, "Boolean", "Indicates whether the applet should open a keep-alive connection."},
         {CONNECTION_RETRY_COUNT_PARAM, "Integer", "The number of attempts the applet should make to open a keep-alive connection to a service instance."},
         {CONNECTION_RETRY_INTERVAL_PARAM, "Integer", "The time delay to use between connection attempts (in milliseconds)."},
-        {SERVICE_PROPERTIES_PARAM,"comma-delimited list of name=value pairs", "Property values that will be passed to the service"}
+        {SERVICE_PROPERTIES_PARAM,"comma-delimited list of name=value pairs", "Property values that will be passed to the service."},
+        {ON_ERROR_URL_PARAM,"URL", "The URL that the applet will use to set the document location to should an error occur."},
+        {ON_DISCONNECT_URL_PARAM,"URL", "The URL that the applet will use to set the document location when the service connect is broken."}
     };
+
+    public static final Logger logger = Logger.getLogger(ServiceLauncherApplet.class.getName());
+    
+    private final Log log = new Log(this);
 
     String version;
 
-    ServiceLauncher launcher;
+    ServiceLauncher launcher = null;
+
+    boolean connected = false;
 
     /**
      * 
      */
     public ServiceLauncherApplet() {
-        logVersionInfo();
-        System.out.println(getAppletInfo());
-
-        Handler[] handlers = Logger.getLogger("").getHandlers();
-        for ( int index = 0; index < handlers.length; index++ ) {
-            // System.out.println("handler "+handlers[index].getClass().getName());
-            handlers[index].setLevel(Level.FINER);
-            handlers[index].setFormatter(new LogFormatter());
-        }
-        
-        ServiceLauncher.logger.setLevel(Level.FINER);
     }
 
     /**
@@ -86,33 +83,62 @@ public class ServiceLauncherApplet extends Applet {
     public String[][] getParameterInfo() {
         return PARAMETER_INFO;
     }
-    
+
     /**
+     * 
      * 
      */
     @Override
     public void init() {
 
-        System.out.println(logPrefix + "init");
+        String loggingPropertiesUriParam = getParameter(LOGGING_PROPERTIES_URI_PARAM);
 
-        try {
-            this.launcher = new ServiceLauncher(getJavaApplicationLauncher(),
-                                                getServiceClassPath(),
-                                                getServiceClassName(),
-                                                getServicePort(),
-                                                getUseKeepAlive(),
-                                                getConnectionRetryCount(),
-                                                getConnectionRetryInterval(),
-                                                getServiceProperties());
+        if (loggingPropertiesUriParam != null) {
+            try {
+                Logging.configureLogging(new URI(loggingPropertiesUriParam));
+            }
+            catch (URISyntaxException e) {
+            }
+            catch (IOException e) {
+            }
         }
-        catch (IllegalArgumentException e) {
-            // TODO
-            e.printStackTrace();
+
+        logVersionInfo();
+
+        logger.fine(getAppletInfo());
+
+        logger.finer(log.entry("init"));
+
+        ServiceLauncher.DisconnectListener listener = null;
+
+        String onDisconnectUrl = getParameter(ON_DISCONNECT_URL_PARAM);
+        if (onDisconnectUrl != null) {
+            try {
+                final URL url = new URL(onDisconnectUrl);
+                listener = new ServiceLauncher.DisconnectListener() {
+                    
+                    @Override
+                    public void onDisconnect() {
+                        connected = false;
+                        getAppletContext().showDocument(url);
+                    }
+                };
+
+           }
+            catch (MalformedURLException e) {
+                String message = "applet parameter '"+ON_DISCONNECT_URL_PARAM+"' is not a valid URL";
+                logger.warning(log.msg(message));
+                throw new IllegalArgumentException(message, e);
+            }
         }
-        catch (ClassNotFoundException e) {
-            // TODO
-            e.printStackTrace();
-        }
+
+         this.launcher = new ServiceLauncher(getServiceJnlpUrl(),
+                                            getServicePort(),
+                                            getUseKeepAlive(),
+                                            getConnectionRetryCount(),
+                                            getConnectionRetryInterval(),
+                                            listener,
+                                            getServiceProperties());
 
     }
 
@@ -122,14 +148,36 @@ public class ServiceLauncherApplet extends Applet {
     @Override
     public void start() {
 
-        System.out.println(logPrefix + "start");
+        logger.finer(log.entry("start"));
 
-        try {
-            this.launcher.start();
-        }
-        catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
+        AccessController.doPrivileged(new PrivilegedAction<Void>() {
+
+            @Override
+            public Void run() {
+                try {
+                    if (!launcher.start()) {
+                        String onErrorUrl = getParameter(ON_ERROR_URL_PARAM);
+                        if (onErrorUrl != null) {
+                            try {
+                                getAppletContext().showDocument(new URL(onErrorUrl));
+                            }
+                            catch (MalformedURLException e) {
+                                String message = "applet parameter '"+ON_ERROR_URL_PARAM+"' is not a valid URL";
+                                logger.warning(log.msg(message));
+                                throw new IllegalArgumentException(message, e);
+                            }
+                        }
+                    }
+                    else {
+                        connected = true;
+                    }
+                }
+                catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+                return null;
+            }
+        });
     }
 
     /**
@@ -138,9 +186,11 @@ public class ServiceLauncherApplet extends Applet {
     @Override
     public void stop() {
 
-        System.out.println(logPrefix + "stop");
+        logger.finer(log.entry("stop"));
 
         this.launcher.stop();
+        this.connected = false;
+
     }
 
     /**
@@ -148,9 +198,7 @@ public class ServiceLauncherApplet extends Applet {
      */
     @Override
     public void destroy() {
-
-        System.out.println(logPrefix + "destroy");
-
+        logger.finer(log.entry("destroy"));
     }
  
     /**
@@ -166,12 +214,12 @@ public class ServiceLauncherApplet extends Applet {
             try {
                 manifest = new Manifest(new URL(manifestPath).openStream());
                 Attributes attr = manifest.getMainAttributes();
-                System.out.println("Applet:   "+this.getClass().getName());
-                System.out.println("Built-By: "+attr.getValue("Built-By"));
-                System.out.println("Vendor:   "+attr.getValue("Implementation-Vendor"));
-                System.out.println("Title:    "+attr.getValue("Implementation-Title"));
+                logger.fine(log.msg("Applet:   "+this.getClass().getName()));
+                logger.fine(log.msg("Built-By: "+attr.getValue("Built-By")));
+                logger.fine(log.msg("Vendor:   "+attr.getValue("Implementation-Vendor")));
+                logger.fine(log.msg("Title:    "+attr.getValue("Implementation-Title")));
                 this.version = attr.getValue("Implementation-Version");
-                System.out.println("Version:  "+this.version);
+                logger.fine(log.msg("Version:  "+this.version));
             }
             catch (MalformedURLException e1) {
                 // TODO Auto-generated catch block
@@ -187,84 +235,32 @@ public class ServiceLauncherApplet extends Applet {
     /**
      * 
      * @return
-     */
-    String getJavaApplicationLauncher() {
-        String javaVmName = DEFAULT_JAVA_APPLICATION_LAUNCHER;
-    
-        String propertyValue = getParameter(JAVA_APPLICATION_LAUNCHER_PARAM);
-        if (propertyValue != null) {
-            javaVmName = propertyValue;
-        }
-
-        return javaVmName;
-    }
-
-    /**
-     * 
-     * @return
      * @throws IllegalArgumentException
-     * @throws ClassNotFoundException 
      */
-    String getServiceClassPath() throws IllegalArgumentException, ClassNotFoundException {
-
-        String propertyValue = getParameter(SERVICE_CLASS_PATH_PARAM);
+    URI getServiceJnlpUrl() throws IllegalArgumentException {
+    
+        String propertyValue = getParameter(SERVICE_JNLP_URL_PARAM);
         if (propertyValue != null) {
-            return propertyValue;
-        }
-        else {
-            // Attempt to determine class location using class loader
-            String serviceClassName = getServiceClassName();
-
-            System.out.println(logPrefix + "attempting to load "+serviceClassName);
-
-            Class<?> serviceClass;
-
             try {
-                serviceClass = Class.forName(serviceClassName);
-            }
-            catch (ClassNotFoundException e) {
-                System.out.println(logPrefix + "cannot load class "+serviceClassName);
-                throw e;
-            }
-
-            System.out.println(logPrefix + serviceClassName + " successfully loaded");
-
-            System.out.println(logPrefix + " attempting to locate .jar file containing " + serviceClassName);
-
-            String jarFilePath;
-
-            try {
-                jarFilePath = new File(serviceClass.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath();
+                URI codebase = getCodeBase().toURI();
+                logger.finer(log.msg("applet code base: " + codebase.toString()));
+                URI jnlpUri = new URI(propertyValue);
+                logger.finer(log.msg(".jnlp URL: " + jnlpUri.toString()));
+                URI resolvedUri = codebase.resolve(jnlpUri);
+                logger.finer(log.msg("resolved URL: " + resolvedUri));
+                return resolvedUri;
             }
             catch (URISyntaxException e) {
-                System.out.println(logPrefix + " cannot locate jar file for "+ serviceClassName + " - " + e.getMessage());
-                throw new ClassNotFoundException("cannot locate jar file for "+ serviceClassName);
+                String message = "applet parameter '"+SERVICE_JNLP_URL_PARAM+"' is not a valid URL";
+                logger.warning(log.msg(message));
+                throw new IllegalArgumentException(message, e);
             }
-
-            System.out.println(logPrefix + serviceClassName + " found in " + jarFilePath);
-
-            return jarFilePath;
-        }
-
-    }
-
-    /**
-     * 
-     * @return
-     * @throws IllegalArgumentException
-     */
-    String getServiceClassName() throws IllegalArgumentException {
-
-        String propertyValue = getParameter(SERVICE_CLASS_NAME_PARAM);
-        if (propertyValue != null) {
-            return propertyValue;
         }
         else {
-            String message = "required applet parameter '"+SERVICE_CLASS_NAME_PARAM+"' is missing";
-            System.out.println(logPrefix + " " + message);
-            throw new IllegalArgumentException();
+            String message = "required applet parameter '"+SERVICE_JNLP_URL_PARAM+"' is missing";
+            logger.warning(log.msg(message));
+            throw new IllegalArgumentException(message);
         }
-
     }
 
     /**
@@ -283,7 +279,7 @@ public class ServiceLauncherApplet extends Applet {
             }
             catch(NumberFormatException e) {
                 String message = "value of applet parameter '"+SERVICE_PORT_PARAM+"' is not an integer port number";
-                System.out.println(logPrefix + " " + message );
+                logger.warning(log.msg(message));
                 throw new IllegalArgumentException(message, e);
             }
         }
@@ -315,7 +311,7 @@ public class ServiceLauncherApplet extends Applet {
             }
             catch(NumberFormatException e) {
                 String message = "value of applet parameter '"+CONNECTION_RETRY_COUNT_PARAM+"' is not an integer";
-                System.out.println(logPrefix + " " + message);
+                logger.warning(log.msg(message));
                 throw new IllegalArgumentException(message, e);
             }
         }
@@ -340,7 +336,7 @@ public class ServiceLauncherApplet extends Applet {
             }
             catch(NumberFormatException e) {
                 String message = "value of applet parameter '"+CONNECTION_RETRY_INTERVAL_PARAM+"' is not an integer";
-                System.out.println(logPrefix + " " + message);
+                logger.warning(log.msg(message));
                 throw new IllegalArgumentException(message, e);
             }
         }
@@ -355,10 +351,6 @@ public class ServiceLauncherApplet extends Applet {
     Properties getServiceProperties() {
 
         Properties properties = new Properties();
-
-        properties.put(SERVICE_PORT_PROPERTY, String.valueOf(getServicePort()));
-
-        properties.put(SERVICE_KEEP_ALIVE_ENABLED_PROPERTY, String.valueOf(getUseKeepAlive()));
 
         String propertiesParam = getParameter(SERVICE_PROPERTIES_PARAM);
         if (propertiesParam != null) {
