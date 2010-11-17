@@ -17,7 +17,6 @@
 package com.larkwoodlabs.service;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -47,7 +46,7 @@ public class SocketConnection extends Connection {
      * @throws IOException If an I/O error occurs when accessing properties of the socket.
      */
     public SocketConnection(final Socket socket) throws IOException {
-        super(new BufferedInputStream(socket.getInputStream()), new BufferedOutputStream(socket.getOutputStream()));
+        super(new BufferedInputStream(socket.getInputStream()), socket.getOutputStream());
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(log.entry("SocketConnection",socket));
