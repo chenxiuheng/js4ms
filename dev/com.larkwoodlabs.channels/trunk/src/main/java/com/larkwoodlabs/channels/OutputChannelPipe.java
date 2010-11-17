@@ -51,7 +51,7 @@ public final class OutputChannelPipe<MessageType>
     }
     
     @Override
-    public final void close(final boolean isCloseAll) {
+    public final void close() {
         // NO-OP
     }
 

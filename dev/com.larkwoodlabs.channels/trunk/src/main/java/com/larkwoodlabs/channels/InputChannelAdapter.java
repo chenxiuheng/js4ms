@@ -45,11 +45,9 @@ public abstract class InputChannelAdapter<InnerMessageType, OuterMessageType>
     public InputChannelAdapter(final InputChannel<InnerMessageType> innerChannel) {
         this.innerChannel = innerChannel;
     }
-    
+
     @Override
-    public void close(boolean closeInner) throws IOException {
-        if (closeInner) {
-            this.innerChannel.close(true);
-        }
+    public void close() throws IOException {
+        this.innerChannel.close();
     }
 }

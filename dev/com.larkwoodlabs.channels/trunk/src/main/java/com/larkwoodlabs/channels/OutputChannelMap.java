@@ -126,12 +126,10 @@ public final class OutputChannelMap<MessageType>
     }
 
     @Override
-    public final void close(final boolean isCloseAll) throws IOException, InterruptedException {
+    public final void close() throws IOException, InterruptedException {
         synchronized (this.lock) {
-            if (isCloseAll) {
-                for (Map.Entry<Object,OutputChannel<MessageType>> entry : this.channelMap.entrySet()) {
-                    entry.getValue().close(true);
-                }
+            for (Map.Entry<Object,OutputChannel<MessageType>> entry : this.channelMap.entrySet()) {
+                entry.getValue().close();
             }
             this.channelMap.clear();
         }

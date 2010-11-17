@@ -122,17 +122,14 @@ public final class ChannelPump<MessageType>
     /**
      * Convenience method that stops the channel pump and optionally 
      * closes the attached input and output channels.
-     * @param closeChannels - Indicates whether the attached channels should be closed.
      * @throws InterruptedException - The calling thread was interrupted while waiting for the pump to close.
      * @throws IOException 
      * @throws IllegalStateException 
      */
-    public void close(boolean closeChannels) throws InterruptedException, IllegalStateException, IOException {
+    public void close() throws InterruptedException, IllegalStateException, IOException {
         stop(0);
-        if (closeChannels) {
-            this.inputChannel.close(true);
-            this.outputChannel.close(true);
-        }
+        this.inputChannel.close();
+        this.outputChannel.close();
     }
 
 

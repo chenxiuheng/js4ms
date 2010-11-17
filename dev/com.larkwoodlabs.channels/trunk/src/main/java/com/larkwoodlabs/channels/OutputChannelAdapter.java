@@ -47,9 +47,7 @@ public abstract class OutputChannelAdapter<OuterMessageType, InnerMessageType>
     }
 
     @Override
-    public void close(boolean closeInner) throws IOException, InterruptedException {
-        if (closeInner) {
-            this.innerChannel.close(true);
-        }
+    public void close() throws IOException, InterruptedException {
+        this.innerChannel.close();
     }
 }

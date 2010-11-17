@@ -37,6 +37,6 @@ public interface InputChannel<MessageType>
      * @param isCloseAll - Indicates whether attached channels should also be closed.
      * @throws IOException - The close operation has failed.
      */
-    public void close(boolean isCloseAll) throws IOException;
+    public void close() throws IOException;
 
 }

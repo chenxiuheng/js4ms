@@ -94,20 +94,19 @@ public final class OutputChannelTee<MessageType>
     }
 
     @Override
-    public final void close(boolean isCloseAll) throws IOException, InterruptedException {
+    public final void close() throws IOException, InterruptedException {
         synchronized (this.lock) {
-            if (isCloseAll) {
-                MultiIOException me = new MultiIOException();
-                for (OutputChannel<MessageType> channel : this.channels) {
-                    try {
-                        channel.close(true);
-                    }
-                    catch (IOException e) {
-                        me.add(new BoundException(channel,e));
-                    }
+            MultiIOException me = new MultiIOException();
+            for (OutputChannel<MessageType> channel : this.channels) {
+                try {
+                    channel.close();
                 }
-                me.rethrow();
+                catch (IOException e) {
+                    me.add(new BoundException(channel,e));
+                }
             }
+            // Throws the multi-exception if an IOException was stored in it
+            me.rethrow();
             this.channels.clear();
         }
     }
@@ -126,6 +125,7 @@ public final class OutputChannelTee<MessageType>
                     me.add(new BoundException(channel,e));
                 }
             }
+            // Throws the multi-exception if an IOException was stored in it
             me.rethrow();
         }
 

@@ -37,11 +37,10 @@ public interface OutputChannel<MessageType>
 
     /**
      * Closes this channel and optionally closes any channels wrapped or attached to this channel.
-     * @param isCloseAll - Indicates whether attached channels should also be closed.
      * @throws IOException - The close operation has failed.
      * @throws IllegalStateException - The close request is not allowed in current state.
      * @throws InterruptedException - The calling thread was interrupted before the close operation could complete.
      */
-    public void close(boolean isCloseAll) throws IOException, InterruptedException;
+    public void close() throws IOException, InterruptedException;
 
 }
