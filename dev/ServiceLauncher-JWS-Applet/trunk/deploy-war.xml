@@ -1,0 +1,24 @@
+<?eclipse.ant.import?>
+<project>
+
+    <import file="build-war.xml" />
+	
+    <taskdef name="deploy" classname="org.apache.catalina.ant.DeployTask" />
+    <taskdef name="undeploy" classname="org.apache.catalina.ant.UndeployTask" />
+
+    <target name="deploy-war-file" depends="build-war-file">
+        <input message="Please enter Tomcat manager URL:" addproperty="url" defaultvalue="http://localhost:8080/manager"/>
+        <input message="Please enter manager user name:" addproperty="username" defaultvalue="admin"/>
+        <input message="Please enter manager password:" addproperty="password" defaultvalue="admin"/>
+        <undeploy url="${url}" username="${username}" password="${password}" path="${applet.context.path}" failonerror="false"/>
+        <deploy url="${url}" username="${username}" password="${password}" path="${applet.context.path}" war="build/${war.file}" />
+    </target>
+
+	<target name="undeploy-war-file">
+        <input message="Please enter Tomcat manager URL:" addproperty="url" defaultvalue="http://localhost:8080/manager"/>
+        <input message="Please enter manager user name:" addproperty="username" defaultvalue="admin"/>
+        <input message="Please enter manager password:" addproperty="password" defaultvalue="admin"/>
+        <undeploy url="${url}" username="${username}" password="${password}" path="${applet.context.path}" failonerror="false" />
+    </target>
+
+</project>

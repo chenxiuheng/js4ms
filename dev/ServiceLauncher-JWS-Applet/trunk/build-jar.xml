@@ -1,0 +1,50 @@
+<?eclipse.ant.import?>
+<project>
+
+    <property file="applet.properties" />
+
+    <import file="gen-version.xml" />
+
+    <target name="gen-jar-name" depends="gen-version">
+        <property name="applet.jar.name" value="${applet.name}.jar" />
+        <property name="applet.jar.file" value="${applet.name}__V${applet.version}.jar" />
+    </target>
+
+    <target name="build-jar-file" depends="gen-jar-name">
+
+        <!-- Delete all existing versions of the jar file -->
+        <delete>
+            <fileset dir="WebContent" includes="${applet.name}_*.jar" />
+        </delete>
+
+        <jar destfile="WebContent/${applet.jar.file}">
+            <fileset dir="../com.larkwoodlabs.util.logging/bin">
+                <include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+            </fileset>
+            <fileset dir="../com.larkwoodlabs.service.jws/bin">
+                <include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+            </fileset>
+            <fileset dir="../com.larkwoodlabs.applet.ServiceLauncherApplet/bin">
+                <include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+            </fileset>
+            <manifest>
+                <attribute name="Main-Class" value="${applet.class}" />
+                <attribute name="Built-By" value="${user.name}" />
+                <attribute name="Implementation-Vendor" value="${applet.vendor}" />
+                <attribute name="Implementation-Title" value="${applet.name}" />
+                <attribute name="Implementation-Version" value="${applet.version}" />
+            </manifest>
+        </jar>
+
+    </target>
+
+    <target name="clean-jar-file">
+        <delete>
+            <fileset dir="WebContent" includes="*.jar" />
+        </delete>
+    </target>
+
+</project>

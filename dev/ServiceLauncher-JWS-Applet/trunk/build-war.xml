@@ -1,0 +1,33 @@
+<?eclipse.ant.import?>
+<project>
+
+    <import file="build-jar.xml" />
+    <import file="build-jnlp.xml" />
+    <import file="build-version.xml" />
+    <import file="build-script.xml" />
+
+    <property name="war.file" value="${applet.name}.war" />
+
+    <target name="sign-jars" depends="build-jar-file">
+        <input message="Please enter keystore file path:" addproperty="keystore" defaultvalue="keystore" />
+        <input message="Please enter keystore password:" addproperty="keypass" defaultvalue="testpass" />
+        <input message="Please enter key name:" addproperty="alias" defaultvalue="testkey" />
+        <signjar keystore="${keystore}" storepass="${keypass}" alias="${alias}">
+            <fileset dir="WebContent" includes="*.jar" />
+        </signjar>
+    </target>
+
+    <target name="build-war-file" depends="sign-jars, build-jnlp-file, build-version-file, build-script-file">
+        <war destfile="build/${war.file}" webxml="WebContent/WEB-INF/web.xml">
+            <fileset dir="WebContent">
+                <exclude name="WEB-INF/web.xml" />
+            </fileset>
+            <lib dir="WebContent/WEB-INF/lib" />
+        </war>
+    </target>
+
+    <target name="clean-war-file">
+        <delete file="build/${war.file}" />
+    </target>
+
+</project>

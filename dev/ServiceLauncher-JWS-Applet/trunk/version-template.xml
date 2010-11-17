@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp-versions>
+    <resource>
+        <pattern>
+            <name>@JAR_NAME@</name>
+            <version-id>@CACHE_VERSION@</version-id>
+        </pattern>
+        <file>@JAR_FILE@</file>
+    </resource>
+</jnlp-versions>
+

@@ -1,0 +1,33 @@
+<?eclipse.ant.import?>
+<project>
+
+    <import file="build-jar.xml" />
+
+    <property name="applet.jnlp.file" value="${applet.name}.jnlp" />
+
+    <target name="build-jnlp-file" depends="gen-jar-name">
+
+        <delete>
+            <fileset dir="WebContent" includes="*.jnlp"/>
+        </delete>
+
+        <copy file="template.jnlp" toFile="WebContent/${applet.jnlp.file}">
+            <filterset>
+                <filter token="TITLE" value="${applet.title}"/>
+                <filter token="VENDOR" value="${applet.vendor}"/>
+                <filter token="DESCRIPTION" value="${applet.description}"/>
+                <filter token="JAR_NAME" value="${applet.jar.name}"/>
+                <filter token="JAR_VERSION" value="${applet.version}"/>
+                <filter token="MAIN_CLASS" value="${applet.package}.${applet.class}"/>
+            </filterset>
+        </copy>
+
+    </target>
+
+    <target name="clean-jnlp-file">
+        <delete>
+            <fileset dir="WebContent" includes="*.jnlp"/>
+        </delete>
+    </target>
+
+</project>

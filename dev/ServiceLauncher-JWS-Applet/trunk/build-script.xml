@@ -1,0 +1,31 @@
+<?eclipse.ant.import?>
+<project>
+
+    <import file="build-jnlp.xml" />
+
+
+    <target name="build-script-file" depends="gen-jar-name">
+
+        <delete>
+            <fileset dir="WebContent/WEB-INF" includes="web.xml" />
+        </delete>
+
+        <copy file="web-template.xml" toFile="WebContent/WEB-INF/web.xml">
+            <filterset>
+                <filter token="LAST_MODIFIED" value="${applet.last-modified}" />
+                <filter token="JNLP_NAME" value="${applet.jnlp.file}" />
+                <filter token="JAR_NAME" value="${applet.jar.name}" />
+                <filter token="CACHE_VERSION" value="${applet.version.cache}" />
+                <filter token="MAIN_CLASS" value="${applet.package}.${applet.class}.class" />
+            </filterset>
+        </copy>
+
+    </target>
+
+    <target name="clean-script-file">
+        <delete>
+            <fileset dir="WebContent/WEB-INF" includes="web.xml" />
+        </delete>
+    </target>
+
+</project>

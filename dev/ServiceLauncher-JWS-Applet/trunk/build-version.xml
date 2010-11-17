@@ -1,0 +1,28 @@
+<?eclipse.ant.import?>
+<project>
+
+    <import file="build-jar.xml" />
+
+    <target name="build-version-file" depends="gen-jar-name">
+
+        <delete>
+            <fileset dir="WebContent" includes="version.xml"/>
+        </delete>
+
+        <copy file="version-template.xml" toFile="WebContent/version.xml">
+            <filterset>
+                <filter token="JAR_NAME" value="${applet.jar.name}"/>
+                <filter token="JAR_FILE" value="${applet.jar.file}"/>
+                <filter token="CACHE_VERSION" value="${applet.version.cache}"/>
+            </filterset>
+        </copy>
+
+    </target>
+
+    <target name="clean-version-file">
+        <delete>
+            <fileset dir="WebContent" includes="version.xml"/>
+        </delete>
+    </target>
+
+</project>
