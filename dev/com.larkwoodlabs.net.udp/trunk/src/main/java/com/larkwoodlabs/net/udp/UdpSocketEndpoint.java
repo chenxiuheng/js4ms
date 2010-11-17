@@ -47,12 +47,23 @@ public final class UdpSocketEndpoint
     protected final DatagramSocket socket;
 
     protected final String ObjectId = Logging.identify(this);
-    
+
+    protected InetSocketAddress localHostBinding;
 
     /*-- Member Functions ---------------------------------------------------*/
 
-    public UdpSocketEndpoint(final int i) throws IOException {
-        this(new InetSocketAddress(i));
+    public UdpSocketEndpoint(final DatagramSocket socket) {
+
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer(Logging.entering(ObjectId, "UdpSocketEndpoint.UdpSocketEndpoint", socket));
+        }
+        this.socket = socket;
+        this.localHostBinding = (InetSocketAddress) this.socket.getLocalSocketAddress();
+    }
+
+    public UdpSocketEndpoint(final int port) throws IOException {
+        this(new InetSocketAddress(port));
+        this.localHostBinding = (InetSocketAddress) this.socket.getLocalSocketAddress();
     }
 
 
@@ -63,7 +74,8 @@ public final class UdpSocketEndpoint
         }
 
         this.socket = new DatagramSocket(localHostBinding);
-        
+
+        this.localHostBinding = localHostBinding;
     }
 
 
@@ -164,8 +176,19 @@ public final class UdpSocketEndpoint
                     " length=" + packet.getLength());
         }
 
+        /*
+         * Workaround for situation where socket binding address and packet source address are not of the same type (IPv4 vs. IPv6).
+         * TODO: Fix this in code that constructs the endpoint. 
+         */
+        if (!packet.getAddress().getClass().equals(this.localHostBinding.getAddress().getClass())) {
+            if (this.localHostBinding.getAddress().isAnyLocalAddress()) {
+                this.localHostBinding = new InetSocketAddress(InetAddress.getByAddress(new byte[packet.getAddress().getAddress().length]),
+                                                              this.localHostBinding.getPort());
+            }
+        }
+
         return new UdpDatagram((InetSocketAddress)packet.getSocketAddress(),
-                               (InetSocketAddress)this.socket.getLocalSocketAddress(),
+                               (InetSocketAddress)this.localHostBinding,
                                ByteBuffer.wrap(buffer, 0, packet.getLength()));
     }
 
