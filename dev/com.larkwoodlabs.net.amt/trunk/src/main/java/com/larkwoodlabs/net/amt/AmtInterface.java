@@ -28,6 +28,17 @@ import com.larkwoodlabs.net.ip.IPPacket;
 import com.larkwoodlabs.net.udp.UdpDatagram;
 import com.larkwoodlabs.util.logging.Logging;
 
+/**
+ * Manages an AMT tunnel end-point.
+ * The {@link AmtGateway} constructs a separate AmtInterface for each unique 
+ * AMT relay or AMT gateway peer acting as a remote AMT tunnel end-point.
+ * An AmtInterface provides functions for joining, leaving and receiving packets
+ * for any number of multicast groups. The AmtInterface tracks local group
+ * membership state and handles the exchange of IGMP/MLD messages used
+ * to query or update that state.
+ *
+ * @author gbumgard
+ */
 public final class AmtInterface {
 
     /*-- Static Variables ----------------------------------------------------*/
