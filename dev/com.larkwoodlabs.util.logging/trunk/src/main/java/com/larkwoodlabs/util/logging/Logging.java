@@ -16,13 +16,34 @@
 
 package com.larkwoodlabs.util.logging;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.ConnectException;
+import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLDecoder;
+import java.util.Enumeration;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.logging.Formatter;
+import java.util.logging.Handler;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 
 public final class Logging {
     
+    public static final String LOGGING_PROPERTIES_URL_PROPERTY = "com.larkwoodlabs.logging.properties.url";
+
     public static final int methodStackTraceLevel = determineStackTraceLevel();
 
     static int determineStackTraceLevel() {
@@ -147,4 +168,194 @@ public final class Logging {
         }
         return result + ")";
     }
+
+    /**
+     * @throws IOException 
+     * 
+     */
+    public static void configureLogging() throws IOException {
+
+        String loggingPropertiesUrl = System.getProperty(LOGGING_PROPERTIES_URL_PROPERTY);
+
+        if (loggingPropertiesUrl != null) {
+            try {
+                configureLogging(new URI(loggingPropertiesUrl));
+            }
+            catch (URISyntaxException e) {
+               System.out.println("the value assigned to the '"+LOGGING_PROPERTIES_URL_PROPERTY+"' is not a valid URL.");
+            }
+        }
+    }
+
+    /**
+     * @throws IOException 
+     * 
+     */
+    public static void configureLogging(final URI uri) throws IOException {
+
+        String path = uri.getPath();
+
+        if (path != null) {
+
+            if (uri.getScheme().equals("http")) {
+
+                try {
+
+                    HttpURLConnection urlConnection = ((HttpURLConnection)uri.toURL().openConnection());
+
+                    if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+
+                        int contentLength = urlConnection.getContentLength();
+
+                        if (contentLength == -1) {
+                            System.out.println("the logging configuration fetched from '" + uri.toString() + "' is empty");
+                            return;
+                        }
+                        else {
+
+                            Properties properties = new Properties();
+
+                            properties.load(urlConnection.getInputStream());
+
+                            configureLogging(properties);
+                        }
+                    }
+                    else {
+                        System.out.println("cannot fetch logging configuration from '" + uri.toString() + "' - server returned " +
+                                           urlConnection.getResponseCode() + " " + 
+                                           urlConnection.getResponseMessage() );
+                    }
+                }
+                catch (ConnectException e) {
+                    System.out.println("cannot fetch logging configuration '" + uri.toString() + "' - " + e.getMessage());
+                    throw e;
+                }
+                catch (IOException e) {
+                    System.out.println("cannot fetch logging configuration '" + uri.toString() + "' - " + e.getMessage());
+                    throw e;
+                }
+            }
+            else if (uri.getScheme().equals("file")) {
+
+                try {
+                    InputStream inputStream = new FileInputStream(URLDecoder.decode(uri.getSchemeSpecificPart(),"UTF8"));
+
+                    Properties properties = new Properties();
+                    properties.load(inputStream);
+                    configureLogging(properties);
+                }
+                catch (FileNotFoundException e) {
+                    System.out.println("cannot read logging configuration '" + uri.toString() + "' - file not found");
+                    throw e;
+                }
+                catch (IOException e) {
+                    System.out.println("cannot read logging configuration '" + uri.toString() + "' - " + e.getMessage());
+                    throw e;
+                }
+            }
+
+        }
+
+    }
+
+    public static void configureLogging(Properties loggingProperties) {
+
+        Set<Map.Entry<Object,Object>> entries = loggingProperties.entrySet();
+
+        /* This no longer seems to be necessary.
+        // Iterate over configuration properties to locate logger entries and attempt
+        // to use the logger name to load a class to force static logger initialization.
+        // We must do this before loading the configuration into the LogManager so that loggers will
+        // be registered before the LogManager applies any level settings contained in the configuration.
+
+
+        for (Map.Entry<Object,Object> entry : entries) {
+            String key = (String)entry.getKey();
+            if (key.endsWith(".level") && !key.startsWith("java.util.logging")) {
+
+                // Remove the .level part
+                String loggerName = key.substring(0,key.length()-6);
+
+                if (loggerName.length() == 0) {
+                    // Must be the root logger - skip to next
+                    continue;
+                }
+
+                try {
+                    // Try to load class to force static logger instantiation
+                    Class.forName(loggerName, true, Thread.currentThread().getContextClassLoader());
+                }
+                catch (ClassNotFoundException e) {
+                    //System.out.println("cannot initialize logger '"+loggerName+"' - class not found");
+                    continue;
+                }
+            }
+        }
+        */
+
+        // Write the properties into a string so they can be loaded by the log manager
+        try {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            loggingProperties.store(os,"Logging Properties");
+            ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
+            LogManager.getLogManager().readConfiguration(is);
+        }
+        catch (Exception e) {
+            System.out.println("cannot configure logging - " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        // Workaround for class loader issue for custom handlers/formatters
+        // Java logging framework only uses system class loader to load handlers, formatters etc.
+        // Custom handlers/formatters packaged in an application/applet jar will not be loaded.
+        // We can't doing anything about handlers specified in a logging configuration but we
+        // can instantiate formatters and attach them to handlers as specified in the configuration properties.
+
+        // Create and set formatters that LogManager failed to load.
+        for (Map.Entry<Object,Object> entry : entries) {
+            String key = (String)entry.getKey();
+            if (key.endsWith(".formatter")) {
+
+                String formatterClassName = (String)entry.getValue();
+
+                Formatter formatter = null;
+                try {
+                    Class<?> cls = Class.forName(formatterClassName, true, Thread.currentThread().getContextClassLoader());
+                    try {
+                        formatter = (Formatter)cls.newInstance();
+                    }
+                    catch (Exception e) {
+                        System.out.println("cannot instantiate formatter class '"+formatterClassName+"': "+e.getMessage());
+                        break;
+                    }
+                }
+                catch (ClassNotFoundException e) {
+                    System.out.println("formatter class '"+formatterClassName+"' not found");
+                    continue;
+                }
+
+                String handlerClassName = key.substring(0,key.lastIndexOf('.'));
+
+                Enumeration<String> iter = LogManager.getLogManager().getLoggerNames();
+                while (iter.hasMoreElements()) {
+                    String loggerName = iter.nextElement();
+                    Handler[] handlers = Logger.getLogger(loggerName).getHandlers();
+                    for (int index = 0; index < handlers.length; index++ ) {
+                        Handler handler = handlers[index];
+                        if (handlerClassName.equals(handler.getClass().getName())) {
+                            Formatter currentFormatter = handler.getFormatter();
+                            if (currentFormatter != null) {
+                                if (!formatterClassName.equals(currentFormatter.getClass().getName())) {
+                                    // Reset the formatter for this handler instance
+                                    handler.setFormatter(formatter);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+    
 }
