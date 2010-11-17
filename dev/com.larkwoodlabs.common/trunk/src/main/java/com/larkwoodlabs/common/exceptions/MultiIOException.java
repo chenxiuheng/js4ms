@@ -44,8 +44,12 @@ public class MultiIOException extends IOException {
         return this.throwables.iterator();
     }
     
+    public boolean isThrowable() {
+        return this.throwables != null && !this.throwables.isEmpty();
+    }
+
     public void rethrow() throws MultiIOException {
-        if (this.throwables != null && !this.throwables.isEmpty()) {
+        if (isThrowable()) {
             throw this;
         }
     }
