@@ -48,7 +48,7 @@ public class ServiceLauncher {
     /**
      * 
      */
-    public static final Logger logger = Logger.getLogger(Server.class.getName());
+    public static final Logger logger = Logger.getLogger(ServiceLauncher.class.getName());
 
 
     /*-- Member Variables  ----------------------------------------------------*/
