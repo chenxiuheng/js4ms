@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="deploy" name="RtspMulticastReflector-JWS-App">
+
+	<property environment="env"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+
+	<import file="deploy-war.xml"/>
+
+	<target name="init"></target>
+
+    <target name="build"
+            description="builds web application"
+            depends="build-war-file" />
+
+    <target name="deploy"
+            description="deploys web application"
+            depends="deploy-war-file" />
+
+    <target name="clean"
+            description="deletes all generated files"
+            depends="clean-war-file,clean-jnlp-file,clean-version-file,clean-jar-file" />
+
+</project>

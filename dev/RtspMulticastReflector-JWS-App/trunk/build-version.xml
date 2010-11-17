@@ -1,0 +1,31 @@
+<?eclipse.ant.import?>
+<project>
+
+    <import file="build-jar.xml" />
+
+    <property name="app.jnlp.file" value="${app.name}.jnlp" />
+    <property name="app.version.file" value="version.xml" />
+
+    <target name="build-version-file" depends="gen-jar-name">
+
+        <delete>
+            <fileset dir="WebContent" includes="version.xml"/>
+        </delete>
+
+        <copy file="version-template.xml" toFile="WebContent/${app.version.file}">
+            <filterset>
+                <filter token="JAR_NAME" value="${app.jar.name}"/>
+                <filter token="JAR_FILE" value="${app.jar.file}"/>
+                <filter token="CACHE_VERSION" value="${app.version.cache}"/>
+            </filterset>
+        </copy>
+
+    </target>
+
+    <target name="clean-version-file">
+        <delete>
+            <fileset dir="WebContent" includes="version.xml"/>
+        </delete>
+    </target>
+
+</project>
