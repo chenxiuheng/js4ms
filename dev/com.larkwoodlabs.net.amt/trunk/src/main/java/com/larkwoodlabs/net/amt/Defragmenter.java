@@ -751,11 +751,9 @@ public final class Defragmenter
 
 
     @Override
-    public void close(final boolean isCloseAll) throws IOException, InterruptedException {
+    public void close() throws IOException, InterruptedException {
         reap(true);
-        if (isCloseAll) {
-            this.outputChannel.close(true);
-        }
+        this.outputChannel.close();
     }
     
     private void reap(final boolean reapAll) throws InterruptedIOException, IOException, InterruptedException {

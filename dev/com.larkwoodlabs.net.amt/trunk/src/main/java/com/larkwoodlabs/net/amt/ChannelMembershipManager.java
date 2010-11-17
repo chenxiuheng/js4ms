@@ -129,7 +129,7 @@ public final class ChannelMembershipManager
             }
 
             @Override
-            public void close(boolean isCloseAll) {
+            public void close() {
             }
         };
 
@@ -591,7 +591,7 @@ public final class ChannelMembershipManager
         synchronized (this.groupMap) {
             this.interfaceManager.shutdown();
             try {
-                this.groupMap.close(true);
+                this.groupMap.close();
             }
             catch (IOException e) {
                 logger.fine(ObjectId +

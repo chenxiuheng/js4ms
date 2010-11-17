@@ -125,7 +125,7 @@ public final class AmtTunnelEndpoint implements Runnable {
             }
 
             @Override
-            public void close(boolean isCloseAll) {
+            public void close() {
             }
         };
 
@@ -136,7 +136,7 @@ public final class AmtTunnelEndpoint implements Runnable {
             }
 
             @Override
-            public void close(boolean isCloseAll) {
+            public void close() {
             }
         };
 
@@ -192,20 +192,18 @@ public final class AmtTunnelEndpoint implements Runnable {
             logger.finer(Logging.entering(ObjectId, "AmtMessageEndpoint.start"));
         }
 
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine(ObjectId + " starting AMT tunnel endpoint");
+        }
+
         synchronized (this.lock) {
             
             if (!this.isRunning) {
 
-                // Build UDP transport for sending and receiving packets from AMT relay
-                // Construct end point bound to appropriate wild card address and ethereal port.
-                InetAddress wildcardAddress;
-                try {
-                    wildcardAddress = InetAddress.getByAddress(this.relayDiscoveryAddress.getAddress().length == 4 ? new byte[4] : new byte[16]);
-                } catch (UnknownHostException e) {
-                    throw new Error(e);
-                }
-                
-                this.udpEndpoint = new UdpSocketEndpoint(new InetSocketAddress(wildcardAddress, 0));
+                this.udpEndpoint = new UdpSocketEndpoint(0);
+
+                this.udpEndpoint.connect(new InetSocketAddress(InetAddress.getByAddress(this.relayDiscoveryAddress.getAddress()),AMT_PORT));
+
                 this.udpOutputChannel = new UdpOutputChannel(this.udpEndpoint);
                 this.udpInputChannel = new UdpInputChannel(this.udpEndpoint);
 
@@ -227,6 +225,10 @@ public final class AmtTunnelEndpoint implements Runnable {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "AmtMessageEndpoint.stop"));
+        }
+
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine(ObjectId + " stopping AMT tunnel endpoint");
         }
 
         if (this.relayDiscoveryTask != null) this.relayDiscoveryTask.cancel();
@@ -617,8 +619,8 @@ public final class AmtTunnelEndpoint implements Runnable {
         
         while (this.isRunning) {
 
-            if (logger.isLoggable(Level.FINER)) {
-                logger.finer(ObjectId + " waiting to receive AMT message...");
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine(ObjectId + " waiting to receive AMT message...");
             }
 
             UdpDatagram inputDatagram = null;

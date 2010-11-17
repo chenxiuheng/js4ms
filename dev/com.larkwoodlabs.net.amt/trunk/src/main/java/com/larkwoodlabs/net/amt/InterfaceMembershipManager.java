@@ -91,7 +91,7 @@ public final class InterfaceMembershipManager
             }
 
             @Override
-            public void close(boolean isCloseAll) {
+            public void close() {
             }
         };
     }
