@@ -1,15 +1,13 @@
 package com.larkwoodlabs.service;
 
-import java.io.ByteArrayInputStream;import java.io.ByteArrayOutputStream;import java.io.EOFException;import java.io.FileInputStream;import java.io.FileNotFoundException;import java.io.IOException;
+import java.io.EOFException;import java.io.IOException;
 import java.io.InputStream;import java.net.BindException;
-import java.net.ConnectException;import java.net.HttpURLConnection;import java.net.InetAddress;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.URI;import java.net.URISyntaxException;import java.net.URLDecoder;import java.net.UnknownHostException;
-import java.util.Map;
+import java.net.UnknownHostException;
 import java.util.Properties;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;import java.util.logging.Level;import java.util.logging.LogManager;
@@ -34,7 +32,7 @@ public class Server {
     public static final String  SERVICE_KEEP_ALIVE_TIMEOUT_PROPERTY = SERVICE_PROPERTY_PREFIX + "keepalive.timeout";
     public static final String  SERVICE_CONSOLE_ENABLED_PROPERTY = SERVICE_PROPERTY_PREFIX + "console.enabled";
     public static final String  SERVICE_CONSOLE_AUTOCLOSE_ENABLED_PROPERTY = SERVICE_PROPERTY_PREFIX + "console.autoclose.enabled";
-    final static String LOGGING_PROPERTIES_URL_PROPERTY = "com.larkwoodlabs.logging.properties.url";    /*-- Static Variables ----------------------------------------------------*/    /**     *      */    public static final Logger logger = Logger.getLogger(Server.class.getName());    private final static Log slog = new Log(Server.class);    /*-- Member Variables ----------------------------------------------------*/    /**     *      */    private final Log log = new Log(this);
+    /*-- Static Variables ----------------------------------------------------*/    /**     *      */    public static final Logger logger = Logger.getLogger(Server.class.getName());    private final static Log slog = new Log(Server.class);    /*-- Member Variables ----------------------------------------------------*/    /**     *      */    private final Log log = new Log(this);
     private ServerSocket socket;
 
     private boolean isStarted = false;
@@ -251,13 +249,8 @@ public class Server {
             throw e;
         }
     }
-    public void setSocketProperties(Socket clientSocket) {        String propertyValue = this.properties.getProperty(SERVICE_SOCKET_SEND_BUFFER_SIZE_PROPERTY);        if (propertyValue != null) {            try {                int bufferSize = Integer.parseInt(propertyValue);                clientSocket.setSendBufferSize(bufferSize);            }            catch (Exception e) {                logger.warning(log.msg("cannot set send buffer size property on socket - "+e.getMessage()));            }        }    }    public static void configureLogging(Properties loggingProperties) {        // Iterate over configuration properties to locate logger entries and attempt        // to use the logger name to load a class to force static logger initialization.        // We must do this before loading the configuration into the LogManager so that loggers will        // be registered before the LogManager applies anyt level settings contained in the configuration.        Set<Map.Entry<Object,Object>> entries = loggingProperties.entrySet();        for (Map.Entry<Object,Object> entry : entries) {            String key = (String)entry.getKey();            if (key.endsWith(".level")) {                // Remove the .level part                String loggerName = key.substring(0,key.length()-6);                if (loggerName.length() == 0) {                    // Must be the root logger - skip to next                    continue;                }                try {                    // Try to load class to force static logger instantiation                    Class.forName(loggerName, true, Thread.currentThread().getContextClassLoader());                }                catch (ClassNotFoundException e) {                    System.out.println("cannot initialize logger '"+loggerName+"' - class not found");                    continue;                }            }        }        // Write the properties into a string so they can be loaded by the log manager        try {            ByteArrayOutputStream os = new ByteArrayOutputStream();            loggingProperties.store(os,"Logging Properties");            ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());            LogManager.getLogManager().readConfiguration(is);        }        catch (Exception e) {            System.out.println("cannot configure logging - " + e.getMessage());            e.printStackTrace();        }    }    /**     *      */
-    public static void configureLogging() {
-        String loggingPropertiesUrl = System.getProperty(LOGGING_PROPERTIES_URL_PROPERTY);        if (loggingPropertiesUrl != null) {            URI uri = null;            try {                uri = new URI(loggingPropertiesUrl);            }            catch (URISyntaxException e) {               System.out.println("the value assigned to the '"+LOGGING_PROPERTIES_URL_PROPERTY+"' is not a valid URL.");                e.printStackTrace();            }            String path = uri.getPath();            if (path != null) {                if (uri.getScheme().equals("http")) {                    try {                        HttpURLConnection urlConnection = ((HttpURLConnection)uri.toURL().openConnection());                        if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {                            int contentLength = urlConnection.getContentLength();                            if (contentLength == -1) {                                System.out.println("the logging configuration fetched from '" + uri.toString() + "' is empty");                                return;                            }                            else {                                Properties properties = new Properties();                                properties.load(urlConnection.getInputStream());                                configureLogging(properties);                            }                        }                        else {                            System.out.println("cannot fetch logging configuration from '" + uri.toString() + "' - server returned " +                                               urlConnection.getResponseCode() + " " +                                                urlConnection.getResponseMessage() );                        }                    }                    catch (ConnectException e) {                        System.out.println("cannot fetch logging configuration '" + uri.toString() + "' - " + e.getMessage());                    }                    catch (IOException e) {                        System.out.println("cannot fetch logging configuration '" + uri.toString() + "' - " + e.getMessage());                        e.printStackTrace();                    }                }                else if (uri.getScheme().equals("file")) {                    try {                        InputStream inputStream = new FileInputStream(URLDecoder.decode(uri.getSchemeSpecificPart(),"UTF8"));                        Properties properties = new Properties();                        properties.load(inputStream);                        configureLogging(properties);                    }                    catch (FileNotFoundException e) {                        System.out.println("cannot read logging configuration '" + uri.toString() + "' - file not found");                    }                    catch (IOException e) {                        System.out.println("cannot read logging configuration '" + uri.toString() + "' - " + e.getMessage());                        e.printStackTrace();                    }                }            }        }
-    }
-
-    /**     *      * @param properties     * @param serverFactory     * @throws InterruptedException      */    public static void runServer(Properties properties, ServerFactory serverFactory) throws InterruptedException {
-        configureLogging();        final Server server = serverFactory.construct(properties);
+    public void setSocketProperties(Socket clientSocket) {        String propertyValue = this.properties.getProperty(SERVICE_SOCKET_SEND_BUFFER_SIZE_PROPERTY);        if (propertyValue != null) {            try {                int bufferSize = Integer.parseInt(propertyValue);                clientSocket.setSendBufferSize(bufferSize);            }            catch (Exception e) {                logger.warning(log.msg("cannot set send buffer size property on socket - "+e.getMessage()));            }        }    }    /**     *      * @param properties     * @param serverFactory     * @throws InterruptedException      */    public static void runServer(Properties properties, ServerFactory serverFactory) throws InterruptedException {
+        final Server server = serverFactory.construct(properties);
 
         Thread shutdownHook = new Thread() {
             @Override
@@ -280,8 +273,7 @@ public class Server {
         LogManager.getLogManager().reset();
 
     }
-
-    /**
+    /**
      * Entry point used to test minimal server interaction with keep-alive clients.
      * @param args
      */
