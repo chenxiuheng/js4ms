@@ -281,7 +281,7 @@ public class RtspTransactionHandler implements TransactionHandler {
         }
 
         URI requestUri = request.getRequestLine().getUri();
-        if (requestUri.getPath().equals("*") || requestUri.getPath().isEmpty()) {
+        if (requestUri.getPath().length() == 0 || requestUri.getPath().equals("*")) {
             Header header = new Header(RtspMessageHeaders.PUBLIC);
             header.appendValue("GET");
             header.appendValue("POST");
