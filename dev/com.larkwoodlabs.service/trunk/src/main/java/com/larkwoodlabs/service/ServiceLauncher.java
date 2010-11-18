@@ -24,23 +24,17 @@ import com.larkwoodlabs.util.logging.Log;
  */
 public class ServiceLauncher {
 
+    public interface DisconnectListener {
+        void onDisconnect();
+    }
+
     /*-- Static Constants  ----------------------------------------------------*/
 
-    /**
-     * 
-     */
-    public static final String JAVA_VM_NAME_PARAM = "JavaVmName";
-    public static final String SERVICE_CLASS_NAME_PARAM = "ServiceClassName";
-    public static final String SERVICE_PORT_PARAM = "ServicePort";
-    public static final String USE_KEEP_ALIVE_PARAM = "UseKeepAlive";
-    public static final String CONNECTION_RETRY_COUNT_PARAM = "ConnectionRetryCount";
-    public static final String CONNECTION_RETRY_INTERVAL_PARAM = "ConnectionRetryInterval";
+    public static final String SERVICE_PORT_PROPERTY = "com.larkwoodlabs.service.socket.port";
+    public static final String SERVICE_KEEP_ALIVE_ENABLED_PROPERTY = "com.larkwoodlabs.service.keepalive.enabled";
 
-    static final String SERVICE_PORT_PROPERTY = "com.larkwoodlabs.service.socket.port";
-    static final String SERVICE_KEEP_ALIVE_ENABLED_PROPERTY = "com.larkwoodlabs.service.keepalive.enabled";
-
-    static final int DEFAULT_CONNECTION_RETRY_COUNT = 10;
-    static final int DEFAULT_CONNECTION_RETRY_INTERVAL = 1000;
+    public static final int DEFAULT_CONNECTION_RETRY_COUNT = 10;
+    public static final int DEFAULT_CONNECTION_RETRY_INTERVAL = 1000;
 
 
     /*-- Static Variables ----------------------------------------------------*/
@@ -56,7 +50,7 @@ public class ServiceLauncher {
     /**
      * 
      */
-    public final Log log = new Log(this);
+    private final Log log = new Log(this);
 
     private Properties serviceProperties;
 
@@ -68,9 +62,11 @@ public class ServiceLauncher {
     private int retryCount;
     private int retryInterval;
 
-    Socket socket;
+    private final DisconnectListener listener;
 
-    boolean isConnected = false;
+    private Socket socket;
+
+    private boolean isConnected = false;
 
 
     /*-- Member Functions ----------------------------------------------------*/
@@ -84,16 +80,18 @@ public class ServiceLauncher {
      * @param useKeepAlive
      * @param retryCount
      * @param retryInterval
+     * @param listener
      * @param serviceProperties
      */
-    public ServiceLauncher(String javaApplicationLauncher,
-                           String serviceClassPath,
-                           String serviceClassName,
-                           int servicePort,
-                           boolean useKeepAlive,
-                           int retryCount,
-                           int retryInterval,
-                           Properties serviceProperties) {
+    public ServiceLauncher(final String javaApplicationLauncher,
+                           final String serviceClassPath,
+                           final String serviceClassName,
+                           final int servicePort,
+                           final boolean useKeepAlive,
+                           final int retryCount,
+                           final int retryInterval,
+                           final DisconnectListener listener,
+                           final Properties serviceProperties) {
 
         this.javaApplicationLauncher = javaApplicationLauncher;
         this.serviceProperties = serviceProperties;
@@ -103,17 +101,19 @@ public class ServiceLauncher {
         this.useKeepAlive = useKeepAlive;
         this.retryCount = retryCount;
         this.retryInterval = retryInterval;
+        this.listener = listener;
     }
 
-    public void start() throws InterruptedException {
+    public boolean start() throws InterruptedException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(log.entry("start"));
         }
 
         if (!isServiceStarted()) {
-            launchProcess();
+            return launchProcess();
         }
+        return true;
     }
 
     public void stop() {
@@ -127,7 +127,7 @@ public class ServiceLauncher {
         }
     }
 
-    boolean isServiceStarted() throws InterruptedException {
+    public boolean isServiceStarted() throws InterruptedException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(log.entry("isServiceStarted"));
@@ -144,7 +144,7 @@ public class ServiceLauncher {
         return false;
     }
 
-    void launchProcess() throws InterruptedException {
+    private boolean launchProcess() throws InterruptedException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(log.entry("launchProcess"));
@@ -168,20 +168,20 @@ public class ServiceLauncher {
 
         parameters.add("-classpath");
         parameters.add(this.serviceClassPath);
-
         parameters.add(this.serviceClassName);
 
         try {
 
-            String[] commandLine = parameters.toArray(new String[parameters.size()]);
+            String[] commandLineParams = parameters.toArray(new String[parameters.size()]);
+
+            String commandLine = "";
+            for (String s : commandLineParams) {
+                commandLine += s+" ";
+            }
 
             if (logger.isLoggable(Level.FINE)) {
-                logger.fine(log.msg("attempting to launch service using:"));
-                String message = "";
-                for (String s : commandLine) {
-                    message += s+" ";
-                }
-                logger.fine(log.msg(message));
+                logger.fine(log.msg("attempting to launch web start service using:"));
+                logger.fine(log.msg(commandLine));
             }
 
             ProcessBuilder builder = new ProcessBuilder(commandLine);
@@ -190,18 +190,18 @@ public class ServiceLauncher {
             logger.fine(log.msg("service launched"));
         }
         catch (IOException e) {
-            logger.severe(log.msg("launch failed with exception:"));
-            e.printStackTrace();
-            return;
+            logger.severe(log.msg("launch failed with exception:"+e.getMessage()));
+            return false;
         }
 
         if (this.useKeepAlive) {
-            connect(this.retryCount, this.retryInterval);
+            return connect(this.retryCount, this.retryInterval);
         }
 
+        return true;
     }
 
-    boolean connect(int retries, int retryInterval) throws InterruptedException {
+    private boolean connect(final int retries, final int retryInterval) throws InterruptedException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(log.entry("connect", retries, retryInterval));
@@ -219,7 +219,22 @@ public class ServiceLauncher {
                 this.socket.connect(address);
                 logger.fine(log.msg("connected to running service instance"));
                 this.isConnected = true;
-                this.socket.getInputStream();
+                if (this.listener != null) {
+                    Thread thread = new Thread() {
+                        @Override
+                        public void run() {
+                            try {
+                                socket.getInputStream().read();
+                            }
+                            catch (IOException e) {
+                            }
+                            isConnected = false;
+                            listener.onDisconnect();
+                        }
+                    };
+                    thread.setDaemon(true);
+                    thread.start();
+                }
                 return true;
             }
             catch(ConnectException e) {
@@ -239,7 +254,7 @@ public class ServiceLauncher {
         return false;
     }
 
-    void disconnect() {
+    private void disconnect() {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(log.entry("disconnect"));
