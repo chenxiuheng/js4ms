@@ -13,7 +13,7 @@ import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.logging.Logger;
 
-import com.larkwoodlabs.service.jws.ServiceLauncher;
+import com.larkwoodlabs.service.launcher.jws.ServiceLauncher;
 import com.larkwoodlabs.util.logging.Log;
 import com.larkwoodlabs.util.logging.Logging;
 
