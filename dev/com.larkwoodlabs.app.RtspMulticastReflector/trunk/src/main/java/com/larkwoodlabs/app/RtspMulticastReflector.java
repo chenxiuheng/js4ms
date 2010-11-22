@@ -73,16 +73,21 @@ public class RtspMulticastReflector {
                     adminResolver.put("/shutdown", new TransactionHandler() {
                         @Override
                         public boolean handleTransaction(Request request, Response response) throws IOException {
-                            try {
-                                response.setStatus(RtspStatusCodes.OK);
-                                response.setEntity(new StringEntity("stopping RTSP Multicast reflector..."));
-                                response.send();
-                                server.stop();
-                            }
-                            catch (InterruptedException e) {
-                                Thread.currentThread().interrupt();
-                                response.setStatus(RtspStatusCodes.ServiceUnavailable);
-                            }
+                            response.setStatus(RtspStatusCodes.OK);
+                            response.setEntity(new StringEntity("stopping RTSP Multicast reflector..."));
+                            new Thread(new Runnable() {
+
+                                @Override
+                                public void run() {
+                                    try {
+                                        server.stop();
+                                    }
+                                    catch (InterruptedException e) {
+                                        Thread.currentThread().interrupt();
+                                    }
+                                }
+                                
+                            }).start();
                             return true;
                         }
                     });
