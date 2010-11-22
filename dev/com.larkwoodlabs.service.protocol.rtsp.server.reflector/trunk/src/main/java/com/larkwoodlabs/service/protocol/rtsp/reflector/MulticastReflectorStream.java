@@ -138,7 +138,7 @@ public class MulticastReflectorStream extends MediaStream {
             @Override
             public void send(ByteBuffer message, int milliseconds) throws IOException, InterruptedIOException, InterruptedException {
                 if (logger.isLoggable(Level.FINE)) {
-                    logger.fine(log.msg("received packet from client on layer="+layerIndex+" channel="+channelIndex));
+                    logger.finer(log.msg("received packet from client on layer="+layerIndex+" channel="+channelIndex));
                 }
             }
 

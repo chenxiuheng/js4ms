@@ -314,22 +314,20 @@ public class MulticastReflectorFactory implements PresentationResolver {
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
 
+        while ((line = reader.readLine()) != null) {
+            sb.append(line).append("\r\n");
+        }
+
+        String description = sb.toString();
+
         if (logger.isLoggable(Level.FINE)) {
             logger.fine(log.msg("----> Server-side SDP"));
-            while ((line = reader.readLine()) != null) {
-                logger.fine(log.msg(" : " + line));
-                sb.append(line).append("\r\n");
-            }
+            logger.fine(log.msg("\n"+description));
             logger.fine(log.msg("<---- Server-side SDP"));
-        }
-        else {
-            while ((line = reader.readLine()) != null) {
-                sb.append(line).append("\r\n");
-            }
         }
 
         try {
-            return SdpFactory.getInstance().createSessionDescription(sb.toString());
+            return SdpFactory.getInstance().createSessionDescription(description);
         }
         catch (SdpParseException e) {
             throw RequestException.create(RtspService.RTSP_PROTOCOL_VERSION,
