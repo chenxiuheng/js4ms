@@ -24,7 +24,7 @@ import com.larkwoodlabs.util.logging.Log;
  */
 public class ServiceLauncher {
 
-    public interface DisconnectListener {
+    public static interface DisconnectListener {
         void onDisconnect();
     }
 
@@ -184,7 +184,7 @@ public class ServiceLauncher {
                 logger.fine(log.msg(commandLine));
             }
 
-            ProcessBuilder builder = new ProcessBuilder(commandLine);
+            ProcessBuilder builder = new ProcessBuilder(commandLineParams);
             builder.start();
 
             logger.fine(log.msg("service launched"));
@@ -220,16 +220,21 @@ public class ServiceLauncher {
                 logger.fine(log.msg("connected to running service instance"));
                 this.isConnected = true;
                 if (this.listener != null) {
+                    logger.fine(log.msg("starting service connection listener"));
                     Thread thread = new Thread() {
                         @Override
                         public void run() {
+                            logger.fine(log.msg("started service connection listener"));
                             try {
-                                socket.getInputStream().read();
+                                ServiceLauncher.this.socket.getInputStream().read();
                             }
                             catch (IOException e) {
                             }
-                            isConnected = false;
-                            listener.onDisconnect();
+                            logger.fine(log.msg("service connection broken"));
+                            if (ServiceLauncher.this.isConnected) {
+                                ServiceLauncher.this.isConnected = false;
+                                ServiceLauncher.this.listener.onDisconnect();
+                            }
                         }
                     };
                     thread.setDaemon(true);
@@ -268,6 +273,7 @@ public class ServiceLauncher {
             this.isConnected = false;
 
             try {
+                this.socket.shutdownInput();
                 this.socket.close();
             }
             catch (IOException e) {
