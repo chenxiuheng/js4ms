@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="build" name="RtspMulticastReflector-Android-Jar">
+
+	<property environment="env"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+
+	<import file="build-jar.xml"/>
+
+    <target name="build" description="builds service jar" depends="build-jar-file"/>
+
+	<target name="clean" description="cleans service jar" depends="clean-jar-file"></target>
+
+</project>

@@ -1,0 +1,118 @@
+<?eclipse.ant.import?>
+<project>
+
+	<property file="service.properties" />
+
+	<import file="gen-version.xml" />
+
+	<target name="gen-jar-name" depends="gen-version">
+	    <property name="service.jar.name" value="${service.name}.jar"/>
+	    <property name="service.jar.file" value="${service.name}__V${service.version}.jar"/>
+    </target>
+
+	<target name="build-jar-file" depends="gen-jar-name">
+
+        <!-- Delete all existing versions of the jar file -->
+        <delete>
+            <fileset dir="libs" includes="${service.name}__V*.*"/>
+        </delete>
+  
+	    <jar destfile="libs/${service.jar.file}">
+            <fileset dir="../com.larkwoodlabs.util.logging/bin">
+                <include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+            </fileset>
+            <fileset dir="../com.larkwoodlabs.common/bin">
+                <include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+            </fileset>
+            <fileset dir="../com.larkwoodlabs.util.buffer/bin">
+                <include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+            </fileset>
+            <fileset dir="../com.larkwoodlabs.net/bin">
+                <include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+            </fileset>
+            <fileset dir="../com.larkwoodlabs.channels/bin">
+                <include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+            </fileset>
+            <fileset dir="../com.larkwoodlabs.net.udp/bin">
+                <include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+            </fileset>
+            <fileset dir="../com.larkwoodlabs.util/bin">
+                <include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+            </fileset>
+            <fileset dir="../com.larkwoodlabs.io/bin">
+                <include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+            </fileset>
+            <fileset dir="../com.larkwoodlabs.net.ip/bin">
+                <include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+            </fileset>
+            <fileset dir="../com.larkwoodlabs.util.task/bin">
+                <include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+            </fileset>
+            <fileset dir="../com.larkwoodlabs.net.amt/bin">
+                <include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+            </fileset>
+            <fileset dir="../com.larkwoodlabs.service/bin">
+                <include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+            </fileset>
+            <fileset dir="../com.larkwoodlabs.service.protocol.text/bin">
+                <include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+            </fileset>
+            <fileset dir="../com.larkwoodlabs.service.protocol.text.server/bin">
+                <include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+            </fileset>
+            <fileset dir="../com.larkwoodlabs.service.protocol.rtsp/bin">
+                <include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+            </fileset>
+            <fileset dir="../com.larkwoodlabs.service.protocol.rtsp.server/bin">
+                <include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+            </fileset>
+            <fileset dir="../com.larkwoodlabs.service.protocol.rtsp.server.reflector/bin">
+                <include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+            </fileset>
+            <fileset dir="../com.larkwoodlabs.service.protocol.http/bin">
+                <include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+            </fileset>
+            <fileset dir="../com.larkwoodlabs.service.protocol.http.server/bin">
+                <include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+            </fileset>
+            <fileset dir="../com.larkwoodlabs.app.RtspMulticastReflector/bin">
+                <include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+            </fileset>
+            <manifest>
+                <attribute name="Main-Class" value="${service.package}.${service.class}"/>
+                <attribute name="Built-By" value="${user.name}"/>
+                <attribute name="Implementation-Vendor" value="${service.vendor}"/>
+                <attribute name="Implementation-Title" value="${service.name}"/>
+                <attribute name="Implementation-Version" value="${service.version}"/> 
+            </manifest>
+        </jar>
+
+    </target>
+
+	<target name="clean-jar-file">
+        <delete>
+            <fileset dir="libs" includes="*.jar"/>
+        </delete>
+	</target>
+
+</project>

@@ -1,0 +1,58 @@
+<?eclipse.ant.import?>
+<project>
+
+    <property file="service.properties" />
+
+    <target name="gen-version">
+        <tstamp>
+            <format property="service.timestamp" timezone="GMT" pattern="yyyyMMddHHmm" />
+            <format property="service.timestamp.year" timezone="GMT" pattern="yyyy" />
+            <format property="service.timestamp.month" timezone="GMT" pattern="MM" />
+            <format property="service.timestamp.day" timezone="GMT" pattern="dd" />
+            <format property="service.timestamp.hour" timezone="GMT" pattern="HH" />
+            <format property="service.timestamp.minute" timezone="GMT" pattern="mm" />
+        </tstamp>
+        <!--
+        <property name="service.version" value="${service.version.major}.${service.version.minor}.${service.version.maint}.v${service.timestamp}"/>
+        -->
+        <property name="service.version" value="${service.version.major}.${service.version.minor}.${service.version.maint}"/>
+        <script language="javascript"><![CDATA[
+            
+            // |                       .                       .                       .                       |
+            // +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+            // | Minor           | Maint           |<------------- Minutes since last release ---------------->|
+            // +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+
+            var minor = project.getProperty("service.version.minor");
+            var maint = project.getProperty("service.version.maint");
+
+            var year = project.getProperty("service.timestamp.year") - 2000;
+            var month = project.getProperty("service.timestamp.month");
+            var day = project.getProperty("service.timestamp.day");
+            var hour = project.getProperty("service.timestamp.hour");
+            var minute = project.getProperty("service.timestamp.minute");
+            var currentOffset = Number(minute) + Number(hour << 6) + Number(day << 11) + Number(month << 16) + Number(year << 20);
+
+            var year = project.getProperty("service.release.year") - 2000;
+            var month = project.getProperty("service.release.month");
+            var day = project.getProperty("service.release.day");
+            var hour = project.getProperty("service.release.hour");
+            var minute = project.getProperty("service.release.minute");
+            var previousOffset = Number(minute) + Number(hour << 6) + Number(day << 11) + Number(month << 16) + Number(year << 20);
+
+            var versionOffset = currentOffset - previousOffset;
+        
+            var version3 = versionOffset & 0xFF;
+            var version2 = (versionOffset >> 8) & 0xFF;
+            var version1 = (versionOffset >> 16) & 0x0F;
+            version2 += (maint & 0xF) << 4;
+            var version0 = ((maint >> 4) & 0x3) + ((minor & 0x3f) << 2)
+        
+            var cacheVersion = version0.toString(16)+"."+version1.toString(16)+"."+version2.toString(16)+"."+version3.toString(16);
+        
+            project.setProperty("service.version.cache", cacheVersion);
+        ]]></script>
+        <echo message="service version: ${service.version}  cache-version: ${service.version.cache}" />
+    </target>
+
+</project>
