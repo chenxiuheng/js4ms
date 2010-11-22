@@ -207,33 +207,33 @@ public class RawEntity implements Entity {
     }
 
     public void log(final Logger logger) {
-        logger.finer(log.msg("+ logging [" + getClass().getSimpleName() + "]"));
+        logger.info(log.msg("+ logging [" + getClass().getSimpleName() + "]"));
         logState(logger);
     }
 
     private void logState(final Logger logger) {
-        logger.finer(log.msg(Entity.CONTENT_LENGTH+": " + this.contentLength));
-        logger.finer(log.msg(Entity.CONTENT_TYPE+": " + this.contentType));
+        logger.info(log.msg(Entity.CONTENT_LENGTH+": " + this.contentLength));
+        logger.info(log.msg(Entity.CONTENT_TYPE+": " + this.contentType));
         if (this.contentEncoding != null) {
-            logger.finer(log.msg(Entity.CONTENT_ENCODING+": " + this.contentEncoding));
+            logger.info(log.msg(Entity.CONTENT_ENCODING+": " + this.contentEncoding));
         }
         if (this.contentLanguage != null) {
-            logger.finer(log.msg(Entity.CONTENT_LANGUAGE+": " + this.contentLanguage));
+            logger.info(log.msg(Entity.CONTENT_LANGUAGE+": " + this.contentLanguage));
         }
         if (this.contentBase != null) {
-            logger.finer(log.msg(Entity.CONTENT_BASE+": " + this.contentBase));
+            logger.info(log.msg(Entity.CONTENT_BASE+": " + this.contentBase));
         }
         if (this.contentLocation != null) {
-            logger.finer(log.msg(Entity.CONTENT_LOCATION+": " + this.contentLocation));
+            logger.info(log.msg(Entity.CONTENT_LOCATION+": " + this.contentLocation));
         }
         if (this.contentDisposition != null) {
-            logger.finer(log.msg(Entity.CONTENT_DISPOSITION+": " + this.contentDisposition));
+            logger.info(log.msg(Entity.CONTENT_DISPOSITION+": " + this.contentDisposition));
         }
         if (this.expires != null) {
-            logger.finer(log.msg(Entity.EXPIRES+": " + DateUtil.toString(this.expires)));
+            logger.info(log.msg(Entity.EXPIRES+": " + DateUtil.toString(this.expires)));
         }
         if (this.lastModified != null) {
-            logger.finer(log.msg(Entity.LAST_MODIFIED+": " + DateUtil.toString(this.lastModified)));
+            logger.info(log.msg(Entity.LAST_MODIFIED+": " + DateUtil.toString(this.lastModified)));
         }
     }
 

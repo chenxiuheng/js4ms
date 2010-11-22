@@ -155,7 +155,7 @@ public class StringEntity extends RawEntity {
     
     private void logState(Logger logger) {
         logger.info(log.msg(": ----> Content"));
-        logger.info(log.msg(this.source.toString()));
+        logger.info(log.msg("\n"+this.source.toString()));
         logger.info(log.msg(": <---- Content "));
     }
 

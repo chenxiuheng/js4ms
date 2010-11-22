@@ -189,10 +189,10 @@ public abstract class Message {
     }
 
     public void log(Logger logger) {
-        logger.finer(log.msg("+ logging [" + getClass().getSimpleName() + "]"));
-        logger.finer(log.msg(this.startLine.toString()));
+        logger.info(log.msg("+ logging [" + getClass().getSimpleName() + "]"));
+        logger.info(log.msg(this.startLine.toString()));
         for (Map.Entry<String, Header> entry : this.headers.entrySet()) {
-            logger.finer(log.msg(entry.getValue().toString()));
+            logger.info(log.msg(entry.getValue().toString()));
         }
         if (this.entity != null) {
             this.entity.log(logger);
