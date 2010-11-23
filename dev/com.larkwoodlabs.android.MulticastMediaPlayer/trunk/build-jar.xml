@@ -66,6 +66,10 @@
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
+            <fileset dir="../com.larkwoodlabs.service.launcher/bin">
+                <include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+            </fileset>
             <fileset dir="../com.larkwoodlabs.service.protocol.text/bin">
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />

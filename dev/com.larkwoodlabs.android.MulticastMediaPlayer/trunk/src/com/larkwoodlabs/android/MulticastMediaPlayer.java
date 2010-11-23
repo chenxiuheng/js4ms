@@ -18,7 +18,7 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.larkwoodlabs.android.R;
-import com.larkwoodlabs.service.ServiceLauncher;
+import com.larkwoodlabs.service.launcher.java.ServiceLauncher;
 import com.larkwoodlabs.util.logging.android.LogCatFormatter;
 import com.larkwoodlabs.util.logging.android.LogCatHandler;
 
@@ -51,7 +51,7 @@ public class MulticastMediaPlayer extends Activity {
         handler.setLevel(Level.FINEST);
         Logger.getLogger("").addHandler(handler);
         logger.setLevel(Level.FINER);
-        com.larkwoodlabs.service.ServiceLauncher.logger.setLevel(Level.FINER);
+        com.larkwoodlabs.service.launcher.java.ServiceLauncher.logger.setLevel(Level.FINER);
     }
 
     public MulticastMediaPlayer() {
