@@ -94,7 +94,7 @@ public final class AmtInterface {
         this.tunnelEndpoint.setIncomingQueryChannel(
                 new OutputChannelTransform<IPPacket, MembershipQuery>(
                         this.interfaceManager.getIncomingQueryChannel(),
-                        new MembershipQueryTransform()));
+                        new MembershipQueryTransform(this.tunnelEndpoint)));
         
         // Connect a channel membership state manager to the interface membership state manager
         this.channelManager = new ChannelMembershipManager(this.interfaceManager);

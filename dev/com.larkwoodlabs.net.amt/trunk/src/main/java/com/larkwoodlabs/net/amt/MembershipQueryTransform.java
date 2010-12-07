@@ -36,6 +36,12 @@ import com.larkwoodlabs.net.ip.mld.MLDv2QueryMessage;
 
 final class MembershipQueryTransform implements MessageTransform<IPPacket, MembershipQuery> {
 
+    private final AmtTunnelEndpoint endpoint;
+
+    public MembershipQueryTransform(final AmtTunnelEndpoint endpoint) {
+        this.endpoint = endpoint;
+    }
+
     @Override
     public MembershipQuery transform(final IPPacket packet) throws IOException {
         
@@ -114,7 +120,11 @@ final class MembershipQueryTransform implements MessageTransform<IPPacket, Membe
                                                   queryInterval);
         }
 
-        
+        // Use query interval received in query message to (re)start periodic request generation task.
+
+        this.endpoint.startRequestTask((long)(membershipQuery.getQueryInterval() * Math.random()),
+                                       membershipQuery.getQueryInterval());
+
         return membershipQuery;
 
     }

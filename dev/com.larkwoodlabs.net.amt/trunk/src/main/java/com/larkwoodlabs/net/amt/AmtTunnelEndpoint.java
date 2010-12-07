@@ -87,13 +87,15 @@ public final class AmtTunnelEndpoint implements Runnable {
     
     private final Timer taskTimer;
     private TimerTask relayDiscoveryTask = null;
-    
+    private TimerTask requestTask = null;
+
     private boolean isRelayDiscoveryStarted = false;
     private boolean isRequestSent = false;
     private boolean isResponseReceived = false;
 
     private int lastDiscoveryNonce;
-    private int lastRequestNonce;
+    private int lastRequestNonceSent;
+    private int lastRequestNonceReceived;
     private byte[] lastResponseMac;
     
 
@@ -109,7 +111,7 @@ public final class AmtTunnelEndpoint implements Runnable {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId,
-                                          "AmtMessageEndpoint.AmtMessageEndpoint",
+                                          "AmtTunnelEndpoint.AmtTunnelEndpoint",
                                           Logging.address(relayDiscoveryAddress),
                                           taskTimer));
         }
@@ -189,7 +191,7 @@ public final class AmtTunnelEndpoint implements Runnable {
     public void start() throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtMessageEndpoint.start"));
+            logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.start"));
         }
 
         if (logger.isLoggable(Level.FINE)) {
@@ -224,7 +226,7 @@ public final class AmtTunnelEndpoint implements Runnable {
     public void stop() throws InterruptedException, IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtMessageEndpoint.stop"));
+            logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.stop"));
         }
 
         if (logger.isLoggable(Level.FINE)) {
@@ -266,7 +268,7 @@ public final class AmtTunnelEndpoint implements Runnable {
     private void sendUpdate(final IPPacket packet, final int milliseconds) throws IOException, InterruptedException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtMessageEndpoint.sendUpdate", packet, milliseconds));
+            logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.sendUpdate", packet, milliseconds));
         }
 
         synchronized (this.lock) {
@@ -298,7 +300,7 @@ public final class AmtTunnelEndpoint implements Runnable {
             }
         }
 
-        AmtMembershipUpdateMessage message = new AmtMembershipUpdateMessage(this.lastResponseMac, this.lastRequestNonce, packet);
+        AmtMembershipUpdateMessage message = new AmtMembershipUpdateMessage(this.lastResponseMac, this.lastRequestNonceReceived, packet);
 
         send(message);
     }
@@ -313,7 +315,7 @@ public final class AmtTunnelEndpoint implements Runnable {
     private void sendData(final IPPacket packet, final int milliseconds) throws IOException, InterruptedException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtMessageEndpoint.sendData", packet, milliseconds));
+            logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.sendData", packet, milliseconds));
         }
 
         /* Data messages can only be sent to Relays and Gateways that have sent AMT request and update messages.
@@ -333,13 +335,14 @@ public final class AmtTunnelEndpoint implements Runnable {
     private void send(final AmtMessage message) throws IOException, InterruptedException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtMessageEndpoint.send", message));
-            message.log(logger);
+            logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.send", message));
         }
-
 
         if (logger.isLoggable(Level.FINE)) {
             logger.fine(ObjectId + " sending " + message.getClass().getSimpleName());
+            if (logger.isLoggable(Level.FINEST)) {
+                message.log(logger);
+            }
         }
 
         ByteBuffer buffer = ByteBuffer.allocate(message.getTotalLength());
@@ -359,8 +362,10 @@ public final class AmtTunnelEndpoint implements Runnable {
     private void send(final UdpDatagram datagram) throws IOException, InterruptedException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtMessageEndpoint.send", datagram));
-            datagram.log(logger);
+            logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.send", datagram));
+            if (logger.isLoggable(Level.FINEST)) {
+                datagram.log(logger);
+            }
         }
 
         try {
@@ -393,7 +398,7 @@ public final class AmtTunnelEndpoint implements Runnable {
     private void startRelayDiscovery() throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtMessageEndpoint.startRelayDiscovery"));
+            logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.startRelayDiscovery"));
         }
 
         synchronized (this.lock) {
@@ -419,7 +424,7 @@ public final class AmtTunnelEndpoint implements Runnable {
             }
         }
     }
-    
+
     /**
      * 
      * @param delay
@@ -427,8 +432,10 @@ public final class AmtTunnelEndpoint implements Runnable {
      */
     private void startRelayDiscoveryTask(final long delay, final long period) {
 
-        final AmtTunnelEndpoint endpoint = this;
-        
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.startRelayDiscoveryTask", delay, period));
+        }
+
         this.relayDiscoveryTask = new TimerTask() {
             @Override
             public void run() {
@@ -436,7 +443,7 @@ public final class AmtTunnelEndpoint implements Runnable {
                     AmtTunnelEndpoint.logger.finer(ObjectId + " running relay discovery task");
                 }
                 try {
-                    endpoint.sendRelayDiscoveryMessage();
+                    AmtTunnelEndpoint.this.sendRelayDiscoveryMessage();
                 }
                 catch (Exception e) {
                     // Schedule relay discovery task for immediate execution with short retry period
@@ -455,7 +462,7 @@ public final class AmtTunnelEndpoint implements Runnable {
     private void sendRelayDiscoveryMessage() throws Exception {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtMessageEndpoint.sendRelayDiscoveryMessage"));
+            logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.sendRelayDiscoveryMessage"));
         }
 
         AmtRelayDiscoveryMessage message = new AmtRelayDiscoveryMessage();
@@ -470,12 +477,46 @@ public final class AmtTunnelEndpoint implements Runnable {
 
         if (logger.isLoggable(Level.FINE)) {
             logger.fine(ObjectId + " sending AMT Relay Discovery Message");
-            if (logger.isLoggable(Level.FINER)) {
+            if (logger.isLoggable(Level.FINEST)) {
                 message.log();
             }
         }
 
         send(new UdpDatagram(this.relayDiscoveryAddress.getAddress(), AMT_PORT, buffer));
+    }
+
+    /**
+     * 
+     * @param delay
+     * @param period
+     */
+    void startRequestTask(final long delay, final long period) {
+
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.startRequestTask", delay, period));
+        }
+
+        if (this.requestTask != null) {
+            this.requestTask.cancel();
+        }
+
+        this.requestTask = new TimerTask() {
+            @Override
+            public void run() {
+                if (AmtTunnelEndpoint.logger.isLoggable(Level.FINER)) {
+                    AmtTunnelEndpoint.logger.finer(ObjectId + " running periodic request task");
+                }
+                try {
+                    AmtTunnelEndpoint.this.sendRequestMessage();
+                }
+                catch (Exception e) {
+                    // Schedule relay discovery task for immediate execution with short retry period
+                    AmtTunnelEndpoint.logger.warning(ObjectId + " attempt to send periodic AMT Relay Discovery Message failed - " + e.getMessage());
+                }
+            }
+        };
+
+        this.taskTimer.schedule(this.requestTask, delay, period);
     }
 
     /**
@@ -486,18 +527,18 @@ public final class AmtTunnelEndpoint implements Runnable {
     private void sendRequestMessage() throws IOException, InterruptedException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtMessageEndpoint.sendRequestMessage"));
+            logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.sendRequestMessage"));
         }
 
         AmtRequestMessage message = new AmtRequestMessage();
-        this.lastRequestNonce = message.getRequestNonce();
 
-        send(message);
-        
         synchronized (this.lock) {
-            this.lastRequestNonce = message.getRequestNonce();
+            this.lastRequestNonceSent = message.getRequestNonce();
             this.isRequestSent = true;
         }
+
+        send(message);
+
     }
 
     /**
@@ -509,7 +550,7 @@ public final class AmtTunnelEndpoint implements Runnable {
     private void handleAdvertisementMessage(final AmtRelayAdvertisementMessage message) throws IOException, InterruptedException {
         
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtInterface.handle", message));
+            logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.handleAdvertisementMessage", message));
         }
 
         synchronized (this.lock) {
@@ -567,12 +608,17 @@ public final class AmtTunnelEndpoint implements Runnable {
     private void handleQueryMessage(final AmtMembershipQueryMessage message) throws IOException, InterruptedException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtMessageEndpoint.handle", message));
+            logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.handleQueryMessage", message));
         }
 
         synchronized (this.lock) {
             this.isResponseReceived = true;
+            this.lastRequestNonceReceived = message.getRequestNonce();
             this.lastResponseMac = message.getResponseMac();
+
+            if (this.lastRequestNonceReceived != this.lastRequestNonceSent) {
+                logger.info(ObjectId + " AMT interface received Query message containing a request nonce that does not match that sent");
+            }
         }
 
         this.incomingQueryChannel.send(message.getPacket(), Integer.MAX_VALUE);
@@ -587,7 +633,7 @@ public final class AmtTunnelEndpoint implements Runnable {
     private void handleDataMessage(final AmtMulticastDataMessage message) throws InterruptedException, InterruptedIOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtMessageEndpoint.handle", message));
+            logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.handleDataMessage", message));
         }
         
         try {
@@ -614,13 +660,13 @@ public final class AmtTunnelEndpoint implements Runnable {
     public void run() {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtMessageEndpoint.run"));
+            logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.run"));
         }
         
         while (this.isRunning) {
 
-            if (logger.isLoggable(Level.FINE)) {
-                logger.fine(ObjectId + " waiting to receive AMT message...");
+            if (logger.isLoggable(Level.FINER)) {
+                logger.finer(ObjectId + " waiting to receive AMT message...");
             }
 
             UdpDatagram inputDatagram = null;
@@ -652,7 +698,7 @@ public final class AmtTunnelEndpoint implements Runnable {
 
                     if (logger.isLoggable(Level.FINE)) {
                         logger.fine(ObjectId + " received AMT message "+message.getClass().getSimpleName());
-                        if (logger.isLoggable(Level.FINER)) {
+                        if (logger.isLoggable(Level.FINEST)) {
                             message.log();
                         }
                     }

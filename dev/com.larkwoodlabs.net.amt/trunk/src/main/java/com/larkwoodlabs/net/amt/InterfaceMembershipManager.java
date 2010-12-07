@@ -46,9 +46,9 @@ public final class InterfaceMembershipManager
      */
     private final HashMap<InetAddress, SourceFilter> interfaceReceptionState = new HashMap<InetAddress, SourceFilter>();
 
-    private final HashMap<InetAddress, StateChangeReportTimer> pendingStateChangeReports = new HashMap<InetAddress, StateChangeReportTimer>();
+    private final HashMap<InetAddress, StateChangeReportTask> pendingStateChangeReports = new HashMap<InetAddress, StateChangeReportTask>();
     
-    private final HashMap<InetAddress, GroupQueryReportTimer> pendingGroupQueryReports = new HashMap<InetAddress, GroupQueryReportTimer>();
+    private final HashMap<InetAddress, GroupQueryReportTask> pendingGroupQueryReports = new HashMap<InetAddress, GroupQueryReportTask>();
     
     private GeneralQueryReportTimer pendingGeneralQueryReport = null;
 
@@ -183,7 +183,7 @@ public final class InterfaceMembershipManager
             SourceFilter.Mode oldFilterMode = filter.getMode();
 
             filter.join(sourceAddress);
-            
+
             updateInterfaceGroupState(oldFilterMode, oldSourceSet, filter);
         }
     }
@@ -361,7 +361,7 @@ public final class InterfaceMembershipManager
             synchronized (this.pendingStateChangeReports) {
             
                 // Look for pending group state change report
-                StateChangeReportTimer stateChangeReport = this.pendingStateChangeReports.get(groupAddress);
+                StateChangeReportTask stateChangeReport = this.pendingStateChangeReports.get(groupAddress);
     
                 if (stateChangeReport == null) {
 
@@ -370,7 +370,7 @@ public final class InterfaceMembershipManager
 
                     if (newFilterMode != oldFilterMode) {
                         // Generate filter mode change report
-                        stateChangeReport = new StateChangeReportTimer(this.taskTimer,
+                        stateChangeReport = new StateChangeReportTask(this.taskTimer,
                                                                        this,
                                                                        groupAddress,
                                                                        retransmissionCount,
@@ -393,7 +393,7 @@ public final class InterfaceMembershipManager
                         }
 
                         // Generate source set change report
-                        stateChangeReport = new StateChangeReportTimer(this.taskTimer,
+                        stateChangeReport = new StateChangeReportTask(this.taskTimer,
                                                                        this,
                                                                        groupAddress,
                                                                        retransmissionCount,
@@ -538,9 +538,9 @@ public final class InterfaceMembershipManager
                     synchronized (this.pendingGroupQueryReports) {
     
                         // Check for pending group query response
-                        GroupQueryReportTimer response = this.pendingGroupQueryReports.get(queryMessage.getGroupAddress());
+                        GroupQueryReportTask response = this.pendingGroupQueryReports.get(queryMessage.getGroupAddress());
                         if (response == null) {
-                            response = new GroupQueryReportTimer(this.taskTimer,
+                            response = new GroupQueryReportTask(this.taskTimer,
                                                                  this,
                                                                  queryMessage.getGroupAddress(),
                                                                  queryMessage.getSourceAddresses());
