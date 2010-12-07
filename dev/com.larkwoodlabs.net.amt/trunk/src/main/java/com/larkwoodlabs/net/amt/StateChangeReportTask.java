@@ -26,7 +26,7 @@ import com.larkwoodlabs.util.logging.Logging;
 import com.larkwoodlabs.util.task.ReschedulableTask;
 
 
-final class StateChangeReportTimer extends ReschedulableTask {
+final class StateChangeReportTask extends ReschedulableTask {
 
     private final InterfaceMembershipManager interfaceMembershipManager;
     private final InetAddress groupAddress;
@@ -41,12 +41,12 @@ final class StateChangeReportTimer extends ReschedulableTask {
     private HashSet<InetAddress> allowNewSources;
     private HashSet<InetAddress> blockOldSources;
     
-    public StateChangeReportTimer(final Timer taskTimer,
-                                  final InterfaceMembershipManager interfaceMembershipManager,
-                                  final InetAddress groupAddress,
-                                  final int retransmissionCount,
-                                  final SourceFilter.Mode currentMode,
-                                  final HashSet<InetAddress> currentSourceSet) {
+    public StateChangeReportTask(final Timer taskTimer,
+                                 final InterfaceMembershipManager interfaceMembershipManager,
+                                 final InetAddress groupAddress,
+                                 final int retransmissionCount,
+                                 final SourceFilter.Mode currentMode,
+                                 final HashSet<InetAddress> currentSourceSet) {
         super(taskTimer);
         this.interfaceMembershipManager = interfaceMembershipManager;
         this.groupAddress = groupAddress;
@@ -57,13 +57,13 @@ final class StateChangeReportTimer extends ReschedulableTask {
         this.sourceChangeTransmissionsRemaining = 0;
     }
 
-    public StateChangeReportTimer(final Timer taskTimer,
-                                  final InterfaceMembershipManager interfaceMembershipManager,
-                                  final InetAddress groupAddress,
-                                  final int retransmissionCount,
-                                  final SourceFilter.Mode currentMode,
-                                  final HashSet<InetAddress> currentSourceSet,
-                                  final HashSet<InetAddress> newSourceSet) {
+    public StateChangeReportTask(final Timer taskTimer,
+                                 final InterfaceMembershipManager interfaceMembershipManager,
+                                 final InetAddress groupAddress,
+                                 final int retransmissionCount,
+                                 final SourceFilter.Mode currentMode,
+                                 final HashSet<InetAddress> currentSourceSet,
+                                 final HashSet<InetAddress> newSourceSet) {
         this(taskTimer, interfaceMembershipManager, groupAddress, retransmissionCount, currentMode, currentSourceSet);
         this.sourceChangeTransmissionsRemaining = retransmissionCount;
         this.modeChangeTransmissionsRemaining = 0;

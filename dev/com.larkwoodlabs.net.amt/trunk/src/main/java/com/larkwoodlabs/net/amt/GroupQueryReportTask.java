@@ -23,7 +23,7 @@ import java.util.Timer;
 import com.larkwoodlabs.util.task.ReschedulableTask;
 
 
-public final class GroupQueryReportTimer extends ReschedulableTask {
+public final class GroupQueryReportTask extends ReschedulableTask {
 
     final InterfaceMembershipManager interfaceMembershipManager;
 
@@ -33,10 +33,10 @@ public final class GroupQueryReportTimer extends ReschedulableTask {
     /**
      * Constructs a response task for group and source-specific query.
      */
-    public GroupQueryReportTimer(final Timer taskTimer,
-                                 final InterfaceMembershipManager interfaceMembershipManager,
-                                 final InetAddress groupAddress,
-                                 final HashSet<InetAddress> querySourceSet) {
+    public GroupQueryReportTask(final Timer taskTimer,
+                                final InterfaceMembershipManager interfaceMembershipManager,
+                                final InetAddress groupAddress,
+                                final HashSet<InetAddress> querySourceSet) {
         super(taskTimer);
         this.interfaceMembershipManager = interfaceMembershipManager;
         this.groupAddress = groupAddress;
