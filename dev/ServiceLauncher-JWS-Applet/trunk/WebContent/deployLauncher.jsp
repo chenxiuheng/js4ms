@@ -15,8 +15,8 @@ function deployLauncher(id,appletParameters) {
             name:id,
             classloader_cache:false,
             MAYSCRIPT: "true",
-            width:1024,
-            height:200} ; 
+            width:1,
+            height:1} ; 
 
     var parameters = {
             jnlp_href: '<%= jnlpUrl %>',
