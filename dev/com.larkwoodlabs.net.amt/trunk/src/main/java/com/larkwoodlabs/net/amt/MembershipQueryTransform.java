@@ -122,8 +122,7 @@ final class MembershipQueryTransform implements MessageTransform<IPPacket, Membe
 
         // Use query interval received in query message to (re)start periodic request generation task.
 
-        this.endpoint.startRequestTask((long)(membershipQuery.getQueryInterval() * Math.random()),
-                                       membershipQuery.getQueryInterval());
+        this.endpoint.startRequestTask(membershipQuery.getQueryInterval());
 
         return membershipQuery;
 

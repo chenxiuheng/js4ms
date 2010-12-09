@@ -93,6 +93,7 @@ public final class AmtTunnelEndpoint implements Runnable {
     private boolean isRequestSent = false;
     private boolean isResponseReceived = false;
 
+    private long requestInterval = 0;
     private int lastDiscoveryNonce;
     private int lastRequestNonceSent;
     private int lastRequestNonceReceived;
@@ -487,36 +488,41 @@ public final class AmtTunnelEndpoint implements Runnable {
 
     /**
      * 
-     * @param delay
-     * @param period
+     * @param interval
      */
-    void startRequestTask(final long delay, final long period) {
+    void startRequestTask(final long interval) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.startRequestTask", delay, period));
+            logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.startRequestTask", interval));
         }
 
-        if (this.requestTask != null) {
-            this.requestTask.cancel();
-        }
+        // (Re)schedule request generation task if interval changes
+        if (interval != this.requestInterval) {
 
-        this.requestTask = new TimerTask() {
-            @Override
-            public void run() {
-                if (AmtTunnelEndpoint.logger.isLoggable(Level.FINER)) {
-                    AmtTunnelEndpoint.logger.finer(ObjectId + " running periodic request task");
-                }
-                try {
-                    AmtTunnelEndpoint.this.sendRequestMessage();
-                }
-                catch (Exception e) {
-                    // Schedule relay discovery task for immediate execution with short retry period
-                    AmtTunnelEndpoint.logger.warning(ObjectId + " attempt to send periodic AMT Relay Discovery Message failed - " + e.getMessage());
-                }
+            this.requestInterval = interval;
+
+            if (this.requestTask != null) {
+                this.requestTask.cancel();
             }
-        };
 
-        this.taskTimer.schedule(this.requestTask, delay, period);
+            this.requestTask = new TimerTask() {
+                @Override
+                public void run() {
+                    if (AmtTunnelEndpoint.logger.isLoggable(Level.FINER)) {
+                        AmtTunnelEndpoint.logger.finer(ObjectId + " running periodic request task");
+                    }
+                    try {
+                        AmtTunnelEndpoint.this.sendRequestMessage();
+                    }
+                    catch (Exception e) {
+                        // Schedule relay discovery task for immediate execution with short retry period
+                        AmtTunnelEndpoint.logger.warning(ObjectId + " attempt to send periodic AMT Relay Discovery Message failed - " + e.getMessage());
+                    }
+                }
+            };
+    
+            this.taskTimer.schedule(this.requestTask, (long)(interval * Math.random()), interval);
+        }
     }
 
     /**
