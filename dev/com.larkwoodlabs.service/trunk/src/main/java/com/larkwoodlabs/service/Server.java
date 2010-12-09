@@ -273,18 +273,4 @@ public class Server {
         LogManager.getLogManager().reset();
 
     }
-    /**
-     * Entry point used to test minimal server interaction with keep-alive clients.
-     * @param args
-     */
-    public static void main(String[] args) {
-        System.setProperty("com.apple.mrj.application.apple.menu.about.name", "");        System.out.println(slog.entry("main", (Object)args));        try {            runServer(System.getProperties(), new ServerFactory() {
-
-                @Override
-                public Server construct(Properties properties) {
-                    return new Server(properties,                                      new Service() {                                          @Override                                          public void service(Connection connection) throws IOException {                                              InputStream inputStream = connection.getInputStream();                                              // Get first character in message                                               // Throws SocketException if the socket is closed by                                               // another thread while waiting in this call                                              int c = inputStream.read();                                              if (c == -1) {                                                  // Peer stopped sending data or input was shutdown                                                  throw new EOFException("connection stream returned EOF");                                              }                                         }                                         @Override                                         public void start() {                                         }                                         @Override                                         public void stop() {                                         }                                                                             },                                     new ConnectionHandlerFactory() {                                         @Override                                         public ConnectionHandler construct(ConnectionManager manager, Connection connection, Service service) {                                             return new ConnectionHandler(manager, connection, service);                                         }                                     });
-                }
-
-            });        }        catch (InterruptedException e) {            Thread.currentThread().interrupt();        }
-    }
-}
+}
