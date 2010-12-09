@@ -46,7 +46,7 @@ public class VerifyRequireHeader implements TransactionHandler {
                         header.appendValue(name);
                     }
                 }
-                if (!header.getValue().isEmpty()) {
+                if (header.getValue().length() != 0) {
                     response.setStatus(StatusCodes.OptionNotSupported);
                     response.setHeader(header);
                     return true;
