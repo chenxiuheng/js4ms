@@ -77,7 +77,7 @@ public class AmtDatagramSource extends MessageSource<UdpDatagram> {
         }
 
         this.sourceFilter = sourceFilter;
-        this.amtEndpoint = new AmtMulticastEndpoint(sourcePort, outputChannel);
+        this.amtEndpoint = new AmtMulticastEndpoint(sourcePort, relayDiscoveryAddress, outputChannel);
     }
 
     /**
