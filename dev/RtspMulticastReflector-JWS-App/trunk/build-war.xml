@@ -7,11 +7,7 @@
 
     <property name="war.file" value="${app.name}.war" />
 
-    <target name="copy-jars">
-        <copy file="../jars-jain-sdp/ext/jain-sdp-1.0.100.jar" toDir="WebContent" />
-    </target>
-
-    <target name="sign-jars" depends="build-jar-file,copy-jars">
+    <target name="sign-jars" depends="build-jar-file">
         <input message="Please enter keystore file path:" addproperty="keystore" defaultvalue="keystore" />
         <input message="Please enter keystore password:" addproperty="keypass" defaultvalue="testpass" />
         <input message="Please enter key name:" addproperty="alias" defaultvalue="testkey" />
