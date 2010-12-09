@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="build" name="AmtTest">
+
+	<property environment="env"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+
+
+	<import file="deploy-war.xml"/>
+
+	<target name="init"></target>
+
+	<target name="clean" depends="clean-war"></target>
+
+	<target name="cleanall" depends="clean"></target>
+
+	<target name="build" depends="build-war"/>
+	
+    <target name="deploy" depends="deploy-war"/>
+
+</project>

@@ -1,0 +1,199 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>AMT Test Stream Player</title>
+<script src="http://www.apple.com/library/quicktime/scripts/ac_quicktime.js" language="JavaScript" type="text/javascript"></script>
+<script src="http://java.com/js/deployJava.js" language="JavaScript" type="text/javascript"></script>
+<script src="/jws/applets/servicelauncher/deployLauncher.js" language="JavaScript" type="text/javascript"></script>
+<script language="JavaScript" type="text/javascript">
+
+var params = {};
+var isIE = navigator.userAgent.indexOf('MSIE') !=-1;
+var appletId = "reflector";
+var servicePort = "8554";
+var rtspUrl = "rtsp://127.0.0.1:"+servicePort+"/reflect?";
+
+function constructPlayer() {
+	
+    var id = "player";
+    
+    var src = "blank.mov";
+
+    parseQueryString();
+
+    var sdp = params["sdp"];
+    var relay = params["relay"];
+
+    var width = Number(params["width"]);
+    if (!width) width=640;
+
+    var height = Number(params["height"]);
+    if (!height) height=480;
+
+    height += 16;
+
+    // Use anchor element to convert possible relative URL into absolute URL.
+    var anchor = document.createElement("a");
+    anchor.href = "/servlet/sdpgenerator/"+sdp+"?relay="+ relay;
+    var sdpUrl = anchor.href;
+
+    var qtsrc = rtspUrl + sdpUrl;
+    QT_WriteOBJECT(
+                src,
+                String(width),
+                String(height),
+                "",
+                "qtsrc", qtsrc,
+                "obj#id", id,
+                "emb#name", id,
+                "emb#id", id+"_embed",
+                "showlogo", "false",
+                "bgcolor", "black",
+                "scale", "aspect",
+                'postdomevents', 'true',
+                "autoplay", "true",
+                "controller", "true");
+}
+
+function startPlayer() {
+
+	document.getElementById("status").innerHTML = "Starting Player...";
+
+    var applet = document.getElementById(appletId);
+
+    if ((isIE && applet.isActive()) || (!isIE && applet.isActive)) {
+
+        getPlayer().Play();
+
+    }
+    else {
+        window.setTimeout("startPlayer()",100);
+    }
+}
+
+function initPlayer() {
+
+    addQTListeners();
+    
+    startPlayer();
+}
+
+function getPlayer() {
+    // Set the global player object
+    var player = document.getElementById('player_embed');
+    if (!player) {
+        player = document.getElementById('player');
+    }
+    return player;
+}
+
+function addListener(obj, evt, handler, captures) {
+    if ( document.addEventListener )
+        obj.addEventListener(evt, handler, captures);
+    else
+        obj.attachEvent('on' + evt, handler); // IE requires this form
+}
+
+function onEvent(evt) {
+    //if (!evt) evt = window.event; // IE
+    //document.getElementById("status").innerHTML += evt.type +"<br/>";
+}
+
+
+function addQTListeners() {
+     var player = document.getElementById("player");
+     addListener(player,'qt_begin',           onEvent, false);
+     addListener(player,'qt_abort',           onEvent, false);
+     addListener(player,'qt_canplay',         onEvent, false);
+     addListener(player,'qt_canplaythrough',  onEvent, false);
+     addListener(player,'qt_durationchange',  onEvent, false);
+     addListener(player,'qt_ended',           onEvent, false);
+     addListener(player,'qt_error',           onEvent, false);
+     addListener(player,'qt_load',            onEvent, false);
+     addListener(player,'qt_loadedfirstframe',onEvent, false);
+     addListener(player,'qt_loadedmetadata',  onEvent, false);
+     addListener(player,'qt_pause',           onEvent, false);
+     addListener(player,'qt_play',            onEvent, false);
+     addListener(player,'qt_progress',        onEvent, false);
+     addListener(player,'qt_stalled',         onEvent, false);
+     addListener(player,'qt_timechanged',     onEvent, false);
+     addListener(player,'qt_volumechange',    onEvent, false);            
+     addListener(player,'qt_waiting',         onEvent, false);
+}
+
+function confirmRetry() {
+    if (confirm("Service launcher applet failed to connect to service\nDo you wish to retry?")) {
+        var applet = document.getElementById(appletId);
+        applet.start();
+    }
+}
+
+function confirmRestart() {
+    if (confirm("Service launcher applet was disconnected from service\nDo you wish to restart the service?")) {
+        var applet = document.getElementById(appletId);
+        applet.start();
+    }
+}
+
+function parseQueryString() {
+
+	var url = window.location.toString();
+	url.match(/\?(.+)$/);
+
+	var queryParams = RegExp.$1;
+
+	// split up the query string and store in a associative array
+	queryParams = queryParams.split("&");
+
+	for(var i=0; i<queryParams.length; i++)
+	{
+	   var tmp = queryParams[i].split("=");
+	   params[tmp[0]] = unescape(tmp[1]);
+	}    
+}
+
+function constructApplet() {
+
+    document.getElementById("status").innerHTML = "loading applet...";
+
+    var parameters = {
+            ServiceJnlpUrl:"/jws/apps/rtspreflector/RtspMulticastReflectorApp.jnlp",
+            ServicePort:servicePort,
+            UseKeepAlive:true,
+            ConnectionRetryCount:10,
+            ConnectionRetryInterval:1000,
+            OnErrorUrl:"javascript:confirmRetry()",
+            OnDisconnectUrl:"javascript:confirmRestart()",
+    }
+
+    deployLauncher(appletId,parameters);
+
+}
+
+    </script>  
+    <!--[if IE]><object id="qt_event_source" classid="clsid:CB927D12-4FF7-4a9e-A169-56E4B8A75598"></object><![endif]-->
+</head>
+<body onload="initPlayer()">
+<center>
+    <div id="status">Loading page...</div>
+    <script language="JavaScript" type="text/javascript">
+    constructApplet();
+    constructPlayer();
+    </script>
+    <p>
+<div style="width:640px;color:gray;text-align:left;">
+This test uses an embedded QuickTime player to play SSM media streams through an AMT gateway packaged as a Java applet.
+The first time the browser attempts to download the applet, you will be asked whether to proceed with installation of the applet.
+You may also be asked whether you want to allow the applet to have access to systems resources (e.g. network interface). You
+must answer yes/allow/accept before the AMT gateway can begin execution. If you experience problems using this page due
+to applet or player issues, please check the project <a href="http://wikicentral.cisco.com/confluence/display/AMT/Troubleshooting">Wiki</a>
+for more information.
+<p>
+<b>Mac OS X 10.6 Users:</b>
+The QT NPAPI plugin installed with OSX 10.6 does not appear to work properly when used with Firefox or Chrome.
+You will see significant rendering errors and artifacts in those browsers. Please use the native Safari browser to view this page.
+</div>
+</center>
+</body>
+</html>

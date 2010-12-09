@@ -1,0 +1,19 @@
+<?eclipse.ant.import?>
+<project>
+
+	<property name="war.file" value="amttest.war" />
+
+	<target name="build-war">
+	    <war destfile="build/${war.file}" webxml="WebContent/WEB-INF/web.xml">
+	    	<fileset dir="WebContent">
+	    		<exclude name="WEB-INF/web.xml"/>
+	    	</fileset>
+	        <lib dir="WebContent/WEB-INF/lib"/>
+	    </war>
+	</target>
+	
+	<target name="clean-war">
+		<delete file="build/${war.file}" />
+	</target>
+	
+</project>
