@@ -8,6 +8,7 @@
     <string name="stream_complete_msg">The broadcast stream has ended.</string>
     <string name="retry_failed_msg">Retry failed.</string>
     <string name="restart_failed_msg">Restart failed.</string>
+    <string name="media_error_msg">Player cannot play media stream.</string>
     <string name="playing_msg">Playing</string>
     <string name="restart_label">Restart</string>
     <string name="retry_label">Retry</string>

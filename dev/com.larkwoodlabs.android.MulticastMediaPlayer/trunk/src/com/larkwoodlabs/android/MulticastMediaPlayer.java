@@ -27,6 +27,7 @@ public class MulticastMediaPlayer extends Activity {
     final static int ON_START_FAILURE_DIALOG = 0;
     final static int ON_DISCONNECT_FAILURE_DIALOG = 1;
     final static int ON_STREAM_COMPLETE_DIALOG = 2;
+    final static int ON_MEDIA_ERROR_DIALOG = 4;
 
     final static String RTSP_REFLECTOR_URI = "rtsp://127.0.0.1:8554/reflect?";
 
@@ -131,7 +132,6 @@ public class MulticastMediaPlayer extends Activity {
                 showDialog(ON_STREAM_COMPLETE_DIALOG);
             }
         });
-        
 
         this.mVideoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
 
@@ -139,7 +139,7 @@ public class MulticastMediaPlayer extends Activity {
             public boolean onError(MediaPlayer mp, int what, int extra) {
                 logger.fine(log.msg("onError called for "+mp.getClass().getName()));
                 MulticastMediaPlayer.this.progressDialog.dismiss();
-                finish();
+                showDialog(ON_MEDIA_ERROR_DIALOG);
                 return true;
             }
         });
@@ -205,6 +205,9 @@ public class MulticastMediaPlayer extends Activity {
 
         case ON_STREAM_COMPLETE_DIALOG:
             return buildStreamCompleteDialog();
+
+        case ON_MEDIA_ERROR_DIALOG:
+            return buildMediaErrorDialog();
         }
 
         return null;
@@ -254,6 +257,24 @@ public class MulticastMediaPlayer extends Activity {
                .setNeutralButton(getResources().getText(R.string.ok_label), new DialogInterface.OnClickListener() {
                    public void onClick(DialogInterface dialog, int id) {
                        finish();
+                   }
+               });
+        return builder.create();
+    }
+
+    private Dialog buildMediaErrorDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getResources().getText(R.string.media_error_msg))
+               .setCancelable(false)
+               .setPositiveButton(getResources().getText(R.string.retry_label), new DialogInterface.OnClickListener() {
+                   public void onClick(DialogInterface dialog, int id) {
+                       dialog.dismiss();
+                       startPlayout();
+                   }
+               })
+               .setNegativeButton(getResources().getText(R.string.exit_label), new DialogInterface.OnClickListener() {
+                   public void onClick(DialogInterface dialog, int id) {
+                       MulticastMediaPlayer.this.finish();
                    }
                });
         return builder.create();
