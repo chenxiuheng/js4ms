@@ -90,7 +90,7 @@ public class MulticastReflectorFactory implements PresentationResolver {
     public Presentation getPresentation(Request request) throws RequestException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(log.entry("getHandler", request));
+            logger.finer(log.entry("getPresentation", request));
         }
 
         URI requestUri = request.getRequestLine().getUri();
@@ -201,14 +201,14 @@ public class MulticastReflectorFactory implements PresentationResolver {
     protected SessionDescription retrieveSessionDescription(final URI sdpUri) throws RequestException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(log.entry("constructSessionDescription", sdpUri.toString()));
+            logger.finer(log.entry("retrieveSessionDescription", sdpUri.toString()));
         }
 
         // TODO: Add capability to fetch SDP from an RTSP server. Requires RTSP client implementation.
 
         // Fetch file from web server
         String path = sdpUri.toString();
-        if (path != null && path.endsWith(".sdp")) {
+        if (path != null) {
                                 
             if (logger.isLoggable(Level.FINE)) {
                 logger.fine(log.msg("fetching SDP from " + path));
@@ -306,7 +306,7 @@ public class MulticastReflectorFactory implements PresentationResolver {
     public SessionDescription retrieveSessionDescription(final URI sdpUri, InputStream inputStream) throws RequestException, IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(log.entry("constructSessionDescription", sdpUri.toString(), inputStream));
+            logger.finer(log.entry("retrieveSessionDescription", sdpUri.toString(), inputStream));
         }
 
         StringBuilder sb = new StringBuilder();
