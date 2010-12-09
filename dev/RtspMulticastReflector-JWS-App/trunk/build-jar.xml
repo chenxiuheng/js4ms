@@ -10,14 +10,25 @@
         <property name="app.jar.file" value="${app.name}__V${app.version}.jar" />
     </target>
 
-    <target name="build-jar-file" depends="gen-jar-name">
+    <target name="copy-jars">
+        <copy file="../jars-jain-sdp/ext/jain-sdp-1.0.100.jar" toDir="WebContent" />
+    </target>
+
+    <target name="prompt-for-obfuscation">
+        <input message="Obfuscate Java Bytecode (y/n)?" validargs="y,n" defaultvalue="n" addproperty="do.obfuscate"/>
+        <condition property="do.proguard">
+          <equals arg1="y" arg2="${do.obfuscate}"/>
+        </condition>
+    </target>
+
+    <target name="build-jar" depends="gen-jar-name, copy-jars, prompt-for-obfuscation">
 
         <!-- Delete all existing versions of the jar file -->
         <delete>
-            <fileset dir="WebContent" includes="${app.name}_*.jar" />
+            <fileset dir="WebContent" includes="${app.name}*.jar" />
         </delete>
 
-        <jar destfile="WebContent/${app.jar.file}">
+        <jar destfile="WebContent/${app.jar.name}">
             <fileset dir="../com.larkwoodlabs.util.logging/bin">
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
@@ -63,10 +74,6 @@
                 <exclude name="**/test/*.class" />
             </fileset>
             <fileset dir="../com.larkwoodlabs.net.amt/bin">
-                <include name="**/*.class" />
-                <exclude name="**/test/*.class" />
-            </fileset>
-            <fileset dir="../com.larkwoodlabs.net.streaming/bin">
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
@@ -119,6 +126,67 @@
         </jar>
 
     </target>
+
+    <target name="obfuscate-jar-file" depends="build-jar" if="do.proguard">
+
+        <taskdef resource="proguard/ant/task.properties" classpath="../../proguard/lib/proguard.jar" />
+
+        <condition property="rtlibjars" value="/System/Library/Frameworks/JavaVM.framework/Classes/classes.jar">
+            <os family="mac"/>
+        </condition>
+
+        <condition property="rtlibjars" value="${java.home}/lib/rt.jar">
+            <os family="windows"/>
+        </condition>
+
+        <echo message="${rtlibjars}"/>
+
+        <proguard>
+            <![CDATA[
+
+            -verbose
+
+            -injars WebContent/${app.jar.name}
+            -outjars WebContent/${app.jar.file}
+
+            -libraryjars ${rtlibjars}
+            -libraryjars ${java.home}/lib/javaws.jar
+            -libraryjars WebContent/jain-sdp-1.0.100.jar
+
+            -printmapping ./build/proguard.mapping
+
+            -flattenpackagehierarchy ''
+
+            -keep public class com.larkwoodlabs.util.logging.LogFormatter
+            -keep public class com.larkwoodlabs.util.logging.JsonLogFormatter
+
+            -keepclasseswithmembers public class * {
+                public static void main(java.lang.String[]);
+            }
+
+            -keepclassmembers enum  * {
+                public static **[] values();
+                public static ** valueOf(java.lang.String);
+            }
+
+            -keepclasseswithmembers,allowshrinking class * {
+                native <methods>;
+            }
+
+            ]]>
+        </proguard>
+
+        <delete>
+            <fileset dir="WebContent" includes="${app.jar.name}" />
+        </delete>
+
+    </target>
+
+    <target name="rename-jar-file" depends="build-jar" unless="do.proguard">
+        <move file="WebContent/${app.jar.name}" toFile="WebContent/${app.jar.file}"/>
+    </target>
+
+    <target name="build-jar-file" depends="obfuscate-jar-file,rename-jar-file" />
 
     <target name="clean-jar-file">
         <delete>
