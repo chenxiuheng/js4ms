@@ -4,7 +4,7 @@
     <import file="build-jar.xml" />
     <import file="build-jnlp.xml" />
     <import file="build-version.xml" />
-    <import file="build-script.xml" />
+    <import file="build-descriptor.xml" />
 
     <property name="war.file" value="${applet.name}.war" />
 
@@ -17,7 +17,7 @@
         </signjar>
     </target>
 
-    <target name="build-war-file" depends="sign-jars, build-jnlp-file, build-version-file, build-script-file">
+    <target name="build-war-file" depends="sign-jars, build-jnlp-file, build-version-file, build-descriptor-file">
         <war destfile="build/${war.file}" webxml="WebContent/WEB-INF/web.xml">
             <fileset dir="WebContent">
                 <exclude name="WEB-INF/web.xml" />

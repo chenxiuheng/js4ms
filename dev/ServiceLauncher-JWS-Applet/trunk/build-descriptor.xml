@@ -4,10 +4,11 @@
     <import file="build-jnlp.xml" />
 
 
-    <target name="build-script-file" depends="gen-jar-name">
+    <target name="build-descriptor-file" depends="gen-jar-name">
 
         <delete>
             <fileset dir="WebContent/WEB-INF" includes="web.xml" />
+            <fileset dir="WebContent/WEB-INF" includes="jboss-web.xml" />
         </delete>
 
         <copy file="web-template.xml" toFile="WebContent/WEB-INF/web.xml">
@@ -20,11 +21,18 @@
             </filterset>
         </copy>
 
+        <copy file="jboss-web-template.xml" toFile="WebContent/WEB-INF/jboss-web.xml">
+            <filterset>
+                <filter token="CONTEXT_ROOT" value="${applet.context.path}" />
+            </filterset>
+        </copy>
+
     </target>
 
-    <target name="clean-script-file">
+    <target name="clean-descriptor-file">
         <delete>
             <fileset dir="WebContent/WEB-INF" includes="web.xml" />
+            <fileset dir="WebContent/WEB-INF" includes="jboss-web.xml" />
         </delete>
     </target>
 
