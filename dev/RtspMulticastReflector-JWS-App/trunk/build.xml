@@ -18,6 +18,6 @@
 
     <target name="clean"
             description="deletes all generated files"
-            depends="clean-war-file,clean-jnlp-file,clean-version-file,clean-jar-file" />
+            depends="clean-war-file,clean-descriptor-file,clean-jnlp-file,clean-version-file,clean-jar-file" />
 
 </project>
