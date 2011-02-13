@@ -20,8 +20,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.larkwoodlabs.util.logging.LoggableBase;
-import com.larkwoodlabs.util.logging.Logging;
+import com.larkwoodlabs.util.logging.Log;
 
 /**
  * A message pump uses an internal thread to continuously receive messages
@@ -31,20 +30,30 @@ import com.larkwoodlabs.util.logging.Logging;
  *
  * @param <MessageType> - The message object type.
  * 
- * @author Gregory Bumgardner
+ * @author gbumgard@cisco.com
  */
 public final class ChannelPump<MessageType>
-                   extends LoggableBase
                    implements Runnable {
 
     
     /*-- Static Variables ----------------------------------------------------*/
-    
+
+    /**
+     * The logger used to generate logging messages produced by instances of this class.
+     */
     public static final Logger logger = Logger.getLogger(ChannelPump.class.getName());
 
     
     /*-- Member Variables ----------------------------------------------------*/
 
+    /**
+     * Helper object used to construct log messages.
+     */
+    protected final Log log = new Log(this);
+
+    /**
+     * Monitor object used for thread synchronization.
+     */
     protected final Object lock = new Object();
 
     private final InputChannel<MessageType> inputChannel;
@@ -64,28 +73,22 @@ public final class ChannelPump<MessageType>
                        OutputChannel<MessageType> outputChannel) {
 
         if (logger.isLoggable(Level.FINER)) {
-             logger.finer(Logging.entering(ObjectId,
-                                           "ChannelPump.ChannelPump",
-                                           inputChannel,
-                                           outputChannel));
+             logger.finer(log.entry("ChannelPump",
+                                     inputChannel,
+                                     outputChannel));
         }
 
         this.inputChannel = inputChannel;
         this.outputChannel = outputChannel;
     }
     
-    @Override
-    public Logger getLogger() {
-        return logger;
-    }
-
     /**
      * Starts the message pump.
      */
     public final void start() {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "ChannelPump.start"));
+            logger.finer(log.entry("start"));
         }
 
         synchronized (this.lock) {
@@ -106,7 +109,7 @@ public final class ChannelPump<MessageType>
     public final void stop(int milliseconds) throws InterruptedException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "ChannelPump.onStop", milliseconds));
+            logger.finer(log.entry("onStop", milliseconds));
         }
 
         synchronized (this.lock) {
@@ -137,10 +140,10 @@ public final class ChannelPump<MessageType>
     public final void run() {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "ChannelPump.run"));
+            logger.finer(log.entry("run"));
         }
 
-        logger.fine(ObjectId + " channel pump started");
+        logger.fine(log.msg("channel pump started"));
 
         while (this.isRunning) {
             try {
@@ -148,25 +151,25 @@ public final class ChannelPump<MessageType>
             }
             catch (IOException e) {
                 if (logger.isLoggable(Level.FINER)) {
-                    logger.finer(ObjectId + " transfer failed with exception - "+e.getClass().getSimpleName()+":"+e.getMessage());
+                    logger.finer(log.msg("transfer failed with exception - "+e.getClass().getSimpleName()+":"+e.getMessage()));
                 }
                 break;
             }
             catch (InterruptedException e) {
                 if (logger.isLoggable(Level.FINER)) {
-                    logger.finer(ObjectId + " transfer interrupted - "+e.getClass().getSimpleName()+":"+e.getMessage());
+                    logger.finer(log.msg("transfer interrupted - "+e.getClass().getSimpleName()+":"+e.getMessage()));
                 }
                 break;
             }
         }
 
-        logger.fine(ObjectId + " channel pump stopped");
+        logger.fine(log.msg("channel pump stopped"));
     }
 
     public final void transfer() throws IOException, InterruptedException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "ChannelPump.transfer"));
+            logger.finer(log.entry("transfer"));
         }
 
         this.outputChannel.send(this.inputChannel.receive(Integer.MAX_VALUE),Integer.MAX_VALUE);

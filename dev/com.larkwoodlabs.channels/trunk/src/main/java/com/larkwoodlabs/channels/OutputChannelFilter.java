@@ -28,21 +28,18 @@ import java.io.InterruptedIOException;
  *
  * @param <MessageType> - The message object type.
  *
- * @author Gregory Bumgardner
+ * @author gbumgard@cisco.com
  */
 public final class OutputChannelFilter<MessageType>
                    extends OutputChannelAdapter<MessageType, MessageType> {
 
-    /*-- Inner Classes -------------------------------------------------------*/
-
-    /*-- Static Variables ----------------------------------------------------*/
-
-    /*-- Static Functions ----------------------------------------------------*/
-
     /*-- Member Variables ----------------------------------------------------*/
 
+    /**
+     * The message filter.
+     */
     protected final MessageFilter<MessageType> filter;
-    
+
     /*-- Member Functions ----------------------------------------------------*/
 
     /**

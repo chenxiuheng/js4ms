@@ -27,7 +27,7 @@ import java.io.IOException;
  *
  * @param <MessageType> - The message object type.
  *
- * @author Gregory Bumgardner
+ * @author gbumgard@cisco.com
  */
 public interface InputChannel<MessageType>
                  extends MessageInput<MessageType> {

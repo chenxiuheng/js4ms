@@ -25,27 +25,41 @@ import java.io.InterruptedIOException;
  *
  * @param <MessageType> - The message object type.
  *
- * @author Gregory Bumgardner
+ * @author gbumgard@cisco.com
  */
 public final class InputChannelPipe<MessageType>
-                   extends ChannelBase
                    implements InputChannel<MessageType> {
 
     /*-- Member Variables ----------------------------------------------------*/
 
+    /**
+     * The message pipe implementation used in this input channel.
+     */
     private  MessageInput<MessageType> pipe;
 
 
     /*-- Member Functions ----------------------------------------------------*/
 
+    /**
+     * Constructs an unconnected input channel.
+     * Use {@link #connect(MessageOutput)} to connect the channel to a message pipe.
+     */
     public InputChannelPipe() {
         connect(null);
     }
 
+    /**
+     * Constructs an input channel that is connected to the specified message pipe.
+     * @param pipe
+     */
     public InputChannelPipe(final MessageInput<MessageType> pipe) {
         connect(pipe);
     }
-    
+
+    /**
+     * Connects this input channel to the specified message pipe.
+     * @param pipe
+     */
     public final void connect(final MessageInput<MessageType> pipe) {
         this.pipe = pipe;
     }

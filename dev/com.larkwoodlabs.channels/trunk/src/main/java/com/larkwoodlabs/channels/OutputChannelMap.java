@@ -34,17 +34,28 @@ import java.util.Set;
  * @param <MessageType> - The message object type.
  * @see {@link MessageKeyExtractor}
  *
- * @author Gregory Bumgardner
+ * @author gbumgard@cisco.com
  */
 public final class OutputChannelMap<MessageType>
-                   extends ChannelBase
                    implements OutputChannel<MessageType> {
 
     /*-- Member Variables ----------------------------------------------------*/
 
+    /**
+     * A hash map that maps message keys to output channels.
+     */
     private final HashMap<Object, OutputChannel<MessageType>> channelMap = new HashMap<Object, OutputChannel<MessageType>>();
 
+    /**
+     * A message key extractor that will be used to extract a key from each message
+     * that is used to retrieve an output channel from the channel map.
+     */
     private final MessageKeyExtractor<MessageType> keyExtractor;
+
+    /**
+     * Monitor object used for thread synchronization.
+     */
+    private final Object lock = new Object();
 
 
     /*-- Member Functions ----------------------------------------------------*/

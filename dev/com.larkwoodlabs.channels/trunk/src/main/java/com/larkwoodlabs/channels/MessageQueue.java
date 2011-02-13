@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @param <MessageType> - The message object type.
  *
- * @author Gregory Bumgardner
+ * @author gbumgard@cisco.com
  */
 public final class MessageQueue<MessageType>
                    implements MessagePipe<MessageType> {

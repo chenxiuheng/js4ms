@@ -27,7 +27,7 @@ import java.io.InterruptedIOException;
  *
  * @param <MessageType> - The message object type.
  *
- * @author Gregory Bumgardner
+ * @author gbumgard@cisco.com
  */
 public final class InputChannelFilter<MessageType>
                    extends InputChannelAdapter<MessageType, MessageType> {
@@ -35,8 +35,17 @@ public final class InputChannelFilter<MessageType>
     
     /*-- Member Variables ----------------------------------------------------*/
 
+    /**
+     * The message filter used to filter messages received from the inner input channel.
+     */
     protected final MessageFilter<MessageType> filter;
-    
+
+    /**
+     * Monitor object used for thread synchronization.
+     */
+    private final Object lock = new Object();
+
+
     /*-- Member Functions ----------------------------------------------------*/
 
     /**

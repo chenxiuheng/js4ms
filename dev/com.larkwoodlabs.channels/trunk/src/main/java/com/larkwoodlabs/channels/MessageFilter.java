@@ -22,7 +22,7 @@ package com.larkwoodlabs.channels;
  *
  * @param <MessageType> - The message object type.
  *
- * @author Gregory Bumgardner
+ * @author gbumgard@cisco.com
  */
 public interface MessageFilter<MessageType> {
 

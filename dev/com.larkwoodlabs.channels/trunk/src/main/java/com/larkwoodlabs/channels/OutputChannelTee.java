@@ -33,17 +33,24 @@ import com.larkwoodlabs.common.exceptions.MultiIOException;
  *
  * @param <MessageType>
  *
- * @author Gregory Bumgardner
+ * @author gbumgard@cisco.com
  */
 public final class OutputChannelTee<MessageType>
-                   extends ChannelBase
                    implements OutputChannel<MessageType> {
 
     /*-- Member Variables ----------------------------------------------------*/
 
+    /**
+     * Collection of output channels that will receive messages sent to this output channel.
+     */
     private final LinkedHashSet<OutputChannel<MessageType>> channels = new LinkedHashSet<OutputChannel<MessageType>>();
-    
 
+    /**
+     * Monitor object used for thread synchronization.
+     */
+    private final Object lock = new Object();
+
+ 
     /*-- Member Functions ----------------------------------------------------*/
 
     /**

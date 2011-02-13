@@ -25,7 +25,7 @@ import java.io.IOException;
  * @param <InputMessageType> - The input or upstream message type.
  * @param <OutputMessageType> - The output or downstream message type.
  *
- * @author Gregory Bumgardner
+ * @author gbumgard@cisco.com
  */
 public interface MessageTransform<InputMessageType, OutputMessageType> {
 

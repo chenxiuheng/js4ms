@@ -26,23 +26,26 @@ import java.io.IOException;
  * @param <InnerMessageType> - The type of message produced by the inner message channel.
  * @param <OuterMessageType> - The type of message produced by the outer message channel.
  *
- * @author Gregory Bumgardner
+ * @author gbumgard@cisco.com
  */
 public abstract class InputChannelAdapter<InnerMessageType, OuterMessageType>
-                      extends ChannelBase
                       implements InputChannel<OuterMessageType> {
 
     /*-- Member Variables ----------------------------------------------------*/
 
     /**
-     * The input channel that will receive messages for the adapter channel.
+     * The input channel that will produce messages for the adapter channel.
      */
     protected final InputChannel<InnerMessageType> innerChannel;
 
 
     /*-- Member Functions ----------------------------------------------------*/
 
-    public InputChannelAdapter(final InputChannel<InnerMessageType> innerChannel) {
+    /**
+     * Constructs an input channel adapter for the specified input channel. 
+     * @param innerChannel
+     */
+    protected InputChannelAdapter(final InputChannel<InnerMessageType> innerChannel) {
         this.innerChannel = innerChannel;
     }
 

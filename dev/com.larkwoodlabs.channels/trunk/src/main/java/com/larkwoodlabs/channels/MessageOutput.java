@@ -25,7 +25,7 @@ import java.io.InterruptedIOException;
  *
  * @param <MessageType> - The message object type.
  *
- * @author Gregory Bumgardner
+ * @author gbumgard@cisco.com
  */
 public interface MessageOutput<MessageType> {
 

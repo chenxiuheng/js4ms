@@ -27,13 +27,10 @@ import java.io.IOException;
  *
  * @param <MessageType> - The message object type.
  *
- * @author Gregory Bumgardner
+ * @author gbumgard@cisco.com
  */
 public interface OutputChannel<MessageType>
                  extends MessageOutput<MessageType> {
-
-
-    /*-- Member Functions ----------------------------------------------------*/
 
     /**
      * Closes this channel and optionally closes any channels wrapped or attached to this channel.

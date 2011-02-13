@@ -5,8 +5,7 @@ import java.io.IOException;
 /**
  * An abstract message source that sends a stream of messages to an {@link OutputChannel}.
  * 
- *
- * @author gbumgard
+ * @author gbumgard@cisco.com
  */
 public abstract class MessageSource<Message> {
     
@@ -34,8 +33,14 @@ public abstract class MessageSource<Message> {
 
     /*-- Member Variables ----------------------------------------------------*/
 
+    /**
+     * Tracks the current state for this message source;
+     */
     private State state;
 
+    /**
+     * The output channel that will receive messages produced by this message source.
+     */
     private final OutputChannel<Message> outputChannel;
 
     /*-- Member Functions ----------------------------------------------------*/

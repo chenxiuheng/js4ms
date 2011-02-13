@@ -22,7 +22,7 @@ package com.larkwoodlabs.channels;
  *
  * @param <MessageType>
  *
- * @author Gregory Bumgardner
+ * @author gbumgard@cisco.com
  */
 public interface MessagePipe<MessageType>
                  extends MessageInput<MessageType>,

@@ -20,18 +20,23 @@ import java.io.IOException;
 import java.io.InterruptedIOException;
 
 
+/**
+ * 
+ * @param <OuterMessageType>
+ * @param <InnerMessageType>
+ *
+ * @author gbumgard@cisco.com
+ */
 public final class OutputChannelTransform<OuterMessageType, InnerMessageType>
                    extends OutputChannelAdapter<OuterMessageType, InnerMessageType> {
 
-    /*-- Inner Classes -------------------------------------------------------*/
-
-    /*-- Static Variables ----------------------------------------------------*/
-
-    /*-- Static Functions ----------------------------------------------------*/
-
-    /*-- Member Variables ----------------------------------------------------*/
 
     /*-- Member Functions ----------------------------------------------------*/
+
+    /**
+     * A message transform object that will convert messages received by
+     * this channel into the messages that are then sent to the inner output channel.
+     */
     protected final MessageTransform<OuterMessageType, InnerMessageType> transform;
 
     public OutputChannelTransform(final OutputChannel<InnerMessageType> innerChannel,
