@@ -138,7 +138,7 @@ abstract class AmtEncapsulationMessage extends AmtMessage {
     }
 
     @Override
-    public final void writeTo(final ByteBuffer buffer) {
+    public void writeTo(final ByteBuffer buffer) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "AmtEncapsulationMessage.writeTo", buffer));
@@ -147,9 +147,6 @@ abstract class AmtEncapsulationMessage extends AmtMessage {
         if (this.packet != null) {
             this.packet.writeTo(buffer);
             // No need to write the checksum here - the packet writeTo() method handles it
-        }
-        else if (this.unparsedPacket != null) {
-            buffer.put(this.unparsedPacket);
         }
     }
 
