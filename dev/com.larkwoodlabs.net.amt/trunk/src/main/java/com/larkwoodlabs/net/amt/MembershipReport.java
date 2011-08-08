@@ -22,23 +22,11 @@ import java.util.Iterator;
 
 final class MembershipReport {
 
-    enum AddressType {
-        IPv4,
-        IPv6
-    };
-    
-    private final AddressType type;
-    
     private final HashSet<GroupMembershipRecord> records = new HashSet<GroupMembershipRecord>();
     
-    public MembershipReport(final AddressType type) {
-        this.type = type;
+    public MembershipReport() {
     }
     
-    public AddressType getType() {
-        return this.type;
-    }
-
     public void addRecord(final GroupMembershipRecord record) {
         this.records.add(record);
     }

@@ -29,16 +29,12 @@ import com.larkwoodlabs.net.ip.IPPacket;
 import com.larkwoodlabs.net.ip.igmp.IGMPGroupRecord;
 import com.larkwoodlabs.net.ip.igmp.IGMPMessage;
 import com.larkwoodlabs.net.ip.igmp.IGMPv3ReportMessage;
-import com.larkwoodlabs.net.ip.mld.MLDGroupRecord;
-import com.larkwoodlabs.net.ip.mld.MLDMessage;
-import com.larkwoodlabs.net.ip.mld.MLDv2ReportMessage;
 
-final class MembershipReportTransform implements MessageTransform<MembershipReport, IPPacket> {
+final class IPv4MembershipReportTransform implements MessageTransform<MembershipReport, IPPacket> {
 
     private byte[] ipv4SourceAddress = null;
-    private byte[] ipv6SourceAddress = null;
     
-    public MembershipReportTransform() {
+    public IPv4MembershipReportTransform() {
 
         InetAddress localHostAddress;
         try {
@@ -68,9 +64,6 @@ final class MembershipReportTransform implements MessageTransform<MembershipRepo
                 if (address.length == 4) {
                     this.ipv4SourceAddress = address;
                 }
-                else if (address.length == 6) {
-                    this.ipv6SourceAddress = address;
-                }
             }
         }
         
@@ -78,47 +71,26 @@ final class MembershipReportTransform implements MessageTransform<MembershipRepo
             this.ipv4SourceAddress = new byte[4];
         }
 
-        if (this.ipv6SourceAddress == null) {
-            this.ipv6SourceAddress = new byte[16];
-        }
     }
     
     @Override
     public IPPacket transform(final MembershipReport message) throws IOException {
 
         IPPacket reportPacket = null;
-        if (message.getType() == MembershipReport.AddressType.IPv4) {
 
-            IGMPv3ReportMessage reportMessage = new IGMPv3ReportMessage();
-    
-            for (GroupMembershipRecord record : message.getRecords()) {
-                IGMPGroupRecord groupRecord = new IGMPGroupRecord((byte)record.getRecordType().getValue(), record.getGroup().getAddress());
-                for (InetAddress sourceAddress : record.getSources()) {
-                    groupRecord.addSource(sourceAddress);
-                }
-                reportMessage.addGroupRecord(groupRecord);
+        IGMPv3ReportMessage reportMessage = new IGMPv3ReportMessage();
+
+        for (GroupMembershipRecord record : message.getRecords()) {
+            IGMPGroupRecord groupRecord = new IGMPGroupRecord((byte)record.getRecordType().getValue(), record.getGroup().getAddress());
+            for (InetAddress sourceAddress : record.getSources()) {
+                groupRecord.addSource(sourceAddress);
             }
-    
-            reportPacket = IGMPMessage.constructIPv4Packet(this.ipv4SourceAddress,
-                                                           IGMPMessage.IPv4ReportDestinationAddress,
-                                                           reportMessage);
+            reportMessage.addGroupRecord(groupRecord);
         }
-        else if (message.getType() == MembershipReport.AddressType.IPv6) {
-            
-            MLDv2ReportMessage reportMessage = new MLDv2ReportMessage();
-            
-            for (GroupMembershipRecord record : message.getRecords()) {
-                MLDGroupRecord groupRecord = new MLDGroupRecord((byte)record.getRecordType().getValue(), record.getGroup().getAddress());
-                for (InetAddress sourceAddress : record.getSources()) {
-                    groupRecord.addSource(sourceAddress);
-                }
-                reportMessage.addGroupRecord(groupRecord);
-            }
-    
-            reportPacket = MLDMessage.constructIPv6Packet(this.ipv6SourceAddress,
-                                                          MLDMessage.IPv6ReportDestinationAddress,
-                                                          reportMessage);
-        }
+
+        reportPacket = IGMPMessage.constructIPv4Packet(this.ipv4SourceAddress,
+                                                       IGMPMessage.IPv4ReportDestinationAddress,
+                                                       reportMessage);
         
         return reportPacket;
     }

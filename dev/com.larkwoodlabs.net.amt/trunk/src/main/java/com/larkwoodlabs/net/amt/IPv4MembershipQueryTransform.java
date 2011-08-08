@@ -29,16 +29,12 @@ import com.larkwoodlabs.net.ip.igmp.IGMPMessage;
 import com.larkwoodlabs.net.ip.igmp.IGMPQueryMessage;
 import com.larkwoodlabs.net.ip.igmp.IGMPv3QueryMessage;
 import com.larkwoodlabs.net.ip.ipv4.IPv4Packet;
-import com.larkwoodlabs.net.ip.ipv6.IPv6Packet;
-import com.larkwoodlabs.net.ip.mld.MLDMessage;
-import com.larkwoodlabs.net.ip.mld.MLDQueryMessage;
-import com.larkwoodlabs.net.ip.mld.MLDv2QueryMessage;
 
-final class MembershipQueryTransform implements MessageTransform<IPPacket, MembershipQuery> {
+final class IPv4MembershipQueryTransform implements MessageTransform<IPPacket, MembershipQuery> {
 
     private final AmtTunnelEndpoint endpoint;
 
-    public MembershipQueryTransform(final AmtTunnelEndpoint endpoint) {
+    public IPv4MembershipQueryTransform(final AmtTunnelEndpoint endpoint) {
         this.endpoint = endpoint;
     }
 
@@ -52,7 +48,7 @@ final class MembershipQueryTransform implements MessageTransform<IPPacket, Membe
             IPMessage ipMessage = packet.getProtocolMessage(IGMPMessage.IP_PROTOCOL_NUMBER);
     
             if (ipMessage == null || !(ipMessage instanceof IGMPQueryMessage)) {
-                throw new ProtocolException("AMT Membership Query Message does not contain an IGMP Membersip Query Message");
+                throw new ProtocolException("AMT Membership Query Message does not contain an IGMP Membership Query Message");
             }
     
             IGMPQueryMessage queryMessage = (IGMPQueryMessage)ipMessage;
@@ -83,41 +79,8 @@ final class MembershipQueryTransform implements MessageTransform<IPPacket, Membe
                                                   robustnessVariable,
                                                   queryInterval);
         }
-        else if (packet.getVersion() == IPv6Packet.INTERNET_PROTOCOL_VERSION) {
-
-            IPMessage ipMessage = packet.getProtocolMessage(MLDMessage.IP_PROTOCOL_NUMBER);
-            
-            if (ipMessage == null || !(ipMessage instanceof MLDQueryMessage)) {
-                throw new ProtocolException("AMT Membership Query Message does not contain an MLD Membersip Query Message");
-            }
-    
-            MLDQueryMessage queryMessage = (MLDQueryMessage)ipMessage;
-    
-            InetAddress groupAddress = InetAddress.getByAddress(queryMessage.getGroupAddress());
-        
-            int maximumResponseTime = queryMessage.getMaximumResponseDelay();
-            int robustnessVariable = 2;
-            int queryInterval = 125000; // Default query interval
-            HashSet<InetAddress> sourceSet = null;
-            if (queryMessage instanceof MLDv2QueryMessage) {
-                MLDv2QueryMessage v2QueryMessage = (MLDv2QueryMessage)queryMessage;
-                robustnessVariable = v2QueryMessage.getQuerierRobustnessVariable();
-                queryInterval = v2QueryMessage.getQueryIntervalTime() * 1000;
-                if (v2QueryMessage.getNumberOfSources() > 0) {
-                    sourceSet = new HashSet<InetAddress>();
-                    Iterator<byte[]> iter = v2QueryMessage.getSourceIterator();
-                    InetAddress sourceAddress = InetAddress.getByAddress(iter.next());
-                    while (iter.hasNext()) {
-                        sourceSet.add(sourceAddress);
-                    }
-                }
-            }
-
-            membershipQuery = new MembershipQuery(groupAddress,
-                                                  sourceSet,
-                                                  maximumResponseTime,
-                                                  robustnessVariable,
-                                                  queryInterval);
+        else {
+            throw new ProtocolException("AMT Membership Query Message does not contain an IGMP Membership Query Message");
         }
 
         // Use query interval received in query message to (re)start periodic request generation task.
