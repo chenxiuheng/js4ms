@@ -39,7 +39,7 @@ import com.larkwoodlabs.util.logging.Logging;
  *
  * @author gbumgard
  */
-public final class AmtInterface {
+public abstract class AmtInterface {
 
     /*-- Static Variables ----------------------------------------------------*/
 
@@ -70,7 +70,7 @@ public final class AmtInterface {
      * @param relayDiscoveryAddress
      * @throws IOException
      */
-    public AmtInterface(final AmtGateway gateway, final InetAddress relayDiscoveryAddress) throws IOException {
+    protected AmtInterface(final AmtGateway gateway, final InetAddress relayDiscoveryAddress) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "AmtInterface.AmtInterface", gateway, Logging.address(relayDiscoveryAddress)));
@@ -82,23 +82,11 @@ public final class AmtInterface {
         this.taskTimer = new Timer("AMT interface");
 
         this.tunnelEndpoint = new AmtTunnelEndpoint(this, relayDiscoveryAddress, this.taskTimer);
-        this.interfaceManager = new InterfaceMembershipManager(this.taskTimer);
+        this.interfaceManager = new InterfaceMembershipManager(this.taskTimer, this.tunnelEndpoint);
 
-        // Connect report channel of interface membership manager to tunnel endpoint
-        this.interfaceManager.setOutgoingReportChannel(
-                new OutputChannelTransform<MembershipReport,IPPacket>(
-                        this.tunnelEndpoint.getOutgoingUpdateChannel(),
-                        new MembershipReportTransform()));
-        
-        // Connect query channel of tunnel endpoint to interface membership manager
-        this.tunnelEndpoint.setIncomingQueryChannel(
-                new OutputChannelTransform<IPPacket, MembershipQuery>(
-                        this.interfaceManager.getIncomingQueryChannel(),
-                        new MembershipQueryTransform(this.tunnelEndpoint)));
-        
         // Connect a channel membership state manager to the interface membership state manager
         this.channelManager = new ChannelMembershipManager(this.interfaceManager);
-        
+
         this.tunnelEndpoint.setIncomingDataChannel(
                 new OutputChannelTransform<IPPacket, UdpDatagram>(
                         this.channelManager.getDispatchChannel(),
@@ -130,7 +118,7 @@ public final class AmtInterface {
     public final synchronized void release() throws InterruptedException, IOException {
         if (--this.referenceCount == 0) {
             this.taskTimer.cancel();
-            this.gateway.closeEndpoint(this);
+            this.gateway.closeIpv4Endpoint(this);
         }
     }
 
@@ -149,6 +137,7 @@ public final class AmtInterface {
      * @param groupAddress
      * @param port
      * @throws IOException
+     * @throws InterruptedException 
      */
     public final void join(final OutputChannel<UdpDatagram> pushChannel,
                            final InetAddress groupAddress,
@@ -168,6 +157,7 @@ public final class AmtInterface {
      * @param sourceAddress
      * @param port
      * @throws IOException
+     * @throws InterruptedException 
      */
     public final void join(final OutputChannel<UdpDatagram> pushChannel,
                            final InetAddress groupAddress,
