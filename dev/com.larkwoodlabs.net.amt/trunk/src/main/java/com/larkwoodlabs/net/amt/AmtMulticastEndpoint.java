@@ -19,6 +19,7 @@ package com.larkwoodlabs.net.amt;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.InetAddress;
+import java.net.Inet4Address;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -52,7 +53,8 @@ public final class AmtMulticastEndpoint implements MulticastEndpoint {
 
     private final String ObjectId = Logging.identify(this);
     
-    private final AmtInterface amtInterface;
+    private final AmtInterface amtIpv4Interface;
+    private final AmtInterface amtIpv6Interface;
 
     private final int port;
 
@@ -144,7 +146,8 @@ public final class AmtMulticastEndpoint implements MulticastEndpoint {
 
         this.port = port;
         this.relayDiscoveryAddress = relayDiscoveryAddress;
-        this.amtInterface = AmtGateway.getInstance().getInterface(this.relayDiscoveryAddress);
+        this.amtIpv4Interface = AmtGateway.getInstance().getIPv4Interface(this.relayDiscoveryAddress);
+        this.amtIpv6Interface = AmtGateway.getInstance().getIPv6Interface(this.relayDiscoveryAddress);
     }
 
     /**
@@ -158,8 +161,11 @@ public final class AmtMulticastEndpoint implements MulticastEndpoint {
             logger.finer(Logging.entering(ObjectId, "AmtMulticastEndpoint.onClose"));
         }
 
-        this.amtInterface.leave(this.pushChannel);
-        this.amtInterface.release();
+        this.amtIpv4Interface.leave(this.pushChannel);
+        this.amtIpv4Interface.release();
+
+        this.amtIpv6Interface.leave(this.pushChannel);
+        this.amtIpv6Interface.release();
     }
 
     /**
@@ -196,7 +202,12 @@ public final class AmtMulticastEndpoint implements MulticastEndpoint {
             logger.finer(Logging.entering(ObjectId, "AmtMulticastEndpoint.join", Logging.address(groupAddress), port));
         }
 
-        this.amtInterface.join(this.pushChannel, groupAddress, port);
+        if (groupAddress instanceof Inet4Address) {
+            this.amtIpv4Interface.join(this.pushChannel, groupAddress, port);
+        }
+        else {
+            this.amtIpv6Interface.join(this.pushChannel, groupAddress, port);
+        }
     }
 
     @Override
@@ -217,8 +228,12 @@ public final class AmtMulticastEndpoint implements MulticastEndpoint {
             logger.finer(Logging.entering(ObjectId, "AmtMulticastEndpoint.join", Logging.address(groupAddress), Logging.address(sourceAddress), port));
         }
 
-        this.amtInterface.join(this.pushChannel, groupAddress, sourceAddress, port);
-        
+        if (groupAddress instanceof Inet4Address) {
+            this.amtIpv4Interface.join(this.pushChannel, groupAddress, sourceAddress, port);
+        }
+        else {
+            this.amtIpv6Interface.join(this.pushChannel, groupAddress, sourceAddress, port);
+        }
     }
 
     @Override
@@ -228,7 +243,12 @@ public final class AmtMulticastEndpoint implements MulticastEndpoint {
             logger.finer(Logging.entering(ObjectId, "AmtMulticastEndpoint.leave", Logging.address(groupAddress)));
         }
 
-        this.amtInterface.leave(this.pushChannel, groupAddress);
+        if (groupAddress instanceof Inet4Address) {
+            this.amtIpv4Interface.leave(this.pushChannel, groupAddress);
+        }
+        else {
+            this.amtIpv6Interface.leave(this.pushChannel, groupAddress);
+        }
     }
 
     @Override
@@ -248,7 +268,12 @@ public final class AmtMulticastEndpoint implements MulticastEndpoint {
             logger.finer(Logging.entering(ObjectId, "AmtMulticastEndpoint.leave", Logging.address(groupAddress), port));
         }
 
-        this.amtInterface.leave(this.pushChannel, groupAddress, port);
+        if (groupAddress instanceof Inet4Address) {
+            this.amtIpv4Interface.leave(this.pushChannel, groupAddress, port);
+        }
+        else {
+            this.amtIpv6Interface.leave(this.pushChannel, groupAddress, port);
+        }
     }
 
     @Override
@@ -258,7 +283,12 @@ public final class AmtMulticastEndpoint implements MulticastEndpoint {
             logger.finer(Logging.entering(ObjectId, "AmtMulticastEndpoint.join", Logging.address(groupAddress), Logging.address(sourceAddress), port));
         }
 
-        this.amtInterface.leave(this.pushChannel, groupAddress, sourceAddress, port);
+        if (groupAddress instanceof Inet4Address) {
+            this.amtIpv4Interface.leave(this.pushChannel, groupAddress, sourceAddress, port);
+        }
+        else {
+            this.amtIpv6Interface.leave(this.pushChannel, groupAddress, sourceAddress, port);
+        }
     }
 
     @Override
@@ -268,7 +298,8 @@ public final class AmtMulticastEndpoint implements MulticastEndpoint {
             logger.finer(Logging.entering(ObjectId, "AmtMulticastEndpoint.leave"));
         }
 
-        this.amtInterface.leave(this.pushChannel);
+        this.amtIpv4Interface.leave(this.pushChannel);
+        this.amtIpv6Interface.leave(this.pushChannel);
     }
 
     @Override
