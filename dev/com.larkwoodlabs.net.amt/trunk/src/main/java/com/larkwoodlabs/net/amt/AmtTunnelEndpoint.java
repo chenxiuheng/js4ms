@@ -71,7 +71,6 @@ public final class AmtTunnelEndpoint implements Runnable {
     private OutputChannel<IPPacket> incomingQueryChannel = null;
     private final OutputChannel<IPPacket> outgoingUpdateChannel;
     private OutputChannel<IPPacket> incomingDataChannel = null;
-    private final OutputChannel<IPPacket> outgoingDataChannel;
     
     private UdpSocketEndpoint udpEndpoint;
     private UdpOutputChannel udpOutputChannel;
@@ -79,17 +78,15 @@ public final class AmtTunnelEndpoint implements Runnable {
 
     private final AmtMessage.Parser amtMessageParser;
 
-    private final Thread handlerThread;
+    private Thread handlerThread;
     private boolean isRunning = false;
 
     private final InetAddress relayDiscoveryAddress;
     private byte[] relayAddress = null;
     
     private final Timer taskTimer;
-    private TimerTask relayDiscoveryTask = null;
     private TimerTask requestTask = null;
 
-    private boolean isRelayDiscoveryStarted = false;
     private boolean isRequestSent = false;
     private boolean isResponseReceived = false;
 
@@ -98,6 +95,7 @@ public final class AmtTunnelEndpoint implements Runnable {
     private int lastRequestNonceSent;
     private int lastRequestNonceReceived;
     private byte[] lastResponseMac;
+    private InetSocketAddress lastGatewayAddress;
     
 
     /*-- Member Functions ---------------------------------------------------*/
@@ -132,23 +130,9 @@ public final class AmtTunnelEndpoint implements Runnable {
             }
         };
 
-        this.outgoingDataChannel = new OutputChannel<IPPacket>() {
-            @Override
-            public void send(IPPacket packet, int milliseconds) throws IOException, InterruptedException {
-                sendData(packet, milliseconds);
-            }
-
-            @Override
-            public void close() {
-            }
-        };
-
-        this.handlerThread = new Thread(this,this.toString());
-        this.handlerThread.setDaemon(true);
-
         this.taskTimer = taskTimer;
 
-    }
+   }
 
 
     /**
@@ -177,17 +161,9 @@ public final class AmtTunnelEndpoint implements Runnable {
     }
 
     /**
-     * Returns the channel that accepts IP packets for encapsulation
-     * into AMT multicast data messages.
-     * @return
-     */
-    public OutputChannel<IPPacket> getOutgoingDataChannel() {
-        return this.outgoingDataChannel;
-    }
-
-    /**
      * 
      * @throws IOException
+     * @throws InterruptedException 
      */
     public void start() throws IOException {
 
@@ -211,10 +187,15 @@ public final class AmtTunnelEndpoint implements Runnable {
                 this.udpInputChannel = new UdpInputChannel(this.udpEndpoint);
 
                 this.isRunning = true;
+                this.relayAddress = null;
+                this.isRequestSent = false;
+                this.isResponseReceived = false;
+
+                this.handlerThread = new Thread(this,this.toString());
+                this.handlerThread.setDaemon(true);
 
                 this.handlerThread.start();
 
-                startRelayDiscovery();
             }
         }
     }
@@ -234,26 +215,21 @@ public final class AmtTunnelEndpoint implements Runnable {
             logger.fine(ObjectId + " stopping AMT tunnel endpoint");
         }
 
-        if (this.relayDiscoveryTask != null) this.relayDiscoveryTask.cancel();
-
         synchronized (this.lock) {
 
             if (this.isRunning) {
 
-                if (this.relayDiscoveryTask != null) {
-                    this.relayDiscoveryTask.cancel();
-                    this.relayDiscoveryTask = null;
-                }
-
                 this.isRunning = false;
+
+                if (this.requestTask != null) {
+                    this.requestTask.cancel();
+                    this.requestTask = null;
+                }
 
                 // Close the endpoint to abort the read operation on socket
                 this.udpEndpoint.close(true);
-                
-                this.handlerThread.interrupt();
 
-                // GB: commented out for now because I don't think its necessary
-                // this.handlerThread.join();
+                this.handlerThread.interrupt();
 
             }
         }
@@ -266,7 +242,7 @@ public final class AmtTunnelEndpoint implements Runnable {
      * @throws IOException
      * @throws InterruptedException
      */
-    private void sendUpdate(final IPPacket packet, final int milliseconds) throws IOException, InterruptedException {
+    private void sendUpdate(final IPPacket packet, final int milliseconds) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.sendUpdate", packet, milliseconds));
@@ -286,8 +262,8 @@ public final class AmtTunnelEndpoint implements Runnable {
             if (this.relayAddress == null) {
                 if (logger.isLoggable(Level.INFO)) {
                     logger.info(ObjectId + " cannot send AMT update message because connection to AMT relay has not been established");
-                    return;
                 }
+                return;
             }
             else if (!this.isResponseReceived && this.isRequestSent) {
                 if (logger.isLoggable(Level.INFO)) {
@@ -308,32 +284,11 @@ public final class AmtTunnelEndpoint implements Runnable {
 
     /**
      * 
-     * @param packet
-     * @param milliseconds
-     * @throws IOException
-     * @throws InterruptedException
-     */
-    private void sendData(final IPPacket packet, final int milliseconds) throws IOException, InterruptedException {
-
-        if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.sendData", packet, milliseconds));
-        }
-
-        /* Data messages can only be sent to Relays and Gateways that have sent AMT request and update messages.
-         * This endpoint implementation does not yet provide support for sourcing mcast.
-        AmtMulticastDataMessage message = new AmtMulticastDataMessage(packet);
-        
-        send(message);
-        */
-    }
-
-    /**
-     * 
      * @param message
      * @throws IOException
      * @throws InterruptedException
      */
-    private void send(final AmtMessage message) throws IOException, InterruptedException {
+    private void send(final AmtMessage message) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.send", message));
@@ -360,7 +315,7 @@ public final class AmtTunnelEndpoint implements Runnable {
      * @throws IOException
      * @throws InterruptedException
      */
-    private void send(final UdpDatagram datagram) throws IOException, InterruptedException {
+    private void send(final UdpDatagram datagram) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.send", datagram));
@@ -390,13 +345,20 @@ public final class AmtTunnelEndpoint implements Runnable {
             }
             throw e;
         }
+        catch (InterruptedException e) {
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine(ObjectId + " attempt to send datagram interrupted");
+            }
+            Thread.currentThread().interrupt();
+        }
     }
 
     /**
      * 
      * @throws IOException
+     * @throws InterruptedException 
      */
-    private void startRelayDiscovery() throws IOException {
+    void startRelayDiscovery() throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.startRelayDiscovery"));
@@ -404,63 +366,23 @@ public final class AmtTunnelEndpoint implements Runnable {
 
         synchronized (this.lock) {
 
-            if (this.relayAddress != null) {
-             
-                // We had an address so we must be restarting the discovery process
-                // Stop the timer task that performed the daily refresh of the relay address.
-                this.relayDiscoveryTask.cancel();
+            // Reset the state
+            this.relayAddress = null;
+            this.isRequestSent = false;
+            this.isResponseReceived = false;
+            this.udpEndpoint.disconnect();
 
-                // Reset the state
-                this.isRequestSent = false;
-                this.isResponseReceived = false;
-                this.relayAddress = null;
-                this.isRelayDiscoveryStarted = false;
-                this.udpEndpoint.disconnect();
-            }
-
-            if (!this.isRelayDiscoveryStarted) {
-                this.isRelayDiscoveryStarted = true;
-                // Schedule relay discovery task for immediate execution with short retry period
-                startRelayDiscoveryTask(0, DISCOVERY_RETRY_PERIOD);
-            }
+            this.sendRelayDiscoveryMessage();
         }
     }
 
     /**
      * 
-     * @param delay
-     * @param period
-     */
-    private void startRelayDiscoveryTask(final long delay, final long period) {
-
-        if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.startRelayDiscoveryTask", delay, period));
-        }
-
-        this.relayDiscoveryTask = new TimerTask() {
-            @Override
-            public void run() {
-                if (AmtTunnelEndpoint.logger.isLoggable(Level.FINER)) {
-                    AmtTunnelEndpoint.logger.finer(ObjectId + " running relay discovery task");
-                }
-                try {
-                    AmtTunnelEndpoint.this.sendRelayDiscoveryMessage();
-                }
-                catch (Exception e) {
-                    // Schedule relay discovery task for immediate execution with short retry period
-                    AmtTunnelEndpoint.logger.warning(ObjectId + " attempt to send periodic AMT Relay Discovery Message failed - " + e.getMessage());
-                }
-            }
-        };
-
-        this.taskTimer.schedule(this.relayDiscoveryTask, delay, period);
-    }
-
-    /**
-     * 
+     * @throws InterruptedException 
+     * @throws IOException 
      * @throws Exception
      */
-    private void sendRelayDiscoveryMessage() throws Exception {
+    private void sendRelayDiscoveryMessage() throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.sendRelayDiscoveryMessage"));
@@ -527,6 +449,21 @@ public final class AmtTunnelEndpoint implements Runnable {
 
     /**
      * 
+     */
+    public void stopRequestTask() {
+
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.stopRequestTask"));
+        }
+
+        if (this.requestTask != null) {
+            this.requestTask.cancel();
+            this.requestTask = null;
+        }
+    }
+
+    /**
+     * 
      * @throws IOException
      * @throws InterruptedException
      */
@@ -574,9 +511,6 @@ public final class AmtTunnelEndpoint implements Runnable {
             }
             else {
 
-                // Stop the timer task that started the relay discovery process.
-                this.relayDiscoveryTask.cancel();
-
                 this.isRequestSent = false;
                 this.isResponseReceived = false;
                 this.relayAddress = message.getRelayAddress();
@@ -587,9 +521,6 @@ public final class AmtTunnelEndpoint implements Runnable {
                 catch (UnknownHostException e) {
                     throw new Error(e);
                 }
-
-                // Restart the normal periodic relay discovery task to refresh the relay address [AMT 7.1]
-                startRelayDiscoveryTask(DISCOVERY_DELAY, DISCOVERY_PERIOD);
 
                 // Initiate request/query/report handshake with the relay so we
                 // have a response MAC and nonce for reception state change reports
@@ -621,6 +552,19 @@ public final class AmtTunnelEndpoint implements Runnable {
             this.isResponseReceived = true;
             this.lastRequestNonceReceived = message.getRequestNonce();
             this.lastResponseMac = message.getResponseMac();
+            if (message.getGatewayAddressFlag()) {
+                InetSocketAddress gatewayAddress = message.getGatewayAddress();
+                if (this.lastGatewayAddress != null) {
+                    if (!this.lastGatewayAddress.equals(gatewayAddress)) {
+                        // The source address for the request message has changed since the last request
+                        // This implies that the relay will construct a new session when the Membership Update is sent
+                        // Here we'll send a Teardown message to destroy the old session
+                        AmtTeardownMessage teardown = new AmtTeardownMessage(this.lastResponseMac, this.lastRequestNonceSent, this.lastGatewayAddress);
+                        send(teardown);
+                    }
+                }
+                this.lastGatewayAddress = message.getGatewayAddress();
+            }
 
             if (this.lastRequestNonceReceived != this.lastRequestNonceSent) {
                 logger.info(ObjectId + " AMT interface received Query message containing a request nonce that does not match that sent");
