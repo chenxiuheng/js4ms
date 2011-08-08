@@ -52,6 +52,8 @@ public final class InterfaceMembershipManager
     
     private GeneralQueryReportTimer pendingGeneralQueryReport = null;
 
+    private AmtTunnelEndpoint endpoint;
+
     private OutputChannel<MembershipQuery> incomingQueryChannel;
     private OutputChannel<MembershipReport> outgoingReportChannel;
     
@@ -74,14 +76,15 @@ public final class InterfaceMembershipManager
      * 
      * @param taskTimer
      */
-    public InterfaceMembershipManager(final Timer taskTimer) {
+    public InterfaceMembershipManager(final Timer taskTimer, final AmtTunnelEndpoint endpoint) {
     
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "InterfaceMembershipManager.InterfaceMembershipManager"));
+            logger.finer(Logging.entering(ObjectId, "InterfaceMembershipManager.InterfaceMembershipManager", taskTimer, endpoint));
         }
         
         this.taskTimer = taskTimer;
-        
+        this.endpoint = endpoint;
+
         this.pendingGeneralQueryReport = new GeneralQueryReportTimer(taskTimer, this);
 
         this.incomingQueryChannel = new OutputChannel<MembershipQuery>() {
@@ -121,6 +124,7 @@ public final class InterfaceMembershipManager
      * 
      * @param groupAddress
      * @throws IOException
+     * @throws InterruptedException 
      */
     public void join(final InetAddress groupAddress) throws IOException {
 
@@ -137,6 +141,10 @@ public final class InterfaceMembershipManager
             if (filter == null) {
                 filter = new SourceFilter(groupAddress);
                 if (this.interfaceReceptionState.isEmpty()) {
+
+                    // The relay discovery must be performed for first join.
+                    this.endpoint.startRelayDiscovery();
+
                     this.pendingGeneralQueryReport.schedule(this.unsolicitedReportIntervalMs, this.unsolicitedReportIntervalMs);
                 }
                 this.interfaceReceptionState.put(groupAddress, filter);
@@ -156,6 +164,7 @@ public final class InterfaceMembershipManager
      * @param groupAddress
      * @param sourceAddress
      * @throws IOException
+     * @throws InterruptedException 
      */
     public void join(final InetAddress groupAddress,
                      final InetAddress sourceAddress) throws IOException {
@@ -174,6 +183,10 @@ public final class InterfaceMembershipManager
             if (filter == null) {
                 filter = new SourceFilter(groupAddress);
                 if (this.interfaceReceptionState.isEmpty()) {
+
+                    // The relay discovery must be performed for first join.
+                    this.endpoint.startRelayDiscovery();
+
                     this.pendingGeneralQueryReport.schedule(this.unsolicitedReportIntervalMs, this.unsolicitedReportIntervalMs);
                 }
                 this.interfaceReceptionState.put(groupAddress, filter);
@@ -421,6 +434,10 @@ public final class InterfaceMembershipManager
                 // Send the first state change report immediately
                 stateChangeReport.run();
             }
+            
+            if (this.interfaceReceptionState.isEmpty()) {
+                this.endpoint.stopRequestTask();
+            }
         }
     }
 
@@ -584,8 +601,7 @@ public final class InterfaceMembershipManager
                                           sourceSet));
         }
         
-        // TODO: Split reports into IPv4 and IPv6? Do this in new class instead of transform
-        MembershipReport report = new MembershipReport(MembershipReport.AddressType.IPv4);
+        MembershipReport report = new MembershipReport();
         report.addRecord(new GroupMembershipRecord(groupAddress, type, sourceSet));
         
         try {
@@ -664,7 +680,7 @@ public final class InterfaceMembershipManager
     
         if (!allowNewSources.isEmpty() || !blockOldSources.isEmpty()) {
     
-            MembershipReport report = new MembershipReport(MembershipReport.AddressType.IPv4);
+            MembershipReport report = new MembershipReport();
         
             if (!allowNewSources.isEmpty()) {
                 report.addRecord(new GroupMembershipRecord(groupAddress, GroupMembershipRecord.Type.ALLOW_NEW_SOURCES, allowNewSources));
@@ -709,7 +725,7 @@ public final class InterfaceMembershipManager
             logger.finer(Logging.entering(ObjectId, "InterfaceMembershipManager.sendGeneralQueryResponse"));
         }
 
-        MembershipReport report = new MembershipReport(MembershipReport.AddressType.IPv4);
+        MembershipReport report = new MembershipReport();
 
         for (SourceFilter filter : this.interfaceReceptionState.values()) {
 
@@ -740,6 +756,10 @@ public final class InterfaceMembershipManager
             throw new Error(e);
         }
         catch (InterruptedException e) {
+        }
+
+        if (report.getRecords().isEmpty()) {
+            this.endpoint.stopRequestTask();
         }
 
     }
