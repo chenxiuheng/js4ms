@@ -32,10 +32,7 @@ import com.larkwoodlabs.net.ip.ipv4.IPv4Packet;
 
 final class IPv4MembershipQueryTransform implements MessageTransform<IPPacket, MembershipQuery> {
 
-    private final AmtTunnelEndpoint endpoint;
-
-    public IPv4MembershipQueryTransform(final AmtTunnelEndpoint endpoint) {
-        this.endpoint = endpoint;
+    public IPv4MembershipQueryTransform() {
     }
 
     @Override
@@ -82,10 +79,6 @@ final class IPv4MembershipQueryTransform implements MessageTransform<IPPacket, M
         else {
             throw new ProtocolException("AMT Membership Query Message does not contain an IGMP Membership Query Message");
         }
-
-        // Use query interval received in query message to (re)start periodic request generation task.
-
-        this.endpoint.startRequestTask(membershipQuery.getQueryInterval());
 
         return membershipQuery;
 

@@ -32,10 +32,7 @@ import com.larkwoodlabs.net.ip.mld.MLDv2QueryMessage;
 
 final class IPv6MembershipQueryTransform implements MessageTransform<IPPacket, MembershipQuery> {
 
-    private final AmtTunnelEndpoint endpoint;
-
-    public IPv6MembershipQueryTransform(final AmtTunnelEndpoint endpoint) {
-        this.endpoint = endpoint;
+    public IPv6MembershipQueryTransform() {
     }
 
     @Override
@@ -82,10 +79,6 @@ final class IPv6MembershipQueryTransform implements MessageTransform<IPPacket, M
         else {
             throw new ProtocolException("AMT Membership Query Message does not contain an MLD Membership Query Message");
         }
-
-        // Use query interval received in query message to (re)start periodic request generation task.
-
-        this.endpoint.startRequestTask(membershipQuery.getQueryInterval());
 
         return membershipQuery;
 
