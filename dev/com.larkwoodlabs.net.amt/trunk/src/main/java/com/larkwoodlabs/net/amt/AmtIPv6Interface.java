@@ -73,7 +73,7 @@ public final class AmtIPv6Interface extends AmtInterface {
         this.tunnelEndpoint.setIncomingQueryChannel(
                 new OutputChannelTransform<IPPacket, MembershipQuery>(
                         this.interfaceManager.getIncomingQueryChannel(),
-                        new IPv6MembershipQueryTransform(this.tunnelEndpoint)));
+                        new IPv6MembershipQueryTransform()));
         
 
         this.tunnelEndpoint.start();
