@@ -89,6 +89,7 @@ public final class AmtGateway {
      */
     private AmtGateway() {
         this.ipv4Interfaces = new HashMap<InetAddress, AmtInterface>();
+        this.ipv6Interfaces = new HashMap<InetAddress, AmtInterface>();
     }
 
     /**
