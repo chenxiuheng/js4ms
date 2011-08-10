@@ -140,13 +140,6 @@ public final class InterfaceMembershipManager
 
             if (filter == null) {
                 filter = new SourceFilter(groupAddress);
-                if (this.interfaceReceptionState.isEmpty()) {
-
-                    // The relay discovery must be performed for first join.
-                    this.endpoint.startRelayDiscovery();
-
-                    this.pendingGeneralQueryReport.schedule(this.unsolicitedReportIntervalMs, this.unsolicitedReportIntervalMs);
-                }
                 this.interfaceReceptionState.put(groupAddress, filter);
             }
 
@@ -182,13 +175,6 @@ public final class InterfaceMembershipManager
 
             if (filter == null) {
                 filter = new SourceFilter(groupAddress);
-                if (this.interfaceReceptionState.isEmpty()) {
-
-                    // The relay discovery must be performed for first join.
-                    this.endpoint.startRelayDiscovery();
-
-                    this.pendingGeneralQueryReport.schedule(this.unsolicitedReportIntervalMs, this.unsolicitedReportIntervalMs);
-                }
                 this.interfaceReceptionState.put(groupAddress, filter);
             }
 
@@ -434,9 +420,9 @@ public final class InterfaceMembershipManager
                 // Send the first state change report immediately
                 stateChangeReport.run();
             }
-            
+
             if (this.interfaceReceptionState.isEmpty()) {
-                this.endpoint.stopRequestTask();
+                this.endpoint.stopUpdates();
             }
         }
     }
@@ -534,11 +520,9 @@ public final class InterfaceMembershipManager
             long taskDelay = Math.round(Math.random() * queryMessage.getMaximumResponseDelay());
 
             if (queryMessage.isGeneralQuery()) {
+
                 // Schedule the general query if none is pending, or reschedule pending General Query
-                if (!this.hasReportBeenSent) {
-                    taskDelay = taskDelay / 4;
-                }
-    
+
                 if (logger.isLoggable(Level.FINER)) {
                     logger.finer(ObjectId + " rescheduling general query report delay=" + taskDelay + "ms");
                 }
@@ -758,8 +742,8 @@ public final class InterfaceMembershipManager
         catch (InterruptedException e) {
         }
 
-        if (report.getRecords().isEmpty()) {
-            this.endpoint.stopRequestTask();
+        if (!report.getRecords().isEmpty()) {
+            this.endpoint.startPeriodicRequestTask(this.unsolicitedReportIntervalMs);
         }
 
     }
