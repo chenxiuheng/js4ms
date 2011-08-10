@@ -51,9 +51,8 @@ public final class AmtTunnelEndpoint implements Runnable {
      */
     public static final short AMT_PORT = 2268;
     
-    public static final long DISCOVERY_DELAY = 24*60*60*1000; // 1 DAY
-    public static final long DISCOVERY_PERIOD = 24*60*60*1000; // 1 DAY
     public static final long DISCOVERY_RETRY_PERIOD = 10*1000; // 10 secs
+    public static final long REQUEST_RETRY_PERIOD = 10*1000; // 10 secs
 
     public static final int MAX_REASSEMBLY_CACHE_SIZE = 100;
     
@@ -82,20 +81,31 @@ public final class AmtTunnelEndpoint implements Runnable {
     private boolean isRunning = false;
 
     private final InetAddress relayDiscoveryAddress;
-    private byte[] relayAddress = null;
     
     private final Timer taskTimer;
+
+    private boolean isUpdating = false;
+    
+    private TimerTask discoveryTask = null;
+    private AmtRelayDiscoveryMessage lastDiscoveryMessageSent = null;
+    private long discoveryRetransmissionInterval = DISCOVERY_RETRY_PERIOD;
+    private int discoveryMaxRetransmissions = Integer.MAX_VALUE;
+    private int discoveryRetransmissionCount = 0;
+
+    private AmtRelayAdvertisementMessage lastAdvertisementMessageReceived = null;
+    private InetAddress relayAddress = null;
+
     private TimerTask requestTask = null;
+    private AmtRequestMessage lastRequestMessageSent = null;
+    private long requestRetransmissionInterval = REQUEST_RETRY_PERIOD;
+    private int requestMaxRetransmissions = 2;
+    private int requestRetransmissionCount = 0;
 
-    private boolean isRequestSent = false;
-    private boolean isResponseReceived = false;
-
-    private long requestInterval = 0;
-    private int lastDiscoveryNonce;
-    private int lastRequestNonceSent;
-    private int lastRequestNonceReceived;
-    private byte[] lastResponseMac;
+    private AmtMembershipQueryMessage lastQueryMessageReceived = null;
     private InetSocketAddress lastGatewayAddress;
+
+    private TimerTask periodicRequestTask = null;
+
     
 
     /*-- Member Functions ---------------------------------------------------*/
@@ -122,7 +132,7 @@ public final class AmtTunnelEndpoint implements Runnable {
         this.outgoingUpdateChannel = new OutputChannel<IPPacket>() {
             @Override
             public void send(IPPacket packet, int milliseconds) throws IOException, InterruptedException {
-                sendUpdate(packet, milliseconds);
+                sendUpdate(packet);
             }
 
             @Override
@@ -181,15 +191,17 @@ public final class AmtTunnelEndpoint implements Runnable {
 
                 this.udpEndpoint = new UdpSocketEndpoint(0);
 
-                this.udpEndpoint.connect(new InetSocketAddress(InetAddress.getByAddress(this.relayDiscoveryAddress.getAddress()),AMT_PORT));
+                this.udpEndpoint.connect(new InetSocketAddress(this.relayDiscoveryAddress,AMT_PORT));
 
                 this.udpOutputChannel = new UdpOutputChannel(this.udpEndpoint);
                 this.udpInputChannel = new UdpInputChannel(this.udpEndpoint);
 
                 this.isRunning = true;
-                this.relayAddress = null;
-                this.isRequestSent = false;
-                this.isResponseReceived = false;
+
+                this.lastDiscoveryMessageSent = null;
+                this.lastAdvertisementMessageReceived = null;
+                this.lastRequestMessageSent = null;
+                this.lastQueryMessageReceived = null;
 
                 this.handlerThread = new Thread(this,this.toString());
                 this.handlerThread.setDaemon(true);
@@ -221,10 +233,7 @@ public final class AmtTunnelEndpoint implements Runnable {
 
                 this.isRunning = false;
 
-                if (this.requestTask != null) {
-                    this.requestTask.cancel();
-                    this.requestTask = null;
-                }
+                stopUpdates();
 
                 // Close the endpoint to abort the read operation on socket
                 this.udpEndpoint.close(true);
@@ -238,14 +247,13 @@ public final class AmtTunnelEndpoint implements Runnable {
     /**
      * 
      * @param packet
-     * @param milliseconds
      * @throws IOException
      * @throws InterruptedException
      */
-    private void sendUpdate(final IPPacket packet, final int milliseconds) throws IOException {
+    private void sendUpdate(final IPPacket packet) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.sendUpdate", packet, milliseconds));
+            logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.sendUpdate", packet));
         }
 
         synchronized (this.lock) {
@@ -255,31 +263,48 @@ public final class AmtTunnelEndpoint implements Runnable {
              * The gateway interface must receive a relay advertisement and initial query message before
              * it can send an update.
              * We can simply discard the update message if we cannot yet send it to the relay,
-             * since the first message that we will receive from the relay will be a membership query
+             * since the first message that we will receive from the relay will be a general query
              * that will trigger generation of a new update message.
              */
 
-            if (this.relayAddress == null) {
+            this.isUpdating = true;
+
+            if (this.lastDiscoveryMessageSent == null) {
+                logger.info(ObjectId + " cannot send AMT update message because AMT discovery message has not been sent");
+                startRelayDiscoveryTask();
+                return;
+            }
+            else if (this.lastAdvertisementMessageReceived == null) {
                 if (logger.isLoggable(Level.INFO)) {
-                    logger.info(ObjectId + " cannot send AMT update message because connection to AMT relay has not been established");
+                    logger.info(ObjectId + " cannot send AMT update message because no AMT relay has responded to the last AMT discovery message");
                 }
                 return;
             }
-            else if (!this.isResponseReceived && this.isRequestSent) {
+            else if (this.lastRequestMessageSent == null) {
+                if (logger.isLoggable(Level.INFO)) {
+                    logger.info(ObjectId + " cannot send AMT update message because AMT request message has not been sent");
+                }
+                return;
+            }
+            else if (this.lastQueryMessageReceived == null) {
                 if (logger.isLoggable(Level.INFO)) {
                     logger.info(ObjectId + " cannot send AMT update message because the AMT relay has not responded to the last AMT request");
                 }
                 return;
             }
-            else if (!this.isRequestSent) {
-                logger.severe(ObjectId + " illegal attempt made to send AMT update message before AMT request has been sent");
-                throw new Error("illegal attempt made to send AMT query or update message before AMT request has been sent");
+        }
+
+        AmtMembershipUpdateMessage message = new AmtMembershipUpdateMessage(this.lastQueryMessageReceived.getResponseMac(),
+                                                                            this.lastQueryMessageReceived.getRequestNonce(), packet);
+
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine(ObjectId + " sending AMT Membership Update Message");
+            if (logger.isLoggable(Level.FINEST)) {
+                message.log();
             }
         }
 
-        AmtMembershipUpdateMessage message = new AmtMembershipUpdateMessage(this.lastResponseMac, this.lastRequestNonceReceived, packet);
-
-        send(message);
+        send(this.relayAddress, message);
     }
 
     /**
@@ -288,24 +313,26 @@ public final class AmtTunnelEndpoint implements Runnable {
      * @throws IOException
      * @throws InterruptedException
      */
-    private void send(final AmtMessage message) throws IOException {
+    private void send(final InetAddress relayAddress, final AmtMessage message) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.send", message));
         }
 
+        /*
         if (logger.isLoggable(Level.FINE)) {
             logger.fine(ObjectId + " sending " + message.getClass().getSimpleName());
             if (logger.isLoggable(Level.FINEST)) {
                 message.log(logger);
             }
         }
+        */
 
         ByteBuffer buffer = ByteBuffer.allocate(message.getTotalLength());
         message.writeTo(buffer);
         buffer.flip();
 
-        send(new UdpDatagram(this.relayAddress, AMT_PORT, buffer));
+        send(new UdpDatagram(relayAddress, AMT_PORT, buffer));
         
     }
 
@@ -337,7 +364,10 @@ public final class AmtTunnelEndpoint implements Runnable {
             }
 
             // Restart relay discovery process to locate another relay
-            startRelayDiscovery();
+            stopUpdates();
+            this.isUpdating = true;
+            
+            startRelayDiscoveryTask();
         }
         catch (IOException e) {
             if (logger.isLoggable(Level.FINE)) {
@@ -355,24 +385,60 @@ public final class AmtTunnelEndpoint implements Runnable {
 
     /**
      * 
-     * @throws IOException
-     * @throws InterruptedException 
+     * @param interval
      */
-    void startRelayDiscovery() throws IOException {
+    void startRelayDiscoveryTask() {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.startRelayDiscovery"));
+            logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.startRelayDiscoveryTask"));
         }
 
         synchronized (this.lock) {
 
-            // Reset the state
-            this.relayAddress = null;
-            this.isRequestSent = false;
-            this.isResponseReceived = false;
-            this.udpEndpoint.disconnect();
+            this.lastDiscoveryMessageSent = null;
 
-            this.sendRelayDiscoveryMessage();
+            if (!this.isUpdating) {
+                return;
+            }
+
+            if (this.discoveryTask != null) {
+                this.discoveryTask.cancel();
+            }
+    
+            this.discoveryTask = new TimerTask() {
+                @Override
+                public void run() {
+                    if (AmtTunnelEndpoint.logger.isLoggable(Level.FINER)) {
+                        AmtTunnelEndpoint.logger.finer(ObjectId + " running discovery task");
+                    }
+                    synchronized (AmtTunnelEndpoint.this.lock) {
+                        try {
+                            if (!AmtTunnelEndpoint.this.isUpdating) {
+                                this.cancel();
+                            }
+                            else if (AmtTunnelEndpoint.this.discoveryRetransmissionCount < AmtTunnelEndpoint.this.discoveryMaxRetransmissions) {
+                                AmtTunnelEndpoint.this.discoveryRetransmissionCount++;
+                                AmtTunnelEndpoint.this.sendRelayDiscoveryMessage();
+                            }
+                            else {
+                                AmtTunnelEndpoint.logger.info(ObjectId + " maximum allowable relay discovery message retransmissions exceeded");
+                                AmtTunnelEndpoint.this.discoveryRetransmissionCount = 0;
+                                AmtTunnelEndpoint.this.lastDiscoveryMessageSent = null;
+                                this.cancel();
+                            }
+                        }
+                        catch (Exception e) {
+                            AmtTunnelEndpoint.logger.warning(ObjectId + " attempt to send AMT Relay Discovery Message failed - " + e.getMessage());
+                            AmtTunnelEndpoint.this.discoveryRetransmissionCount = 0;
+                            AmtTunnelEndpoint.this.lastDiscoveryMessageSent = null;
+                            this.cancel();
+                        }
+                    }
+                }
+            };
+    
+            // Schedule relay discovery task for immediate execution with short retry period
+            this.taskTimer.schedule(this.discoveryTask, 0, this.discoveryRetransmissionInterval);
         }
     }
 
@@ -388,77 +454,93 @@ public final class AmtTunnelEndpoint implements Runnable {
             logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.sendRelayDiscoveryMessage"));
         }
 
-        AmtRelayDiscoveryMessage message = new AmtRelayDiscoveryMessage();
+        synchronized (this.lock) {
 
-        synchronized (this) {
-            this.lastDiscoveryNonce = message.getDiscoveryNonce();
-        }
-
-        ByteBuffer buffer = ByteBuffer.allocate(message.getTotalLength());
-        message.writeTo(buffer);
-        buffer.flip();
-
-        if (logger.isLoggable(Level.FINE)) {
-            logger.fine(ObjectId + " sending AMT Relay Discovery Message");
-            if (logger.isLoggable(Level.FINEST)) {
-                message.log();
+            if (this.lastDiscoveryMessageSent == null) {
+                this.lastDiscoveryMessageSent = new AmtRelayDiscoveryMessage();
+                this.lastAdvertisementMessageReceived = null;
+                this.lastRequestMessageSent = null;
+                this.lastQueryMessageReceived = null;
             }
+
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine(ObjectId + " sending AMT Relay Discovery Message: relay-discovery-address="+Logging.address(this.relayDiscoveryAddress));
+                if (logger.isLoggable(Level.FINEST)) {
+                    this.lastDiscoveryMessageSent.log();
+                }
+            }
+
+            send(this.relayDiscoveryAddress, this.lastDiscoveryMessageSent);
+
         }
 
-        send(new UdpDatagram(this.relayDiscoveryAddress.getAddress(), AMT_PORT, buffer));
     }
 
     /**
      * 
      * @param interval
      */
-    void startRequestTask(final long interval) {
+    void startRequestTask() {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.startRequestTask", interval));
+            logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.startRequestTask"));
         }
 
-        // (Re)schedule request generation task if interval changes
-        if (interval != this.requestInterval) {
+        synchronized (this.lock) {
 
-            this.requestInterval = interval;
+            if (this.lastAdvertisementMessageReceived == null) {
+                startRelayDiscoveryTask();
+                return;
+            }
+
+            this.lastRequestMessageSent = null;
+
+            if (!this.isUpdating) {
+                return;
+            }
 
             if (this.requestTask != null) {
                 this.requestTask.cancel();
             }
-
+    
             this.requestTask = new TimerTask() {
                 @Override
                 public void run() {
                     if (AmtTunnelEndpoint.logger.isLoggable(Level.FINER)) {
-                        AmtTunnelEndpoint.logger.finer(ObjectId + " running periodic request task");
+                        AmtTunnelEndpoint.logger.finer(ObjectId + " running request task");
                     }
-                    try {
-                        AmtTunnelEndpoint.this.sendRequestMessage();
-                    }
-                    catch (Exception e) {
-                        // Schedule relay discovery task for immediate execution with short retry period
-                        AmtTunnelEndpoint.logger.warning(ObjectId + " attempt to send periodic AMT Relay Discovery Message failed - " + e.getMessage());
+                    synchronized (AmtTunnelEndpoint.this.lock) {
+                        try {
+                            if (!AmtTunnelEndpoint.this.isUpdating) {
+                                this.cancel();
+                            }
+                            else if (AmtTunnelEndpoint.this.requestRetransmissionCount < AmtTunnelEndpoint.this.requestMaxRetransmissions) {
+                                AmtTunnelEndpoint.this.requestRetransmissionCount++;
+                                AmtTunnelEndpoint.this.sendRequestMessage();
+                            }
+                            else {
+    
+                                // The relay did not respond with a query within the retransmission interval
+                                AmtTunnelEndpoint.logger.info(ObjectId + " maximum allowable request message retransmissions exceeded");
+                                AmtTunnelEndpoint.this.requestRetransmissionCount = 0;
+                                AmtTunnelEndpoint.this.lastRequestMessageSent = null;
+                                this.cancel();
+    
+                                // Restart discovery process to locate another relay
+                                AmtTunnelEndpoint.this.startRelayDiscoveryTask();
+                            }
+                        }
+                        catch (Exception e) {
+                            // Schedule request task for immediate execution with short retry period
+                            AmtTunnelEndpoint.logger.warning(ObjectId + " attempt to send AMT Request Message failed - " + e.getMessage());
+                            AmtTunnelEndpoint.this.requestRetransmissionCount = 0;
+                            this.cancel();
+                        }
                     }
                 }
             };
-    
-            this.taskTimer.schedule(this.requestTask, (long)(interval * Math.random()), interval);
-        }
-    }
-
-    /**
-     * 
-     */
-    public void stopRequestTask() {
-
-        if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.stopRequestTask"));
-        }
-
-        if (this.requestTask != null) {
-            this.requestTask.cancel();
-            this.requestTask = null;
+        
+            this.taskTimer.schedule(this.requestTask, 0, this.requestRetransmissionInterval);
         }
     }
 
@@ -473,14 +555,93 @@ public final class AmtTunnelEndpoint implements Runnable {
             logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.sendRequestMessage"));
         }
 
-        AmtRequestMessage message = new AmtRequestMessage();
-
         synchronized (this.lock) {
-            this.lastRequestNonceSent = message.getRequestNonce();
-            this.isRequestSent = true;
+
+            if (this.lastRequestMessageSent == null) {
+                this.lastRequestMessageSent = new AmtRequestMessage();
+                this.lastQueryMessageReceived = null;
+            }
+
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine(ObjectId + " sending AMT Request Message");
+                if (logger.isLoggable(Level.FINEST)) {
+                    this.lastRequestMessageSent.log();
+                }
+            }
+
+            send(this.relayAddress, this.lastRequestMessageSent);
         }
 
-        send(message);
+    }
+
+
+    /**
+     * 
+     * @param interval
+     */
+    void startPeriodicRequestTask(final long delay) {
+
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.startPeriodicRequestTask",delay));
+        }
+
+        synchronized (this.lock) {
+
+            if (!this.isUpdating) {
+                return;
+            }
+
+            if (this.periodicRequestTask != null) {
+                this.periodicRequestTask.cancel();
+            }
+    
+            this.periodicRequestTask = new TimerTask() {
+                @Override
+                public void run() {
+                    if (AmtTunnelEndpoint.logger.isLoggable(Level.FINER)) {
+                        AmtTunnelEndpoint.logger.finer(ObjectId + " running request task");
+                    }
+                    AmtTunnelEndpoint.this.startRequestTask();
+                }
+            };
+        
+            this.taskTimer.schedule(this.periodicRequestTask, delay);
+        }
+    }
+
+    /**
+     * 
+     */
+    public void stopUpdates() {
+
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.stopPeriodicRequestTask"));
+        }
+
+        synchronized (this.lock) {
+            
+            this.isUpdating = false;
+            
+            if (this.periodicRequestTask != null) {
+                this.periodicRequestTask.cancel();
+                this.periodicRequestTask = null;
+            }
+
+            if (this.requestTask != null) {
+                this.requestTask.cancel();
+                this.requestTask = null;
+            }
+
+            if (this.discoveryTask != null) {
+                this.discoveryTask.cancel();
+                this.discoveryTask = null;
+            }
+
+            this.lastDiscoveryMessageSent = null;
+            this.lastAdvertisementMessageReceived = null;
+            this.lastRequestMessageSent = null;
+            this.lastQueryMessageReceived = null;
+        }
 
     }
 
@@ -498,25 +659,25 @@ public final class AmtTunnelEndpoint implements Runnable {
 
         synchronized (this.lock) {
 
-            if (message.getDiscoveryNonce() != this.lastDiscoveryNonce) {
+            if (message.getDiscoveryNonce() != this.lastDiscoveryMessageSent.getDiscoveryNonce()) {
 
-                logger.warning(ObjectId +
-                               " received unexpected AMT Relay Advertisement Message: discovery-nonce=" + 
-                               message.getDiscoveryNonce() + 
-                               " expected-nonce=" + 
-                               this.lastDiscoveryNonce);
+                logger.info(ObjectId +
+                            " received unexpected AMT Relay Advertisement Message: discovery-nonce=" + 
+                            message.getDiscoveryNonce() + 
+                            " expected-nonce=" + 
+                            this.lastDiscoveryMessageSent.getDiscoveryNonce());
                 
                 // Let the relay discovery process continue
                 return;
             }
             else {
 
-                this.isRequestSent = false;
-                this.isResponseReceived = false;
-                this.relayAddress = message.getRelayAddress();
+                this.discoveryRetransmissionCount = 0;
+                this.lastAdvertisementMessageReceived = message;
+                this.relayAddress = InetAddress.getByAddress(message.getRelayAddress());
 
                 try {
-                    this.udpEndpoint.connect(new InetSocketAddress(InetAddress.getByAddress(this.relayAddress),AMT_PORT));
+                    this.udpEndpoint.connect(new InetSocketAddress(this.relayAddress,AMT_PORT));
                 }
                 catch (UnknownHostException e) {
                     throw new Error(e);
@@ -524,7 +685,7 @@ public final class AmtTunnelEndpoint implements Runnable {
 
                 // Initiate request/query/report handshake with the relay so we
                 // have a response MAC and nonce for reception state change reports
-                sendRequestMessage();
+                startRequestTask();
 
             }
         }
@@ -535,7 +696,7 @@ public final class AmtTunnelEndpoint implements Runnable {
         }
         
     }
-    
+
     /**
      * 
      * @param message
@@ -549,28 +710,48 @@ public final class AmtTunnelEndpoint implements Runnable {
         }
 
         synchronized (this.lock) {
-            this.isResponseReceived = true;
-            this.lastRequestNonceReceived = message.getRequestNonce();
-            this.lastResponseMac = message.getResponseMac();
+
+            if (message.getRequestNonce() != this.lastRequestMessageSent.getRequestNonce()) {
+                logger.info(ObjectId +
+                            " received unexpected AMT Membership Query Message: request-nonce=" + 
+                            message.getRequestNonce() + 
+                            " expected-nonce=" + 
+                            this.lastRequestMessageSent.getRequestNonce());
+                return;
+            }
+
+            this.requestRetransmissionCount = 0;
+
             if (message.getGatewayAddressFlag()) {
                 InetSocketAddress gatewayAddress = message.getGatewayAddress();
                 if (this.lastGatewayAddress != null) {
                     if (!this.lastGatewayAddress.equals(gatewayAddress)) {
+
                         // The source address for the request message has changed since the last request
                         // This implies that the relay will construct a new session when the Membership Update is sent
                         // Here we'll send a Teardown message to destroy the old session
-                        AmtTeardownMessage teardown = new AmtTeardownMessage(this.lastResponseMac, this.lastRequestNonceSent, this.lastGatewayAddress);
-                        send(teardown);
+                        AmtTeardownMessage teardown = new AmtTeardownMessage(this.lastQueryMessageReceived.getResponseMac(),
+                                                                             this.lastQueryMessageReceived.getRequestNonce(),
+                                                                             this.lastGatewayAddress);
+
+                        if (logger.isLoggable(Level.FINE)) {
+                            logger.fine(ObjectId + " sending AMT Teardown Message");
+                            if (logger.isLoggable(Level.FINEST)) {
+                                message.log();
+                            }
+                        }
+
+                        send(this.relayAddress, teardown);
                     }
                 }
+
                 this.lastGatewayAddress = message.getGatewayAddress();
             }
 
-            if (this.lastRequestNonceReceived != this.lastRequestNonceSent) {
-                logger.info(ObjectId + " AMT interface received Query message containing a request nonce that does not match that sent");
-            }
+            this.lastQueryMessageReceived = message;
         }
 
+        // Send the IGMP/MLD general query back to the interface membership manager
         this.incomingQueryChannel.send(message.getPacket(), Integer.MAX_VALUE);
     }
 
