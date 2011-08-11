@@ -20,7 +20,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 
-final class MembershipReport {
+public final class MembershipReport {
 
     private final HashSet<GroupMembershipRecord> records = new HashSet<GroupMembershipRecord>();
     

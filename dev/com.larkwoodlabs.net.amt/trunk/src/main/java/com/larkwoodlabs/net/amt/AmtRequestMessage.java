@@ -67,7 +67,7 @@ import com.larkwoodlabs.util.logging.Logging;
  * @author Gregory Bumgardner
  * 
  */
-final class AmtRequestMessage extends AmtMessage {
+public final class AmtRequestMessage extends AmtMessage {
 
     /*-- Inner Classes ------------------------------------------------------*/
 

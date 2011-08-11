@@ -118,7 +118,7 @@ import com.larkwoodlabs.util.logging.Logging;
  * 
  * @author Gregory Bumgardner
  */
-final class AmtTeardownMessage extends AmtMessage {
+public final class AmtTeardownMessage extends AmtMessage {
 
     /*-- Inner Classes ------------------------------------------------------*/
 

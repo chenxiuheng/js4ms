@@ -26,7 +26,7 @@ import com.larkwoodlabs.util.buffer.fields.ByteField;
 import com.larkwoodlabs.util.buffer.fields.SelectorField;
 import com.larkwoodlabs.util.logging.Logging;
 
-abstract class AmtMessage extends BufferBackedObject implements KeyedApplicationMessage<Byte> {
+public abstract class AmtMessage extends BufferBackedObject implements KeyedApplicationMessage<Byte> {
 
     /*-- Inner Classes ------------------------------------------------------*/
     

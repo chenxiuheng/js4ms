@@ -20,7 +20,7 @@ import java.net.InetAddress;
 import java.util.HashSet;
 import java.util.Iterator;
 
-final class GroupMembershipRecord {
+public final class GroupMembershipRecord {
 
     /**
      * Enumeration of group record types.

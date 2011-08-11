@@ -68,7 +68,7 @@ import com.larkwoodlabs.util.logging.Logging;
  *   determined by the length of the Advertisement.
  * </pre>
  */
-final class AmtRelayAdvertisementMessage extends AmtMessage {
+public final class AmtRelayAdvertisementMessage extends AmtMessage {
 
     /*-- Inner Classes ------------------------------------------------------*/
 

@@ -14,7 +14,7 @@
  * limitations under the license.
  */
 
-package com.larkwoodlabs.net.amt;
+package com.larkwoodlabs.net.amt.client;
 
 import java.net.InetAddress;
 import java.util.HashSet;
@@ -22,6 +22,8 @@ import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.larkwoodlabs.net.amt.SourceFilter;
+import com.larkwoodlabs.net.amt.SourceFilter.Mode;
 import com.larkwoodlabs.util.logging.Logging;
 import com.larkwoodlabs.util.task.ReschedulableTask;
 

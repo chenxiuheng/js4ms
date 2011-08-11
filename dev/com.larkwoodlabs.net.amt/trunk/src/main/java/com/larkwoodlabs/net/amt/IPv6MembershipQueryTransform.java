@@ -30,7 +30,7 @@ import com.larkwoodlabs.net.ip.mld.MLDMessage;
 import com.larkwoodlabs.net.ip.mld.MLDQueryMessage;
 import com.larkwoodlabs.net.ip.mld.MLDv2QueryMessage;
 
-final class IPv6MembershipQueryTransform implements MessageTransform<IPPacket, MembershipQuery> {
+public final class IPv6MembershipQueryTransform implements MessageTransform<IPPacket, MembershipQuery> {
 
     public IPv6MembershipQueryTransform() {
     }
@@ -45,7 +45,7 @@ final class IPv6MembershipQueryTransform implements MessageTransform<IPPacket, M
             IPMessage ipMessage = packet.getProtocolMessage(MLDMessage.IP_PROTOCOL_NUMBER);
             
             if (ipMessage == null || !(ipMessage instanceof MLDQueryMessage)) {
-                throw new ProtocolException("AMT Membership Query Message does not contain an MLD Membership Query Message");
+                throw new ProtocolException("IP packet does not contain an MLD Membership Query Message");
             }
     
             MLDQueryMessage queryMessage = (MLDQueryMessage)ipMessage;
@@ -77,7 +77,7 @@ final class IPv6MembershipQueryTransform implements MessageTransform<IPPacket, M
                                                   queryInterval);
         }
         else {
-            throw new ProtocolException("AMT Membership Query Message does not contain an MLD Membership Query Message");
+            throw new ProtocolException("IP packet does not contain an MLD Membership Query Message");
         }
 
         return membershipQuery;

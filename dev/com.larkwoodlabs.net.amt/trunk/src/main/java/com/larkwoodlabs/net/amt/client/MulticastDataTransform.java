@@ -14,7 +14,7 @@
  * limitations under the license.
  */
 
-package com.larkwoodlabs.net.amt;
+package com.larkwoodlabs.net.amt.client;
 
 import java.io.IOException;
 

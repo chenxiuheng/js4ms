@@ -30,7 +30,7 @@ import com.larkwoodlabs.net.ip.igmp.IGMPGroupRecord;
 import com.larkwoodlabs.net.ip.igmp.IGMPMessage;
 import com.larkwoodlabs.net.ip.igmp.IGMPv3ReportMessage;
 
-final class IPv4MembershipReportTransform implements MessageTransform<MembershipReport, IPPacket> {
+public final class IPv4MembershipReportTransform implements MessageTransform<MembershipReport, IPPacket> {
 
     private byte[] ipv4SourceAddress = null;
     

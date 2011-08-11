@@ -69,7 +69,7 @@ import com.larkwoodlabs.util.logging.Logging;
  * </dl><p>
  * @author Gregory Bumgardner
  */
-final class AmtMulticastDataMessage extends AmtEncapsulationMessage {
+public final class AmtMulticastDataMessage extends AmtEncapsulationMessage {
 
     /*-- Inner Classes ---------------------------------------------------*/
     

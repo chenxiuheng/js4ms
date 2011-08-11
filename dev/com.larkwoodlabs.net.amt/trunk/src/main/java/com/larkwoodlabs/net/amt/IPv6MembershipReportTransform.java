@@ -30,7 +30,7 @@ import com.larkwoodlabs.net.ip.mld.MLDGroupRecord;
 import com.larkwoodlabs.net.ip.mld.MLDMessage;
 import com.larkwoodlabs.net.ip.mld.MLDv2ReportMessage;
 
-final class IPv6MembershipReportTransform implements MessageTransform<MembershipReport, IPPacket> {
+public final class IPv6MembershipReportTransform implements MessageTransform<MembershipReport, IPPacket> {
 
     private byte[] ipv6SourceAddress = null;
     

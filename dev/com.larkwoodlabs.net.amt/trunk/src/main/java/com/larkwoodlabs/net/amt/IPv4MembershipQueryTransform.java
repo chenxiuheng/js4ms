@@ -30,7 +30,7 @@ import com.larkwoodlabs.net.ip.igmp.IGMPQueryMessage;
 import com.larkwoodlabs.net.ip.igmp.IGMPv3QueryMessage;
 import com.larkwoodlabs.net.ip.ipv4.IPv4Packet;
 
-final class IPv4MembershipQueryTransform implements MessageTransform<IPPacket, MembershipQuery> {
+public final class IPv4MembershipQueryTransform implements MessageTransform<IPPacket, MembershipQuery> {
 
     public IPv4MembershipQueryTransform() {
     }
@@ -45,7 +45,7 @@ final class IPv4MembershipQueryTransform implements MessageTransform<IPPacket, M
             IPMessage ipMessage = packet.getProtocolMessage(IGMPMessage.IP_PROTOCOL_NUMBER);
     
             if (ipMessage == null || !(ipMessage instanceof IGMPQueryMessage)) {
-                throw new ProtocolException("AMT Membership Query Message does not contain an IGMP Membership Query Message");
+                throw new ProtocolException("IP packet does not contain an IGMP Membership Query Message");
             }
     
             IGMPQueryMessage queryMessage = (IGMPQueryMessage)ipMessage;
@@ -77,7 +77,7 @@ final class IPv4MembershipQueryTransform implements MessageTransform<IPPacket, M
                                                   queryInterval);
         }
         else {
-            throw new ProtocolException("AMT Membership Query Message does not contain an IGMP Membership Query Message");
+            throw new ProtocolException("IP packet does not contain an IGMP Membership Query Message");
         }
 
         return membershipQuery;

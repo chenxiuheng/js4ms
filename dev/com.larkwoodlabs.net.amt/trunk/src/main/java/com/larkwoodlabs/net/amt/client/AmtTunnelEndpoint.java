@@ -14,7 +14,7 @@
  * limitations under the license.
  */
 
-package com.larkwoodlabs.net.amt;
+package com.larkwoodlabs.net.amt.client;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
@@ -30,6 +30,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.larkwoodlabs.channels.OutputChannel;
+import com.larkwoodlabs.net.amt.AmtMembershipQueryMessage;
+import com.larkwoodlabs.net.amt.AmtMembershipUpdateMessage;
+import com.larkwoodlabs.net.amt.AmtMessage;
+import com.larkwoodlabs.net.amt.AmtMulticastDataMessage;
+import com.larkwoodlabs.net.amt.AmtRelayAdvertisementMessage;
+import com.larkwoodlabs.net.amt.AmtRelayDiscoveryMessage;
+import com.larkwoodlabs.net.amt.AmtRequestMessage;
+import com.larkwoodlabs.net.amt.AmtTeardownMessage;
 import com.larkwoodlabs.net.ip.IPPacket;
 import com.larkwoodlabs.net.udp.UdpDatagram;
 import com.larkwoodlabs.net.udp.UdpInputChannel;

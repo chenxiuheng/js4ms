@@ -14,7 +14,7 @@
  * limitations under the license.
  */
 
-package com.larkwoodlabs.net.amt;
+package com.larkwoodlabs.net.amt.client;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -26,6 +26,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.larkwoodlabs.channels.OutputChannel;
+import com.larkwoodlabs.net.amt.GroupMembershipRecord;
+import com.larkwoodlabs.net.amt.MembershipQuery;
+import com.larkwoodlabs.net.amt.MembershipReport;
+import com.larkwoodlabs.net.amt.SourceFilter;
 import com.larkwoodlabs.util.logging.LoggableBase;
 import com.larkwoodlabs.util.logging.Logging;
 

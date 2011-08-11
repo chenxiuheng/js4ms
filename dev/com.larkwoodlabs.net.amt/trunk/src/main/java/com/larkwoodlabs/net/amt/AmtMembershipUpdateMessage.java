@@ -103,7 +103,7 @@ import com.larkwoodlabs.util.logging.Logging;
  * @author Gregory Bumgardner
  * 
  */
-final class AmtMembershipUpdateMessage extends AmtEncapsulationMessage {
+public final class AmtMembershipUpdateMessage extends AmtEncapsulationMessage {
 
     /*-- Inner Classes ------------------------------------------------------*/
 

@@ -1,4 +1,4 @@
-package com.larkwoodlabs.net.amt;
+package com.larkwoodlabs.net.amt.client;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import com.larkwoodlabs.channels.MessageSource;
 import com.larkwoodlabs.channels.OutputChannel;
+import com.larkwoodlabs.net.amt.SourceFilter;
 import com.larkwoodlabs.net.udp.UdpDatagram;
 import com.larkwoodlabs.util.logging.Log;
 

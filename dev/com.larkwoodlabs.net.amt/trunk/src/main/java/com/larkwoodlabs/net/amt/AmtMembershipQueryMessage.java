@@ -16,7 +16,6 @@
 
 package com.larkwoodlabs.net.amt;
 
-import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
@@ -143,7 +142,7 @@ import com.larkwoodlabs.util.logging.Logging;
  * 
  * @author Gregory Bumgardner
  */
-final class AmtMembershipQueryMessage extends AmtEncapsulationMessage {
+public final class AmtMembershipQueryMessage extends AmtEncapsulationMessage {
 
     /*-- Inner Classes ------------------------------------------------------*/
     

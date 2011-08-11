@@ -14,7 +14,7 @@
  * limitations under the license.
  */
 
-package com.larkwoodlabs.net.amt;
+package com.larkwoodlabs.net.amt.client;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -22,6 +22,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.larkwoodlabs.channels.OutputChannelTransform;
+import com.larkwoodlabs.net.amt.IPv6MembershipReportTransform;
+import com.larkwoodlabs.net.amt.IPv6MembershipQueryTransform;
+import com.larkwoodlabs.net.amt.MembershipQuery;
+import com.larkwoodlabs.net.amt.MembershipReport;
 import com.larkwoodlabs.net.ip.IPPacket;
 import com.larkwoodlabs.util.logging.Logging;
 
@@ -36,11 +40,11 @@ import com.larkwoodlabs.util.logging.Logging;
  *
  * @author gbumgard
  */
-public final class AmtIPv4Interface extends AmtInterface {
+public final class AmtIPv6Interface extends AmtInterface {
 
     /*-- Static Variables ----------------------------------------------------*/
 
-    public static final Logger logger = Logger.getLogger(AmtIPv4Interface.class.getName());
+    public static final Logger logger = Logger.getLogger(AmtIPv6Interface.class.getName());
 
 
     /*-- Member Variables ---------------------------------------------------*/
@@ -56,24 +60,24 @@ public final class AmtIPv4Interface extends AmtInterface {
      * @param relayDiscoveryAddress
      * @throws IOException
      */
-    public AmtIPv4Interface(final AmtGateway gateway, final InetAddress relayDiscoveryAddress) throws IOException {
+    public AmtIPv6Interface(final AmtGateway gateway, final InetAddress relayDiscoveryAddress) throws IOException {
         super(gateway, relayDiscoveryAddress);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtIPv4Interface.AmtIPv4Interface", gateway, Logging.address(relayDiscoveryAddress)));
+            logger.finer(Logging.entering(ObjectId, "AmtIPv6Interface.AmtIPv6Interface", gateway, Logging.address(relayDiscoveryAddress)));
         }
 
         // Connect report channel of interface membership manager to tunnel endpoint
         this.interfaceManager.setOutgoingReportChannel(
                 new OutputChannelTransform<MembershipReport,IPPacket>(
                         this.tunnelEndpoint.getOutgoingUpdateChannel(),
-                        new IPv4MembershipReportTransform()));
+                        new IPv6MembershipReportTransform()));
         
         // Connect query channel of tunnel endpoint to interface membership manager
         this.tunnelEndpoint.setIncomingQueryChannel(
                 new OutputChannelTransform<IPPacket, MembershipQuery>(
                         this.interfaceManager.getIncomingQueryChannel(),
-                        new IPv4MembershipQueryTransform()));
+                        new IPv6MembershipQueryTransform()));
         
 
         this.tunnelEndpoint.start();

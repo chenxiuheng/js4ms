@@ -64,7 +64,7 @@ import com.larkwoodlabs.util.logging.Logging;
  * @author Gregory Bumgardner
  * 
  */
-final class AmtRelayDiscoveryMessage extends AmtMessage {
+public final class AmtRelayDiscoveryMessage extends AmtMessage {
 
     /*-- Inner Classes ------------------------------------------------------*/
 

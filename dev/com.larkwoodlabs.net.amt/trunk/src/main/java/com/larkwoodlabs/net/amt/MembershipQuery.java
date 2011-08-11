@@ -19,7 +19,7 @@ package com.larkwoodlabs.net.amt;
 import java.net.InetAddress;
 import java.util.HashSet;
 
-final class MembershipQuery {
+public final class MembershipQuery {
 
     /*-- Member Variables ---------------------------------------------------*/
 
