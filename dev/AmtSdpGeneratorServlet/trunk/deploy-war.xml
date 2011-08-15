@@ -1,0 +1,26 @@
+<?eclipse.ant.import?>
+<project>
+
+    <import file="build-war.xml" />
+
+    <property name="context.path" value="/servlet/sdpgenerator" />
+
+	<taskdef name="deploy" classname="org.apache.catalina.ant.DeployTask" />
+    <taskdef name="undeploy" classname="org.apache.catalina.ant.UndeployTask" />
+
+    <target name="deploy-war" description="Install web application" depends="build-war">
+        <input message="Please enter Tomcat manager URL:" addproperty="url" defaultvalue="http://localhost:8080/manager"/>
+        <input message="Please enter manager user name:" addproperty="username" defaultvalue="admin"/>
+        <input message="Please enter manager password:" addproperty="password" defaultvalue="admin"/>
+        <undeploy url="${url}" username="${username}" password="${password}" path="${context.path}" failonerror="false"/>
+        <deploy url="${url}" username="${username}" password="${password}" path="${context.path}" war="build/${war.file}" />
+    </target>
+
+    <target name="undeploy-war" description="Remove web application">
+        <input message="Please enter Tomcat manager URL:" addproperty="url" defaultvalue="http://localhost:8080/manager"/>
+        <input message="Please enter manager user name:" addproperty="username" defaultvalue="admin"/>
+        <input message="Please enter manager password:" addproperty="password" defaultvalue="admin"/>
+        <undeploy url="${url}" username="${username}" password="${password}" path="${context.path}" failonerror="false" />
+    </target>
+
+</project>

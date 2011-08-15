@@ -1,0 +1,38 @@
+<?eclipse.ant.import?>
+<project>
+
+	<property file="app.properties" />
+
+	<import file="gen-version.xml" />
+	
+	<target name="build-jar" description="builds jar file" depends="gen-version">
+
+        <property name="app.jar.name" value="${app.name}.jar"/>
+        <property name="app.jar.file" value="${app.name}__V${app.version}.jar"/>
+
+		<!-- Delete all existing versions of the jar file -->
+        <delete>
+        	<fileset dir="WebContent/WEB-INF/lib" includes="${app.name}*.jar"/>
+     	</delete>
+  
+		<jar destfile="WebContent/WEB-INF/lib/${app.jar.file}">
+			<fileset dir="./build/classes">
+				<include name="**/*.class" />
+			</fileset>
+            <manifest>
+                <attribute name="Built-By" value="${user.name}"/>
+                <attribute name="Implementation-Vendor" value="${app.vendor}"/>
+                <attribute name="Implementation-Title" value="${app.name}"/>
+                <attribute name="Implementation-Version" value="${app.version}"/> 
+            </manifest>
+        </jar>
+
+    </target>
+
+	<target name="clean-jar">
+        <delete>
+            <fileset dir="WebContent" includes="*.jar"/>
+        </delete>
+	</target>
+
+</project>

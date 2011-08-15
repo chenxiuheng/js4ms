@@ -1,0 +1,25 @@
+<?eclipse.ant.import?>
+<project>
+
+	<import file="build-jar.xml" />
+	
+	<property name="war.file" value="${app.name}.war" />
+
+    <target name="copy-jars" depends="build-jar" description="copies external jars required by application">
+        <copy file="${jars-jain-sdp.location}/ext/jain-sdp-1.0.100.jar" toDir="WebContent/WEB-INF/lib"/>
+    </target>
+    
+	<target name="build-war" depends="copy-jars">
+	    <war destfile="build/${war.file}" webxml="WebContent/WEB-INF/web.xml">
+	    	<fileset dir="WebContent">
+	    		<exclude name="WEB-INF/web.xml"/>
+	    	</fileset>
+	        <lib dir="WebContent/WEB-INF/lib"/>
+	    </war>
+	</target>
+	
+	<target name="clean-war">
+		<delete file="build/${war.file}" />
+	</target>
+	
+</project>
