@@ -26,7 +26,11 @@ import java.util.logging.Logger;
 import com.larkwoodlabs.common.exceptions.ParseException;
 import com.larkwoodlabs.net.ip.IPPacket;
 import com.larkwoodlabs.net.ip.igmp.IGMPMessage;
+import com.larkwoodlabs.net.ip.igmp.IGMPv3QueryMessage;
+import com.larkwoodlabs.net.ip.ipv4.IPv4Packet;
+import com.larkwoodlabs.net.ip.ipv6.IPv6Packet;
 import com.larkwoodlabs.net.ip.mld.MLDMessage;
+import com.larkwoodlabs.net.ip.mld.MLDv2QueryMessage;
 import com.larkwoodlabs.util.buffer.fields.ByteArrayField;
 import com.larkwoodlabs.util.buffer.fields.ByteField;
 import com.larkwoodlabs.util.buffer.fields.IntegerField;
@@ -183,9 +187,28 @@ public final class AmtMembershipQueryMessage extends AmtEncapsulationMessage {
     public static final ByteField       GatewayAddressFlag = new ByteField(1);
     public static final ByteArrayField  ResponseMac = new ByteArrayField(2,6);
     public static final IntegerField    RequestNonce = new IntegerField(8);
-    
+
+    public static final IPv4Packet igmpGeneralQueryPacket;
+    public static final IPv6Packet mldGeneralQueryPacket;
+
+    static {
+        IGMPv3QueryMessage igmpGeneralQuery = new IGMPv3QueryMessage((short) 0);
+        igmpGeneralQueryPacket = IGMPv3QueryMessage.constructIPv4Packet(new byte[4], // Source address is zero for AMT
+                                                                       IGMPv3QueryMessage.QUERY_DESTINATION_ADDRESS,
+                                                                       igmpGeneralQuery);
+        
+        MLDv2QueryMessage mldGeneralQuery = new MLDv2QueryMessage();
+        mldGeneralQueryPacket = MLDv2QueryMessage.constructIPv6Packet(new byte[16], // Source address is zero for AMT
+                                                                      MLDv2QueryMessage.QUERY_DESTINATION_ADDRESS,
+                                                                      mldGeneralQuery);
+    }
+
     /*-- Static Functions ---------------------------------------------------*/
     
+    /**
+     * 
+     * @return
+     */
     public static IPPacket.Parser getQueryPacketParser() {
         IPPacket.Parser parser = new IPPacket.Parser();
         parser.add(IGMPMessage.getIPv4PacketParser());
@@ -271,7 +294,7 @@ public final class AmtMembershipQueryMessage extends AmtEncapsulationMessage {
             logger.finer(Logging.entering(ObjectId, "AmtMembershipQueryMessage.writeTo", buffer));
         }
         super.writeTo(buffer);
-        if (this.gatewayAddress != null) {
+        if (this.unparsedPacket == null && this.gatewayAddress != null) {
             buffer.put((byte)0);
             buffer.put((byte)0);
             int port = this.gatewayAddress.getPort();
@@ -286,6 +309,7 @@ public final class AmtMembershipQueryMessage extends AmtEncapsulationMessage {
                     buffer.put((byte)0);
                 }
             }
+
             // Writes 4 or 16 bytes
             buffer.put(address);
         }
@@ -364,9 +388,9 @@ public final class AmtMembershipQueryMessage extends AmtEncapsulationMessage {
      * @return
      */
     public InetSocketAddress getGatewayAddress() {
-        if (this.gatewayAddress != null) {
+        if (this.unparsedPacket != null) {
             int index = this.packet.getTotalLength();
-            int port = (this.unparsedPacket.get(index++) << 8) | this.unparsedPacket.get(index++);
+            short port = (short)((this.unparsedPacket.get(index++) << 8) | this.unparsedPacket.get(index++));
             byte[] address = new byte[16];
             for (int i=0; i<16; i++) {
                 address[i] = this.unparsedPacket.get(index++);
@@ -387,5 +411,25 @@ public final class AmtMembershipQueryMessage extends AmtEncapsulationMessage {
     public void setGatewayAddress(final InetSocketAddress gatewayAddress) {
         this.gatewayAddress = gatewayAddress;
         setGatewayAddressFlag(gatewayAddress != null);
+        if (this.unparsedPacket != null) {
+            int index = this.packet.getTotalLength() + 2;
+            int port = this.gatewayAddress.getPort();
+            this.unparsedPacket.put(index++,(byte)((port >> 8) & 0xFF));
+            this.unparsedPacket.put(index++,(byte)(port & 0xFF));
+            byte[] address = this.gatewayAddress.getAddress().getAddress();
+            if (address.length == 4) {
+                for (int i=0; i<12; i++) {
+                    this.unparsedPacket.put(index++,(byte)0);
+                }
+                for (int i=0; i< 4; i++) {
+                    this.unparsedPacket.put(index++,address[i]);
+                }
+            }
+            else {
+                for (int i=0; i< 16; i++) {
+                    this.unparsedPacket.put(index++,address[i]);
+                }
+            }
+        }
     }
 }
