@@ -59,6 +59,9 @@ public class MulticastReflectorFactory implements PresentationResolver {
     public static final Logger logger = Logger.getLogger(MulticastReflectorFactory.class.getName());
 
 
+    public static final String SOURCE_FILTER_SDP_ATTRIBUTE = "source-filter";
+    public static final String AMT_RELAY_DISCOVERY_ADDRESS_SDP_ATTRIBUTE = "x-amt-relay-discovery-address";
+
     /*-- Member Variables ----------------------------------------------------*/
 
     /**
@@ -390,14 +393,14 @@ public class MulticastReflectorFactory implements PresentationResolver {
             connectionAddress.setPort(0);
         }
 
-        // Remove any source-filter or x-amt-relay-anycast attribute records that might exist
+        // Remove any source-filter or x-amt-relay-discovery-address attribute records that might exist
         Vector<?> attributes = sessionDescription.getAttributes(false);
         if (attributes != null) {
             Iterator<?> iter = attributes.iterator();
             while (iter.hasNext()) {
                 Attribute attribute = (Attribute)iter.next();
-                if (attribute.getName().equals("source-filter") ||
-                    attribute.getName().equals("x-amt-relay-anycast")) {
+                if (attribute.getName().equals(SOURCE_FILTER_SDP_ATTRIBUTE) ||
+                    attribute.getName().equals(AMT_RELAY_DISCOVERY_ADDRESS_SDP_ATTRIBUTE)) {
                     iter.remove();
                 }
             }
@@ -459,8 +462,8 @@ public class MulticastReflectorFactory implements PresentationResolver {
                     Iterator<?> iter = attributes.iterator();
                     while (iter.hasNext()) {
                         Attribute attribute = (Attribute)iter.next();
-                        if (attribute.getName().equals("source-filter") ||
-                            attribute.getName().equals("x-amt-relay-anycast")) {
+                        if (attribute.getName().equals(SOURCE_FILTER_SDP_ATTRIBUTE) ||
+                            attribute.getName().equals(AMT_RELAY_DISCOVERY_ADDRESS_SDP_ATTRIBUTE)) {
                             iter.remove();
                         }
                     }
