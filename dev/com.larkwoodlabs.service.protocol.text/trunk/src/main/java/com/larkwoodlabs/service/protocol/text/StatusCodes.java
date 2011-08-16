@@ -50,7 +50,7 @@ public interface StatusCodes {
     public final Status BadGateway = new Status(502,"Bad Gateway");
     public final Status ServiceUnavailable = new Status(503,"Service Unavailable");
     public final Status GatewayTimeout = new Status(504,"Gateway Timeout");
-    public final Status RtspVersionNotSupported = new Status(505,"RTSP Version Not Supported");
+    public final Status VersionNotSupported = new Status(505,"Version Not Supported");
     public final Status OptionNotSupported = new Status(551,"Option Not Supported");
 
     public final Status BadResponse = new Status(0,"Bad response");
