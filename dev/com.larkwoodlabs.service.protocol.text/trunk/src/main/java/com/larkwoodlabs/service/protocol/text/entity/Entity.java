@@ -6,7 +6,7 @@ import java.io.OutputStream;
 import java.util.Date;
 import java.util.logging.Logger;
 
-import com.larkwoodlabs.service.protocol.text.message.Header;
+import com.larkwoodlabs.service.protocol.text.message.MessageHeader;
 
 
 public interface Entity {
@@ -36,7 +36,7 @@ public interface Entity {
     void setExpires(final Date date);
     void setLastModified(final Date date);
 
-    boolean isEntityHeader(final Header header);
+    boolean isEntityHeader(final MessageHeader header);
 
     /**
      * Writes this entity to the specified OutputStream.

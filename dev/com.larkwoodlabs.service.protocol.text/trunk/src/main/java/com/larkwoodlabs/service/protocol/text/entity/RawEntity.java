@@ -13,6 +13,7 @@ import com.larkwoodlabs.service.protocol.text.StatusCodes;
 import com.larkwoodlabs.service.protocol.text.headers.DateHeader;
 import com.larkwoodlabs.service.protocol.text.message.Header;
 import com.larkwoodlabs.service.protocol.text.message.Message;
+import com.larkwoodlabs.service.protocol.text.message.MessageHeader;
 import com.larkwoodlabs.service.protocol.text.util.DateUtil;
 import com.larkwoodlabs.util.logging.Log;
 
@@ -140,12 +141,12 @@ public class RawEntity implements Entity {
         this.content = content;
 
         if (message.containsHeader(Entity.CONTENT_LENGTH)) {
-            Header header = message.removeHeader(Entity.CONTENT_LENGTH);
+            MessageHeader header = message.removeHeader(Entity.CONTENT_LENGTH);
             this.contentLength = header != null ? Integer.parseInt(header.getValue()) : -1;
         }
 
         if (message.containsHeader(Entity.CONTENT_TYPE)) {
-            Header header = message.removeHeader(Entity.CONTENT_TYPE);
+            MessageHeader header = message.removeHeader(Entity.CONTENT_TYPE);
             this.contentType = header != null ? header.getValue() : null;
         }
         else if (this.contentLength > 0) {
@@ -153,32 +154,32 @@ public class RawEntity implements Entity {
         }
 
         if (message.containsHeader(Entity.CONTENT_LANGUAGE)) {
-            Header header = message.removeHeader(Entity.CONTENT_LANGUAGE);
+            MessageHeader header = message.removeHeader(Entity.CONTENT_LANGUAGE);
             this.contentLanguage = header != null ? header.getValue() : null;
         }
 
         if (message.containsHeader(Entity.CONTENT_ENCODING)) {
-            Header header = message.removeHeader(Entity.CONTENT_ENCODING);
+            MessageHeader header = message.removeHeader(Entity.CONTENT_ENCODING);
             this.contentEncoding = header != null ? header.getValue() : null;
         }
 
         if (message.containsHeader(Entity.CONTENT_BASE)) {
-            Header header = message.removeHeader(Entity.CONTENT_BASE);
+            MessageHeader header = message.removeHeader(Entity.CONTENT_BASE);
             this.contentBase = header != null ? header.getValue() : null;
         }
 
         if (message.containsHeader(Entity.CONTENT_LOCATION)) {
-            Header header = message.removeHeader(Entity.CONTENT_LOCATION);
+            MessageHeader header = message.removeHeader(Entity.CONTENT_LOCATION);
             this.contentLocation = header != null ? header.getValue() : null;
         }
 
         if (message.containsHeader(Entity.CONTENT_DISPOSITION)) {
-            Header header = message.removeHeader(Entity.CONTENT_DISPOSITION);
+            MessageHeader header = message.removeHeader(Entity.CONTENT_DISPOSITION);
             this.contentDisposition = header != null ? header.getValue() : null;
         }
 
         if (message.containsHeader(Entity.EXPIRES)) {
-            Header header = message.removeHeader(Entity.EXPIRES);
+            MessageHeader header = message.removeHeader(Entity.EXPIRES);
             try {
                 this.expires = header != null ? DateUtil.toDate(header.getValue()) : null;
             }
@@ -191,7 +192,7 @@ public class RawEntity implements Entity {
         }
 
         if (message.containsHeader(Entity.LAST_MODIFIED)) {
-            Header header = message.removeHeader(Entity.LAST_MODIFIED);
+            MessageHeader header = message.removeHeader(Entity.LAST_MODIFIED);
             try {
                 this.expires = header != null ? DateUtil.toDate(header.getValue()) : null;
             }
@@ -412,7 +413,7 @@ public class RawEntity implements Entity {
      * 
      */
     @Override
-    public boolean isEntityHeader(final Header header) {
+    public boolean isEntityHeader(final MessageHeader header) {
         String name = header.getName();
         return name.equalsIgnoreCase(Entity.CONTENT_LENGTH)
                || name.equalsIgnoreCase(Entity.CONTENT_TYPE)
