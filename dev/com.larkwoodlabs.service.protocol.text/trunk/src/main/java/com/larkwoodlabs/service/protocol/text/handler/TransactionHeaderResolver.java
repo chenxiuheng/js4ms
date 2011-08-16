@@ -16,7 +16,7 @@ public class TransactionHeaderResolver implements TransactionHandlerResolver {
     /**
      * 
      */
-    public static final Logger logger = Logger.getLogger(TransactionUriPathResolver.class.getName());
+    public static final Logger logger = Logger.getLogger(TransactionHeaderResolver.class.getName());
 
 
     /*-- Member Variables ----------------------------------------------------*/
