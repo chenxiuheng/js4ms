@@ -26,7 +26,7 @@ public class Response extends Message {
      */
     public Response(final Connection connection,
                     final StatusLine statusLine,
-                    final LinkedHashMap<String,Header> messageHeaders,
+                    final LinkedHashMap<String,MessageHeader> messageHeaders,
                     final Entity entity) {
         super(connection, statusLine, messageHeaders, entity);
     }

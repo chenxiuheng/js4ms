@@ -47,7 +47,7 @@ public class Request extends Message {
      */
     public Request(final Connection connection,
                    final RequestLine requestLine,
-                   final LinkedHashMap<String,Header> messageHeaders,
+                   final LinkedHashMap<String,MessageHeader> messageHeaders,
                    final Entity entity) {
         super(connection, requestLine, messageHeaders, entity);
     }
