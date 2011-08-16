@@ -17,8 +17,8 @@ import javax.sdp.SessionDescription;
 
 import com.larkwoodlabs.channels.MessageSource;
 import com.larkwoodlabs.channels.OutputChannel;
-import com.larkwoodlabs.net.amt.AmtGateway;
 import com.larkwoodlabs.net.amt.SourceFilter;
+import com.larkwoodlabs.net.amt.client.AmtGateway;
 import com.larkwoodlabs.service.protocol.rtsp.TransportDescription;
 import com.larkwoodlabs.service.protocol.rtsp.presentation.MediaStream;
 import com.larkwoodlabs.service.protocol.rtsp.presentation.Presentation;
@@ -46,11 +46,12 @@ public class MulticastReflectorStream extends MediaStream {
      * @throws SdpException
      */
     public MulticastReflectorStream(final Presentation presentation,
+                                    final int streamIndex,
                                     final SessionDescription inputSessionDescription,
                                     final MediaDescription inputMediaDescription,
                                     final SessionDescription outputSessionDescription,
                                     final MediaDescription outputMediaDescription) throws SdpException {
-        super(presentation, outputSessionDescription, outputMediaDescription);
+        super(presentation, streamIndex, outputSessionDescription, outputMediaDescription);
         this.inputSessionDescription = inputSessionDescription;
         this.inputMediaDescription = inputMediaDescription;
         this.inputTransportDescription = new TransportDescription(inputSessionDescription, inputMediaDescription);
@@ -170,7 +171,7 @@ public class MulticastReflectorStream extends MediaStream {
                     AttributeField field = (AttributeField)o;
                     String name = field.getName();
                     if (name != null) {
-                        if (name.equals("source-filter")) {
+                        if (name.equals(MulticastReflectorFactory.SOURCE_FILTER_SDP_ATTRIBUTE)) {
                             String value;
                             value = field.getValue();
                             if (value != null) {
@@ -191,7 +192,7 @@ public class MulticastReflectorStream extends MediaStream {
                     AttributeField field = (AttributeField)o;
                     String name = field.getName();
                     if (name != null) {
-                        if (name.equals("source-filter")) {
+                        if (name.equals(MulticastReflectorFactory.SOURCE_FILTER_SDP_ATTRIBUTE)) {
                             String value;
                             value = field.getValue();
                             if (value != null) {
@@ -362,16 +363,16 @@ public class MulticastReflectorStream extends MediaStream {
                                                        final MediaDescription mediaDescription) throws SdpException {
        // Look for relay discovery address attribute record
        InetAddress relayDiscoveryAddress = AmtGateway.getDefaultRelayDiscoveryAddress();
-       String anycastAddress = mediaDescription.getAttribute("x-amt-relay-anycast");
+       String anycastAddress = mediaDescription.getAttribute(MulticastReflectorFactory.AMT_RELAY_DISCOVERY_ADDRESS_SDP_ATTRIBUTE);
        if (anycastAddress == null) {
-           anycastAddress = sessionDescription.getAttribute("x-amt-relay-anycast");
+           anycastAddress = sessionDescription.getAttribute(MulticastReflectorFactory.AMT_RELAY_DISCOVERY_ADDRESS_SDP_ATTRIBUTE);
        }
        if (anycastAddress != null) {
            try {
                relayDiscoveryAddress = InetAddress.getByName(anycastAddress);
            }
            catch (UnknownHostException e) {
-               throw new SdpException("cannot resolve address specified in x-amt-relay-anycast attribute");
+               throw new SdpException("cannot resolve address specified in "+MulticastReflectorFactory.AMT_RELAY_DISCOVERY_ADDRESS_SDP_ATTRIBUTE);
            }
        }
        return relayDiscoveryAddress;

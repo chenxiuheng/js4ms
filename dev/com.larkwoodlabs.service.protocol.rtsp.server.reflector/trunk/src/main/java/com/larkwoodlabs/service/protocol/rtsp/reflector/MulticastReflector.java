@@ -62,6 +62,7 @@ public class MulticastReflector extends Presentation {
         if (inputMediaDescriptions != null) {
             Vector<?> outputMediaDescriptions = this.sessionDescription.getMediaDescriptions(false);
             return new MulticastReflectorStream(this,
+                                                index,
                                                 inputSessionDescription, 
                                                 (MediaDescription)inputMediaDescriptions.get(index),
                                                 this.sessionDescription,
