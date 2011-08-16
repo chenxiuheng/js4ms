@@ -20,7 +20,8 @@ import com.larkwoodlabs.service.protocol.text.RequestException;
 import com.larkwoodlabs.service.protocol.text.entity.Entity;
 import com.larkwoodlabs.service.protocol.text.entity.StringEntity;
 import com.larkwoodlabs.service.protocol.text.handler.TransactionHandler;
-import com.larkwoodlabs.service.protocol.text.message.Header;
+import com.larkwoodlabs.service.protocol.text.headers.SimpleMessageHeader;
+import com.larkwoodlabs.service.protocol.text.message.MessageHeader;
 import com.larkwoodlabs.service.protocol.text.message.Method;
 import com.larkwoodlabs.service.protocol.text.message.Request;
 import com.larkwoodlabs.service.protocol.text.message.Response;
@@ -180,7 +181,7 @@ public class RtspTransactionHandler implements TransactionHandler {
             logger.finer(log.entry("handleGet", request, response));
         }
 
-        Header header = request.getHeader(RtspMessageHeaders.ACCEPT);
+        MessageHeader header = request.getHeader(RtspMessageHeaders.ACCEPT);
         if (header == null || !header.getValue().equals(TUNNEL_CONTENT_TYPE)) {
             RequestException.create(request.getProtocolVersion(),
                                     RtspStatusCodes.MethodNotAllowed,
@@ -206,10 +207,10 @@ public class RtspTransactionHandler implements TransactionHandler {
         this.outputConnections.put(sessionCookie, outputConnection);
 
         // Add headers required by HTTP tunneling protocol
-        response.setHeader(new Header(Entity.CONTENT_TYPE, TUNNEL_CONTENT_TYPE));
-        response.setHeader(new Header(HttpMessageHeaders.CACHE_CONTROL,"no-store"));
-        response.setHeader(new Header(HttpMessageHeaders.PRAGMA,"no-cache"));
-        response.setHeader(new Header(RtspMessageHeaders.CONNECTION,"close"));
+        response.setHeader(new SimpleMessageHeader(Entity.CONTENT_TYPE, TUNNEL_CONTENT_TYPE));
+        response.setHeader(new SimpleMessageHeader(HttpMessageHeaders.CACHE_CONTROL,"no-store"));
+        response.setHeader(new SimpleMessageHeader(HttpMessageHeaders.PRAGMA,"no-cache"));
+        response.setHeader(new SimpleMessageHeader(RtspMessageHeaders.CONNECTION,"close"));
         response.setStatus(RtspStatusCodes.OK);
         return true;
     }
@@ -227,7 +228,7 @@ public class RtspTransactionHandler implements TransactionHandler {
             logger.finer(log.entry("handlePost", request, response));
         }
 
-        Header header = request.getHeader(Entity.CONTENT_TYPE);
+        MessageHeader header = request.getHeader(Entity.CONTENT_TYPE);
         if (header == null || !header.getValue().equals(TUNNEL_CONTENT_TYPE)) {
             RequestException.create(request.getProtocolVersion(),
                                     RtspStatusCodes.MethodNotAllowed,
@@ -259,8 +260,10 @@ public class RtspTransactionHandler implements TransactionHandler {
         // as it represents the tunneled message stream
         request.getEntity().ignoreContent();
 
-        // Return false to prevent a response from being sent since this would close the tunnel.
-        return false;
+        // Prevent a response from being sent since this would close the tunnel.
+        response.isSent(true);
+
+        return true;
     }
 
     protected boolean handleAnnounce(Request request, Response response) throws IOException {
@@ -282,17 +285,8 @@ public class RtspTransactionHandler implements TransactionHandler {
 
         URI requestUri = request.getRequestLine().getUri();
         if (requestUri.getPath().length() == 0 || requestUri.getPath().equals("*")) {
-            Header header = new Header(RtspMessageHeaders.PUBLIC);
-            header.appendValue("GET");
-            header.appendValue("POST");
-            header.appendValue("DESCRIBE");
-            header.appendValue("SETUP");
-            header.appendValue("PLAY");
-            header.appendValue("PAUSE");
-            header.appendValue("RECORD");
-            header.appendValue("TEARDOWN");
-            header.appendValue("GET_PARAMETER");
-            header.appendValue("SET_PARAMETER");
+            MessageHeader header = new SimpleMessageHeader(RtspMessageHeaders.PUBLIC,
+                                                           "GET,POST,DESCRIBE,SETUP,PLAY,PAUSE,RECORD,TEARDOWN,GET_PARAMETER,SET_PARAMETER");
             response.setHeader(header);
             response.setStatus(RtspStatusCodes.OK);
             return true;
@@ -435,7 +429,7 @@ public class RtspTransactionHandler implements TransactionHandler {
         // send response directly when interleaved transport is used.
         String sessionId = getNewSessionId();
         if (!response.containsHeader(RtspMessageHeaders.SESSION)) {
-            response.setHeader(new Header(RtspMessageHeaders.SESSION, sessionId + ";timeout=" + (RtspSession.getSessionTimeout() / 1000)));
+            response.setHeader(new SimpleMessageHeader(RtspMessageHeaders.SESSION, sessionId + ";timeout=" + (RtspSession.getSessionTimeout() / 1000)));
         }
 
         Presentation presentation = null;
@@ -506,10 +500,7 @@ public class RtspTransactionHandler implements TransactionHandler {
 
     protected boolean setMethodNotAllowed(final Request request, final Response response) {
         response.setStatus(RtspStatusCodes.MethodNotAllowed);
-        Header header = new Header("Allow");
-        header.appendValue("OPTIONS");
-        header.appendValue("DESCRIBE");
-        header.appendValue("SETUP");
+        MessageHeader header = new SimpleMessageHeader("Allow","OPTIONS,DESCRIBE,SETUP");
         response.setHeader(header);
         return true;
     }

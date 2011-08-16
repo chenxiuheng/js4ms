@@ -15,6 +15,7 @@ import com.larkwoodlabs.service.protocol.text.handler.TransactionHandlerList;
 import com.larkwoodlabs.service.protocol.text.handler.TransactionHeaderResolver;
 import com.larkwoodlabs.service.protocol.text.handler.TransactionProtocolResolver;
 import com.larkwoodlabs.service.protocol.text.handlers.AddDateHeader;
+import com.larkwoodlabs.service.protocol.text.message.MessageHeaderParser;
 import com.larkwoodlabs.service.protocol.text.message.ProtocolName;
 import com.larkwoodlabs.service.protocol.text.message.ProtocolVersion;
 import com.larkwoodlabs.service.protocol.text.server.AbstractService;
@@ -64,7 +65,7 @@ public class RtspService extends AbstractService {
      */
     public RtspService(final PresentationResolver resolver) {
         super(RTSP_PROTOCOL_VERSION);
-        this.parser = new RequestParser(this);
+        this.parser = new RequestParser(new MessageHeaderParser(), this);
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(log.entry("RtspService", resolver));
