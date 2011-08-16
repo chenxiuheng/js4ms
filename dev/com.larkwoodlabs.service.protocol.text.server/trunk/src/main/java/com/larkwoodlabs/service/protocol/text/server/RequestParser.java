@@ -8,8 +8,9 @@ import com.larkwoodlabs.service.Connection;
 import com.larkwoodlabs.service.protocol.text.RequestException;
 import com.larkwoodlabs.service.protocol.text.entity.Entity;
 import com.larkwoodlabs.service.protocol.text.handler.RequestHandler;
-import com.larkwoodlabs.service.protocol.text.message.Header;
+import com.larkwoodlabs.service.protocol.text.message.MessageHeader;
 import com.larkwoodlabs.service.protocol.text.message.Message;
+import com.larkwoodlabs.service.protocol.text.message.MessageHeaderParser;
 import com.larkwoodlabs.service.protocol.text.message.MessageParser;
 import com.larkwoodlabs.service.protocol.text.message.Request;
 import com.larkwoodlabs.service.protocol.text.message.RequestLine;
@@ -28,12 +29,12 @@ public class RequestParser extends MessageParser {
     /*-- Member Functions ----------------------------------------------------*/
 
     /**
-     * 
+     * @param headerParser - A message header parser to use during message parsing.
      * @param connection
      * @param handler
      */
-    public RequestParser(final RequestHandler handler) {
-        super();
+    public RequestParser(final MessageHeaderParser headerParser, final RequestHandler handler) {
+        super(headerParser);
         this.handler = handler;
     }
 
@@ -45,7 +46,7 @@ public class RequestParser extends MessageParser {
     @Override
     protected Message doConstructMessage(Connection connection,
                                          StartLine startLine,
-                                         LinkedHashMap<String, Header> headers,
+                                         LinkedHashMap<String, MessageHeader> headers,
                                          Entity entity) {
         return new Request(connection, (RequestLine)startLine, headers, entity);
     }

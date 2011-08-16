@@ -2,7 +2,7 @@ package com.larkwoodlabs.service.protocol.text.server.handlers;
 
 import com.larkwoodlabs.service.protocol.text.MessageHeaders;
 import com.larkwoodlabs.service.protocol.text.handler.ResponseHandler;
-import com.larkwoodlabs.service.protocol.text.message.Header;
+import com.larkwoodlabs.service.protocol.text.headers.SimpleMessageHeader;
 import com.larkwoodlabs.service.protocol.text.message.Response;
 
 public class AddServerHeader implements ResponseHandler {
@@ -15,7 +15,7 @@ public class AddServerHeader implements ResponseHandler {
 
     @Override
     public void handleResponse(Response response) {
-        response.setHeader(new Header(MessageHeaders.SERVER,this.serverName));
+        response.setHeader(new SimpleMessageHeader(MessageHeaders.SERVER,this.serverName));
     }
 
 }
