@@ -41,13 +41,16 @@ public abstract class MessageParser {
     protected int maxNumberOfHeaders = DEFAULT_MAX_NUMBER_OF_HEADERS;
     protected int maxLineSize = DEFAULT_MAX_LINE_SIZE;
 
+    protected final MessageHeaderParser headerParser;
+
     /*-- Member Functions ----------------------------------------------------*/
 
     /**
      * 
      * @param connection
      */
-    protected MessageParser() {
+    protected MessageParser(final MessageHeaderParser headerParser) {
+        this.headerParser = headerParser;
     }
 
     public void parse(final Connection connection) throws IOException, MessageException, ParseException {
@@ -77,7 +80,7 @@ public abstract class MessageParser {
             throw new EOFException("connection stream returned EOF");
         }
 
-        final LinkedHashMap<String, Header> headers = new LinkedHashMap<String, Header>();
+        final LinkedHashMap<String, MessageHeader> headers = new LinkedHashMap<String, MessageHeader>();
 
         byte[] linebuf = new byte[this.maxLineSize];
 
@@ -89,7 +92,7 @@ public abstract class MessageParser {
         int i = 0;
         int j = 0;
 
-        Header lastHeader = null;
+        StringBuffer lastHeaderRecord = new StringBuffer();
 
         while (true) {
             if (c == -1) {
@@ -104,8 +107,16 @@ public abstract class MessageParser {
 
                 if (lf == '\n') {
                     if (isPrevCRLF) {
-                        // We've hit the blank line at the end of the RTSP
-                        // message
+                        // We've hit the blank line at the end of the RTSP message
+                        if (lastHeaderRecord.length() > 0) {
+                            MessageHeader header = this.headerParser.parse(lastHeaderRecord.toString());
+                            if (headers.containsKey(header.getName())) {
+                                headers.get(header.getName()).appendHeader(header);
+                            }
+                            else {
+                                headers.put(header.getName().toLowerCase(), header);
+                            }
+                        }
                         break;
                     }
                     isPrevCRLF = true;
@@ -130,35 +141,41 @@ public abstract class MessageParser {
                         }
                     }
                     else {
-                        if (headers.size() > maxNumberOfHeaders) {
-                            throw new MessageException(startLine.getProtocolVersion(),
-                                                      "message contains too many headers");
-                        }
+                        // Are we parsing a continuation of an earlier header record or starting a new one?
                         int firstChar = line.charAt(0);
                         if (firstChar == ' ' || firstChar == '\t') {
-                            if (lastHeader == null) {
+                            if (lastHeaderRecord.length() == 0) {
                                 throw new MessageException(startLine.getProtocolVersion(),
                                                            "message contains an invalid header");
                             }
                             else {
-                                lastHeader.appendFragment(" " + line.trim());
+                                lastHeaderRecord.append(" " + line.trim());
                             }
                         }
-                        try {
-                            lastHeader = Header.parse(line);
-                        }
-                        catch (ParseException e) {
-                            throw new MessageException(startLine.getProtocolVersion(),
-                                                      "message contains an invalid header");
-                        }
-                        if (headers.containsKey(lastHeader.getName())) {
-                            Header header = headers.get(lastHeader.getName());
-                            header.appendValue(lastHeader.getValue());
-                            lastHeader = header;
-                        }
                         else {
-                            headers.put(lastHeader.getName().toLowerCase(),
-                                    lastHeader);
+                            // We're starting a new record - construct a header from the previous record now
+                            if (lastHeaderRecord.length() > 0) {
+                                try {
+                                    if (headers.size() > maxNumberOfHeaders) {
+                                        throw new MessageException(startLine.getProtocolVersion(),
+                                                                  "message contains too many headers");
+                                    }
+                                    MessageHeader header = this.headerParser.parse(lastHeaderRecord.toString());
+                                    if (headers.containsKey(header.getName())) {
+                                        headers.get(header.getName()).appendHeader(header);
+                                    }
+                                    else {
+                                        headers.put(header.getName().toLowerCase(), header);
+                                    }
+                                }
+                                catch (ParseException e) {
+                                    throw new MessageException(startLine.getProtocolVersion(),
+                                                              "message contains an invalid header");
+                                }
+                            }
+                            /// Start the new record
+                            lastHeaderRecord.setLength(0);
+                            lastHeaderRecord.append(line.trim());
                         }
                     }
                     // Reset linebuf index to start next line
@@ -221,7 +238,7 @@ public abstract class MessageParser {
 
     protected abstract Message doConstructMessage(final Connection connection,
                                                   final StartLine startLine,
-                                                  final LinkedHashMap<String,Header> headers,
+                                                  final LinkedHashMap<String,MessageHeader> headers,
                                                   final Entity entity);
 
     /**

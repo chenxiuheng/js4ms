@@ -23,7 +23,7 @@ public abstract class Message {
 
     protected Connection connection;
 
-    protected final LinkedHashMap<String,Header> headers;
+    protected final LinkedHashMap<String,MessageHeader> headers;
 
     protected Entity entity = null;
 
@@ -39,7 +39,7 @@ public abstract class Message {
      */
     protected Message(final Connection connection,
                       final StartLine startLine) {
-        this(connection, startLine, new LinkedHashMap<String,Header>(), null);
+        this(connection, startLine, new LinkedHashMap<String,MessageHeader>(), null);
     }
 
     /**
@@ -49,7 +49,7 @@ public abstract class Message {
      */
     protected Message(final Connection connection,
                       final StartLine startLine, 
-                      final LinkedHashMap<String,Header> headers,
+                      final LinkedHashMap<String,MessageHeader> headers,
                       final Entity entity) {
         this.connection = connection;
         this.startLine = startLine;
@@ -111,11 +111,11 @@ public abstract class Message {
     }
     
     /**
-     * Returns the {@link Header} identified by the specified name if a header
+     * Returns the {@link MessageHeader} identified by the specified name if a header
      * with that name is currently attached to this message.
      * @param name - The name of a message header. Header names are case-insensitive.
      */
-    public Header getHeader(final String name) {
+    public MessageHeader getHeader(final String name) {
         return this.headers.get(name.toLowerCase());
     }
     
@@ -125,7 +125,7 @@ public abstract class Message {
      * that header is replaced.
      * @param header - The header to be set.
      */
-    public void setHeader(final Header header) {
+    public void setHeader(final MessageHeader header) {
         this.headers.put(header.getName().toLowerCase(),header);
     }
 
@@ -133,13 +133,14 @@ public abstract class Message {
      * Adds a header to this message.
      * If a header with the same name is already attached to this message,
      * the value carried by the new header is appended to the value of
-     * the existing header (see {@link Header#appendValue(String)}).
+     * the existing header (see {@link MessageHeader#appendHeader(MessageHeader)}).
      * @param header - The header to be added.
+     * @throws IllegalArgumentException The specified head cannot be added to an existing header of the same type.
      */
-    public void addHeader(final Header header) {
-        Header current = this.headers.get(header.getName().toLowerCase());
+    public void addHeader(final MessageHeader header) throws IllegalArgumentException {
+        MessageHeader current = this.headers.get(header.getName().toLowerCase());
         if (current != null) {
-           current.appendValue(header.getValue());
+           current.appendHeader(header);
         }
         else {
             this.headers.put(header.getName().toLowerCase(),header);
@@ -150,7 +151,7 @@ public abstract class Message {
      * Removes a header from this message.
      * @param name - The name of a message header. Header names are case-insensitive.
      */
-    public Header removeHeader(final String name) {
+    public MessageHeader removeHeader(final String name) {
         return this.headers.remove(name.toLowerCase());
     }
 
@@ -191,7 +192,7 @@ public abstract class Message {
     public void log(Logger logger) {
         logger.info(log.msg("+ logging [" + getClass().getSimpleName() + "]"));
         logger.info(log.msg(this.startLine.toString()));
-        for (Map.Entry<String, Header> entry : this.headers.entrySet()) {
+        for (Map.Entry<String, MessageHeader> entry : this.headers.entrySet()) {
             logger.info(log.msg(entry.getValue().toString()));
         }
         if (this.entity != null) {
@@ -200,16 +201,17 @@ public abstract class Message {
     }
 
     /**
+     * This method sets the "is-sent" property of the message to <code>true</code>.
      * 
      * @throws IOException
      */
     public void send() throws IOException {
         writeTo(this.connection.getOutputStream());
+        this.isSent = true;
     }
 
     /**
      * Writes this message to the specified OutputStream.
-     * This method sets the "is-sent" property of the message to <code>true</code>.
      * @param outstream - The destination OutputStream for the message.
      * @throws IOException If an I/O occurs.
      */
@@ -221,7 +223,7 @@ public abstract class Message {
     
             if (this.entity != null) {
     
-                for (Header header : this.headers.values()) {
+                for (MessageHeader header : this.headers.values()) {
                     // Write all message headers except entity headers
                     if (!this.entity.isEntityHeader(header)) {
                         header.writeTo(outstream);
@@ -229,7 +231,7 @@ public abstract class Message {
                 }
     
                 Codec codec;
-                Header header = getHeader(Entity.CONTENT_ENCODING);
+                MessageHeader header = getHeader(Entity.CONTENT_ENCODING);
                 if (header != null) {
                     codec = CodecManager.getManager().getCodec(header.getValue());
                 }
@@ -239,7 +241,7 @@ public abstract class Message {
                 this.entity.writeTo(outstream, codec);
             }
             else {
-                for (Header header : this.headers.values()) {
+                for (MessageHeader header : this.headers.values()) {
                     header.writeTo(outstream);
                 }
                 outstream.write('\r');
@@ -248,7 +250,6 @@ public abstract class Message {
     
             outstream.flush();
         }
-        this.isSent = true;
     }
 
 }
