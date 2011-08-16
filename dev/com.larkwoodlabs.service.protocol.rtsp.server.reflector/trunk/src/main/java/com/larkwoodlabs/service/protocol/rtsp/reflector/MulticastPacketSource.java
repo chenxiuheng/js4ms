@@ -8,8 +8,8 @@ import com.larkwoodlabs.channels.MessageSource;
 import com.larkwoodlabs.channels.MessageTransform;
 import com.larkwoodlabs.channels.OutputChannel;
 import com.larkwoodlabs.channels.OutputChannelTransform;
-import com.larkwoodlabs.net.amt.AmtDatagramSource;
 import com.larkwoodlabs.net.amt.SourceFilter;
+import com.larkwoodlabs.net.amt.client.AmtDatagramSource;
 import com.larkwoodlabs.net.udp.UdpDatagram;
 
 public class MulticastPacketSource extends MessageSource<ByteBuffer> {
