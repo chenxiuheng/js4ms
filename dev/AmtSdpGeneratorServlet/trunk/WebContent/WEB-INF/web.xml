@@ -12,6 +12,10 @@
   <servlet>
     <servlet-name>AmtSdpGeneratorServlet</servlet-name>
     <servlet-class>com.larkwoodlabs.servlet.AmtSdpGeneratorServlet</servlet-class>
+    <init-param>
+      <param-name>listings</param-name>
+      <param-value>false</param-value>
+    </init-param>
   </servlet>
   <servlet-mapping>
     <servlet-name>AmtSdpGeneratorServlet</servlet-name>
