@@ -96,7 +96,7 @@ public abstract class Message {
  
     /**
      * Returns an iterator for a collection of names that identify the
-     * {@link Header} objects currently attached to this message.
+     * {@link MessageHeader} objects currently attached to this message.
      */
     public Iterator<String> getHeaderNames() {
         return this.headers.keySet().iterator();

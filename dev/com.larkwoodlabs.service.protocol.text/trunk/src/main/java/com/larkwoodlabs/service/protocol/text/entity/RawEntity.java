@@ -11,7 +11,7 @@ import com.larkwoodlabs.service.protocol.text.MessageException;
 import com.larkwoodlabs.service.protocol.text.RequestException;
 import com.larkwoodlabs.service.protocol.text.StatusCodes;
 import com.larkwoodlabs.service.protocol.text.headers.DateHeader;
-import com.larkwoodlabs.service.protocol.text.message.Header;
+import com.larkwoodlabs.service.protocol.text.headers.SimpleMessageHeader;
 import com.larkwoodlabs.service.protocol.text.message.Message;
 import com.larkwoodlabs.service.protocol.text.message.MessageHeader;
 import com.larkwoodlabs.service.protocol.text.util.DateUtil;
@@ -440,30 +440,30 @@ public class RawEntity implements Entity {
         if (this.contentEncoding != null) {
             if (codec != null) {
                 if (!codec.getName().equals("identity")) {
-                    new Header(Entity.CONTENT_ENCODING, codec.getName()).writeTo(outstream);
+                    new SimpleMessageHeader(Entity.CONTENT_ENCODING, codec.getName()).writeTo(outstream);
                 }
             }
             else {
                 if (!this.contentEncoding.equals("identity")) {
-                    new Header(Entity.CONTENT_ENCODING, this.contentEncoding).writeTo(outstream);
+                    new SimpleMessageHeader(Entity.CONTENT_ENCODING, this.contentEncoding).writeTo(outstream);
                 }
             }
         }
 
         if (this.contentLanguage != null) {
-            new Header(Entity.CONTENT_LANGUAGE, this.contentLanguage).writeTo(outstream);
+            new SimpleMessageHeader(Entity.CONTENT_LANGUAGE, this.contentLanguage).writeTo(outstream);
         }
 
         if (this.contentBase != null) {
-            new Header(Entity.CONTENT_BASE, this.contentBase).writeTo(outstream);
+            new SimpleMessageHeader(Entity.CONTENT_BASE, this.contentBase).writeTo(outstream);
         }
 
         if (this.contentLocation != null) {
-            new Header(Entity.CONTENT_LOCATION, this.contentLocation).writeTo(outstream);
+            new SimpleMessageHeader(Entity.CONTENT_LOCATION, this.contentLocation).writeTo(outstream);
         }
 
         if (this.contentDisposition != null) {
-            new Header(Entity.CONTENT_DISPOSITION, this.contentDisposition).writeTo(outstream);
+            new SimpleMessageHeader(Entity.CONTENT_DISPOSITION, this.contentDisposition).writeTo(outstream);
         }
 
         if (this.expires != null) {
@@ -475,8 +475,8 @@ public class RawEntity implements Entity {
         }
 
         if (this.contentLength >= 0) {
-            new Header(Entity.CONTENT_TYPE, this.contentType).writeTo(outstream);
-            new Header(Entity.CONTENT_LENGTH, String.valueOf(this.contentLength)).writeTo(outstream);
+            new SimpleMessageHeader(Entity.CONTENT_TYPE, this.contentType).writeTo(outstream);
+            new SimpleMessageHeader(Entity.CONTENT_LENGTH, String.valueOf(this.contentLength)).writeTo(outstream);
         }
 
         outstream.write('\r');
