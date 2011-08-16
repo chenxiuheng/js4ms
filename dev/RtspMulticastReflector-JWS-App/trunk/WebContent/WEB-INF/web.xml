@@ -8,7 +8,11 @@
       <param-name>logLevel</param-name>
       <param-value>
             DEBUG
-            </param-value>
+      </param-value>
+    </init-param>
+    <init-param>
+      <param-name>listings</param-name>
+      <param-value>false</param-value>
     </init-param>
   </servlet>
   <servlet-mapping>
