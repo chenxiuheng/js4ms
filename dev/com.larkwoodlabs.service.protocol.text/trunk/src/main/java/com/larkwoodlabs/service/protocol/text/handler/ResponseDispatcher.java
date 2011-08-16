@@ -1,5 +1,7 @@
 package com.larkwoodlabs.service.protocol.text.handler;
 
+import java.io.IOException;
+
 import com.larkwoodlabs.service.protocol.text.message.Response;
 
 public class ResponseDispatcher implements ResponseHandler {
@@ -11,7 +13,7 @@ public class ResponseDispatcher implements ResponseHandler {
     }
 
     @Override
-    public void handleResponse(Response response) {
+    public void handleResponse(Response response) throws IOException {
         ResponseHandler handler = this.resolver.getHandler(response);
         if (handler != null) {
             handler.handleResponse(response);

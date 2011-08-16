@@ -1,5 +1,6 @@
 package com.larkwoodlabs.service.protocol.text.handler;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -31,7 +32,7 @@ public class ResponseHandlerList implements ResponseHandler {
     }
 
     @Override
-    public void handleResponse(Response response) {
+    public void handleResponse(Response response) throws IOException {
         for (ResponseHandler handler : this.handlers) {
             handler.handleResponse(response);
         }
