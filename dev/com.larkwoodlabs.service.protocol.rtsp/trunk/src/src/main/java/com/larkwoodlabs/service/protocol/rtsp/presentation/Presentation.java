@@ -21,7 +21,8 @@ import com.larkwoodlabs.service.protocol.text.RequestException;
 import com.larkwoodlabs.service.protocol.text.entity.Entity;
 import com.larkwoodlabs.service.protocol.text.entity.StringEntity;
 import com.larkwoodlabs.service.protocol.text.handler.TransactionHandler;
-import com.larkwoodlabs.service.protocol.text.message.Header;
+import com.larkwoodlabs.service.protocol.text.headers.SimpleMessageHeader;
+import com.larkwoodlabs.service.protocol.text.message.MessageHeader;
 import com.larkwoodlabs.service.protocol.text.message.Method;
 import com.larkwoodlabs.service.protocol.text.message.Request;
 import com.larkwoodlabs.service.protocol.text.message.Response;
@@ -275,16 +276,15 @@ public abstract class Presentation implements TransactionHandler {
 
         if (streamIndex == -1) {
             // Request URI is an aggregate control URI
-            Header header = new Header(RtspMessageHeaders.PUBLIC);
-            header.appendValue("DESCRIBE");
-            header.appendValue("SETUP");
-            header.appendValue("PLAY");
-            if (isPauseSupported()) header.appendValue("PAUSE");
-            if (isRecordSupported()) header.appendValue("RECORD");
-            header.appendValue("TEARDOWN");
-            if (isGetParameterSupported()) header.appendValue("GET_PARAMETER");
-            if (isSetParameterSupported()) header.appendValue("SET_PARAMETER");
+            StringBuffer headerValue = new StringBuffer();
+            headerValue.append("DESCRIBE,SETUP,PLAY");
+            if (isPauseSupported()) headerValue.append(",PAUSE");
+            if (isRecordSupported()) headerValue.append(",RECORD");
+            headerValue.append(",TEARDOWN");
+            if (isGetParameterSupported()) headerValue.append(",GET_PARAMETER");
+            if (isSetParameterSupported()) headerValue.append(",SET_PARAMETER");
 
+            MessageHeader header = new SimpleMessageHeader(RtspMessageHeaders.PUBLIC,headerValue.toString());
             response.setStatus(RtspStatusCodes.OK);
             response.setHeader(header);
             return true;
@@ -439,7 +439,7 @@ public abstract class Presentation implements TransactionHandler {
             return true;
         }
 
-        Header rtpInfo = new Header(RtspMessageHeaders.RTP_INFO);
+        StringBuffer headerValue = new StringBuffer();
 
         if (streamIndex == -1) {
             // Request URI is an aggregate control URI
@@ -456,11 +456,17 @@ public abstract class Presentation implements TransactionHandler {
                     if (!response.getStatus().equals(RtspStatusCodes.OK)) {
                         break;
                     }
-                    rtpInfo.appendValue("url="+this.uri+"/"+STREAM_CONTROL_PREFIX+i);
+                    if (i > 0) {
+                        headerValue.append(',');
+                    }
+                    headerValue.append("url="+this.uri+"/"+STREAM_CONTROL_PREFIX+i);
                 }
             }
 
             if (response.getStatus().equals(RtspStatusCodes.OK)) {
+
+                MessageHeader rtpInfo = new SimpleMessageHeader(RtspMessageHeaders.RTP_INFO, headerValue.toString());
+
                 response.addHeader(rtpInfo);
             }
 
@@ -485,7 +491,8 @@ public abstract class Presentation implements TransactionHandler {
 
             if (mediaStream.handlePlay(request, response)) {
                 if (response.getStatus().equals(RtspStatusCodes.OK)) {
-                    rtpInfo.appendValue("url="+this.uri+"/"+STREAM_CONTROL_PREFIX+streamIndex);
+                    MessageHeader rtpInfo = new SimpleMessageHeader(RtspMessageHeaders.RTP_INFO, 
+                                                                    "url="+this.uri+"/"+STREAM_CONTROL_PREFIX+streamIndex);
                     response.addHeader(rtpInfo);
                 }
                 return true;
@@ -653,7 +660,7 @@ public abstract class Presentation implements TransactionHandler {
             }
 
             if (handled && response.getStatus().equals(RtspStatusCodes.OK)) {
-                response.setHeader(new Header(RtspMessageHeaders.CONNECTION,"close"));
+                response.setHeader(new SimpleMessageHeader(RtspMessageHeaders.CONNECTION,"close"));
             }
 
             return handled;
@@ -824,16 +831,16 @@ public abstract class Presentation implements TransactionHandler {
      */
     protected void setMethodNotAllowed(final Request request, final Response response) {
         response.setStatus(RtspStatusCodes.MethodNotAllowed);
-        Header header = new Header(RtspMessageHeaders.ALLOW);
-        header.appendValue("OPTIONS");
-        if (isDescribeSupported()) header.appendValue("DESCRIBE");
-        header.appendValue("SETUP");
-        header.appendValue("PLAY");
-        if (isPauseSupported()) header.appendValue("PAUSE");
-        if (isRecordSupported()) header.appendValue("RECORD");
-        header.appendValue("TEARDOWN");
-        if (isGetParameterSupported()) header.appendValue("GET_PARAMETER");
-        if (isSetParameterSupported()) header.appendValue("SET_PARAMETER");
+        StringBuffer headerValue = new StringBuffer();
+        headerValue.append("OPTIONS");
+        if (isDescribeSupported()) headerValue.append(",DESCRIBE");
+        headerValue.append(",SETUP,PLAY");
+        if (isPauseSupported()) headerValue.append(",PAUSE");
+        if (isRecordSupported()) headerValue.append(",RECORD");
+        headerValue.append(",TEARDOWN");
+        if (isGetParameterSupported()) headerValue.append(",GET_PARAMETER");
+        if (isSetParameterSupported()) headerValue.append(",SET_PARAMETER");
+        MessageHeader header = new SimpleMessageHeader(RtspMessageHeaders.ALLOW, headerValue.toString());
         response.setHeader(header);
     }
 

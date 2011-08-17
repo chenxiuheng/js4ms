@@ -6,7 +6,7 @@ import com.larkwoodlabs.service.protocol.rtsp.RtspMessageHeaders;
 import com.larkwoodlabs.service.protocol.text.StatusCodes;
 import com.larkwoodlabs.service.protocol.text.entity.StringEntity;
 import com.larkwoodlabs.service.protocol.text.handler.TransactionHandler;
-import com.larkwoodlabs.service.protocol.text.message.Header;
+import com.larkwoodlabs.service.protocol.text.message.MessageHeader;
 import com.larkwoodlabs.service.protocol.text.message.Request;
 import com.larkwoodlabs.service.protocol.text.message.Response;
 
@@ -24,7 +24,7 @@ public class TransferCSeqHeader implements TransactionHandler {
                 response.setEntity(new StringEntity("missing CSEQ header"));
                 return true;
             }
-            response.setHeader(new Header(request.getHeader(RtspMessageHeaders.CSEQ)));
+            response.setHeader((MessageHeader)request.getHeader(RtspMessageHeaders.CSEQ).clone());
         }
         return false;
     }

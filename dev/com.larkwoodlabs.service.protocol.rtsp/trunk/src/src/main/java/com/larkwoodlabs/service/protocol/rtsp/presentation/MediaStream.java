@@ -28,7 +28,8 @@ import com.larkwoodlabs.service.protocol.rtsp.rtp.UdpPacketOutputChannel;
 import com.larkwoodlabs.service.protocol.rtsp.rtp.UdpPacketSource;
 import com.larkwoodlabs.service.protocol.text.RequestException;
 import com.larkwoodlabs.service.protocol.text.entity.Entity;
-import com.larkwoodlabs.service.protocol.text.message.Header;
+import com.larkwoodlabs.service.protocol.text.headers.SimpleMessageHeader;
+import com.larkwoodlabs.service.protocol.text.message.MessageHeader;
 import com.larkwoodlabs.service.protocol.text.message.Request;
 import com.larkwoodlabs.service.protocol.text.message.Response;
 import com.larkwoodlabs.util.logging.Log;
@@ -127,6 +128,8 @@ public abstract class MediaStream {
 
     protected final MediaDescription mediaDescription;
 
+    protected int streamIndex;
+
     protected final TransportDescription transportDescription;
 
     protected State state;
@@ -143,12 +146,14 @@ public abstract class MediaStream {
     protected int channelCount = 0;
 
     /**
-     * 
+     * @param presentation
+     * @param streamIndex
      * @param sessionDescription
      * @param mediaDescription
      * @throws SdpException
      */
     protected MediaStream(final Presentation presentation,
+                          final int streamIndex,
                           final SessionDescription sessionDescription,
                           final MediaDescription mediaDescription) throws SdpException {
 
@@ -157,6 +162,7 @@ public abstract class MediaStream {
         }
 
         this.presentation = presentation;
+        this.streamIndex = streamIndex;
         this.mediaDescription = mediaDescription;
         this.transportDescription = new TransportDescription(sessionDescription, mediaDescription);
         this.state = State.INITIAL;
@@ -266,15 +272,15 @@ public abstract class MediaStream {
             logger.finer(log.entry("handleOptions", request, response));
         }
 
-        Header header = new Header(RtspMessageHeaders.PUBLIC);
-        header.appendValue("SETUP");
-        header.appendValue("PLAY");
-        if (isPauseSupported()) header.appendValue("PAUSE");
-        if (isRecordSupported()) header.appendValue("RECORD");
-        header.appendValue("TEARDOWN");
-        if (isGetParameterSupported()) header.appendValue("GET_PARAMETER");
-        if (isSetParameterSupported()) header.appendValue("SET_PARAMETER");
+        StringBuffer headerValue = new StringBuffer();
+        headerValue.append("SETUP,PLAY");
+        if (isPauseSupported()) headerValue.append(",PAUSE");
+        if (isRecordSupported()) headerValue.append(",RECORD");
+        headerValue.append(",TEARDOWN");
+        if (isGetParameterSupported()) headerValue.append(",GET_PARAMETER");
+        if (isSetParameterSupported()) headerValue.append(",SET_PARAMETER");
 
+        MessageHeader header = new SimpleMessageHeader(RtspMessageHeaders.PUBLIC, headerValue.toString());
         response.setStatus(RtspStatusCodes.OK);
         response.setHeader(header);
         return true;
@@ -314,7 +320,7 @@ public abstract class MediaStream {
 
         // Media stream setup is governed by parameter values found in the Transport header carried by a request.
 
-        Header header = request.getHeader(RtspMessageHeaders.TRANSPORT);
+        MessageHeader header = request.getHeader(RtspMessageHeaders.TRANSPORT);
         if (header == null) {
             RequestException.create(request.getProtocolVersion(),
                                     RtspStatusCodes.BadRequest,
@@ -430,7 +436,7 @@ public abstract class MediaStream {
 
                     // Client has requested unicast UDP transport
 
-                    destination = request.getConnection().getRemoteAddress();
+                    destination = request.getConnection().getRemoteAddress().getAddress();
                     if (preference.isDestinationSpecified() && !preference.getDestination().equals(destination)) {
                         final String reason = "transport preference rejected because destination address does not match RTSP end-point address";
                         message += preference.toString() + "\n" + reason + "\n";
@@ -770,158 +776,159 @@ public abstract class MediaStream {
                     logger.finer(log.msg("attempting to setup TCP transport"));
                 }
 
-                if (preference.isInterleavedChannelRangeSpecified()) {
+                // The client wants us to send and receive packets using TCP.
 
-                    // The client wants us to send and receive packets over the RTSP control connection.
+                // Get transport parameters generated from SDP media description
+                int channelCount = this.transportDescription.getLayers() * this.transportDescription.getPortsPerLayer();
+
+                if (!preference.isInterleavedChannelRangeSpecified()) {
+
+                    // This implementation only supports interleaving over the RTSP control connection,
+                    // so we will return a Transport description with an interleaved channel range.
 
                     if (logger.isLoggable(Level.FINER)) {
-                        logger.finer(log.msg("attempting to setup interleaved packet transport"));
+                        logger.finer(log.msg("no interleaved attribute specified in Transport header - generating default"));
                     }
 
-                    this.transport = Transport.INTERLEAVED;
+                    int firstChannel = this.streamIndex * channelCount;
+                    int lastChannel = (firstChannel + channelCount) - 1;
 
-                    int firstDestinationChannel = preference.getFirstInterleavedChannel();
-                    int lastDestinationChannel = preference.getLastInterleavedChannel();
-                    int destinationChannelCount = (lastDestinationChannel - firstDestinationChannel) + 1;
-                    int destinationLayerCount = destinationChannelCount / preference.getPortsPerLayer();
+                    // Use the source port numbers as interleaved channel numbers
+                    preference.setInterleavedChannelRange(firstChannel, lastChannel);
+                }
 
-                    int firstPort = this.transportDescription.getFirstClientPort();
-                    int lastPort = this.transportDescription.getLastClientPort();
-                    int portCount = (lastPort - firstPort) + 1;
-                    int layerCount = portCount / this.transportDescription.getPortsPerLayer();
+                this.transport = Transport.INTERLEAVED;
 
-                    // Can client port range be mapped to available port range?
-                    if (destinationLayerCount > layerCount || (destinationChannelCount % preference.getPortsPerLayer()) != 0) {
-                        RequestException.create(request.getProtocolVersion(),
-                                                RtspStatusCodes.BadRequest,
-                                                "interleaved channel range specified in SETUP Transport header cannot be mapped to media port range",
-                                                log.getPrefix(),
-                                                logger).setResponse(response);
-                        return true;
-                    }
+                int firstDestinationChannel = preference.getFirstInterleavedChannel();
+                int lastDestinationChannel = preference.getLastInterleavedChannel();
+                int destinationChannelCount = (lastDestinationChannel - firstDestinationChannel) + 1;
+                int destinationLayerCount = destinationChannelCount / preference.getPortsPerLayer();
 
-                    try {
-                        int channelsPerLayer = preference.getPortsPerLayer();
-                        for (int layerIndex = 0; layerIndex < destinationLayerCount; layerIndex++) {
-                            for (int channelIndex = 0; channelIndex < channelsPerLayer; channelIndex++) {
-                                int index = layerIndex * channelsPerLayer + channelIndex;
-                                int channel = firstDestinationChannel + index;
-    
-                                if (isServerSourceChannelRequired()) {
-                                    try {
-                                        // Construct server->client path for media packets
-                                        if (logger.isLoggable(Level.FINER)) {
-                                            logger.finer(log.msg("constructing server->client channel; layer="+layerIndex+" channel="+channelIndex + " channel-number="+channel));
-                                        }
+                // Can client port range be mapped to available port range?
+                if (destinationLayerCount > this.transportDescription.getLayers() || (destinationChannelCount % preference.getPortsPerLayer()) != 0) {
+                    RequestException.create(request.getProtocolVersion(),
+                                            RtspStatusCodes.BadRequest,
+                                            "interleaved channel range specified in SETUP Transport header cannot be mapped to media port range",
+                                            log.getPrefix(),
+                                            logger).setResponse(response);
+                    return true;
+                }
 
-                                        OutputChannel<ByteBuffer> clientPacketSink = new InterleavedPacketOutputChannel(channel, request.getConnection());
-                                        MessageSource<ByteBuffer> serverPacketSource = constructServerPacketSource(layerIndex, channelIndex, clientPacketSink);
-                                        this.serverPacketChannels.add(serverPacketSource);
+                try {
+                    int channelsPerLayer = preference.getPortsPerLayer();
+                    for (int layerIndex = 0; layerIndex < destinationLayerCount; layerIndex++) {
+                        for (int channelIndex = 0; channelIndex < channelsPerLayer; channelIndex++) {
+                            int index = layerIndex * channelsPerLayer + channelIndex;
+                            int channel = firstDestinationChannel + index;
 
-                                    }
-                                    catch (SdpException e) {
-                                        RequestException.create(request.getProtocolVersion(),
-                                                                RtspStatusCodes.InvalidMedia,
-                                                                "cannot construct channel for sending media packets",
-                                                                e,
-                                                                log.getPrefix(),
-                                                                logger).setResponse(response);
-                                        return true;
-                                    }
-                                    catch (IOException e) {
-                                        RequestException.create(request.getProtocolVersion(),
-                                                                RtspStatusCodes.InternalServerError,
-                                                                "cannot construct channel for sending media packets",
-                                                                e,
-                                                                log.getPrefix(),
-                                                                logger).setResponse(response);
-                                        return true;
-                                    }
-                                }
-    
-                                if (isClientSourceChannelRequired()) {
-                                    try {
-                                        // Construct client->server path for media packets
-                                        if (logger.isLoggable(Level.FINER)) {
-                                            logger.finer(log.msg("constructing client->server channel; layer="+layerIndex+" channel="+channelIndex + " channel-number="+channel));
-                                        }
-
-                                        OutputChannel<ByteBuffer> serverPacketSink = constructServerPacketSink(layerIndex, channelIndex);
-                                        this.presentation.setInterleavedChannel(channel, serverPacketSink);
-                                    }
-                                    catch (SdpException e) {
-                                        RequestException.create(request.getProtocolVersion(),
-                                                                RtspStatusCodes.InvalidMedia,
-                                                                "cannot construct channel for receiving media packets",
-                                                                e,
-                                                                log.getPrefix(),
-                                                                logger).setResponse(response);
-                                        return true;
-                                    }
-                                    catch (IOException e) {
-                                        RequestException.create(request.getProtocolVersion(),
-                                                                RtspStatusCodes.InternalServerError,
-                                                                "cannot construct channel for receiving media packets",
-                                                                e,
-                                                                log.getPrefix(),
-                                                                logger).setResponse(response);
-                                        return true;
-                                    }
-                                }
-                            }
-                        }
-
-                        acceptedTransportDescription.setInterleavedChannelRange(firstDestinationChannel, lastDestinationChannel);
-
-                        this.firstChannelIndex = firstDestinationChannel;
-                        this.channelCount = destinationChannelCount;
-
-                        setupComplete = true;
-
-                        if (logger.isLoggable(Level.FINER)) {
-                            logger.finer(log.msg("candidate transport setup accepted: " + acceptedTransportDescription.toString()));
-                        }
-
-                        break;
-                    }
-                    finally {
-                        if (!setupComplete) {
-
-                            if (logger.isLoggable(Level.FINER)) {
-                                logger.finer(log.msg("candiate transport setup failed - removing channels already created"));
-                            }
-
-                            // Close client packet channels
-                            for (int i = firstDestinationChannel; i < destinationChannelCount; i++) {
+                            if (isServerSourceChannelRequired()) {
                                 try {
-                                    this.presentation.closeInterleavedChannel(i);
+                                    // Construct server->client path for media packets
+                                    if (logger.isLoggable(Level.FINER)) {
+                                        logger.finer(log.msg("constructing server->client channel; layer="+layerIndex+" channel="+channelIndex + " channel-number="+channel));
+                                    }
+
+                                    OutputChannel<ByteBuffer> clientPacketSink = new InterleavedPacketOutputChannel(channel, request.getConnection());
+                                    MessageSource<ByteBuffer> serverPacketSource = constructServerPacketSource(layerIndex, channelIndex, clientPacketSink);
+                                    this.serverPacketChannels.add(serverPacketSource);
+
+                                }
+                                catch (SdpException e) {
+                                    RequestException.create(request.getProtocolVersion(),
+                                                            RtspStatusCodes.InvalidMedia,
+                                                            "cannot construct channel for sending media packets",
+                                                            e,
+                                                            log.getPrefix(),
+                                                            logger).setResponse(response);
+                                    return true;
                                 }
                                 catch (IOException e) {
-                                }
-                                catch (InterruptedException e1) {
-                                    Thread.currentThread().interrupt();
+                                    RequestException.create(request.getProtocolVersion(),
+                                                            RtspStatusCodes.InternalServerError,
+                                                            "cannot construct channel for sending media packets",
+                                                            e,
+                                                            log.getPrefix(),
+                                                            logger).setResponse(response);
+                                    return true;
                                 }
                             }
 
-                            // Close the server packet channels
-                            Iterator<MessageSource<ByteBuffer>> channelIter = this.serverPacketChannels.iterator();
-                            while (channelIter.hasNext()) {
+                            if (isClientSourceChannelRequired()) {
                                 try {
-                                    channelIter.next().close();
+                                    // Construct client->server path for media packets
+                                    if (logger.isLoggable(Level.FINER)) {
+                                        logger.finer(log.msg("constructing client->server channel; layer="+layerIndex+" channel="+channelIndex + " channel-number="+channel));
+                                    }
+
+                                    OutputChannel<ByteBuffer> serverPacketSink = constructServerPacketSink(layerIndex, channelIndex);
+                                    this.presentation.setInterleavedChannel(channel, serverPacketSink);
                                 }
-                                catch (InterruptedException e) {
-                                    Thread.currentThread().interrupt();
+                                catch (SdpException e) {
+                                    RequestException.create(request.getProtocolVersion(),
+                                                            RtspStatusCodes.InvalidMedia,
+                                                            "cannot construct channel for receiving media packets",
+                                                            e,
+                                                            log.getPrefix(),
+                                                            logger).setResponse(response);
+                                    return true;
                                 }
-                                channelIter.remove();
+                                catch (IOException e) {
+                                    RequestException.create(request.getProtocolVersion(),
+                                                            RtspStatusCodes.InternalServerError,
+                                                            "cannot construct channel for receiving media packets",
+                                                            e,
+                                                            log.getPrefix(),
+                                                            logger).setResponse(response);
+                                    return true;
+                                }
                             }
                         }
                     }
+
+                    acceptedTransportDescription.setInterleavedChannelRange(firstDestinationChannel, lastDestinationChannel);
+
+                    this.firstChannelIndex = firstDestinationChannel;
+                    this.channelCount = destinationChannelCount;
+
+                    setupComplete = true;
+
+                    if (logger.isLoggable(Level.FINER)) {
+                        logger.finer(log.msg("candidate transport setup accepted: " + acceptedTransportDescription.toString()));
+                    }
+
+                    break;
                 }
-                else {
-                    final String reason = "transport preference rejected because TCP transport outside of RTSP connection is not supported";
-                    message += preference.toString() + "\n" + reason + "\n";
-                    logger.fine(log.msg(reason));
-                    continue;
+                finally {
+                    if (!setupComplete) {
+
+                        if (logger.isLoggable(Level.FINER)) {
+                            logger.finer(log.msg("candiate transport setup failed - removing channels already created"));
+                        }
+
+                        // Close client packet channels
+                        for (int i = firstDestinationChannel; i < destinationChannelCount; i++) {
+                            try {
+                                this.presentation.closeInterleavedChannel(i);
+                            }
+                            catch (IOException e) {
+                            }
+                            catch (InterruptedException e1) {
+                                Thread.currentThread().interrupt();
+                            }
+                        }
+
+                        // Close the server packet channels
+                        Iterator<MessageSource<ByteBuffer>> channelIter = this.serverPacketChannels.iterator();
+                        while (channelIter.hasNext()) {
+                            try {
+                                channelIter.next().close();
+                            }
+                            catch (InterruptedException e) {
+                                Thread.currentThread().interrupt();
+                            }
+                            channelIter.remove();
+                        }
+                    }
                 }
             }
 
@@ -929,7 +936,7 @@ public abstract class MediaStream {
 
         if (setupComplete) {
             response.setStatus(RtspStatusCodes.OK);
-            response.setHeader(new Header(RtspMessageHeaders.TRANSPORT, acceptedTransportDescription.toString()));
+            response.setHeader(new SimpleMessageHeader(RtspMessageHeaders.TRANSPORT, acceptedTransportDescription.toString()));
         }
         else {
             RequestException.create(request.getProtocolVersion(),
@@ -1451,56 +1458,57 @@ public abstract class MediaStream {
 
     protected void setMethodNotAllowed(Request request, Response response) {
         response.setStatus(RtspStatusCodes.MethodNotAllowed);
-        Header header = new Header(RtspMessageHeaders.ALLOW);
-        header.appendValue("OPTIONS");
-        header.appendValue("SETUP");
-        header.appendValue("PLAY");
-        if (isPauseSupported()) header.appendValue("PAUSE");
-        if (isRecordSupported()) header.appendValue("RECORD");
-        header.appendValue("TEARDOWN");
-        if (isGetParameterSupported()) header.appendValue("GET_PARAMETER");
-        if (isSetParameterSupported()) header.appendValue("SET_PARAMETER");
+        StringBuffer headerValue = new StringBuffer();
+        headerValue.append("OPTIONS,SETUP,PLAY");
+        if (isPauseSupported()) headerValue.append(",PAUSE,");
+        if (isRecordSupported()) headerValue.append(",RECORD,");
+        headerValue.append(",TEARDOWN");
+        if (isGetParameterSupported()) headerValue.append(",GET_PARAMETER,");
+        if (isSetParameterSupported()) headerValue.append(",SET_PARAMETER,");
+        MessageHeader header = new SimpleMessageHeader(RtspMessageHeaders.ALLOW, headerValue.toString());
         response.setHeader(header);
     }
 
     protected void setMethodNotValidInThisState(Request request, Response response) {
         response.setStatus(RtspStatusCodes.MethodNotValidInThisState);
 
-        Header header = new Header(RtspMessageHeaders.ALLOW);
-        header.appendValue("OPTIONS");
+        StringBuffer headerValue = new StringBuffer();
+        headerValue.append("OPTIONS");
 
         switch (this.state) {
         case INITIAL:
-            header.appendValue("SETUP");
+            headerValue.append(",SETUP");
             break;
         case READY:
-            header.appendValue("PLAY");
+            headerValue.append(",PLAY");
             if (isRecordSupported()) {
-                header.appendValue("RECORD");
+                headerValue.append(",RECORD");
             }
-            header.appendValue("SETUP");
-            header.appendValue("TEARDOWN");
+            headerValue.append(",SETUP");
+            headerValue.append(",TEARDOWN");
             break;
         case PLAYING:
-            header.appendValue("PLAY");
+            headerValue.append(",PLAY");
             if (isPauseSupported()) {
-                header.appendValue("PAUSE");
+                headerValue.append(",PAUSE");
             }
-            header.appendValue("SETUP");
-            header.appendValue("TEARDOWN");
+            headerValue.append(",SETUP");
+            headerValue.append(",TEARDOWN");
             break;
         case RECORDING:
-            header.appendValue("RECORD");
+            headerValue.append(",RECORD");
             if (isPauseSupported()) {
-                header.appendValue("PAUSE");
+                headerValue.append(",PAUSE");
             }
-            header.appendValue("SETUP");
-            header.appendValue("TEARDOWN");
+            headerValue.append(",SETUP");
+            headerValue.append(",TEARDOWN");
             break;
         }
 
-        if (isGetParameterSupported()) header.appendValue("GET_PARAMETER");
-        if (isSetParameterSupported()) header.appendValue("SET_PARAMETER");
+        if (isGetParameterSupported()) headerValue.append("GET_PARAMETER");
+        if (isSetParameterSupported()) headerValue.append("SET_PARAMETER");
+
+        MessageHeader header = new SimpleMessageHeader(RtspMessageHeaders.ALLOW, headerValue.toString());
 
         response.setHeader(header);
     }

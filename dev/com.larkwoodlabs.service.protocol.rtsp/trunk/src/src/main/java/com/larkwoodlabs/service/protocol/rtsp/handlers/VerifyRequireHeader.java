@@ -6,7 +6,8 @@ import java.util.HashSet;
 import com.larkwoodlabs.service.protocol.text.MessageHeaders;
 import com.larkwoodlabs.service.protocol.text.StatusCodes;
 import com.larkwoodlabs.service.protocol.text.handler.TransactionHandler;
-import com.larkwoodlabs.service.protocol.text.message.Header;
+import com.larkwoodlabs.service.protocol.text.headers.SimpleMessageHeader;
+import com.larkwoodlabs.service.protocol.text.message.MessageHeader;
 import com.larkwoodlabs.service.protocol.text.message.Request;
 import com.larkwoodlabs.service.protocol.text.message.Response;
 
@@ -29,26 +30,29 @@ public class VerifyRequireHeader implements TransactionHandler {
     public boolean handleTransaction(Request request, Response response) throws IOException {
         if (request.containsHeader(MessageHeaders.REQUIRE)) {
             // Indicate that no special features are supported
-            Header header = request.getHeader(MessageHeaders.REQUIRE);
+            MessageHeader header = request.getHeader(MessageHeaders.REQUIRE);
             if (this.features == null || this.features.isEmpty()) {
                 response.setStatus(StatusCodes.OptionNotSupported);
-                response.setHeader(new Header(MessageHeaders.UNSUPPORTED, header.getValue()));
+                response.setHeader(new SimpleMessageHeader(MessageHeaders.UNSUPPORTED, header.getValue()));
                 return true;
             }
             else {
                 // If multiple Require headers were present in the message, they
                 // will have been concatenated into a single comma-delimited list by the parser.
                 // Split the header value into individual feature names and check each.
-                header = new Header(MessageHeaders.UNSUPPORTED);
+                StringBuffer headerValue = new StringBuffer();
                 String[] names = header.getValue().split(",[ ]*");
                 for (String name : names) {
                     if (!this.features.contains(name)) {
-                        header.appendValue(name);
+                        if (headerValue.length() > 0) {
+                            headerValue.append(",");
+                        }
+                        headerValue.append(name);
                     }
                 }
-                if (header.getValue().length() != 0) {
+                if (headerValue.length() != 0) {
                     response.setStatus(StatusCodes.OptionNotSupported);
-                    response.setHeader(header);
+                    response.setHeader(new SimpleMessageHeader(MessageHeaders.UNSUPPORTED,headerValue.toString()));
                     return true;
                 }
             }
