@@ -21,30 +21,30 @@ import java.util.LinkedList;
 
 /**
  * An <code>Event</code> provides an attachment point for event handlers and a means for delivering an event record to those handlers. 
- * @param <EventRecordType> The type of event object that will be passed to {@link #invoke(EventType)}
+ * @param <EventRecordType> The type of event object that will be passed to {@link #onEvent(EventType)}
  *
  * @author Gregory Bumgardner
  */
 public class Event<EventRecordType> {
 
-    LinkedList<EventHandler<EventRecordType>> handlers;
+    LinkedList<EventListener<EventRecordType>> handlers;
 
     /**
      * Attaches a handler instance to the event.
-     * @param handler An object that implements the {@link EventHandler} interface.
+     * @param handler An object that implements the {@link EventListener} interface.
      */
-    public synchronized void attach(EventHandler<EventRecordType> handler) {
+    public synchronized void attach(EventListener<EventRecordType> handler) {
         if (this.handlers == null) {
-            this.handlers = new LinkedList<EventHandler<EventRecordType>>();
+            this.handlers = new LinkedList<EventListener<EventRecordType>>();
         }
         this.handlers.add(handler);
     }
 
     /**
      * Detaches a handler instance from the event.
-     * @param handler An object that implements the {@link EventHandler} interface.
+     * @param handler An object that implements the {@link EventListener} interface.
      */
-    public synchronized void detach(EventHandler<EventRecordType> handler) {
+    public synchronized void detach(EventListener<EventRecordType> handler) {
         if (this.handlers != null) {
             this.handlers.remove(handler);
         }
@@ -64,14 +64,14 @@ public class Event<EventRecordType> {
     }
 
     /**
-     * Calls the {@link EventHandler#invoke(RecordType)} method on all attached event handlers passing the <code>event</code> object.
+     * Calls the {@link EventListener#onEvent(RecordType)} method on all attached event handlers passing the <code>event</code> object.
      * @param event An "event" object that will be passed to the attached event handlers.
      */
     public synchronized void invoke(EventRecordType record) {
         if (this.handlers != null) {
-            Iterator<EventHandler<EventRecordType>> iter = this.handlers.iterator();
+            Iterator<EventListener<EventRecordType>> iter = this.handlers.iterator();
             while (iter.hasNext()) {
-                if (iter.next().invoke(record)) {
+                if (iter.next().onEvent(record)) {
                     iter.remove();
                 }
             }

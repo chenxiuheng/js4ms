@@ -17,19 +17,19 @@
 package com.larkwoodlabs.util.event;
 
 /**
- * Interface that must be implemented by event handlers that can be attached to an {@link Event}
- * @param <EventRecordType> The type of event object that will be passed to {@link #invoke(EventRecordType)}
+ * Interface that must be implemented by event listeners that can be attached to an {@link Event}
+ * @param <EventRecordType> The type of event object that will be passed to {@link #onEvent(EventRecordType)}
  * 
- * @author Gregory Bumgardner
+ * @author gbumgard@cisco.com
  */
-public interface EventHandler<EventRecordType> {
-    
+public interface EventListener<EventRecordType> {
+
     /**
-     * 
      * @param record An object that describes the event.
      * @return A Boolean value where:
      * <li><code>true</code> indicates that the handler should be detached from the event.
      * <li><code>false</code> indicates that the handler should remain attached to the event.
      */
-    public boolean invoke(EventRecordType record);
+    public boolean onEvent(final EventRecordType record);
+
 }
