@@ -14,7 +14,7 @@ import com.larkwoodlabs.service.protocol.http.HttpStatusCodes;
 import com.larkwoodlabs.service.protocol.text.entity.Entity;
 import com.larkwoodlabs.service.protocol.text.entity.StringEntity;
 import com.larkwoodlabs.service.protocol.text.handler.TransactionHandler;
-import com.larkwoodlabs.service.protocol.text.message.Header;
+import com.larkwoodlabs.service.protocol.text.headers.SimpleMessageHeader;
 import com.larkwoodlabs.service.protocol.text.message.Request;
 import com.larkwoodlabs.service.protocol.text.message.Response;
 import com.larkwoodlabs.util.logging.JsonLogFormatter;
@@ -81,15 +81,15 @@ public class LoggingOutputHandler implements TransactionHandler {
         
         if (outputType.equals("text")) {
             formatter = new LogFormatter();
-            response.setHeader(new Header(Entity.CONTENT_TYPE,"text/plain"));
+            response.setHeader(new SimpleMessageHeader(Entity.CONTENT_TYPE,"text/plain"));
         }
         else if (outputType.equals("xml")) {
             formatter = new XMLFormatter();
-            response.setHeader(new Header(Entity.CONTENT_TYPE,"text/xml"));
+            response.setHeader(new SimpleMessageHeader(Entity.CONTENT_TYPE,"text/xml"));
         }
         else if (outputType.equals("json")) {
             formatter = new JsonLogFormatter();
-            response.setHeader(new Header(Entity.CONTENT_TYPE,"application/json"));
+            response.setHeader(new SimpleMessageHeader(Entity.CONTENT_TYPE,"application/json"));
         }
         else if (outputType.equals("jsonp")) {
             if (jsonpCallback == null) {
@@ -98,7 +98,7 @@ public class LoggingOutputHandler implements TransactionHandler {
                 return true;
             }
             formatter = new JsonLogFormatter(jsonpCallback);
-            response.setHeader(new Header(Entity.CONTENT_TYPE,"application/javascript"));
+            response.setHeader(new SimpleMessageHeader(Entity.CONTENT_TYPE,"application/javascript"));
         }
         else {
             response.setStatus(HttpStatusCodes.BadRequest);
@@ -107,8 +107,8 @@ public class LoggingOutputHandler implements TransactionHandler {
         }
 
         response.setStatus(HttpStatusCodes.OK);
-        response.setHeader(new Header(Entity.CONTENT_LENGTH,"-1"));
-        response.setHeader(new Header(HttpMessageHeaders.CONNECTION,"close"));
+        response.setHeader(new SimpleMessageHeader(Entity.CONTENT_LENGTH,"-1"));
+        response.setHeader(new SimpleMessageHeader(HttpMessageHeaders.CONNECTION,"close"));
         response.send();
 
         final StreamHandler handler = new StreamHandler(response.getConnection().getOutputStream(), formatter) {
