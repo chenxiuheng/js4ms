@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PushbackInputStream;
-import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -70,6 +70,10 @@ public abstract class Connection  {
 
     /*-- Member Functions ----------------------------------------------------*/
 
+    protected Connection() {
+        
+    }
+
     /**
      * Protected constructor used by derived classes to specify the input stream, output stream,
      * and client host address for the connection.
@@ -112,7 +116,7 @@ public abstract class Connection  {
         this.identifier = identifier;
     }
 
-    public abstract InetAddress getRemoteAddress();
+    public abstract InetSocketAddress getRemoteAddress();
 
     /**
      * Returns an input stream that can be used to receive data from the client.

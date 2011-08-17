@@ -18,7 +18,7 @@ package com.larkwoodlabs.service;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.logging.Level;
 
@@ -59,8 +59,8 @@ public class SocketConnection extends Connection {
      * Returns the host address of the connected client.
      * @return
      */
-    public InetAddress getRemoteAddress() {
-        return this.socket.getInetAddress();
+    public InetSocketAddress getRemoteAddress() {
+        return (InetSocketAddress) this.socket.getRemoteSocketAddress();
     }
 
     @Override

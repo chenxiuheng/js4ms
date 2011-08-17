@@ -1,7 +1,7 @@
 package com.larkwoodlabs.service;
 
-import java.io.EOFException;import java.io.IOException;
-import java.io.InputStream;import java.net.BindException;
+import java.io.IOException;
+import java.net.BindException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
