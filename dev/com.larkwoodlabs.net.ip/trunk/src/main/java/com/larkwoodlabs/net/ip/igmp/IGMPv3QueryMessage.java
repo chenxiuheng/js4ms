@@ -244,6 +244,8 @@ public final class IGMPv3QueryMessage extends IGMPQueryMessage {
     /*-- Static Variables ---------------------------------------------------*/
     
     public static final int BASE_MESSAGE_LENGTH = 12;
+    public static final int DEFAULT_ROBUSTNESS_VALUE = 2;
+    public static final int DEFAULT_QUERY_INTERVAL_VALUE = 125; //secs
 
     public static final BooleanField SuppressRouterSideProcessing = new BooleanField(8,3);
     public static final ByteBitField QuerierRobustnessVariable = new ByteBitField(8,0,3);
@@ -293,6 +295,26 @@ public final class IGMPv3QueryMessage extends IGMPQueryMessage {
     /*-- Member Functions ---------------------------------------------------*/
 
     /**
+     * Constructs general query
+     * @param maximumResponseTime
+     * @param groupAddress
+     */
+    public IGMPv3QueryMessage(short maximumResponseTime) {
+        super(BASE_MESSAGE_LENGTH, maximumResponseTime);
+        
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer(Logging.entering(ObjectId, "IGMPv3QueryMessage.IGMPv3QueryMessage", maximumResponseTime));
+        }
+        
+        setSuppressRouterSideProcessing(false);
+        setQuerierRobustnessVariable((byte)DEFAULT_ROBUSTNESS_VALUE);
+        setQuerierQueryIntervalCode((byte)DEFAULT_QUERY_INTERVAL_VALUE);
+        if (logger.isLoggable(Level.FINER)) {
+            logState(logger);
+        }
+    }
+
+    /**
      * 
      * @param maximumResponseTime
      * @param groupAddress
@@ -305,8 +327,8 @@ public final class IGMPv3QueryMessage extends IGMPQueryMessage {
         }
         
         setSuppressRouterSideProcessing(false);
-        setQuerierRobustnessVariable((byte)0);
-        setQuerierQueryIntervalCode((byte)0);
+        setQuerierRobustnessVariable((byte)DEFAULT_ROBUSTNESS_VALUE);
+        setQuerierQueryIntervalCode((byte)DEFAULT_QUERY_INTERVAL_VALUE);
         if (logger.isLoggable(Level.FINER)) {
             logState(logger);
         }

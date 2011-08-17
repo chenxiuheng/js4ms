@@ -253,12 +253,15 @@ public final class MLDv2QueryMessage extends MLDQueryMessage {
     
     public static final int BASE_MESSAGE_LENGTH = 28;
     
+    public static final int DEFAULT_ROBUSTNESS_VALUE = 2;
+    public static final int DEFAULT_QUERY_INTERVAL_VALUE = 125; //secs
+
     public static final ShortField      MaximumResponseCode = new ShortField(4);
     public static final ByteBitField    Reserved = new ByteBitField(24,4,4);
     public static final BooleanField    SuppressRouterSideProcessing = new BooleanField(24,3);
     public static final ByteBitField    QuerierRobustnessVariable = new ByteBitField(24,0,3);
     public static final ByteField       QuerierQueryIntervalCode = new ByteField(25);
-    public static final ShortField      NumberOfSources = new ShortField(27);
+    public static final ShortField      NumberOfSources = new ShortField(26);
 
 
     /*-- Static Functions ---------------------------------------------------*/
@@ -293,6 +296,27 @@ public final class MLDv2QueryMessage extends MLDQueryMessage {
     /*-- Member Functions ---------------------------------------------------*/
 
     /**
+     * Constructs a general query.
+     * @param groupAddress
+     */
+    public MLDv2QueryMessage() {
+        super(BASE_MESSAGE_LENGTH);
+
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer(Logging.entering(ObjectId, "MLDv2QueryMessage.MLDv2QueryMessage"));
+        }
+        
+        Reserved.set(getBufferInternal(), (byte)0);
+        setSuppressRouterSideProcessing(false);
+        setQuerierRobustnessVariable((byte)DEFAULT_ROBUSTNESS_VALUE);
+        setQueryIntervalTime(DEFAULT_QUERY_INTERVAL_VALUE);
+        
+        if (logger.isLoggable(Level.FINER)) {
+            logState(logger);
+        }
+    }
+
+    /**
      * 
      * @param groupAddress
      */
@@ -305,8 +329,8 @@ public final class MLDv2QueryMessage extends MLDQueryMessage {
         
         Reserved.set(getBufferInternal(), (byte)0);
         setSuppressRouterSideProcessing(false);
-        setQuerierRobustnessVariable((byte)0);
-        setQuerierQueryIntervalCode((byte)0);
+        setQuerierRobustnessVariable((byte)DEFAULT_ROBUSTNESS_VALUE);
+        setQueryIntervalTime(DEFAULT_QUERY_INTERVAL_VALUE);
         
         if (logger.isLoggable(Level.FINER)) {
             logState(logger);

@@ -202,6 +202,18 @@ public final class MLDv1QueryMessage extends MLDQueryMessage {
     /*-- Member Functions ---------------------------------------------------*/
 
     /**
+     * Constructs a general query
+     * @param groupAddress
+     */
+    public MLDv1QueryMessage() {
+        super(BASE_MESSAGE_LENGTH);
+        
+        if (logger.isLoggable(Level.FINER)){
+            logger.finer(Logging.entering(ObjectId, "MLDv1QueryMessage.MLDv1QueryMessage"));
+        }
+    }
+
+    /**
      * 
      * @param groupAddress
      */

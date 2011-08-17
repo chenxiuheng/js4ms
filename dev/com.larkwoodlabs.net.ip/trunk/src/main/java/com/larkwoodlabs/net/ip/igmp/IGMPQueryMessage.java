@@ -97,8 +97,37 @@ public abstract class IGMPQueryMessage extends IGMPGroupMessage {
      */
     public static final ByteField MaxRespCode = new ByteField(1);
     
+    /**
+     * 
+     */
+    public static final byte[] GENERAL_QUERY_GROUP = new byte[4];
+
+    public static final byte[] QUERY_DESTINATION_ADDRESS;
+    
+    static {
+        byte[] address = new byte[4];
+        address[0] = (byte)224;
+        address[1] = 0;
+        address[2] = 0;
+        address[3] = 1;
+        QUERY_DESTINATION_ADDRESS = address;
+    }
 
     /*-- Member Functions ---------------------------------------------------*/
+
+    /**
+     * Constructs a general query message
+     * @param size
+     * @param maximumResponseTime
+     */
+    protected IGMPQueryMessage(int size, short maximumResponseTime) {
+        super(size, MESSAGE_TYPE, maximumResponseTime, GENERAL_QUERY_GROUP);
+        
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine(Logging.entering(ObjectId, "IGMPQueryMessage.IGMPQueryMessage", size, maximumResponseTime));
+            logState(logger);
+        }
+    }
 
     /**
      * 

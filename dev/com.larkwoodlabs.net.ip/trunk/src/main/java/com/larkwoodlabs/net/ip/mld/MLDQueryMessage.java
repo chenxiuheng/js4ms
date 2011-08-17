@@ -93,8 +93,35 @@ public abstract class MLDQueryMessage extends MLDGroupMessage {
     
     public static final byte MESSAGE_TYPE = (byte)130;
 
+    /**
+     * 
+     */
+    public static final byte[] GENERAL_QUERY_GROUP = new byte[16];
+
+    public static final byte[] QUERY_DESTINATION_ADDRESS;
+    
+    static {
+        byte[] address = new byte[16];
+        address[0] = (byte)0xFF;
+        address[1] = (byte)0x02;
+        address[15] = 1;
+        QUERY_DESTINATION_ADDRESS = address;
+    }
 
     /*-- Member Functions ---------------------------------------------------*/
+
+    /**
+     * Constructs a general query
+     * @param size
+     * @param groupAddress
+     */
+    protected MLDQueryMessage(int size) {
+        super(size,(byte)0,GENERAL_QUERY_GROUP);
+        
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer(Logging.entering(ObjectId, "MLDQueryMessage.MLDQueryMessage"));
+        }
+    }
 
     /**
      * 
