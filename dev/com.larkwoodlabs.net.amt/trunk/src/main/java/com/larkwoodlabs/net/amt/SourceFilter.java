@@ -175,6 +175,29 @@ final public class SourceFilter {
     }
 
     /**
+     * Updates the source filter from another source filter.
+     * <li>If this filter is in the INCLUDE mode and the other filter is
+     * in the EXCLUDE mode, this filter is changed to match the other filter.
+     * <li>If this filter is in the INCLUDE mode and the other filter is
+     * in the INCLUDE mode, the source list of the other filter is merged
+     * <li>If this filter is in the EXCLUDE mode and the other filter is
+     * in the INCLUDE mode, this filter is changed to match the other filter.
+     * <li>If this filter is in the EXCLUDE mode and the other filter is
+     * in the EXCLUDE mode, the source list of the other filter is merged
+     * with this filter's source list.
+     * @param sourceAddress
+     */
+    public void apply(final SourceFilter filter) {
+        if (this.mode != filter.mode) {
+            this.mode = filter.mode;
+            this.sources = new HashSet<InetAddress>(filter.sources);
+        }
+        else {
+            this.sources.addAll(filter.sources);
+        }
+    }
+
+    /**
      * Sets filter to EXCLUDE mode and adds the address to the source set.
      * If the filter was in INCLUDE mode, the source list is cleared first.
      * @param sourceAddress
