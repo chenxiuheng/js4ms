@@ -77,6 +77,10 @@
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
+            <fileset dir="../com.larkwoodlabs.net.amt.client/bin">
+                <include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+            </fileset>
             <fileset dir="../com.larkwoodlabs.service/bin">
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
