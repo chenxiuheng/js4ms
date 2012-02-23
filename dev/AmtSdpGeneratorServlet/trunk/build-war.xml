@@ -2,6 +2,7 @@
 <project>
 
 	<import file="build-jar.xml" />
+    <import file="build-descriptor.xml" />
 	
 	<property name="war.file" value="${app.name}.war" />
 
@@ -9,7 +10,7 @@
         <copy file="${jars-jain-sdp.location}/ext/jain-sdp-1.0.100.jar" toDir="WebContent/WEB-INF/lib"/>
     </target>
     
-	<target name="build-war" depends="copy-jars">
+	<target name="build-war" depends="copy-jars, build-descriptor-file">
 	    <war destfile="build/${war.file}" webxml="WebContent/WEB-INF/web.xml">
 	    	<fileset dir="WebContent">
 	    		<exclude name="WEB-INF/web.xml"/>

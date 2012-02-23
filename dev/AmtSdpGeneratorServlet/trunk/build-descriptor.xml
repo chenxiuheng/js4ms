@@ -1,0 +1,26 @@
+<?eclipse.ant.import?>
+<project>
+
+    <import file="build-jar.xml" />
+
+    <target name="build-descriptor-file" depends="gen-version">
+
+        <delete>
+            <fileset dir="WebContent/WEB-INF" includes="jboss-web.xml" />
+        </delete>
+
+        <copy file="jboss-web-template.xml" toFile="WebContent/WEB-INF/jboss-web.xml">
+            <filterset>
+                <filter token="CONTEXT_ROOT" value="${app.context.path}" />
+            </filterset>
+        </copy>
+
+    </target>
+
+    <target name="clean-descriptor-file">
+        <delete>
+            <fileset dir="WebContent/WEB-INF" includes="jboss-web.xml" />
+        </delete>
+    </target>
+
+</project>
