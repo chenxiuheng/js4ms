@@ -7,25 +7,25 @@
     <taskdef name="undeploy" classname="org.apache.catalina.ant.UndeployTask" />
 
     <target name="deploy-war-file" depends="build-war-file">
-        <input message="Please enter Tomcat manager URL:" addproperty="url" defaultvalue="http://localhost:8080/manager"/>
-        <input message="Please enter manager user name:" addproperty="username" defaultvalue="admin"/>
-        <input message="Please enter manager password:" addproperty="password" defaultvalue="admin"/>
+        <input message="Please enter Tomcat manager URL:" addproperty="url" defaultvalue="http://localhost:8080/manager/text"/>
+        <input message="Please enter manager user name:" addproperty="username" defaultvalue="manager"/>
+        <input message="Please enter manager password:" addproperty="password" defaultvalue="manager"/>
         <undeploy url="${url}" username="${username}" password="${password}" path="${app.context.path}" failonerror="false"/>
         <deploy url="${url}" username="${username}" password="${password}" path="${app.context.path}" war="build/${war.file}" />
     </target>
 
     <target name="deploy-war-file-only" description="deploys existing war file without building new one">
-        <input message="Please enter Tomcat manager URL:" addproperty="url" defaultvalue="http://localhost:8080/manager"/>
-        <input message="Please enter manager user name:" addproperty="username" defaultvalue="admin"/>
-        <input message="Please enter manager password:" addproperty="password" defaultvalue="admin"/>
+        <input message="Please enter Tomcat manager URL:" addproperty="url" defaultvalue="http://localhost:8080/manager/text"/>
+        <input message="Please enter manager user name:" addproperty="username" defaultvalue="manager"/>
+        <input message="Please enter manager password:" addproperty="password" defaultvalue="manager"/>
         <undeploy url="${url}" username="${username}" password="${password}" path="${app.context.path}" failonerror="false"/>
         <deploy url="${url}" username="${username}" password="${password}" path="${app.context.path}" war="build/${war.file}" />
     </target>
 
     <target name="undeploy-war-file">
         <input message="Please enter Tomcat manager URL:" addproperty="url" defaultvalue="http://localhost:8080/manager"/>
-        <input message="Please enter manager user name:" addproperty="username" defaultvalue="admin"/>
-        <input message="Please enter manager password:" addproperty="password" defaultvalue="admin"/>
+        <input message="Please enter manager user name:" addproperty="username" defaultvalue="manager"/>
+        <input message="Please enter manager password:" addproperty="password" defaultvalue="manager"/>
         <undeploy url="${url}" username="${username}" password="${password}" path="${app.context.path}" failonerror="false" />
     </target>
 
