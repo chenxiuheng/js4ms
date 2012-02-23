@@ -467,6 +467,22 @@ public final class UdpDatagram extends LoggableBase {
 
     /**
      * 
+     * @param destinationAddress
+     * @param destinationPort
+     */
+    public void setDestinationAddress(final InetSocketAddress destinationAddress) {
+
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer(Logging.entering(ObjectId, "UdpDatagram.setDestinationAddress", Logging.address(destinationAddress)));
+        }
+
+        this.destinationSocketAddress = destinationAddress;
+        this.destinationAddress = this.destinationSocketAddress.getAddress().getAddress();
+        this.destinationPort = destinationAddress.getPort();
+    }
+
+    /**
+     * 
      * @param destinationInetAddress
      * @param destinationPort
      */
