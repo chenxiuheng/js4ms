@@ -8,8 +8,9 @@ import com.larkwoodlabs.service.Connection;
 import com.larkwoodlabs.service.protocol.text.RequestException;
 import com.larkwoodlabs.service.protocol.text.entity.Entity;
 import com.larkwoodlabs.service.protocol.text.handler.ResponseHandler;
-import com.larkwoodlabs.service.protocol.text.message.Header;
 import com.larkwoodlabs.service.protocol.text.message.Message;
+import com.larkwoodlabs.service.protocol.text.message.MessageHeader;
+import com.larkwoodlabs.service.protocol.text.message.MessageHeaderParser;
 import com.larkwoodlabs.service.protocol.text.message.MessageParser;
 import com.larkwoodlabs.service.protocol.text.message.Response;
 import com.larkwoodlabs.service.protocol.text.message.StartLine;
@@ -21,8 +22,9 @@ public class ResponseParser extends MessageParser {
 
     final ResponseHandler handler;
     
-    public ResponseParser(final ResponseHandler handler) {
-        super();
+    public ResponseParser(final MessageHeaderParser headerParser,
+                          final ResponseHandler handler) {
+        super(headerParser);
         this.handler = handler;
     }
 
@@ -34,9 +36,10 @@ public class ResponseParser extends MessageParser {
     @Override
     protected Message doConstructMessage(Connection connection,
                                          StartLine startLine,
-                                         LinkedHashMap<String, Header> headers,
+                                         LinkedHashMap<String, MessageHeader> headers,
                                          Entity entity) {
-        return new Response(connection, (StatusLine)startLine, headers, entity);
+        // TODO Auto-generated method stub
+        return null;
     }
 
     @Override
