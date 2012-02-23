@@ -17,6 +17,8 @@ import javax.sdp.SessionDescription;
 import com.larkwoodlabs.channels.MessageSource;
 import com.larkwoodlabs.channels.OutputChannel;
 import com.larkwoodlabs.net.udp.UdpEndpoint;
+import com.larkwoodlabs.net.udp.UdpPacketOutputChannel;
+import com.larkwoodlabs.net.udp.UdpDatagramPayloadSource;
 import com.larkwoodlabs.net.udp.UdpSocketEndpoint;
 import com.larkwoodlabs.service.protocol.rtsp.RtspMessageHeaders;
 import com.larkwoodlabs.service.protocol.rtsp.RtspStatusCodes;
@@ -24,8 +26,6 @@ import com.larkwoodlabs.service.protocol.rtsp.TransportDescription;
 import com.larkwoodlabs.service.protocol.rtsp.TransportPreferences;
 import com.larkwoodlabs.service.protocol.rtsp.presentation.Presentation.Source;
 import com.larkwoodlabs.service.protocol.rtsp.rtp.InterleavedPacketOutputChannel;
-import com.larkwoodlabs.service.protocol.rtsp.rtp.UdpPacketOutputChannel;
-import com.larkwoodlabs.service.protocol.rtsp.rtp.UdpPacketSource;
 import com.larkwoodlabs.service.protocol.text.RequestException;
 import com.larkwoodlabs.service.protocol.text.entity.Entity;
 import com.larkwoodlabs.service.protocol.text.headers.SimpleMessageHeader;
@@ -692,7 +692,7 @@ public abstract class MediaStream {
                                 sockets[index] = null;
                                 try {
                                     OutputChannel<ByteBuffer> serverPacketSink = constructServerPacketSink(layerIndex, channelIndex);
-                                    MessageSource<ByteBuffer> clientPacketSource = new UdpPacketSource(endpoint, serverPacketSink);
+                                    MessageSource<ByteBuffer> clientPacketSource = new UdpDatagramPayloadSource(endpoint, serverPacketSink);
                                     this.clientPacketChannels.add(clientPacketSource);
                                 }
                                 catch (SdpException e) {
