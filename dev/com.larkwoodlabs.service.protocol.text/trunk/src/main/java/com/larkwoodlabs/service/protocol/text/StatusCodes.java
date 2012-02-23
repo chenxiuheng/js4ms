@@ -11,7 +11,7 @@ public interface StatusCodes {
 
     public final Status OK = new Status(200,"OK");
     public final Status Created = new Status(201,"Created");
-    public final Status Accepted = new Status(201,"Accepted");
+    public final Status Accepted = new Status(202,"Accepted");
     public final Status NonAuthoritativeInformation = new Status(203, "Non-Authoritative Information");
     public final Status NoContent = new Status(204, "No Content");
     public final Status ResetContent = new Status(205, "Reset Content");
@@ -21,6 +21,7 @@ public interface StatusCodes {
     public final Status MultipleChoices = new Status(300,"Multiple Choices");
     public final Status MovedPermanently = new Status(301,"Moved Permanently");
     public final Status MovedTemporarily = new Status(302,"Moved Temporarily");
+    public final Status Found = new Status(302,"Found");
     public final Status SeeOther = new Status(303,"See Other");
     public final Status NotModified = new Status(304,"Not Modified");
     public final Status UseProxy = new Status(305,"Use Proxy");
