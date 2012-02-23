@@ -107,7 +107,7 @@ public class LoggingOutputHandler implements TransactionHandler {
         }
 
         response.setStatus(HttpStatusCodes.OK);
-        response.setHeader(new SimpleMessageHeader(Entity.CONTENT_LENGTH,"-1"));
+        response.setHeader(new SimpleMessageHeader(Entity.CONTENT_LENGTH,String.valueOf(Long.MAX_VALUE)));
         response.setHeader(new SimpleMessageHeader(HttpMessageHeaders.CONNECTION,"close"));
         response.send();
 
