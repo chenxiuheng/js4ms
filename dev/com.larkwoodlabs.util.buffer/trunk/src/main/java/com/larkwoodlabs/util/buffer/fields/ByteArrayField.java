@@ -38,7 +38,7 @@ public final class ByteArrayField extends ArrayField<byte[]> {
     public void set(final ByteBuffer buffer, final byte[] value) {
         int position = buffer.position();
         buffer.position(this.offset);
-        buffer.put(value);
+        buffer.put(value, 0, this.size);
         buffer.position(position);
     }
 
