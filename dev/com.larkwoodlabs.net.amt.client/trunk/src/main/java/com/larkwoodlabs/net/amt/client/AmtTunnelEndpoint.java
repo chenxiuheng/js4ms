@@ -92,8 +92,6 @@ public final class AmtTunnelEndpoint implements Runnable {
     
     private final Timer taskTimer;
 
-    private boolean isUpdating = false;
-    
     private TimerTask discoveryTask = null;
     private AmtRelayDiscoveryMessage lastDiscoveryMessageSent = null;
     private long discoveryRetransmissionInterval = DISCOVERY_RETRY_PERIOD;
@@ -216,6 +214,8 @@ public final class AmtTunnelEndpoint implements Runnable {
 
                 this.handlerThread.start();
 
+                startRelayDiscoveryTask();
+
             }
         }
     }
@@ -241,7 +241,7 @@ public final class AmtTunnelEndpoint implements Runnable {
 
                 this.isRunning = false;
 
-                stopUpdates();
+                stopTasks();
 
                 // Close the endpoint to abort the read operation on socket
                 this.udpEndpoint.close(true);
@@ -274,8 +274,6 @@ public final class AmtTunnelEndpoint implements Runnable {
              * since the first message that we will receive from the relay will be a general query
              * that will trigger generation of a new update message.
              */
-
-            this.isUpdating = true;
 
             if (this.lastDiscoveryMessageSent == null) {
                 logger.info(ObjectId + " cannot send AMT update message because AMT discovery message has not been sent");
@@ -372,9 +370,7 @@ public final class AmtTunnelEndpoint implements Runnable {
             }
 
             // Restart relay discovery process to locate another relay
-            stopUpdates();
-            this.isUpdating = true;
-            
+            stopTasks();
             startRelayDiscoveryTask();
         }
         catch (IOException e) {
@@ -405,10 +401,6 @@ public final class AmtTunnelEndpoint implements Runnable {
 
             this.lastDiscoveryMessageSent = null;
 
-            if (!this.isUpdating) {
-                return;
-            }
-
             if (this.discoveryTask != null) {
                 this.discoveryTask.cancel();
             }
@@ -421,10 +413,7 @@ public final class AmtTunnelEndpoint implements Runnable {
                     }
                     synchronized (AmtTunnelEndpoint.this.lock) {
                         try {
-                            if (!AmtTunnelEndpoint.this.isUpdating) {
-                                this.cancel();
-                            }
-                            else if (AmtTunnelEndpoint.this.discoveryRetransmissionCount < AmtTunnelEndpoint.this.discoveryMaxRetransmissions) {
+                            if (AmtTunnelEndpoint.this.discoveryRetransmissionCount < AmtTunnelEndpoint.this.discoveryMaxRetransmissions) {
                                 AmtTunnelEndpoint.this.discoveryRetransmissionCount++;
                                 AmtTunnelEndpoint.this.sendRelayDiscoveryMessage();
                             }
@@ -503,10 +492,6 @@ public final class AmtTunnelEndpoint implements Runnable {
 
             this.lastRequestMessageSent = null;
 
-            if (!this.isUpdating) {
-                return;
-            }
-
             if (this.requestTask != null) {
                 this.requestTask.cancel();
             }
@@ -519,10 +504,7 @@ public final class AmtTunnelEndpoint implements Runnable {
                     }
                     synchronized (AmtTunnelEndpoint.this.lock) {
                         try {
-                            if (!AmtTunnelEndpoint.this.isUpdating) {
-                                this.cancel();
-                            }
-                            else if (AmtTunnelEndpoint.this.requestRetransmissionCount < AmtTunnelEndpoint.this.requestMaxRetransmissions) {
+                            if (AmtTunnelEndpoint.this.requestRetransmissionCount < AmtTunnelEndpoint.this.requestMaxRetransmissions) {
                                 AmtTunnelEndpoint.this.requestRetransmissionCount++;
                                 AmtTunnelEndpoint.this.sendRequestMessage();
                             }
@@ -595,10 +577,6 @@ public final class AmtTunnelEndpoint implements Runnable {
 
         synchronized (this.lock) {
 
-            if (!this.isUpdating) {
-                return;
-            }
-
             if (this.periodicRequestTask != null) {
                 this.periodicRequestTask.cancel();
             }
@@ -620,16 +598,15 @@ public final class AmtTunnelEndpoint implements Runnable {
     /**
      * 
      */
-    public void stopUpdates() {
+    public void stopTasks() {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.stopPeriodicRequestTask"));
+            logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.stopTasks"));
         }
 
         synchronized (this.lock) {
-            
-            this.isUpdating = false;
-            
+
+           
             if (this.periodicRequestTask != null) {
                 this.periodicRequestTask.cancel();
                 this.periodicRequestTask = null;
@@ -680,6 +657,11 @@ public final class AmtTunnelEndpoint implements Runnable {
             }
             else {
 
+                if (this.discoveryTask != null) {
+                    this.discoveryTask.cancel();
+                    this.discoveryTask = null;
+                }
+
                 this.discoveryRetransmissionCount = 0;
                 this.lastAdvertisementMessageReceived = message;
                 this.relayAddress = InetAddress.getByAddress(message.getRelayAddress());
@@ -726,6 +708,11 @@ public final class AmtTunnelEndpoint implements Runnable {
                             " expected-nonce=" + 
                             this.lastRequestMessageSent.getRequestNonce());
                 return;
+            }
+
+            if (this.requestTask != null) {
+                this.requestTask.cancel();
+                this.requestTask = null;
             }
 
             this.requestRetransmissionCount = 0;

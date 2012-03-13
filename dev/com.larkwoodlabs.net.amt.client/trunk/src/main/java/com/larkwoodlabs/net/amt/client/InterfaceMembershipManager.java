@@ -424,10 +424,6 @@ public final class InterfaceMembershipManager
                 // Send the first state change report immediately
                 stateChangeReport.run();
             }
-
-            if (this.interfaceReceptionState.isEmpty()) {
-                this.endpoint.stopUpdates();
-            }
         }
     }
 
