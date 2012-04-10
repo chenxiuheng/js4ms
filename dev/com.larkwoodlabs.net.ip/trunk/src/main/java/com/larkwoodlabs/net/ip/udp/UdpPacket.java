@@ -24,6 +24,7 @@ import com.larkwoodlabs.common.exceptions.ParseException;
 import com.larkwoodlabs.net.ip.IPMessage;
 import com.larkwoodlabs.net.ip.IPPacket;
 import com.larkwoodlabs.net.ip.ipv4.IPv4Packet;
+import com.larkwoodlabs.net.ip.ipv6.IPv6Packet;
 import com.larkwoodlabs.util.buffer.BufferBackedObject;
 import com.larkwoodlabs.util.buffer.fields.ShortField;
 import com.larkwoodlabs.util.buffer.parser.MissingParserException;
@@ -230,16 +231,26 @@ public final class UdpPacket extends BufferBackedObject implements IPMessage {
     }
 
     /**
+    *
+    * @return
+    */
+   public final static IPv6Packet.Parser constructIPv6PacketParser() {
+       IPv6Packet.Parser parser = new IPv6Packet.Parser();
+       parser.setProtocolParser(constructIPMessageParser());
+       return parser;
+    }
+
+   /**
      * 
      * @return
      */
     public final static IPPacket.Parser constructIPPacketParser() {
         IPPacket.Parser parser = new IPPacket.Parser();
         parser.add(constructIPv4PacketParser());
+        parser.add(constructIPv6PacketParser());
         return parser;
     }
-    
-    
+
     /**
      * Verifies the UDP message checksum. Called by the parser prior to constructing the packet.
      * @param buffer - the buffer containing the UDP message.
