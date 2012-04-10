@@ -174,39 +174,65 @@ public final class UdpPacket extends BufferBackedObject implements IPMessage {
 
     /*-- Static Variables ---------------------------------------------------*/
     
+    /** Logger used to generate IPHeaderOption log entries. */
     public static final Logger logger = Logger.getLogger(UdpPacket.class.getName());
 
+    /** Protocol number for UDP headers. */
     public final static byte IP_PROTOCOL_NUMBER = 17;
 
+    /** */
     protected final static int BASE_HEADER_LENGTH = 8;
+    /** */
     protected final static byte UDP_PRECEDENCE = IPv4Packet.PRECEDENCE_ROUTINE;
+    /** */
     protected final static byte UDP_TTL = 64;
+    /** */
     protected final static int CHECKSUM_OFFSET = 6;
     
+    /** */
     public static final ShortField  SourcePort = new ShortField(0);
+    /** */
     public static final ShortField  DestinationPort = new ShortField(2);
+    /** */
     public static final ShortField  Length = new ShortField(4);
+    /** */
     public static final ShortField  Checksum = new ShortField(6);
 
 
     /*-- Static Functions ---------------------------------------------------*/
-    
+
+    /**
+     * 
+     * @return
+     */
     public final static UdpPacket.Parser constructUdpPacketParser() {
         return new UdpPacket.Parser();
     }
 
+    /**
+     * 
+     * @return
+     */
     public final static IPMessage.Parser constructIPMessageParser() {
         IPMessage.Parser parser = new IPMessage.Parser();
         parser.add(constructUdpPacketParser());
         return parser;
     }
 
+    /**
+     *
+     * @return
+     */
     public final static IPv4Packet.Parser constructIPv4PacketParser() {
         IPv4Packet.Parser parser = new IPv4Packet.Parser();
         parser.setProtocolParser(constructIPMessageParser());
         return parser;
     }
 
+    /**
+     * 
+     * @return
+     */
     public final static IPPacket.Parser constructIPPacketParser() {
         IPPacket.Parser parser = new IPPacket.Parser();
         parser.add(constructIPv4PacketParser());
@@ -216,11 +242,13 @@ public final class UdpPacket extends BufferBackedObject implements IPMessage {
     
     /**
      * Verifies the UDP message checksum. Called by the parser prior to constructing the packet.
-     * @param segment - the buffer segment containing the UDP message.
+     * @param buffer - the buffer containing the UDP message.
      * @param sourceAddress - IP source address from IPv4 or IPv6 header.
      * @param destinationAddress - IP destination address from IPv4 or IPv6 header.
      */
-    public final static boolean verifyChecksum(final ByteBuffer buffer, final byte[] sourceAddress, final byte[] destinationAddress) {
+    public final static boolean verifyChecksum(final ByteBuffer buffer,
+                                               final byte[] sourceAddress, 
+                                               final byte[] destinationAddress) {
 
         short checksum = Checksum.get(buffer);
 
@@ -239,22 +267,30 @@ public final class UdpPacket extends BufferBackedObject implements IPMessage {
     
     /**
      * Calculates the UDP message checksum for a UDP packet contained in a buffer.
-     * @param segment - the buffer segment containing the UDP message.
+     * @param buffer - the buffer containing the UDP message.
      * @param sourceAddress - IP source address from IPv4 or IPv6 header.
      * @param destinationAddress - IP destination address from IPv4 or IPv6 header.
      */
-    public final static short calculateChecksum(final ByteBuffer buffer, final byte[] sourceAddress, final byte[] destinationAddress) {
+    public final static short calculateChecksum(final ByteBuffer buffer,
+                                                final byte[] sourceAddress,
+                                                final byte[] destinationAddress) {
         return IPPacket.calculateChecksum(buffer, Checksum, sourceAddress, destinationAddress, IP_PROTOCOL_NUMBER, Length.get(buffer));
     }
 
 
     /*-- Member Variables ---------------------------------------------------*/
 
+    /** */
     private ByteBuffer payload;
     
 
     /*-- Member Functions ---------------------------------------------------*/
 
+    /**
+     * 
+     * @param sourcePort
+     * @param destinationPort
+     */
     public UdpPacket(final int sourcePort, final int destinationPort) {
         super(BASE_HEADER_LENGTH);
         
@@ -271,7 +307,15 @@ public final class UdpPacket extends BufferBackedObject implements IPMessage {
         }
     }
 
-    public UdpPacket(final int sourcePort, final int destinationPort, final ByteBuffer payload) {
+    /**
+     * 
+     * @param sourcePort
+     * @param destinationPort
+     * @param payload
+     */
+    public UdpPacket(final int sourcePort,
+                     final int destinationPort,
+                     final ByteBuffer payload) {
         this(sourcePort, destinationPort);
         
         if (logger.isLoggable(Level.FINER)) {
@@ -281,6 +325,11 @@ public final class UdpPacket extends BufferBackedObject implements IPMessage {
         setPayload(payload);
     }
 
+    /**
+     * 
+     * @param buffer
+     * @throws ParseException
+     */
     public UdpPacket(final ByteBuffer buffer) throws ParseException {
         super(consume(buffer, BASE_HEADER_LENGTH));
         
@@ -327,7 +376,7 @@ public final class UdpPacket extends BufferBackedObject implements IPMessage {
             logger.info(ObjectId+" <---- payload");
         }
     }
-    
+
     @Override
     public final void writeTo(final ByteBuffer buffer) {
         
@@ -342,7 +391,9 @@ public final class UdpPacket extends BufferBackedObject implements IPMessage {
     }
 
     @Override
-    public final void writeChecksum(final ByteBuffer buffer, final byte[] sourceAddress, final byte[] destinationAddress) {
+    public final void writeChecksum(final ByteBuffer buffer,
+                                    final byte[] sourceAddress,
+                                    final byte[] destinationAddress) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId,
@@ -515,6 +566,7 @@ public final class UdpPacket extends BufferBackedObject implements IPMessage {
     /**
      * Returns a ByteBuffer that references the underlying byte array (if any)
      * currently attached to this packet.
+     * @return
      */
     public final ByteBuffer getPayload() {
         return this.payload.slice();

@@ -48,16 +48,19 @@ public abstract class MLDQueryMessage extends MLDGroupMessage {
      */
     public static class Parser implements MLDMessage.ParserType {
 
-        MLDv1QueryMessage.Parser v1Parser = new MLDv1QueryMessage.Parser();
-        MLDv2QueryMessage.Parser v2Parser = new MLDv2QueryMessage.Parser();
-        
+        /** */
+        final MLDv1QueryMessage.Parser v1Parser = new MLDv1QueryMessage.Parser();
+        /** */
+        final MLDv2QueryMessage.Parser v2Parser = new MLDv2QueryMessage.Parser();
+
+        /**
+         * 
+         */
         public Parser() {
-            this.v1Parser = new MLDv1QueryMessage.Parser();
-            this.v2Parser = new MLDv2QueryMessage.Parser();
         }
 
         @Override
-        public MLDMessage parse(ByteBuffer buffer) throws ParseException {
+        public MLDMessage parse(final ByteBuffer buffer) throws ParseException {
             if (buffer.limit() == MLDv1QueryMessage.BASE_MESSAGE_LENGTH) {
                 return this.v1Parser.parse(buffer);
             }
@@ -70,7 +73,9 @@ public abstract class MLDQueryMessage extends MLDGroupMessage {
         }
 
         @Override
-        public boolean verifyChecksum(ByteBuffer buffer, byte[] sourceAddress, byte[] destinationAddress) throws MissingParserException, ParseException {
+        public boolean verifyChecksum(final ByteBuffer buffer,
+                                      final byte[] sourceAddress,
+                                      final byte[] destinationAddress) throws MissingParserException, ParseException {
             if (buffer.limit() == MLDv1QueryMessage.BASE_MESSAGE_LENGTH) {
                 return this.v1Parser.verifyChecksum(buffer, sourceAddress, destinationAddress);
             }
@@ -90,14 +95,20 @@ public abstract class MLDQueryMessage extends MLDGroupMessage {
     }
 
     /*-- Static Variables ---------------------------------------------------*/
-    
+
+    /** */
     public static final byte MESSAGE_TYPE = (byte)130;
 
     /**
-     * 
+     * General Query group address:
+     * <pre>::</pre>
      */
     public static final byte[] GENERAL_QUERY_GROUP = new byte[16];
 
+    /**
+     * General Query destination address:
+     * <pre>FF02::1</pre>
+     */
     public static final byte[] QUERY_DESTINATION_ADDRESS;
     
     static {
@@ -115,7 +126,7 @@ public abstract class MLDQueryMessage extends MLDGroupMessage {
      * @param size
      * @param groupAddress
      */
-    protected MLDQueryMessage(int size) {
+    protected MLDQueryMessage(final int size) {
         super(size,(byte)0,GENERAL_QUERY_GROUP);
         
         if (logger.isLoggable(Level.FINER)) {
@@ -128,7 +139,7 @@ public abstract class MLDQueryMessage extends MLDGroupMessage {
      * @param size
      * @param groupAddress
      */
-    protected MLDQueryMessage(int size, byte[] groupAddress) {
+    protected MLDQueryMessage(final int size, final byte[] groupAddress) {
         super(size,(byte)0,groupAddress);
         
         if (logger.isLoggable(Level.FINER)) {
@@ -141,7 +152,7 @@ public abstract class MLDQueryMessage extends MLDGroupMessage {
      * @param buffer
      * @throws ParseException
      */
-    protected MLDQueryMessage(ByteBuffer buffer) throws ParseException {
+    protected MLDQueryMessage(final ByteBuffer buffer) throws ParseException {
         super(buffer);
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "MLDQueryMessage.MLDQueryMessage", buffer));

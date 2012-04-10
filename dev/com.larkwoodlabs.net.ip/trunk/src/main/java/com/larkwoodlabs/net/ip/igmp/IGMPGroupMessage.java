@@ -73,7 +73,8 @@ public abstract class IGMPGroupMessage extends IGMPMessage {
 
 
     /*-- Static Variables ---------------------------------------------------*/
-    
+
+    /** */
     public static final ByteArrayField GroupAddress = new ByteArrayField(4,4);
 
 
@@ -86,7 +87,10 @@ public abstract class IGMPGroupMessage extends IGMPMessage {
      * @param maximumResponseTime
      * @param groupAddress
      */
-    protected IGMPGroupMessage(int size, byte type, short maximumResponseTime, byte[] groupAddress) {
+    protected IGMPGroupMessage(final int size,
+                               final byte type,
+                               final short maximumResponseTime,
+                               final byte[] groupAddress) {
         super(size, type, maximumResponseTime);
         //Precondition.checkIPv4MulticastAddress(groupAddress);
         
@@ -105,7 +109,7 @@ public abstract class IGMPGroupMessage extends IGMPMessage {
      * @param buffer
      * @throws ParseException
      */
-    protected IGMPGroupMessage(ByteBuffer buffer) throws ParseException {
+    protected IGMPGroupMessage(final ByteBuffer buffer) throws ParseException {
         super(buffer);
         
         if (logger.isLoggable(Level.FINER)) {
@@ -115,7 +119,7 @@ public abstract class IGMPGroupMessage extends IGMPMessage {
     }
 
     @Override
-    public void log(Logger logger) {
+    public void log(final Logger logger) {
         super.log(logger);
         logState(logger);
     }
@@ -124,7 +128,7 @@ public abstract class IGMPGroupMessage extends IGMPMessage {
      * Logs private state.
      * @param logger
      */
-    private void logState(Logger logger) {
+    private void logState(final Logger logger) {
         logger.info(ObjectId + " : group-address="+Logging.address(getGroupAddress()));
     }
 
@@ -135,6 +139,7 @@ public abstract class IGMPGroupMessage extends IGMPMessage {
      * The Group Address field is set to zero when sending a General Query,
      * and set to the IP multicast address being queried when sending a
      * Group-Specific Query or Group-and-Source-Specific Query.
+     * @return
      */
     public final byte[] getGroupAddress() {
         return GroupAddress.get(getBufferInternal());
@@ -144,7 +149,7 @@ public abstract class IGMPGroupMessage extends IGMPMessage {
      * 
      * @param groupAddress
      */
-    public final void setGroupAddress(InetAddress groupAddress) {
+    public final void setGroupAddress(final InetAddress groupAddress) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IGMPGroupMessage.setGroupAddress", Logging.address(groupAddress)));
@@ -157,7 +162,7 @@ public abstract class IGMPGroupMessage extends IGMPMessage {
      * 
      * @param groupAddress
      */
-    public final void setGroupAddress(byte[] groupAddress) {
+    public final void setGroupAddress(final byte[] groupAddress) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IGMPGroupMessage.setGroupAddress", Logging.address(groupAddress)));

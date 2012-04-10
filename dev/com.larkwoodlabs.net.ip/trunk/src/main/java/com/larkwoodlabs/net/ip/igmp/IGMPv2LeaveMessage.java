@@ -69,16 +69,19 @@ import com.larkwoodlabs.util.logging.Logging;
 public final class IGMPv2LeaveMessage extends IGMPGroupMessage {
 
     /*-- Inner Classes ------------------------------------------------------*/
-    
+
+    /**
+     * 
+     */
     public static final class Parser implements IGMPMessage.ParserType {
 
         @Override
-        public IGMPMessage parse(ByteBuffer buffer) throws ParseException {
+        public IGMPMessage parse(final ByteBuffer buffer) throws ParseException {
             return new IGMPv2LeaveMessage(buffer);
         }
 
         @Override
-        public boolean verifyChecksum(ByteBuffer buffer) throws MissingParserException, ParseException {
+        public boolean verifyChecksum(final ByteBuffer buffer) throws MissingParserException, ParseException {
             return IGMPv2LeaveMessage.verifyChecksum(buffer);
         }
 
@@ -91,42 +94,61 @@ public final class IGMPv2LeaveMessage extends IGMPGroupMessage {
 
 
     /*-- Static Variables ---------------------------------------------------*/
-    
+
+    /** */
     public static final byte MESSAGE_TYPE = 0x17;
 
+    /** */
     public static final int BASE_MESSAGE_LENGTH = 8;
 
 
     /*-- Static Functions ---------------------------------------------------*/
 
+    /**
+     * 
+     * @return
+     */
     public static IGMPMessage.Parser getIGMPMessageParser() {
         return getIGMPMessageParser(new IGMPv2LeaveMessage.Parser());
     }
 
+    /**
+     * 
+     * @return
+     */
     public static IPMessage.Parser getIPMessageParser() {
         return getIPMessageParser(new IGMPv2LeaveMessage.Parser());
     }
 
+    /**
+     * 
+     * @return
+     */
     public static IPv4Packet.Parser getIPv4PacketParser() {
         return getIPv4PacketParser(new IGMPv2LeaveMessage.Parser());
     }
 
+    /**
+     * 
+     * @return
+     */
     public static IPPacket.Parser getIPPacketParser() {
         return getIPPacketParser(new IGMPv2LeaveMessage.Parser());
     }
 
     /**
      * Verifies the IGMP message checksum. Called by the parser prior to constructing the packet.
-     * @param segment - the buffer segment containing the IGMP message.
+     * @param buffer - the buffer containing the IGMP message.
      */
-    public static boolean verifyChecksum(ByteBuffer buffer) {
+    public static boolean verifyChecksum(final ByteBuffer buffer) {
         return Checksum.get(buffer) == IGMPMessage.calculateChecksum(buffer, BASE_MESSAGE_LENGTH);
     }
 
     /**
      * Writes the IGMP message checksum into a buffer containing an IGMP message.
+     * @param buffer
      */
-    public static void setChecksum(ByteBuffer buffer) {
+    public static void setChecksum(final ByteBuffer buffer) {
         Checksum.set(buffer, IGMPMessage.calculateChecksum(buffer, BASE_MESSAGE_LENGTH));
     }
 
@@ -137,7 +159,7 @@ public final class IGMPv2LeaveMessage extends IGMPGroupMessage {
      * 
      * @param groupAddress
      */
-    public IGMPv2LeaveMessage(byte[] groupAddress) {
+    public IGMPv2LeaveMessage(final byte[] groupAddress) {
         super(BASE_MESSAGE_LENGTH,MESSAGE_TYPE,(byte)0,groupAddress);
         
         if (logger.isLoggable(Level.FINER)) {
@@ -150,7 +172,7 @@ public final class IGMPv2LeaveMessage extends IGMPGroupMessage {
      * @param buffer
      * @throws ParseException
      */
-    public IGMPv2LeaveMessage(ByteBuffer buffer) throws ParseException {
+    public IGMPv2LeaveMessage(final ByteBuffer buffer) throws ParseException {
         super(consume(buffer, BASE_MESSAGE_LENGTH));
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IGMPv2LeaveMessage.IGMPv2LeaveMessage", buffer));
@@ -158,12 +180,14 @@ public final class IGMPv2LeaveMessage extends IGMPGroupMessage {
     }
 
     @Override
-    public void writeChecksum(ByteBuffer buffer, byte[] sourceAddress, byte[] destinationAddress) {
+    public void writeChecksum(final ByteBuffer buffer,
+                              final byte[] sourceAddress,
+                              final byte[] destinationAddress) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IGMPv2LeaveMessage.writeChecksum", buffer, Logging.address(sourceAddress), Logging.address(destinationAddress)));
         }
-        
+
         IGMPv2LeaveMessage.setChecksum(buffer);
     }
 

@@ -42,10 +42,13 @@ public final class IPNoOperationOption extends IPSingleByteHeaderOption {
 
     /*-- Inner Classes ------------------------------------------------------*/
 
+    /**
+     * 
+     */
     public static class Parser implements IPHeaderOption.ParserType {
 
         @Override
-        public IPHeaderOption parse(ByteBuffer buffer) throws ParseException {
+        public IPHeaderOption parse(final ByteBuffer buffer) throws ParseException {
             return new IPNoOperationOption(buffer);
         }
 
@@ -57,8 +60,11 @@ public final class IPNoOperationOption extends IPSingleByteHeaderOption {
 
     /*-- Static Variables ---------------------------------------------------*/
 
+    /** */
     public static final int OPTION_CLASS = 0;
+    /** */
     public static final int OPTION_NUMBER = 1;
+    /** */
     public static final byte OPTION_CODE = OPTION_CLASS | OPTION_NUMBER;
 
 
@@ -74,12 +80,12 @@ public final class IPNoOperationOption extends IPSingleByteHeaderOption {
             logger.finer(Logging.entering(ObjectId, "IPNoOperationOption.IPNoOperationOption"));
         }
     }
-    
+
     /**
      * 
      * @param copyFlag
      */
-    public IPNoOperationOption(boolean copyFlag) {
+    public IPNoOperationOption(final boolean copyFlag) {
         super(copyFlag,OPTION_CLASS,OPTION_NUMBER);
         
         if (logger.isLoggable(Level.FINER)) {
@@ -91,7 +97,7 @@ public final class IPNoOperationOption extends IPSingleByteHeaderOption {
      * 
      * @param buffer
      */
-    public IPNoOperationOption(ByteBuffer buffer) {
+    public IPNoOperationOption(final ByteBuffer buffer) {
         super(buffer);
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPNoOperationOption.IPNoOperationOption", buffer));

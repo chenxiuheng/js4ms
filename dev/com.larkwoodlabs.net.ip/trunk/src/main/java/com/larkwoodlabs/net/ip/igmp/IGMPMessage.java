@@ -80,14 +80,30 @@ public abstract class IGMPMessage extends BufferBackedObject implements IPMessag
 
     /*-- Inner Classes ------------------------------------------------------*/
 
+    /**
+     * 
+     */
     public static interface ParserType extends KeyedBufferParser<IGMPMessage> {
 
+        /**
+         * 
+         * @param buffer
+         * @return
+         * @throws MissingParserException
+         * @throws ParseException
+         */
         public boolean verifyChecksum(ByteBuffer buffer) throws MissingParserException, ParseException;
 
     }
 
+    /**
+     * 
+     */
     public static final class Parser extends BufferParserSelector<IGMPMessage> implements IPMessage.ParserType {
 
+        /**
+         * 
+         */
         public Parser() {
             super(new SelectorField<Byte>(IGMPMessage.MessageType));
         }
@@ -98,7 +114,9 @@ public abstract class IGMPMessage extends BufferBackedObject implements IPMessag
         }
 
         @Override
-        public boolean verifyChecksum(ByteBuffer buffer, byte[] sourceAddress, byte[] destinationAddress) throws MissingParserException, ParseException {
+        public boolean verifyChecksum(final ByteBuffer buffer,
+                                      final byte[] sourceAddress,
+                                      final byte[] destinationAddress) throws MissingParserException, ParseException {
             ParserType parser = (ParserType)get(getKeyField(buffer));
             if (parser == null) {
                 // Check for default parser (null key)
@@ -113,22 +131,23 @@ public abstract class IGMPMessage extends BufferBackedObject implements IPMessag
     }
 
     /*-- Static Variables ---------------------------------------------------*/
-    
+
+    /** Logger used to generate IGMPMessage log entries. */
     public static final Logger logger = Logger.getLogger(IGMPMessage.class.getName());
 
     /**
-     * Protocol {@value}
+     * Protocol number for IGMP messages.
      */
     public static final byte IP_PROTOCOL_NUMBER = 2;
-
+    /** */
     public static final int IGMPv2_MESSAGE_LENGTH = 8;
-
+    /** */
     public static final byte IGMP_PRECEDENCE = IPv4Packet.PRECEDENCE_INTERNETWORK_CONTROL;
-    
+    /** */
     public static final byte IGMP_TTL = 1;
-
+    /** */
     public static final short IGMP_ROUTER_ALERT_VALUE = 0;
-    
+
     /**
      * All multicast hosts address (224.0.0.1).
      */
@@ -166,7 +185,11 @@ public abstract class IGMPMessage extends BufferBackedObject implements IPMessag
     public static final ShortField Checksum = new ShortField(2);
 
     /*-- Static Functions ---------------------------------------------------*/
-    
+
+    /**
+     * 
+     * @return
+     */
     public static IGMPMessage.Parser getIGMPMessageParser() {
         IGMPMessage.Parser parser = new IGMPMessage.Parser();
         parser.add(new IGMPQueryMessage.Parser());
@@ -175,42 +198,75 @@ public abstract class IGMPMessage extends BufferBackedObject implements IPMessag
         return parser;
     }
 
+    /**
+     * 
+     * @return
+     */
     public static IPMessage.Parser getIPMessageParser() {
         IPMessage.Parser parser = new IPMessage.Parser();
         parser.add(getIGMPMessageParser());
         return parser;
     }
 
+    /**
+     * 
+     * @return
+     */
     public static IPv4Packet.Parser getIPv4PacketParser() {
         IPv4Packet.Parser parser = new IPv4Packet.Parser();
         parser.setProtocolParser(getIPMessageParser());
         return parser;
     }
 
+    /**
+     * 
+     * @return
+     */
     public static IPPacket.Parser getIPPacketParser() {
         IPPacket.Parser parser = new IPPacket.Parser();
         parser.add(getIPv4PacketParser());
         return parser;
     }
-    
-    public static IGMPMessage.Parser getIGMPMessageParser(IGMPMessage.ParserType messageParser) {
+
+    /**
+     * 
+     * @param messageParser
+     * @return
+     */
+    public static IGMPMessage.Parser getIGMPMessageParser(final IGMPMessage.ParserType messageParser) {
         IGMPMessage.Parser parser = new IGMPMessage.Parser();
         parser.add(messageParser);
         return parser;
     }
-    public static IPMessage.Parser getIPMessageParser(IGMPMessage.ParserType messageParser) {
+
+    /**
+     * 
+     * @param messageParser
+     * @return
+     */
+    public static IPMessage.Parser getIPMessageParser(final IGMPMessage.ParserType messageParser) {
         IPMessage.Parser parser = new IPMessage.Parser();
         parser.add(getIGMPMessageParser(messageParser));
         return parser;
     }
 
-    public static IPv4Packet.Parser getIPv4PacketParser(IGMPMessage.ParserType messageParser) {
+    /**
+     * 
+     * @param messageParser
+     * @return
+     */
+    public static IPv4Packet.Parser getIPv4PacketParser(final IGMPMessage.ParserType messageParser) {
         IPv4Packet.Parser parser = new IPv4Packet.Parser();
         parser.setProtocolParser(getIPMessageParser(messageParser));
         return parser;
     }
 
-    public static IPPacket.Parser getIPPacketParser(IGMPMessage.ParserType messageParser) {
+    /**
+     * 
+     * @param messageParser
+     * @return
+     */
+    public static IPPacket.Parser getIPPacketParser(final IGMPMessage.ParserType messageParser) {
         IPPacket.Parser parser = new IPPacket.Parser();
         parser.add(getIPv4PacketParser(messageParser));
         return parser;
@@ -220,13 +276,24 @@ public abstract class IGMPMessage extends BufferBackedObject implements IPMessag
      * Calculates the IGMP message checksum for an IGMP packet contained in a buffer.
      * @param segment - the buffer segment containing the IGMP message.
      * @param messageLength - the length of the IGMP message.
+     * @return
      */
-    public final static short calculateChecksum(ByteBuffer buffer, int messageLength) {
+    public final static short calculateChecksum(final ByteBuffer buffer,
+                                                final int messageLength) {
         short checksum = IPPacket.calculateChecksum(buffer, Checksum, messageLength);
         return checksum;
     }
 
-    public final static IPv4Packet constructIPv4Packet(byte[] sourceAddress, byte[] destinationAddress, IGMPMessage message) {
+    /**
+     * 
+     * @param sourceAddress
+     * @param destinationAddress
+     * @param message
+     * @return
+     */
+    public final static IPv4Packet constructIPv4Packet(final byte[] sourceAddress,
+                                                       final byte[] destinationAddress,
+                                                       final IGMPMessage message) {
         IPv4Packet header =  new IPv4Packet(IGMP_PRECEDENCE,
                                             false, // normal delay
                                             false, // normal throughput
@@ -246,8 +313,14 @@ public abstract class IGMPMessage extends BufferBackedObject implements IPMessag
     
 
     /*-- Member Functions ---------------------------------------------------*/
-    
-    protected IGMPMessage(int size, byte type, short maximumResponseTime) {
+
+    /**
+     * 
+     * @param size
+     * @param type
+     * @param maximumResponseTime
+     */
+    protected IGMPMessage(final int size, final byte type, final short maximumResponseTime) {
         super(size);
         
         if (logger.isLoggable(Level.FINER)) {
@@ -262,8 +335,12 @@ public abstract class IGMPMessage extends BufferBackedObject implements IPMessag
             logState(logger);
         }
     }
-    
-    protected IGMPMessage(ByteBuffer buffer) {
+
+    /**
+     * 
+     * @param buffer
+     */
+    protected IGMPMessage(final ByteBuffer buffer) {
         super(buffer);
         
         if (logger.isLoggable(Level.FINER)) {
@@ -278,7 +355,7 @@ public abstract class IGMPMessage extends BufferBackedObject implements IPMessag
     }
 
     @Override
-    public void log(Logger logger) {
+    public void log(final Logger logger) {
         super.log(logger);
         logState(logger);
     }
@@ -287,7 +364,7 @@ public abstract class IGMPMessage extends BufferBackedObject implements IPMessag
      * Logs value of member variables declared or maintained by this class.
      * @param logger
      */
-    private void logState(Logger logger) {
+    private void logState(final Logger logger) {
         logger.info(ObjectId + " : message-length="+getTotalLength());
         logger.info(ObjectId + " : type="+getType());
         logger.info(ObjectId + " : checksum="+getChecksum());
@@ -299,7 +376,7 @@ public abstract class IGMPMessage extends BufferBackedObject implements IPMessag
     }
 
     @Override
-    public final void setProtocolNumber(byte protocolNumber) {
+    public final void setProtocolNumber(final byte protocolNumber) {
         // Do nothing - protocol number is defined by derived classes
     }
 
@@ -314,7 +391,7 @@ public abstract class IGMPMessage extends BufferBackedObject implements IPMessag
     }
     
     @Override
-    public final void setNextMessage(IPMessage nextHeader) {
+    public final void setNextMessage(final IPMessage nextHeader) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IGMPMessage.setNextMessage", nextHeader));
@@ -341,7 +418,7 @@ public abstract class IGMPMessage extends BufferBackedObject implements IPMessag
     }
 
     @Override
-    public void writeTo(ByteBuffer buffer) {
+    public void writeTo(final ByteBuffer buffer) {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IGMPMessage.writeTo", buffer));
@@ -352,6 +429,7 @@ public abstract class IGMPMessage extends BufferBackedObject implements IPMessag
 
     /**
      * Returns the value of the message {@link #MessageType Type} field.
+     * @return
      */
     public byte getType() {
         return MessageType.get(getBufferInternal());
@@ -359,8 +437,9 @@ public abstract class IGMPMessage extends BufferBackedObject implements IPMessag
     
     /**
      * Sets the value of the message {@link #MessageType Type} field.
+     * @param type
      */
-    protected final void setType(byte type) {
+    protected final void setType(final byte type) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IGMPMessage.setType", type));
@@ -371,12 +450,17 @@ public abstract class IGMPMessage extends BufferBackedObject implements IPMessag
     
     /**
      * Returns the value of the message {@link #Checksum} field.
+     * @return
      */
     public final short getChecksum() {
         return Checksum.get(getBufferInternal());
     }
-    
-    public final void setChecksum(short checksum) {
+
+    /**
+     * 
+     * @param checksum
+     */
+    public final void setChecksum(final short checksum) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IGMPMessage.setChecksum", checksum));
@@ -391,7 +475,7 @@ public abstract class IGMPMessage extends BufferBackedObject implements IPMessag
      * @param value - A time value expressed in units of 1/10 second.
      * @return An 8-bit value suitable for use in the {@linkplain #MaxRespCode Max Resp Code} field.
      */
-    public final static byte convertTimeVal(short value) {
+    public final static byte convertTimeVal(final short value) {
         if (value < 128) {
             return (byte)(value & 0xFF);
         }

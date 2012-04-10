@@ -195,6 +195,7 @@ public final class IGMPGroupRecord extends BufferBackedObject {
 
     /*-- Static Variables ---------------------------------------------------*/
 
+    /** */
     public static final int BASE_RECORD_LENGTH = 8;
 
     /**
@@ -251,15 +252,24 @@ public final class IGMPGroupRecord extends BufferBackedObject {
      */
     public static final byte BLOCK_OLD_SOURCES = 6;
 
+    /** */
     public static final ByteField       RecordType = new ByteField(0);
+    /** */
     public static final ByteField       AuxDataLen = new ByteField(1);
+    /** */
     public static final ShortField      NumberOfSources = new ShortField(2);
+    /** */
     public static final ByteArrayField  GroupAddress = new ByteArrayField(4,4);
 
 
     /*-- Static Functions ---------------------------------------------------*/
-    
-    public static String getTypeName(byte type) {
+
+    /**
+     * 
+     * @param type
+     * @return
+     */
+    public static String getTypeName(final byte type) {
         switch(type) {
             case MODE_IS_INCLUDE: return "MODE_IS_INCLUDE";
             case MODE_IS_EXCLUDE: return "MODE_IS_EXCLUDE";
@@ -270,16 +280,23 @@ public final class IGMPGroupRecord extends BufferBackedObject {
             default: return "UNRECOGINIZED TYPE!";
         }
     }
-    
-    public static short calculateGroupRecordSize(ByteBuffer buffer) {
+
+    /**
+     * 
+     * @param buffer
+     * @return
+     */
+    public static short calculateGroupRecordSize(final ByteBuffer buffer) {
         return (short)(BASE_RECORD_LENGTH + NumberOfSources.get(buffer) * 4 + AuxDataLen.get(buffer) * 4);
     }
 
 
     /*-- Member Variables ---------------------------------------------------*/
 
-    private Vector<byte[]> sources = new Vector<byte[]>();
+    /** */
+    final private Vector<byte[]> sources = new Vector<byte[]>();
 
+    /** */
     private ByteBuffer auxData;
 
 
@@ -290,7 +307,7 @@ public final class IGMPGroupRecord extends BufferBackedObject {
      * @param type
      * @param groupAddress
      */
-    public IGMPGroupRecord(byte type, byte[] groupAddress) {
+    public IGMPGroupRecord(final byte type, final byte[] groupAddress) {
         this(type, groupAddress, null);
         
         if (IGMPMessage.logger.isLoggable(Level.FINER)) {
@@ -304,17 +321,19 @@ public final class IGMPGroupRecord extends BufferBackedObject {
      * @param groupAddress
      * @param auxData
      */
-    public IGMPGroupRecord(byte type, byte[] groupAddress, ByteBuffer auxData) {
+    public IGMPGroupRecord(final byte type,
+                           final byte[] groupAddress,
+                           final ByteBuffer auxData) {
         super(BASE_RECORD_LENGTH);
 
         if (IGMPMessage.logger.isLoggable(Level.FINER)) {
             IGMPMessage.logger.finer(Logging.entering(ObjectId, "IGMPv3GroupRecord.IGMPv3GroupRecord", type, Logging.address(groupAddress), auxData));
         }
-        
+
         setType(type);
         setGroupAddress(groupAddress);
         setAuxData(auxData);
-        
+
         if (IGMPMessage.logger.isLoggable(Level.FINER)) {
             logState(IGMPMessage.logger);
         }
@@ -325,7 +344,7 @@ public final class IGMPGroupRecord extends BufferBackedObject {
      * @param buffer
      * @throws ParseException
      */
-    public IGMPGroupRecord(ByteBuffer buffer) throws ParseException {
+    public IGMPGroupRecord(final ByteBuffer buffer) throws ParseException {
         super(consume(buffer, BASE_RECORD_LENGTH));
         
         if (IGMPMessage.logger.isLoggable(Level.FINER)) {
@@ -352,7 +371,7 @@ public final class IGMPGroupRecord extends BufferBackedObject {
     }
 
     @Override
-    public void log(Logger logger) {
+    public void log(final Logger logger) {
         super.log(logger);
         logState(logger);
     }
@@ -361,7 +380,7 @@ public final class IGMPGroupRecord extends BufferBackedObject {
      * Logs value of member variables declared or maintained by this class.
      * @param logger
      */
-    private void logState(Logger logger) {
+    private void logState(final Logger logger) {
         logger.info(ObjectId + " : record-length="+getRecordLength());
         logger.info(ObjectId + " : record-type="+getType()+" "+getTypeName(getType()));
         logger.info(ObjectId + " : aux-data-length="+getAuxDataLength());
@@ -376,7 +395,7 @@ public final class IGMPGroupRecord extends BufferBackedObject {
     }
 
     @Override
-    public void writeTo(ByteBuffer buffer) {
+    public void writeTo(final ByteBuffer buffer) {
         
         if (IGMPMessage.logger.isLoggable(Level.FINER)) {
             IGMPMessage.logger.finer(Logging.entering(ObjectId, "IGMPv3GroupRecord.writeTo", buffer));
@@ -420,7 +439,7 @@ public final class IGMPGroupRecord extends BufferBackedObject {
      * 
      * @param type
      */
-    public void setType(byte type) {
+    public void setType(final byte type) {
         
         if (IGMPMessage.logger.isLoggable(Level.FINER)) {
             IGMPMessage.logger.finer(Logging.entering(ObjectId, "IGMPv3GroupRecord.setType", type));
@@ -449,7 +468,7 @@ public final class IGMPGroupRecord extends BufferBackedObject {
      * 
      * @param numberOfSources
      */
-    protected void setNumberOfSources(short numberOfSources) {
+    protected void setNumberOfSources(final short numberOfSources) {
         
         if (IGMPMessage.logger.isLoggable(Level.FINER)) {
             IGMPMessage.logger.finer(Logging.entering(ObjectId, "IGMPv3GroupRecord.setNumberOfSources", numberOfSources));
@@ -470,7 +489,7 @@ public final class IGMPGroupRecord extends BufferBackedObject {
      * Sets the auxiliary data length field.
      * @param length - the data length specified as a number of 32-bit words.
      */
-    protected void setAuxDataLength(int length) {
+    protected void setAuxDataLength(final int length) {
         
         if (IGMPMessage.logger.isLoggable(Level.FINER)) {
             IGMPMessage.logger.finer(Logging.entering(ObjectId, "IGMPv3GroupRecord.setAuxDataLength", length));
@@ -491,7 +510,7 @@ public final class IGMPGroupRecord extends BufferBackedObject {
      * 
      * @param groupAddress
      */
-    public void setGroupAddress(InetAddress groupAddress) {
+    public void setGroupAddress(final InetAddress groupAddress) {
         
         if (IGMPMessage.logger.isLoggable(Level.FINER)) {
             IGMPMessage.logger.finer(Logging.entering(ObjectId, "IGMPv3GroupRecord.setGroupAddress", Logging.address(groupAddress)));
@@ -505,7 +524,7 @@ public final class IGMPGroupRecord extends BufferBackedObject {
      * 
      * @param groupAddress
      */
-    public void setGroupAddress(byte[] groupAddress) {
+    public void setGroupAddress(final byte[] groupAddress) {
         
         if (IGMPMessage.logger.isLoggable(Level.FINER)) {
             IGMPMessage.logger.finer(Logging.entering(ObjectId, "IGMPv3GroupRecord.setGroupAddress", Logging.address(groupAddress)));
@@ -524,7 +543,7 @@ public final class IGMPGroupRecord extends BufferBackedObject {
      * 
      * @param sourceAddress
      */
-    public void addSource(InetAddress sourceAddress) {
+    public void addSource(final InetAddress sourceAddress) {
         
         if (IGMPMessage.logger.isLoggable(Level.FINER)) {
             IGMPMessage.logger.finer(Logging.entering(ObjectId, "IGMPv3GroupRecord.addSource", Logging.address(sourceAddress)));
@@ -539,7 +558,7 @@ public final class IGMPGroupRecord extends BufferBackedObject {
      * @param sourceAddress
      * @return
      */
-    public int addSource(byte[] sourceAddress) {
+    public int addSource(final byte[] sourceAddress) {
         
         if (IGMPMessage.logger.isLoggable(Level.FINER)) {
             IGMPMessage.logger.finer(Logging.entering(ObjectId, "IGMPv3GroupRecord.addSource", Logging.address(sourceAddress)));
@@ -551,21 +570,21 @@ public final class IGMPGroupRecord extends BufferBackedObject {
         setNumberOfSources((short)this.sources.size());
         return index;
     }
-    
+
     /**
      * 
      * @param index
      * @return
      */
-    public byte[] getSource(int index) {
+    public byte[] getSource(final int index) {
         return this.sources.get(index);
     }
-    
+
     /**
      * 
      * @param index
      */
-    public void removeSource(int index) {
+    public void removeSource(final int index) {
         
         if (IGMPMessage.logger.isLoggable(Level.FINER)) {
             IGMPMessage.logger.finer(Logging.entering(ObjectId, "IGMPv3GroupRecord.removeSource", index));
@@ -581,12 +600,12 @@ public final class IGMPGroupRecord extends BufferBackedObject {
     public ByteBuffer getAuxData() {
         return this.auxData == null ? null : this.auxData.slice();
     }
-    
+
     /**
      * 
      * @param auxData
      */
-    public void setAuxData(ByteBuffer auxData) {
+    public void setAuxData(final ByteBuffer auxData) {
         
         if (IGMPMessage.logger.isLoggable(Level.FINER)) {
             IGMPMessage.logger.finer(Logging.entering(ObjectId, "IGMPv3GroupRecord.setAuxData", auxData));
@@ -595,6 +614,5 @@ public final class IGMPGroupRecord extends BufferBackedObject {
         this.auxData = auxData == null ? null : auxData.slice();
         setAuxDataLength(this.auxData != null ? (this.auxData.limit() + 3) / 4 : 0);
     }
-    
 }
 

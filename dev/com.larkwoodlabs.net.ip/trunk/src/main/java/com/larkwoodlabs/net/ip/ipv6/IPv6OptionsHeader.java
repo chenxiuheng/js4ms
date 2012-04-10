@@ -30,27 +30,53 @@ import com.larkwoodlabs.net.ip.IPMessage;
 import com.larkwoodlabs.util.buffer.parser.MissingParserException;
 import com.larkwoodlabs.util.logging.Logging;
 
+/**
+ * 
+ * 
+ *
+ * @author gbumgard
+ */
 public abstract class IPv6OptionsHeader extends IPExtensionHeader {
 
     /*-- Inner Classes ------------------------------------------------------*/
     
+    /**
+     * 
+     * 
+     */
     public static abstract class Parser implements IPMessage.ParserType {
 
+        /** */
         IPHeaderOption.Parser headerOptionParser;
-        
+
+        /**
+         * 
+         */
         public Parser() {
             this(null);
         }
 
-        public Parser(IPHeaderOption.Parser headerOptionParser) {
+        /**
+         * 
+         * @param headerOptionParser
+         */
+        public Parser(final IPHeaderOption.Parser headerOptionParser) {
             setHeaderOptionParser(headerOptionParser);
         }
 
-        public void setHeaderOptionParser(IPHeaderOption.Parser headerOptionParser) {
+        /**
+         * 
+         * @param headerOptionParser
+         */
+        public void setHeaderOptionParser(final IPHeaderOption.Parser headerOptionParser) {
             this.headerOptionParser = headerOptionParser;
         }
 
-        public void add(IPHeaderOption.ParserType parser) {
+        /**
+         * 
+         * @param parser
+         */
+        public void add(final IPHeaderOption.ParserType parser) {
             //Precondition.checkReference(parser);
             if (this.headerOptionParser == null) {
                 setHeaderOptionParser(new IPHeaderOption.Parser());
@@ -58,7 +84,12 @@ public abstract class IPv6OptionsHeader extends IPExtensionHeader {
             this.headerOptionParser.add(parser.getKey(), parser);
         }
 
-        public void add(Object optionCode, IPHeaderOption.ParserType parser) {
+        /**
+         * 
+         * @param optionCode
+         * @param parser
+         */
+        public void add(final Object optionCode, final IPHeaderOption.ParserType parser) {
             //Precondition.checkReference(parser);
             if (this.headerOptionParser == null) {
                 setHeaderOptionParser(new IPHeaderOption.Parser());
@@ -66,16 +97,26 @@ public abstract class IPv6OptionsHeader extends IPExtensionHeader {
             this.headerOptionParser.add(optionCode, parser);
         }
 
-        public void remove(Object optionCode) {
+        /**
+         * 
+         * @param optionCode
+         */
+        public void remove(final Object optionCode) {
             if (this.headerOptionParser != null) {
                 this.headerOptionParser.remove(optionCode);
             }
         }
 
-        public abstract IPv6OptionsHeader constructHeader(ByteBuffer buffer) throws ParseException;
+        /**
+         * 
+         * @param buffer
+         * @return
+         * @throws ParseException
+         */
+        public abstract IPv6OptionsHeader constructHeader(final ByteBuffer buffer) throws ParseException;
 
         @Override
-        public IPMessage parse(ByteBuffer buffer) throws ParseException, MissingParserException {
+        public IPMessage parse(final ByteBuffer buffer) throws ParseException, MissingParserException {
             IPv6OptionsHeader header = constructHeader(buffer);
 
             // Parse IP header options
@@ -89,8 +130,10 @@ public abstract class IPv6OptionsHeader extends IPExtensionHeader {
 
     /*-- Member Variables---------------------------------------------------*/
 
+    /** */
     protected ByteBuffer unparsedOptions = null;
 
+    /** */
     protected Vector<IPHeaderOption> options = null;
     
 
@@ -100,7 +143,7 @@ public abstract class IPv6OptionsHeader extends IPExtensionHeader {
      * 
      * @param protocolNumber
      */
-    protected IPv6OptionsHeader(byte protocolNumber) {
+    protected IPv6OptionsHeader(final byte protocolNumber) {
         super(protocolNumber);
         
         if (logger.isLoggable(Level.FINE)) {
@@ -114,7 +157,7 @@ public abstract class IPv6OptionsHeader extends IPExtensionHeader {
      * @param protocolNumber
      * @throws ParseException
      */
-    public IPv6OptionsHeader(ByteBuffer buffer, byte protocolNumber) throws ParseException {
+    public IPv6OptionsHeader(final ByteBuffer buffer, final byte protocolNumber) throws ParseException {
         super(consume(buffer,BASE_HEADER_LENGTH), protocolNumber);
         
         this.unparsedOptions = consume(buffer, HeaderLength.get(getBufferInternal()) - BASE_HEADER_LENGTH);
@@ -125,7 +168,7 @@ public abstract class IPv6OptionsHeader extends IPExtensionHeader {
     }
         
     @Override
-    public void writeTo(ByteBuffer buffer) {
+    public void writeTo(final ByteBuffer buffer) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPv6OptionsHeader.writeTo", buffer));
@@ -148,15 +191,16 @@ public abstract class IPv6OptionsHeader extends IPExtensionHeader {
             buffer.put((byte)0);
         }
     }
-    
+
     @Override
-    public void setProtocolNumber(byte protocolNumber) {
+    public void setProtocolNumber(final byte protocolNumber) {
         // Do nothing - value is set by constructors
     }
 
     /**
      * Gets the computed length of the header including options expressed in
      * bytes. This value is stored in the header as the length in 8-byte words minus 8 bytes.
+     * @return
      */
     public int getComputedHeaderLength() {
         return (((BASE_HEADER_LENGTH + getOptionsLength() + 7) / 8) * 8);
@@ -174,7 +218,7 @@ public abstract class IPv6OptionsHeader extends IPExtensionHeader {
      * 
      * @param option
      */
-    public final void addOption(IPHeaderOption option) {
+    public final void addOption(final IPHeaderOption option) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPv6OptionsHeader.addOption", option));
@@ -189,7 +233,7 @@ public abstract class IPv6OptionsHeader extends IPExtensionHeader {
      * 
      * @param option
      */
-    public final void removeOption(IPHeaderOption option) {
+    public final void removeOption(final IPHeaderOption option) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPv6OptionsHeader.removeOption", option));
@@ -202,6 +246,7 @@ public abstract class IPv6OptionsHeader extends IPExtensionHeader {
     /**
      * Calculates the total bytes required by all options currently attached to
      * the packet header.
+     * @return
      */
     public final int getOptionsLength() {
         if (this.options == null) {
@@ -227,7 +272,7 @@ public abstract class IPv6OptionsHeader extends IPExtensionHeader {
      * @throws ParseException
      * @throws MissingParserException
      */
-    public void parseOptions(IPHeaderOption.Parser parser) throws ParseException, MissingParserException {
+    public void parseOptions(final IPHeaderOption.Parser parser) throws ParseException, MissingParserException {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPv6OptionsHeader.parseOptions", parser));
@@ -268,6 +313,7 @@ public abstract class IPv6OptionsHeader extends IPExtensionHeader {
     /**
      * Calculates the number of zero-padding bytes required to make IP header
      * end on 64-bit word boundary.
+     * @return
      */
     public int getPaddingLength() {
         return getHeaderLength() - BASE_HEADER_LENGTH - getOptionsLength();

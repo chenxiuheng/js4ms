@@ -34,6 +34,9 @@ public abstract class MLDGroupMessage extends MLDMessage {
 
     /*-- Static Variables ---------------------------------------------------*/
     
+    /**
+     * 
+     */
     public static final ByteArrayField GroupAddress = new ByteArrayField(4,16);
 
 
@@ -45,7 +48,7 @@ public abstract class MLDGroupMessage extends MLDMessage {
      * @param type
      * @param groupAddress
      */
-    protected MLDGroupMessage(int size, byte type, byte[] groupAddress) {
+    protected MLDGroupMessage(final int size, final byte type, final byte[] groupAddress) {
         super(size, type);
         
         if (logger.isLoggable(Level.FINER)) {
@@ -63,7 +66,7 @@ public abstract class MLDGroupMessage extends MLDMessage {
      * @param buffer
      * @throws ParseException
      */
-    protected MLDGroupMessage(ByteBuffer buffer) throws ParseException {
+    protected MLDGroupMessage(final ByteBuffer buffer) throws ParseException {
         super(buffer);
 
         if (logger.isLoggable(Level.FINER)) {
@@ -78,6 +81,7 @@ public abstract class MLDGroupMessage extends MLDMessage {
      * The Group Address field is set to zero when sending a General Query,
      * and set to the IP multicast address being queried when sending a
      * Group-Specific Query or Group-and-Source-Specific Query.
+     * @return
      */
     public final byte[] getGroupAddress() {
         return GroupAddress.get(getBufferInternal());
@@ -87,7 +91,7 @@ public abstract class MLDGroupMessage extends MLDMessage {
      * 
      * @param groupAddress
      */
-    public final void setGroupAddress(InetAddress groupAddress) {
+    public final void setGroupAddress(final InetAddress groupAddress) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "MLDGroupMessage.setGroupAddress", Logging.address(groupAddress)));
@@ -100,7 +104,7 @@ public abstract class MLDGroupMessage extends MLDMessage {
      * 
      * @param groupAddress
      */
-    public final void setGroupAddress(byte[] groupAddress) {
+    public final void setGroupAddress(final byte[] groupAddress) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "MLDGroupMessage.setGroupAddress", Logging.address(groupAddress)));

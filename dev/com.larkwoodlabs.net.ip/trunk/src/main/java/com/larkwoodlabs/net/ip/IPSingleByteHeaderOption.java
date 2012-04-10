@@ -16,6 +16,8 @@
 
 package com.larkwoodlabs.net.ip;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.logging.Level;
 
@@ -54,7 +56,7 @@ public class IPSingleByteHeaderOption extends IPHeaderOption {
      * @param optionClass
      * @param optionNumber
      */
-    public IPSingleByteHeaderOption(boolean copyFlag, int optionClass, int optionNumber) {
+    public IPSingleByteHeaderOption(final boolean copyFlag, final int optionClass, final int optionNumber) {
         super(OPTION_LENGTH, copyFlag, optionClass, optionNumber);
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPSingleByteHeaderOption.IPSingleByteHeaderOption", copyFlag, optionClass, optionNumber));
@@ -65,10 +67,22 @@ public class IPSingleByteHeaderOption extends IPHeaderOption {
      * 
      * @param buffer
      */
-    public IPSingleByteHeaderOption(ByteBuffer buffer) {
+    public IPSingleByteHeaderOption(final ByteBuffer buffer) {
         super(consume(buffer, OPTION_LENGTH));
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPSingleByteHeaderOption.IPSingleByteHeaderOption", buffer));
+        }
+    }
+
+    /**
+     * 
+     * @param buffer
+     * @throws IOException 
+     */
+    public IPSingleByteHeaderOption(final InputStream is) throws IOException {
+        super(consume(is, OPTION_LENGTH));
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer(Logging.entering(ObjectId, "IPSingleByteHeaderOption.IPSingleByteHeaderOption", is));
         }
     }
 

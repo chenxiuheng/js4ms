@@ -72,14 +72,25 @@ public abstract class ICMPv6Message extends BufferBackedObject implements IPMess
 
     /*-- Inner Classes ------------------------------------------------------*/
 
+    /**
+     * 
+     */
     public static interface ParserType extends KeyedBufferParser<ICMPv6Message> {
         
-        public boolean verifyChecksum(ByteBuffer buffer, byte[] sourceAddress, byte[] destinationAddress) throws MissingParserException, ParseException;
+        public boolean verifyChecksum(ByteBuffer buffer,
+                                      byte[] sourceAddress,
+                                      byte[] destinationAddress) throws MissingParserException, ParseException;
 
     }
 
+    /**
+     * 
+     */
     public static class Parser extends BufferParserSelector<ICMPv6Message> implements IPMessage.ParserType {
 
+        /**
+         *
+         */
         public Parser() {
             super(new SelectorField<Byte>(ICMPv6Message.MessageType));
         }
@@ -90,7 +101,9 @@ public abstract class ICMPv6Message extends BufferBackedObject implements IPMess
         }
 
         @Override
-        public boolean verifyChecksum(ByteBuffer buffer, byte[] sourceAddress, byte[] destinationAddress) throws MissingParserException, ParseException {
+        public boolean verifyChecksum(final ByteBuffer buffer,
+                                      final byte[] sourceAddress,
+                                      final byte[] destinationAddress) throws MissingParserException, ParseException {
             ParserType parser = (ParserType)get(getKeyField(buffer));
             if (parser == null) {
                 // Check for default parser (null key)
@@ -105,34 +118,47 @@ public abstract class ICMPv6Message extends BufferBackedObject implements IPMess
 
 
     /*-- Static Variables ---------------------------------------------------*/
-    
+
+    /** Logger used to generate ICMPv6 log entries. */
     public static final Logger logger = Logger.getLogger(ICMPv6Message.class.getName());
 
+    /** */
     protected static final int HEADER_LENGTH = 4;
 
+    /** Protocol number for ICMPv6 headers. */
     public static final byte IP_PROTOCOL_NUMBER = 58;
 
+    /** */
     public static final ByteField   MessageType = new ByteField(0); 
+    /** */
     public static final ByteField   Code = new ByteField(1); 
+    /** */
     public static final ShortField  Checksum = new ShortField(2);
 
     // TODO: Get rid of this - use IPPacket functions?
     // Pseudo Header fields for checksum calculation
+    /** */
     public static final ByteArrayField  SourceAddress = new ByteArrayField(0,16);
+    /** */
     public static final ByteArrayField  DestinationAddress = new ByteArrayField(16,16);
+    /** */
     public static final IntegerField    PacketLength = new IntegerField(32);
+    /** */
     public static final ByteArrayField  Zeroes = new ByteArrayField(36,3);
+    /** */
     public static final ByteField       NextHeader = new ByteField(39);
+    /** */
     protected static final int PSEUDO_HEADER_LENGTH = 40;
     
 
     /*-- Member Variables ---------------------------------------------------*/
 
+    /** */
     byte protocolNumber;
-    
+
 
     /*-- Member Functions ---------------------------------------------------*/
-    
+
     /**
      * 
      * @param size
@@ -147,13 +173,9 @@ public abstract class ICMPv6Message extends BufferBackedObject implements IPMess
     }
 
     /**
-     * Constructs an extension header object.
-     * This constructor can be used to create a header object that provides
-     * an opaque representation of header content. 
-     * @param bytes
-     * @param offset
+     * @param buffer
      */
-    public ICMPv6Message(ByteBuffer buffer) throws ParseException {
+    public ICMPv6Message(final ByteBuffer buffer) throws ParseException {
         super(consume(buffer, HEADER_LENGTH));
         
         if (logger.isLoggable(Level.FINER)) {
@@ -161,14 +183,14 @@ public abstract class ICMPv6Message extends BufferBackedObject implements IPMess
             logState(logger);
         }
     }
-    
+
     @Override
     public Logger getLogger() {
         return logger;
     }
 
     @Override
-    public void log(Logger logger) {
+    public void log(final Logger logger) {
         super.log(logger);
         logState(logger);
     }
@@ -177,7 +199,7 @@ public abstract class ICMPv6Message extends BufferBackedObject implements IPMess
      * Logs value of member variables declared or maintained by this class.
      * @param logger
      */
-    private void logState(Logger logger) {
+    private void logState(final Logger logger) {
         logger.info(ObjectId + " : protocol="+getProtocolNumber());
         logger.fine(ObjectId + " : protocol-number="+getProtocolNumber());
         logger.fine(ObjectId + " : header-length="+getHeaderLength());
@@ -187,8 +209,9 @@ public abstract class ICMPv6Message extends BufferBackedObject implements IPMess
     /**
      * NOTE: You must call {@link #updateChecksum(byte[],byte[],int)} to
      * write the checksum prior to calling this method!
+     * @param buffer
      */
-    public void writeTo(ByteBuffer buffer) {
+    public void writeTo(final ByteBuffer buffer) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "ICMPv6Message.writeTo", buffer));
@@ -203,7 +226,7 @@ public abstract class ICMPv6Message extends BufferBackedObject implements IPMess
     }
 
     @Override
-    public void setProtocolNumber(byte protocolNumber) {
+    public void setProtocolNumber(final byte protocolNumber) {
         // Do nothing - protocol number set in constructors
     }
     
@@ -218,10 +241,10 @@ public abstract class ICMPv6Message extends BufferBackedObject implements IPMess
     }
 
     @Override
-    public final void setNextMessage(IPMessage header) {
+    public final void setNextMessage(final IPMessage header) {
         throw new UnsupportedOperationException();
     }
-    
+
     @Override
     public final void removeNextMessage() {
         // Do nothing in this class
@@ -230,12 +253,13 @@ public abstract class ICMPv6Message extends BufferBackedObject implements IPMess
     /**
      * Gets the total length of this header in bytes.
      * Some ICMPv6 messages override this method to return a fixed value.
+     * @return
      */
     @Override
     public final int getHeaderLength() {
         return getMessageLength();
     }
-    
+
     @Override
     public final int getTotalLength() {
         return getHeaderLength();
@@ -256,12 +280,12 @@ public abstract class ICMPv6Message extends BufferBackedObject implements IPMess
     public byte getType() {
         return MessageType.get(getBufferInternal());
     }
-    
+
     /**
      * 
      * @param type
      */
-    protected final void setType(byte type) {
+    protected final void setType(final byte type) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "ICMPv6Message.setType", type));
@@ -269,7 +293,7 @@ public abstract class ICMPv6Message extends BufferBackedObject implements IPMess
         
         MessageType.set(getBufferInternal(),type);
     }
-    
+
     /**
      * 
      * @return
@@ -277,12 +301,12 @@ public abstract class ICMPv6Message extends BufferBackedObject implements IPMess
     public final byte getCode() {
         return Code.get(getBufferInternal());
     }
-    
+
     /**
      * 
      * @param code
      */
-    protected final void setCode(byte code) {
+    protected final void setCode(final byte code) {
         
         if (logger.isLoggable(Level.FINE)) {
             logger.fine(Logging.entering(ObjectId, "ICMPv6Message.setCode", code));
@@ -298,12 +322,12 @@ public abstract class ICMPv6Message extends BufferBackedObject implements IPMess
     public final short getChecksum() {
         return Checksum.get(getBufferInternal());
     }
-    
+
     /**
      * 
      * @param checksum
      */
-    public final void setChecksum(short checksum) {
+    public final void setChecksum(final short checksum) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "ICMPv6Message.setChecksum", checksum));
@@ -318,11 +342,13 @@ public abstract class ICMPv6Message extends BufferBackedObject implements IPMess
      * @param destinationAddress - IP destination address from IPv6 header.
      * @param packetLength - Total packet length from IPv6 header.
      */
-    public final void verifyChecksum(byte[] sourceAddress, byte[] destinationAddress, int packetLength) throws ParseException {
+    public final void verifyChecksum(final byte[] sourceAddress,
+                                     final byte[] destinationAddress,
+                                     final int packetLength) throws ParseException {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId,
-                                          "ICMPv6Message.verifyChecksu",
+                                          "ICMPv6Message.verifyChecksum",
                                           Logging.address(sourceAddress),
                                           Logging.address(destinationAddress),
                                           packetLength));
@@ -341,14 +367,16 @@ public abstract class ICMPv6Message extends BufferBackedObject implements IPMess
         
         setChecksum(checksum);
     }
-    
+
     /**
      * Updates the ICMPv6 message checksum. Must be called when constructing an ICMPv6 packet.
      * @param sourceAddress - IP source address from IPv6 header.
      * @param destinationAddress - IP destination address from IPv6 header.
      * @param packetLength - Total packet length from IPv6 header.
      */
-    public final void updateChecksum(byte[] sourceAddress, byte[] destinationAddress, int packetLength) {
+    public final void updateChecksum(final byte[] sourceAddress,
+                                     final byte[] destinationAddress,
+                                     final int packetLength) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId,
@@ -371,9 +399,15 @@ public abstract class ICMPv6Message extends BufferBackedObject implements IPMess
      * sum of the whole ICMPv6 message and a pseudo header consisting of values
      * from the IPv6 header.  For computing the checksum, the Checksum field
      * is set to zero.  When receiving packets, the checksum MUST be verified
-     *  before processing a packet. [RFC-1071]
+     * before processing a packet. [RFC-1071]
+     * @param sourceAddress
+     * @param destinationAddress
+     * @param packetLength
+     * @return
      */
-    public final short calculateChecksum(byte[] sourceAddress, byte[] destinationAddress, int packetLength) {
+    public final short calculateChecksum(final byte[] sourceAddress,
+                                         final byte[] destinationAddress,
+                                         final int packetLength) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId,

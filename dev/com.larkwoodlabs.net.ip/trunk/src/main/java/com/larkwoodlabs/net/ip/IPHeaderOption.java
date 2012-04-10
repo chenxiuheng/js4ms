@@ -67,10 +67,16 @@ public abstract class IPHeaderOption extends BufferBackedObject {
 
     /*-- Inner Classes ------------------------------------------------------*/
 
+    /**
+     * 
+     */
     public static interface ParserType extends KeyedBufferParser<IPHeaderOption> {
 
     }
 
+    /**
+     * 
+     */
     public static class Parser extends BufferParserSelector<IPHeaderOption> {
 
         public Parser() {
@@ -82,21 +88,33 @@ public abstract class IPHeaderOption extends BufferBackedObject {
 
     /*-- Static Variables ---------------------------------------------------*/
     
+    /** Logger used to generate IPHeaderOption log entries. */
     public static final Logger logger = Logger.getLogger(IPHeaderOption.class.getName());
 
+    /** */
     public static final String CLASS_NAME = "  ["+IPHeaderOption.class.getName()+"]";
 
+    /** */
     public static final int BASE_OPTION_LENGTH = 1;
 
+    /** */
     public static final ByteField       Option = new ByteField(0); 
+    /** */
     public static final ByteBitField    OptionCode = new ByteBitField(0,0,7); 
+    /** */
     public static final ByteBitField    OptionNumber = new ByteBitField(0,0,5); 
+    /** */
     public static final ByteBitField    OptionClass = new ByteBitField(0,5,2); 
+    /** */
     public static final BooleanField    CopyFlag = new BooleanField(0,7); 
 
 
     /*-- Static Functions ---------------------------------------------------*/
 
+    /**
+     * 
+     * @return
+     */
     public static Parser constructParser() {
         IPHeaderOption.Parser parser = new IPHeaderOption.Parser();
         parser.add(new IPv4RouterAlertOption.Parser());
@@ -113,7 +131,7 @@ public abstract class IPHeaderOption extends BufferBackedObject {
      * 
      * @param option
      */
-    public IPHeaderOption(byte option) {
+    public IPHeaderOption(final byte option) {
         this(BASE_OPTION_LENGTH,option);
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPHeaderOption.IPHeaderOption", option));
@@ -125,14 +143,14 @@ public abstract class IPHeaderOption extends BufferBackedObject {
      * @param size
      * @param option
      */
-    protected IPHeaderOption(int size, byte option) {
+    protected IPHeaderOption(final int size, final byte option) {
         super(size);
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPHeaderOption.IPHeaderOption", size, option));
         }
         
-	    setOption(option);
+        setOption(option);
         if (logger.isLoggable(Level.FINER)) {
             logState(logger);
         }
@@ -144,7 +162,9 @@ public abstract class IPHeaderOption extends BufferBackedObject {
      * @param optionClass
      * @param optionNumber
      */
-    public IPHeaderOption(boolean copyFlag, int optionClass, int optionNumber) {
+    public IPHeaderOption(final boolean copyFlag,
+                          final int optionClass,
+                          final int optionNumber) {
         this(BASE_OPTION_LENGTH, copyFlag, optionClass, optionNumber);
 
         if (logger.isLoggable(Level.FINER)) {
@@ -159,26 +179,29 @@ public abstract class IPHeaderOption extends BufferBackedObject {
      * @param optionClass
      * @param optionNumber
      */
-    protected IPHeaderOption(int size, boolean copyFlag, int optionClass, int optionNumber) {
+    protected IPHeaderOption(final int size,
+                             final boolean copyFlag,
+                             final int optionClass,
+                             final int optionNumber) {
         super(size);
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPHeaderOption.IPHeaderOption", size, copyFlag, optionClass, optionNumber));
         }
         
-	    setCopyFlag(copyFlag);
-	    setOptionClass(optionClass);
-	    setOptionNumber(optionNumber);
+        setCopyFlag(copyFlag);
+        setOptionClass(optionClass);
+        setOptionNumber(optionNumber);
         if (logger.isLoggable(Level.FINER)) {
             logState(logger);
         }
-	}
+    }
     
     /**
      * 
      * @param buffer
      */
-    protected IPHeaderOption(ByteBuffer buffer) {
+    protected IPHeaderOption(final ByteBuffer buffer) {
         super(buffer);
 
         if (logger.isLoggable(Level.FINER)) {
@@ -193,7 +216,7 @@ public abstract class IPHeaderOption extends BufferBackedObject {
     }
 
     @Override
-    public void log(Logger logger) {
+    public void log(final Logger logger) {
         super.log(logger);
         logState(logger);
     }
@@ -202,25 +225,25 @@ public abstract class IPHeaderOption extends BufferBackedObject {
      * Logs value of member variables declared or maintained by this class.
      * @param logger
      */
-    private void logState(Logger logger) {
+    private void logState(final Logger logger) {
         logger.info(ObjectId + " : copy-flag="+getCopyFlag());
-	    logger.info(ObjectId + " : option-class="+getOptionClass());
-	    logger.info(ObjectId + " : option-number="+getOptionNumber());
-	}
+        logger.info(ObjectId + " : option-class="+getOptionClass());
+        logger.info(ObjectId + " : option-number="+getOptionNumber());
+    }
 
     /**
      * 
      * @return
      */
-	public final boolean getCopyFlag() {
-	    return CopyFlag.get(getBufferInternal());
-	}
+    public final boolean getCopyFlag() {
+        return CopyFlag.get(getBufferInternal());
+    }
 
-	/**
-	 * 
-	 * @param copyFlag
-	 */
-    public final void setCopyFlag(boolean copyFlag) {
+    /**
+     * 
+     * @param copyFlag
+     */
+    public final void setCopyFlag(final boolean copyFlag) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPHeaderOption.setCopyFlag", copyFlag));
@@ -235,13 +258,13 @@ public abstract class IPHeaderOption extends BufferBackedObject {
      */
     public final int getOptionClass() {
         return OptionClass.get(getBufferInternal());
-	}
+    }
 
     /**
      * 
      * @param optionClass
      */
-    public final void setOptionClass(int optionClass) {
+    public final void setOptionClass(final int optionClass) {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPHeaderOption.setOptionClass", optionClass ));
@@ -262,7 +285,7 @@ public abstract class IPHeaderOption extends BufferBackedObject {
      * 
      * @param optionCode
      */
-    public final void setOptionCode(int optionCode) {
+    public final void setOptionCode(final int optionCode) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPHeaderOption.setOptionCode", optionCode));
@@ -277,13 +300,13 @@ public abstract class IPHeaderOption extends BufferBackedObject {
      */
     public final int getOptionNumber() {
         return OptionNumber.get(getBufferInternal());
-	}
+    }
 
     /**
      * 
      * @param option
      */
-    public final void setOptionNumber(int option) {
+    public final void setOptionNumber(final int option) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPHeaderOption.setOptionNumber", option));
@@ -298,33 +321,33 @@ public abstract class IPHeaderOption extends BufferBackedObject {
      */
     public final byte getOption() {
         return Option.get(getBufferInternal());
-	}
-	
+    }
+    
     /**
      * 
      * @param option
      */
-    public final void setOption(byte option) {
+    public final void setOption(final byte option) {
 
-	    if (logger.isLoggable(Level.FINER)) {
+        if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPHeaderOption.setOption", option));
         }
         
-	    Option.set(getBufferInternal(),option);
-	}
+        Option.set(getBufferInternal(),option);
+    }
 
     /**
      * 
      * @return
      */
-	public abstract int getOptionLength();
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public boolean isWordAlignmentRequired() {
-	    return false;
-	}
+    public abstract int getOptionLength();
+
+    /**
+     * 
+     * @return
+     */
+    public boolean isWordAlignmentRequired() {
+        return false;
+    }
 
 }

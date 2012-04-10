@@ -99,18 +99,29 @@ import com.larkwoodlabs.util.logging.Logging;
  */
 public class IPv6RoutingHeader extends IPExtensionHeader {
 
+    /**
+     * 
+     */
     public static interface ParserType extends KeyedBufferParser<IPv6RoutingHeader> {
         
     }
 
+    /**
+     * 
+     */
     public static class Parser extends BufferParserSelector<IPMessage> implements IPMessage.ParserType {
 
+        /**
+         * 
+         */
         public Parser() {
             super(new SelectorField<Byte>(IPv6RoutingHeader.RoutingType));
         }
 
         @Override
-        public boolean verifyChecksum(ByteBuffer buffer, byte[] sourceAddress, byte[] destinationAddress) throws MissingParserException, ParseException {
+        public boolean verifyChecksum(final ByteBuffer buffer,
+                                      final byte[] sourceAddress,
+                                      final byte[] destinationAddress) throws MissingParserException, ParseException {
             return true; // Does nothing in this class
         }
 
@@ -121,14 +132,23 @@ public class IPv6RoutingHeader extends IPExtensionHeader {
 
     }
 
+    /** Protocol number for IPv6 Routing headers. */
     public static final byte IP_PROTOCOL_NUMBER = 43;
 
+    /** */
     public static final ByteField    RoutingType = new ByteField(2);
+    /** */
     public static final ByteField    SegmentsLeft = new ByteField(3);
+    /** */
     public static final IntegerField Reserved = new IntegerField(4);
 
 
-    protected IPv6RoutingHeader(byte routingType, byte segmentsLeft) {
+    /**
+     * 
+     * @param routingType
+     * @param segmentsLeft
+     */
+    protected IPv6RoutingHeader(final byte routingType, final byte segmentsLeft) {
         super(IP_PROTOCOL_NUMBER);
 
         if (logger.isLoggable(Level.FINER)) {
@@ -143,7 +163,12 @@ public class IPv6RoutingHeader extends IPExtensionHeader {
         }
     }
 
-    public IPv6RoutingHeader(ByteBuffer segment) throws ParseException {
+    /**
+     * 
+     * @param segment
+     * @throws ParseException
+     */
+    public IPv6RoutingHeader(final ByteBuffer segment) throws ParseException {
         super(segment, IP_PROTOCOL_NUMBER);
 
         if (logger.isLoggable(Level.FINER)) {
@@ -151,9 +176,9 @@ public class IPv6RoutingHeader extends IPExtensionHeader {
             logState(logger);
         }
     }
-    
+
     @Override
-    public void log(Logger logger) {
+    public void log(final Logger logger) {
         super.log(logger);
         logState(logger);
     }
@@ -162,7 +187,7 @@ public class IPv6RoutingHeader extends IPExtensionHeader {
      * Logs value of member variables declared or maintained by this class.
      * @param logger
      */
-    private void logState(Logger logger) {
+    private void logState(final Logger logger) {
         logger.info(ObjectId + " : routing-type="+getRoutingType());
         logger.info(ObjectId + " : segments-left="+getSegmentsLeft());
     }
@@ -179,7 +204,7 @@ public class IPv6RoutingHeader extends IPExtensionHeader {
      * 
      * @param routingType
      */
-    public final void setRoutingType(byte routingType) {
+    public final void setRoutingType(final byte routingType) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPv6RoutingHeader.setRoutingType", routingType));
@@ -200,7 +225,7 @@ public class IPv6RoutingHeader extends IPExtensionHeader {
      * 
      * @param segmentsLeft
      */
-    public final void setSegmentsLeft(byte segmentsLeft) {
+    public final void setSegmentsLeft(final byte segmentsLeft) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPv6RoutingHeader.setSegmentsLeft", segmentsLeft));

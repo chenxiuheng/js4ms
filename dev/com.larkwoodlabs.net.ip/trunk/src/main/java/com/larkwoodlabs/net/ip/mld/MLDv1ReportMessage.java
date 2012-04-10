@@ -105,15 +105,20 @@ public final class MLDv1ReportMessage extends MLDGroupMessage {
 
     /*-- Inner Classes ---------------------------------------------------*/
 
+    /**
+     * 
+     */
     public static class Parser implements MLDMessage.ParserType {
 
         @Override
-        public MLDMessage parse(ByteBuffer buffer) throws ParseException {
+        public MLDMessage parse(final ByteBuffer buffer) throws ParseException {
             return new MLDv1ReportMessage(buffer);
         }
 
         @Override
-        public boolean verifyChecksum(ByteBuffer buffer, byte[] sourceAddress, byte[] destinationAddress) throws MissingParserException, ParseException {
+        public boolean verifyChecksum(final ByteBuffer buffer,
+                                      final byte[] sourceAddress,
+                                      final byte[] destinationAddress) throws MissingParserException, ParseException {
             return MLDv1ReportMessage.verifyChecksum(buffer, sourceAddress, destinationAddress);
         }
 
@@ -127,35 +132,56 @@ public final class MLDv1ReportMessage extends MLDGroupMessage {
 
     /*-- Static Variables ---------------------------------------------------*/
     
+    /** */
     public static final byte MESSAGE_TYPE = (byte)131;
+    /** */
     public static final int BASE_MESSAGE_LENGTH = 24;
 
 
     /*-- Static Functions ---------------------------------------------------*/
-    
+
+    /**
+     * 
+     * @return
+     */
     public static MLDMessage.Parser getMLDMessageParser() {
         return getMLDMessageParser(new MLDv1ReportMessage.Parser());
     }
 
+    /**
+     * 
+     * @return
+     */
     public static IPMessage.Parser getIPMessageParser() {
         return getIPMessageParser(new MLDv1ReportMessage.Parser());
     }
 
+    /**
+     * 
+     * @return
+     */
     public static IPv6Packet.Parser getIPv6PacketParser() {
         return getIPv6PacketParser(new MLDv1ReportMessage.Parser());
     }
 
+    /**
+     * 
+     * @return
+     */
     public static IPPacket.Parser getIPPacketParser() {
         return getIPPacketParser(new MLDv1ReportMessage.Parser());
     }
 
     /**
      * Verifies the MLD message checksum. Called by the parser prior to constructing the packet.
-     * @param buffer - the buffer segment containing the MLD message.
+     * @param buffer - the buffer containing the MLD message.
      * @param sourceAddress An IPv6 (16-byte) address..
      * @param destinationAddress An IPv6 (16-byte) address.
+     * @return
      */
-    public static boolean verifyChecksum(ByteBuffer buffer, byte[] sourceAddress, byte[] destinationAddress) {
+    public static boolean verifyChecksum(final ByteBuffer buffer,
+                                         final byte[] sourceAddress,
+                                         final byte[] destinationAddress) {
         return Checksum.get(buffer) == MLDMessage.calculateChecksum(buffer, BASE_MESSAGE_LENGTH, sourceAddress, destinationAddress);
     }
 
@@ -166,7 +192,9 @@ public final class MLDv1ReportMessage extends MLDGroupMessage {
      * @param sourceAddress An IPv6 (16-byte) address..
      * @param destinationAddress An IPv6 (16-byte) address.
      */
-    public static void setChecksum(ByteBuffer buffer, byte[] sourceAddress, byte[] destinationAddress) {
+    public static void setChecksum(final ByteBuffer buffer,
+                                   final byte[] sourceAddress,
+                                   final byte[] destinationAddress) {
         Checksum.set(buffer, MLDMessage.calculateChecksum(buffer, BASE_MESSAGE_LENGTH, sourceAddress, destinationAddress));
     }
 
@@ -177,7 +205,7 @@ public final class MLDv1ReportMessage extends MLDGroupMessage {
      * 
      * @param groupAddress
      */
-    public MLDv1ReportMessage(byte[] groupAddress) {
+    public MLDv1ReportMessage(final byte[] groupAddress) {
         super(BASE_MESSAGE_LENGTH,(byte)0,groupAddress);
         
         if (logger.isLoggable(Level.FINER)) {
@@ -190,7 +218,7 @@ public final class MLDv1ReportMessage extends MLDGroupMessage {
      * @param buffer
      * @throws ParseException
      */
-    public MLDv1ReportMessage(ByteBuffer buffer) throws ParseException {
+    public MLDv1ReportMessage(final ByteBuffer buffer) throws ParseException {
         super(consume(buffer, BASE_MESSAGE_LENGTH));
         
         if (logger.isLoggable(Level.FINER)) {
@@ -199,7 +227,9 @@ public final class MLDv1ReportMessage extends MLDGroupMessage {
     }
 
     @Override
-    public void writeChecksum(ByteBuffer buffer, byte[] sourceAddress, byte[] destinationAddress) {
+    public void writeChecksum(final ByteBuffer buffer,
+                              final byte[] sourceAddress,
+                              final byte[] destinationAddress) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId,

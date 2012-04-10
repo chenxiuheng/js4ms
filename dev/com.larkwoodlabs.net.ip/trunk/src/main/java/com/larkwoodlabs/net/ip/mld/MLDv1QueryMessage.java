@@ -124,15 +124,20 @@ import com.larkwoodlabs.util.logging.Logging;
  */
 public final class MLDv1QueryMessage extends MLDQueryMessage {
 
+    /**
+     * 
+     */
     public static class Parser implements MLDMessage.ParserType {
 
         @Override
-        public MLDMessage parse(ByteBuffer buffer) throws ParseException {
+        public MLDMessage parse(final ByteBuffer buffer) throws ParseException {
             return new MLDv1QueryMessage(buffer);
         }
 
         @Override
-        public boolean verifyChecksum(ByteBuffer buffer, byte[] sourceAddress, byte[] destinationAddress) throws MissingParserException, ParseException {
+        public boolean verifyChecksum(final ByteBuffer buffer,
+                                      final byte[] sourceAddress,
+                                      final byte[] destinationAddress) throws MissingParserException, ParseException {
             return MLDv1QueryMessage.verifyChecksum(buffer, sourceAddress, destinationAddress);
         }
 
@@ -144,34 +149,65 @@ public final class MLDv1QueryMessage extends MLDQueryMessage {
     }
 
     /*-- Static Variables ---------------------------------------------------*/
-    
+
+    /** */
     public static final int BASE_MESSAGE_LENGTH = 24;
+
+    /** */
     public static final short QUERY_RESPONSE_INTERVAL = 10*1000; // 10 secs as ms
 
 
     /*-- Static Functions ---------------------------------------------------*/
-    
+
+    /**
+     * 
+     * @return
+     */
     public static MLDMessage.Parser getMLDMessageParser() {
         return getMLDMessageParser(new MLDv1QueryMessage.Parser());
     }
 
+    /**
+     * 
+     * @return
+     */
     public static IPMessage.Parser getIPMessageParser() {
         return getIPMessageParser(new MLDv1QueryMessage.Parser());
     }
 
+    /**
+     * 
+     * @return
+     */
     public static IPv6Packet.Parser getIPv6PacketParser() {
         return getIPv6PacketParser(new MLDv1QueryMessage.Parser());
     }
 
+    /**
+     * 
+     * @return
+     */
     public static IPPacket.Parser getIPPacketParser() {
         return getIPPacketParser(new MLDv1QueryMessage.Parser());
     }
 
-    public static IPv6Packet constructGeneralQueryPacket(byte[] sourceAddress) {
+    /**
+     * 
+     * @param sourceAddress
+     * @return
+     */
+    public static IPv6Packet constructGeneralQueryPacket(final byte[] sourceAddress) {
         return constructGroupQueryPacket(sourceAddress,IPv6GeneralQueryGroupAddress);
     }
 
-    public static IPv6Packet constructGroupQueryPacket(byte[] sourceAddress, byte[] groupAddress) {
+    /**
+     *
+     * @param sourceAddress
+     * @param groupAddress
+     * @return
+     */
+    public static IPv6Packet constructGroupQueryPacket(final byte[] sourceAddress,
+                                                       final byte[] groupAddress) {
         MLDv1QueryMessage message = new MLDv1QueryMessage(groupAddress);
         message.setMaximumResponseDelay(QUERY_RESPONSE_INTERVAL);
         return constructIPv6Packet(sourceAddress, groupAddress, message);
@@ -179,11 +215,14 @@ public final class MLDv1QueryMessage extends MLDQueryMessage {
 
     /**
      * Verifies the MLD message checksum. Called by the parser prior to constructing the packet.
-     * @param segment - the buffer segment containing the MLD message.
+     * @param buffer - the buffer containing the MLD message.
      * @param sourceAddress An IPv6 (16-byte) address..
      * @param destinationAddress An IPv6 (16-byte) address.
+     * @return
      */
-    public static boolean verifyChecksum(ByteBuffer buffer, byte[] sourceAddress, byte[] destinationAddress) {
+    public static boolean verifyChecksum(final ByteBuffer buffer,
+                                         final byte[] sourceAddress,
+                                         final byte[] destinationAddress) {
         return Checksum.get(buffer) == MLDMessage.calculateChecksum(buffer, BASE_MESSAGE_LENGTH, sourceAddress, destinationAddress);
     }
 
@@ -194,7 +233,9 @@ public final class MLDv1QueryMessage extends MLDQueryMessage {
      * @param sourceAddress An IPv6 (16-byte) address..
      * @param destinationAddress An IPv6 (16-byte) address.
      */
-    public static void setChecksum(ByteBuffer buffer, byte[] sourceAddress, byte[] destinationAddress) {
+    public static void setChecksum(final ByteBuffer buffer,
+                                   final byte[] sourceAddress,
+                                   final byte[] destinationAddress) {
         Checksum.set(buffer, MLDMessage.calculateChecksum(buffer, BASE_MESSAGE_LENGTH, sourceAddress, destinationAddress));
     }
 
@@ -217,7 +258,7 @@ public final class MLDv1QueryMessage extends MLDQueryMessage {
      * 
      * @param groupAddress
      */
-    public MLDv1QueryMessage(byte[] groupAddress) {
+    public MLDv1QueryMessage(final byte[] groupAddress) {
         super(BASE_MESSAGE_LENGTH,groupAddress);
         
         if (logger.isLoggable(Level.FINER)){
@@ -230,7 +271,7 @@ public final class MLDv1QueryMessage extends MLDQueryMessage {
      * @param buffer
      * @throws ParseException
      */
-    public MLDv1QueryMessage(ByteBuffer buffer) throws ParseException {
+    public MLDv1QueryMessage(final ByteBuffer buffer) throws ParseException {
         super(consume(buffer, BASE_MESSAGE_LENGTH));
         
         if (logger.isLoggable(Level.FINER)) {
@@ -239,7 +280,9 @@ public final class MLDv1QueryMessage extends MLDQueryMessage {
     }
 
     @Override
-    public void writeChecksum(ByteBuffer buffer, byte[] sourceAddress, byte[] destinationAddress) {
+    public void writeChecksum(final ByteBuffer buffer,
+                              final byte[] sourceAddress,
+                              final byte[] destinationAddress) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId,
@@ -251,7 +294,7 @@ public final class MLDv1QueryMessage extends MLDQueryMessage {
         
         MLDv1QueryMessage.setChecksum(buffer, sourceAddress, destinationAddress);
     }
-    
+
     @Override
     public int getMessageLength() {
         return BASE_MESSAGE_LENGTH;

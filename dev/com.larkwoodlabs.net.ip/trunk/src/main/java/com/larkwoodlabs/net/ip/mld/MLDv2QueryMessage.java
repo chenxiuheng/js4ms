@@ -230,15 +230,20 @@ public final class MLDv2QueryMessage extends MLDQueryMessage {
 
     /*-- Inner Classes ------------------------------------------------------*/
 
+    /**
+     * 
+     */
     public static class Parser implements MLDMessage.ParserType {
 
         @Override
-        public MLDMessage parse(ByteBuffer buffer) throws ParseException {
+        public MLDMessage parse(final ByteBuffer buffer) throws ParseException {
             return new MLDv1QueryMessage(buffer);
         }
 
         @Override
-        public boolean verifyChecksum(ByteBuffer buffer, byte[] sourceAddress, byte[] destinationAddress) throws MissingParserException, ParseException {
+        public boolean verifyChecksum(final ByteBuffer buffer,
+                                      final byte[] sourceAddress,
+                                      final byte[] destinationAddress) throws MissingParserException, ParseException {
             return MLDv2QueryMessage.verifyChecksum(buffer, sourceAddress, destinationAddress);
         }
 
@@ -250,17 +255,26 @@ public final class MLDv2QueryMessage extends MLDQueryMessage {
     }
 
     /*-- Static Variables ---------------------------------------------------*/
-    
+
+    /** */
     public static final int BASE_MESSAGE_LENGTH = 28;
-    
+
+    /** */
     public static final int DEFAULT_ROBUSTNESS_VALUE = 2;
+    /** */
     public static final int DEFAULT_QUERY_INTERVAL_VALUE = 125; //secs
 
+    /** */
     public static final ShortField      MaximumResponseCode = new ShortField(4);
+    /** */
     public static final ByteBitField    Reserved = new ByteBitField(24,4,4);
+    /** */
     public static final BooleanField    SuppressRouterSideProcessing = new BooleanField(24,3);
+    /** */
     public static final ByteBitField    QuerierRobustnessVariable = new ByteBitField(24,0,3);
+    /** */
     public static final ByteField       QuerierQueryIntervalCode = new ByteField(25);
+    /** */
     public static final ShortField      NumberOfSources = new ShortField(26);
 
 
@@ -271,8 +285,11 @@ public final class MLDv2QueryMessage extends MLDQueryMessage {
      * @param segment - the buffer segment containing the MLD message.
      * @param sourceAddress An IPv6 (16-byte) address..
      * @param destinationAddress An IPv6 (16-byte) address.
+     * @return
      */
-    public static boolean verifyChecksum(ByteBuffer buffer, byte[] sourceAddress, byte[] destinationAddress) {
+    public static boolean verifyChecksum(final ByteBuffer buffer,
+                                         final byte[] sourceAddress,
+                                         final byte[] destinationAddress) {
         return Checksum.get(buffer) == MLDMessage.calculateChecksum(buffer, BASE_MESSAGE_LENGTH + (NumberOfSources.get(buffer) * 16), sourceAddress, destinationAddress);
     }
 
@@ -290,14 +307,14 @@ public final class MLDv2QueryMessage extends MLDQueryMessage {
 
     /*-- Member Variables ---------------------------------------------------*/
 
-    private Vector<byte[]> sources = new Vector<byte[]>();
+    /** */
+    final private Vector<byte[]> sources = new Vector<byte[]>();
 
 
     /*-- Member Functions ---------------------------------------------------*/
 
     /**
      * Constructs a general query.
-     * @param groupAddress
      */
     public MLDv2QueryMessage() {
         super(BASE_MESSAGE_LENGTH);
@@ -320,7 +337,7 @@ public final class MLDv2QueryMessage extends MLDQueryMessage {
      * 
      * @param groupAddress
      */
-    public MLDv2QueryMessage(byte[] groupAddress) {
+    public MLDv2QueryMessage(final byte[] groupAddress) {
         super(BASE_MESSAGE_LENGTH,groupAddress);
 
         if (logger.isLoggable(Level.FINER)) {
@@ -342,7 +359,7 @@ public final class MLDv2QueryMessage extends MLDQueryMessage {
      * @param buffer
      * @throws ParseException
      */
-    public MLDv2QueryMessage(ByteBuffer buffer) throws ParseException {
+    public MLDv2QueryMessage(final ByteBuffer buffer) throws ParseException {
         super(consume(buffer, BASE_MESSAGE_LENGTH));
 
         if (logger.isLoggable(Level.FINER)) {
@@ -364,7 +381,7 @@ public final class MLDv2QueryMessage extends MLDQueryMessage {
     }
     
     @Override
-    public void log(Logger logger) {
+    public void log(final Logger logger) {
         super.log(logger);
         logState(logger);
     }
@@ -373,7 +390,7 @@ public final class MLDv2QueryMessage extends MLDQueryMessage {
      * 
      * @param logger
      */
-    private void logState(Logger logger) {
+    private void logState(final Logger logger) {
         logger.info(ObjectId + " : suppress-router-side-processing="+getSuppressRouterSideProcessing());
         logger.info(ObjectId + " : querier-robustness-variable="+getQuerierRobustnessVariable());
         logger.info(ObjectId + " : querier-query-interval-code="+getQuerierQueryIntervalCode()+" "+getQueryIntervalTime()+"ms");
@@ -389,9 +406,10 @@ public final class MLDv2QueryMessage extends MLDQueryMessage {
     /**
      * Writes the message into a buffer.
      * Call {@link #updateChecksum(byte[], byte[], int)} prior to calling this method.
+     * @param buffer
      */
     @Override
-    public void writeTo(ByteBuffer buffer) {
+    public void writeTo(final ByteBuffer buffer) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "MLDv2QueryMessage.writeTo", buffer));
@@ -403,9 +421,11 @@ public final class MLDv2QueryMessage extends MLDQueryMessage {
             buffer.put(iter.next());
         }
     }
-    
+
     @Override
-    public void writeChecksum(ByteBuffer buffer, byte[] sourceAddress, byte[] destinationAddress) {
+    public void writeChecksum(final ByteBuffer buffer,
+                              final byte[] sourceAddress,
+                              final byte[] destinationAddress) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId,
@@ -417,7 +437,7 @@ public final class MLDv2QueryMessage extends MLDQueryMessage {
         
         MLDv2QueryMessage.setChecksum(buffer, sourceAddress, destinationAddress);
     }
-    
+
     @Override
     public int getMessageLength() {
         return BASE_MESSAGE_LENGTH + getNumberOfSources() * 16;
@@ -444,6 +464,7 @@ public final class MLDv2QueryMessage extends MLDQueryMessage {
      *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      * </pre>
      * Maximum Response Delay = (mant | 0x1000) << (exp+3)
+     * @return
      */
     @Override
     public short getMaximumResponseDelay() {
@@ -481,10 +502,10 @@ public final class MLDv2QueryMessage extends MLDQueryMessage {
      * Sets the "<code>Maximum Response Delay</code>" value in milliseconds.
      * This value is converted into a {@linkplain #MaximumResponseCode Maximum Response Code} value.
      * @see #getMaximumResponseDelay()
-     * @return
+     * @param milliseconds
      */
     @Override
-    public void setMaximumResponseDelay(short milliseconds) {
+    public void setMaximumResponseDelay(final short milliseconds) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "MLDv2QueryMessage.setMaximumResponseDelay", milliseconds));
@@ -522,6 +543,7 @@ public final class MLDv2QueryMessage extends MLDQueryMessage {
      *       |       |S|     | Byte #8
      *       +-+-+-+-+-+-+-+-+
      * </pre>
+     * @return
      */
     public boolean getSuppressRouterSideProcessing() {
         return SuppressRouterSideProcessing.get(getBufferInternal());
@@ -532,7 +554,7 @@ public final class MLDv2QueryMessage extends MLDQueryMessage {
      * See {@link #getSuppressRouterSideProcessing()}
      * @param suppressRouterSideProcessing
      */
-    public void setSuppressRouterSideProcessing(boolean suppressRouterSideProcessing) {
+    public void setSuppressRouterSideProcessing(final boolean suppressRouterSideProcessing) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId,"MLDv2QueryMessage.setSuppressRouterSideProcessing", suppressRouterSideProcessing));
@@ -561,6 +583,7 @@ public final class MLDv2QueryMessage extends MLDQueryMessage {
      *       +-+-+-+-+-+-+-+-+
      * </pre>
      * See {@link #setQuerierRobustnessVariable(byte)}.
+     * @return
      */
     public byte getQuerierRobustnessVariable() {
         return QuerierRobustnessVariable.get(getBufferInternal());
@@ -569,8 +592,9 @@ public final class MLDv2QueryMessage extends MLDQueryMessage {
     /**
      * Sets the "Querier's Robustness Variable" field value.
      * See {@link #getQuerierRobustnessVariable()}.
+     * @param querierRobustnessVariable
      */
-    public void setQuerierRobustnessVariable(byte querierRobustnessVariable) {
+    public void setQuerierRobustnessVariable(final byte querierRobustnessVariable) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "MLDv2QueryMessage.setQuerierRobustnessVariable", querierRobustnessVariable));
@@ -607,6 +631,7 @@ public final class MLDv2QueryMessage extends MLDQueryMessage {
      *    which case the receiving routers use the default [Query Interval]
      *    value specified in section 8.2.
      * </pre>
+     * @return
      */
     public byte getQuerierQueryIntervalCode() {
         return QuerierQueryIntervalCode.get(getBufferInternal());
@@ -615,8 +640,9 @@ public final class MLDv2QueryMessage extends MLDQueryMessage {
     /**
      * Sets the "Querier's Query Interval Code" field value.
      * See {@link #setQuerierQueryIntervalCode(byte)} and {@link #setQueryIntervalTime(int)}.
+     * @param querierQueryIntervalCode
      */
-    public void setQuerierQueryIntervalCode(byte querierQueryIntervalCode) {
+    public void setQuerierQueryIntervalCode(final byte querierQueryIntervalCode) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "MLDv2QueryMessage.setQuerierQueryIntervalCode", querierQueryIntervalCode));
@@ -624,10 +650,11 @@ public final class MLDv2QueryMessage extends MLDQueryMessage {
         
         QuerierQueryIntervalCode.set(getBufferInternal(),querierQueryIntervalCode);
     }
-    
+
     /**
      * Gets the query interval time in seconds.
      * See {@link #getQuerierQueryIntervalCode()}.
+     * @return
      */
     public int getQueryIntervalTime() {
         byte qqic = getQuerierQueryIntervalCode();
@@ -644,8 +671,9 @@ public final class MLDv2QueryMessage extends MLDQueryMessage {
     /**
      * Sets the query interval time in seconds.
      * See {@link #setQuerierQueryIntervalCode(byte)}.
+     * @param seconds
      */
-    public void setQueryIntervalTime(int seconds) {
+    public void setQueryIntervalTime(final int seconds) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "MLDv2QueryMessage.setQueryIntervalTime", seconds));
@@ -672,7 +700,7 @@ public final class MLDv2QueryMessage extends MLDQueryMessage {
      * 
      * @param numberOfSources
      */
-    protected void setNumberOfSources(int numberOfSources) {
+    protected void setNumberOfSources(final int numberOfSources) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "MLDv2QueryMessage.setNumberOfSources", numberOfSources));
@@ -686,7 +714,7 @@ public final class MLDv2QueryMessage extends MLDQueryMessage {
      * @param sourceAddress
      * @throws UnknownHostException
      */
-    public void addSource(InetAddress sourceAddress) throws UnknownHostException {
+    public void addSource(final InetAddress sourceAddress) throws UnknownHostException {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "MLDv2QueryMessage.addSource", sourceAddress));
@@ -699,7 +727,7 @@ public final class MLDv2QueryMessage extends MLDQueryMessage {
      * 
      * @param sourceAddress
      */
-    public void addSource(byte[] sourceAddress) {
+    public void addSource(final byte[] sourceAddress) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "MLDv2QueryMessage.addSource", Logging.address(sourceAddress)));
@@ -714,7 +742,7 @@ public final class MLDv2QueryMessage extends MLDQueryMessage {
      * @param index
      * @return
      */
-    public byte[] getSource(int index) {
+    public byte[] getSource(final int index) {
         if (this.sources.size() > 0) {
             return this.sources.get(index);
         }

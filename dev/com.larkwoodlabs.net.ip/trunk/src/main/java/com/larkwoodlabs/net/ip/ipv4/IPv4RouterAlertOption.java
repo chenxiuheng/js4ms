@@ -28,7 +28,7 @@ import com.larkwoodlabs.util.logging.Logging;
 
 
 /**
- * IPv4 Router Alert Option (Option 20) The router alert option is 4 bytes
+ * IPv4 Router Alert Option (Option 20). The router alert option is 4 bytes
  * comprised of an option type, length, and alert value.
  * 
  * <pre>
@@ -55,10 +55,13 @@ public final class IPv4RouterAlertOption extends IPMultiByteHeaderOption {
 
     /*-- Inner Classes ---------------------------------------------------*/
 
+    /**
+     * 
+     */
     public static class Parser implements IPHeaderOption.ParserType {
 
         @Override
-        public IPHeaderOption parse(ByteBuffer buffer) throws ParseException {
+        public IPHeaderOption parse(final ByteBuffer buffer) throws ParseException {
             return new IPv4RouterAlertOption(buffer);
         }
 
@@ -72,6 +75,7 @@ public final class IPv4RouterAlertOption extends IPMultiByteHeaderOption {
 
     /*-- Static Variables ---------------------------------------------------*/
 
+    /** */
     public static final ShortField RouterAlertValue = new ShortField(2); 
 
     /**
@@ -85,7 +89,9 @@ public final class IPv4RouterAlertOption extends IPMultiByteHeaderOption {
      * </pre>
      */
     public static final byte OPTION_VALUE = (byte)0x94;
+    /** */
     public static final byte OPTION_CODE = (byte)0x14;
+    /** */
     public static final byte OPTION_LENGTH = 4;
 
 
@@ -106,7 +112,7 @@ public final class IPv4RouterAlertOption extends IPMultiByteHeaderOption {
      * 
      * @param routerAlertValue
      */
-    public IPv4RouterAlertOption(short routerAlertValue) {
+    public IPv4RouterAlertOption(final short routerAlertValue) {
         super(OPTION_VALUE,OPTION_LENGTH);
         
         if (logger.isLoggable(Level.FINER)) {
@@ -124,7 +130,7 @@ public final class IPv4RouterAlertOption extends IPMultiByteHeaderOption {
      * 
      * @param buffer
      */
-    public IPv4RouterAlertOption(ByteBuffer buffer) {
+    public IPv4RouterAlertOption(final ByteBuffer buffer) {
         super(buffer);
         
         if (logger.isLoggable(Level.FINER)) {
@@ -134,7 +140,7 @@ public final class IPv4RouterAlertOption extends IPMultiByteHeaderOption {
     }
 
     @Override
-    public void log(Logger logger) {
+    public void log(final Logger logger) {
         super.log(logger);
         logState(logger);
     }
@@ -143,7 +149,7 @@ public final class IPv4RouterAlertOption extends IPMultiByteHeaderOption {
      * 
      * @param logger
      */
-    private void logState(Logger logger) {
+    private void logState(final Logger logger) {
         logger.info(ObjectId + " : router-alert-value="+getRouterAlertValue());
     }
 
@@ -159,7 +165,7 @@ public final class IPv4RouterAlertOption extends IPMultiByteHeaderOption {
      * 
      * @param routerAlertValue
      */
-    public void setRouterAlertValue(short routerAlertValue) {
+    public void setRouterAlertValue(final short routerAlertValue) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPv4RouterAlertOption.setRouterAlertValue", routerAlertValue));

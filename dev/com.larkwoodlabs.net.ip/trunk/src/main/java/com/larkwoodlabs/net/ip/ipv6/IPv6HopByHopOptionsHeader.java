@@ -23,17 +23,28 @@ import com.larkwoodlabs.common.exceptions.ParseException;
 import com.larkwoodlabs.util.buffer.parser.MissingParserException;
 import com.larkwoodlabs.util.logging.Logging;
 
+/**
+ * 
+ * 
+ *
+ * @author gbumgard
+ */
 public final class IPv6HopByHopOptionsHeader extends IPv6OptionsHeader {
 
+    /**
+     * 
+     */
     public static class Parser extends IPv6OptionsHeader.Parser {
 
         @Override
-        public IPv6OptionsHeader constructHeader(ByteBuffer buffer) throws ParseException {
+        public IPv6OptionsHeader constructHeader(final ByteBuffer buffer) throws ParseException {
             return new IPv6HopByHopOptionsHeader(buffer);
         }
 
         @Override
-        public boolean verifyChecksum(ByteBuffer buffer, byte[] sourceAddress, byte[] destinationAddress) throws MissingParserException, ParseException {
+        public boolean verifyChecksum(final ByteBuffer buffer,
+                                      final byte[] sourceAddress,
+                                      final byte[] destinationAddress) throws MissingParserException, ParseException {
             return true; // Does nothing in this class
         }
 
@@ -43,8 +54,12 @@ public final class IPv6HopByHopOptionsHeader extends IPv6OptionsHeader {
         }
     }
 
+    /** Protocol number for IPv6 Hop-by-Hop Options headers. */
     public static final byte IP_PROTOCOL_NUMBER = 0;
 
+    /**
+     * 
+     */
     public IPv6HopByHopOptionsHeader() {
         super(IP_PROTOCOL_NUMBER);
         if (logger.isLoggable(Level.FINER)) {
@@ -53,12 +68,17 @@ public final class IPv6HopByHopOptionsHeader extends IPv6OptionsHeader {
         }
     }
 
-    public IPv6HopByHopOptionsHeader(ByteBuffer buffer) throws ParseException {
+    /**
+     * 
+     * @param buffer
+     * @throws ParseException
+     */
+    public IPv6HopByHopOptionsHeader(final ByteBuffer buffer) throws ParseException {
         super(buffer, IP_PROTOCOL_NUMBER);
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entry(this, buffer));
             log();
         }
     }
-    
+
 }

@@ -154,15 +154,20 @@ public final class MLDv2ReportMessage extends MLDMessage {
 
     /*-- Inner Classes ------------------------------------------------------*/
 
+    /**
+     * 
+     */
     public static class Parser implements MLDMessage.ParserType {
 
         @Override
-        public MLDMessage parse(ByteBuffer buffer) throws ParseException {
+        public MLDMessage parse(final ByteBuffer buffer) throws ParseException {
             return new MLDv2ReportMessage(buffer);
         }
 
         @Override
-        public boolean verifyChecksum(ByteBuffer buffer, byte[] sourceAddress, byte[] destinationAddress) throws MissingParserException, ParseException {
+        public boolean verifyChecksum(final ByteBuffer buffer,
+                                      final byte[] sourceAddress,
+                                      final byte[] destinationAddress) throws MissingParserException, ParseException {
             return MLDv2ReportMessage.verifyChecksum(buffer, sourceAddress, destinationAddress);
         }
 
@@ -174,39 +179,62 @@ public final class MLDv2ReportMessage extends MLDMessage {
     }
 
     /*-- Static Variables ---------------------------------------------------*/
-    
+
+    /** */
     public static final byte MESSAGE_TYPE = (byte)143;
+    /** */
     public static final int BASE_MESSAGE_LENGTH = 8;
 
+    /** */
     public static final ShortField Reserved = new ShortField(4);
+    /** */
     public static final ShortField NumberOfGroupRecords = new ShortField(6);
 
 
     /*-- Static Functions ---------------------------------------------------*/
-    
+
+    /**
+     * 
+     * @return
+     */
     public static MLDMessage.Parser getMLDMessageParser() {
         return getMLDMessageParser(new MLDv2ReportMessage.Parser());
     }
 
+    /**
+     * 
+     * @return
+     */
     public static IPMessage.Parser getIPMessageParser() {
         return getIPMessageParser(new MLDv2ReportMessage.Parser());
     }
 
+    /**
+     * 
+     * @return
+     */
     public static IPv6Packet.Parser getIPv6PacketParser() {
         return getIPv6PacketParser(new MLDv2ReportMessage.Parser());
     }
 
+    /**
+     * 
+     * @return
+     */
     public static IPPacket.Parser getIPPacketParser() {
         return getIPPacketParser(new MLDv2ReportMessage.Parser());
     }
 
     /**
      * Verifies the MLD message checksum. Called by the parser prior to constructing the packet.
-     * @param segment - the buffer segment containing the MLD message.
+     * @param buffer - the buffer containing the MLD message.
      * @param sourceAddress An IPv6 (16-byte) address..
      * @param destinationAddress An IPv6 (16-byte) address.
+     * @return
      */
-    public static boolean verifyChecksum(ByteBuffer buffer, byte[] sourceAddress, byte[] destinationAddress) {
+    public static boolean verifyChecksum(final ByteBuffer buffer,
+                                         final byte[] sourceAddress,
+                                         final byte[] destinationAddress) {
         return Checksum.get(buffer) == MLDMessage.calculateChecksum(buffer, calculateMessageSize(buffer), sourceAddress, destinationAddress);
     }
 
@@ -217,7 +245,9 @@ public final class MLDv2ReportMessage extends MLDMessage {
      * @param sourceAddress An IPv6 (16-byte) address..
      * @param destinationAddress An IPv6 (16-byte) address.
      */
-    public static void setChecksum(ByteBuffer buffer, byte[] sourceAddress, byte[] destinationAddress) {
+    public static void setChecksum(final ByteBuffer buffer,
+                                   final byte[] sourceAddress,
+                                   final byte[] destinationAddress) {
         Checksum.set(buffer, MLDMessage.calculateChecksum(buffer, calculateMessageSize(buffer), sourceAddress, destinationAddress));
     }
 
@@ -234,8 +264,9 @@ public final class MLDv2ReportMessage extends MLDMessage {
 
 
     /*-- Member Variables ---------------------------------------------------*/
-    
-    private Vector<MLDGroupRecord> groupRecords = new Vector<MLDGroupRecord>();
+
+    /** */
+    final private Vector<MLDGroupRecord> groupRecords = new Vector<MLDGroupRecord>();
     
 
     /*-- Member Functions ---------------------------------------------------*/
@@ -262,7 +293,7 @@ public final class MLDv2ReportMessage extends MLDMessage {
      * @param buffer
      * @throws ParseException
      */
-    public MLDv2ReportMessage(ByteBuffer buffer) throws ParseException {
+    public MLDv2ReportMessage(final ByteBuffer buffer) throws ParseException {
         super(consume(buffer, BASE_MESSAGE_LENGTH));
 
         if (logger.isLoggable(Level.FINER)) {
@@ -283,7 +314,7 @@ public final class MLDv2ReportMessage extends MLDMessage {
     }
 
     @Override
-    public void log(Logger logger) {
+    public void log(final Logger logger) {
         super.log(logger);
         logState(logger);
     }
@@ -292,7 +323,7 @@ public final class MLDv2ReportMessage extends MLDMessage {
      * Logs value of member variables declared or maintained by this class.
      * @param logger
      */
-    private void logState(Logger logger) {
+    private void logState(final Logger logger) {
         logger.info(ObjectId + " : number-of-group-records="+getNumberOfGroupRecords());
         logger.info(ObjectId + " ----> start group records");
         int numberOfGroupRecords = getNumberOfGroupRecords();
@@ -309,9 +340,10 @@ public final class MLDv2ReportMessage extends MLDMessage {
     /**
      * NOTE: You must call {@link #updateChecksum(byte[],byte[],int)} to
      * write the checksum prior to calling this method!
+     * @param buffer
      */
     @Override
-    public void writeTo(ByteBuffer buffer) {
+    public void writeTo(final ByteBuffer buffer) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "MLDv2ReportMessage.writeTo", buffer));
@@ -328,7 +360,9 @@ public final class MLDv2ReportMessage extends MLDMessage {
     }
 
     @Override
-    public void writeChecksum(ByteBuffer buffer, byte[] sourceAddress, byte[] destinationAddress) {
+    public void writeChecksum(final ByteBuffer buffer,
+                              final byte[] sourceAddress,
+                              final byte[] destinationAddress) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId,
@@ -337,10 +371,10 @@ public final class MLDv2ReportMessage extends MLDMessage {
                                         Logging.address(sourceAddress),
                                         Logging.address(destinationAddress)));
         }
-        
+
         MLDv2ReportMessage.setChecksum(buffer, sourceAddress, destinationAddress);
     }
-    
+
     @Override
     public byte getType() {
         return MESSAGE_TYPE;
@@ -368,7 +402,7 @@ public final class MLDv2ReportMessage extends MLDMessage {
      * 
      * @param numberOfGroupRecords
      */
-    protected void setNumberOfGroupRecords(short numberOfGroupRecords) {
+    protected void setNumberOfGroupRecords(final short numberOfGroupRecords) {
         
         if (logger.isLoggable(Level.FINE)) {
             logger.fine(Logging.entering(ObjectId, "MLDv2ReportMessage.setNumberOfGroupRecords", numberOfGroupRecords));
@@ -382,7 +416,7 @@ public final class MLDv2ReportMessage extends MLDMessage {
      * @param groupRecord
      * @return
      */
-    public int addGroupRecord(MLDGroupRecord groupRecord) {
+    public int addGroupRecord(final MLDGroupRecord groupRecord) {
         
         if (logger.isLoggable(Level.FINE)) {
             logger.fine(Logging.entering(ObjectId, "MLDv2ReportMessage.addGroupRecord", groupRecord));
@@ -399,7 +433,7 @@ public final class MLDv2ReportMessage extends MLDMessage {
      * 
      * @param index
      */
-    public void removeGroupRecord(int index) {
+    public void removeGroupRecord(final int index) {
         this.groupRecords.remove(index);
     }
 
@@ -408,7 +442,7 @@ public final class MLDv2ReportMessage extends MLDMessage {
      * @param index
      * @return
      */
-    public MLDGroupRecord getGroupRecord(int index) {
+    public MLDGroupRecord getGroupRecord(final int index) {
         return this.groupRecords.get(index);
     }
 

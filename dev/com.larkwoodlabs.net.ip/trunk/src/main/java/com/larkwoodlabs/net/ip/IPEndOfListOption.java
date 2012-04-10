@@ -44,7 +44,7 @@ public class IPEndOfListOption extends IPSingleByteHeaderOption {
     public static class Parser implements IPHeaderOption.ParserType {
 
         @Override
-        public IPHeaderOption parse(ByteBuffer buffer) throws ParseException {
+        public IPHeaderOption parse(final ByteBuffer buffer) throws ParseException {
             return new IPEndOfListOption(buffer);
         }
 
@@ -73,14 +73,13 @@ public class IPEndOfListOption extends IPSingleByteHeaderOption {
             logger.finer(Logging.entering(ObjectId, "IPEndOfListOption.IPEndOfListOption"));
         }
     }
-    
+
     /**
      * 
      * @param segment
      */
-    public IPEndOfListOption(ByteBuffer segment) {
+    public IPEndOfListOption(final ByteBuffer segment) {
         super(segment);
-        
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPEndOfListOption.IPEndOfListOption", segment));
         }

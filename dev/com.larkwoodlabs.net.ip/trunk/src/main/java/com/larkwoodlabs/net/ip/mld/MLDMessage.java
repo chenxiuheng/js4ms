@@ -140,25 +140,38 @@ import com.larkwoodlabs.util.logging.Logging;
 public abstract class MLDMessage extends ICMPv6Message {
 
     /*-- Inner Classes ------------------------------------------------------*/
-    
+
+    /**
+     * 
+     */
     public static interface ParserType extends ICMPv6Message.ParserType {
         
     }
 
+    /**
+     * 
+     */
     public static final class Parser extends ICMPv6Message.Parser {
 
     }
 
     /*-- Static Variables ---------------------------------------------------*/
-    
+
+    /** Logger used to generate MLDMessage log entries. */
     public static final Logger logger = Logger.getLogger(MLDMessage.class.getName());
 
+    /** */
     public static final short MLD_ROUTER_ALERT_VALUE = 0;
-    
+
+    /** */
     public static final ShortField MaximumResponseDelay = new ShortField(4);
+    /** */
     public static final ShortField Reserved = new ShortField(6);
 
-    // 0:0:0:0:0:0:0:0 - General Query Multicast address
+    /**
+     * General-Query multicast address.
+     * <pre>0:0:0:0:0:0:0:0</pre>
+     */
     public static final byte[] IPv6GeneralQueryGroupAddress = {
         (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
         (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
@@ -166,7 +179,10 @@ public abstract class MLDMessage extends ICMPv6Message {
         (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00
     };
 
-    // FF02:0:0:0:0:0:0:1 - All nodes address
+    /**
+     * All-Nodes multicast address.
+     * <pre>FF02:0:0:0:0:0:0:1</pre>
+     */
     public static final byte[] IPv6QueryDestinationAddress = {
         (byte)0xFF, (byte)0x02, (byte)0x00, (byte)0x00,
         (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
@@ -174,7 +190,10 @@ public abstract class MLDMessage extends ICMPv6Message {
         (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x01
     };
 
-    // FF02:0:0:0:0:0:0:16 - All MLDv2 routers address
+    /**
+     * All-MLDv2-Routers multicast address.
+     * <pre>FF02:0:0:0:0:0:0:16</pre>
+     */
     public static final byte[] IPv6ReportDestinationAddress = {
         (byte)0xFF, (byte)0x02, (byte)0x00, (byte)0x00,
         (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
@@ -184,7 +203,11 @@ public abstract class MLDMessage extends ICMPv6Message {
 
     
     /*-- Static Functions ---------------------------------------------------*/
-   
+
+    /**
+     * 
+     * @return
+     */
     public static MLDMessage.Parser getMLDMessageParser() {
         MLDMessage.Parser parser = new MLDMessage.Parser();
         parser.add(new MLDv1QueryMessage.Parser());
@@ -194,43 +217,75 @@ public abstract class MLDMessage extends ICMPv6Message {
         return parser;
     }
 
+    /**
+     * 
+     * @return
+     */
     public static IPMessage.Parser getIPMessageParser() {
         IPMessage.Parser parser = new IPMessage.Parser();
         parser.add(getMLDMessageParser());
         return parser;
     }
 
+    /**
+     * 
+     * @return
+     */
     public static IPv6Packet.Parser getIPv6PacketParser() {
         IPv6Packet.Parser parser = new IPv6Packet.Parser();
         parser.setProtocolParser(getIPMessageParser());
         return parser;
     }
 
+    /**
+     * 
+     * @return
+     */
     public static IPPacket.Parser getIPPacketParser() {
         IPPacket.Parser parser = new IPPacket.Parser();
         parser.add(getIPv6PacketParser());
         return parser;
     }
-   
-    public static MLDMessage.Parser getMLDMessageParser(MLDMessage.ParserType messageParser) {
+
+    /**
+     * 
+     * @param messageParser
+     * @return
+     */
+    public static MLDMessage.Parser getMLDMessageParser(final MLDMessage.ParserType messageParser) {
         MLDMessage.Parser parser = new MLDMessage.Parser();
         parser.add(messageParser);
         return parser;
     }
-    
-    public static IPMessage.Parser getIPMessageParser(MLDMessage.ParserType messageParser) {
+
+    /**
+     * 
+     * @param messageParser
+     * @return
+     */
+    public static IPMessage.Parser getIPMessageParser(final MLDMessage.ParserType messageParser) {
         IPMessage.Parser parser = new IPMessage.Parser();
         parser.add(getMLDMessageParser(messageParser));
         return parser;
     }
 
-    public static IPv6Packet.Parser getIPv6PacketParser(MLDMessage.ParserType messageParser) {
+    /**
+     * 
+     * @param messageParser
+     * @return
+     */
+    public static IPv6Packet.Parser getIPv6PacketParser(final MLDMessage.ParserType messageParser) {
         IPv6Packet.Parser parser = new IPv6Packet.Parser();
         parser.setProtocolParser(getIPMessageParser(messageParser));
         return parser;
     }
 
-    public static IPPacket.Parser getIPPacketParser(MLDMessage.ParserType messageParser) {
+    /**
+     * 
+     * @param messageParser
+     * @return
+     */
+    public static IPPacket.Parser getIPPacketParser(final MLDMessage.ParserType messageParser) {
         IPPacket.Parser parser = new IPPacket.Parser();
         parser.add(getIPv6PacketParser(messageParser));
         return parser;
@@ -238,16 +293,29 @@ public abstract class MLDMessage extends ICMPv6Message {
 
     /**
      * Calculates the MLD message checksum for an MLD packet contained in a buffer.
-     * @param segment - the buffer segment containing the MLD message.
+     * @param buffer - the buffer containing the MLD message.
      * @param messageLength - the length of the IGMP message.
      * @param sourceAddress An IPv6 (16-byte) address..
      * @param destinationAddress An IPv6 (16-byte) address.
+     * @return
      */
-    public static short calculateChecksum(ByteBuffer buffer, int messageLength, byte[] sourceAddress, byte[] destinationAddress) {
+    public static short calculateChecksum(final ByteBuffer buffer,
+                                          final int messageLength,
+                                          final byte[] sourceAddress,
+                                          final byte[] destinationAddress) {
         return IPPacket.calculateChecksum(buffer, Checksum, sourceAddress, destinationAddress, IP_PROTOCOL_NUMBER, messageLength);
     }
 
-    public static IPv6Packet constructIPv6Packet(byte[] sourceAddress, byte[] destinationAddress, MLDMessage message) {
+    /**
+     * 
+     * @param sourceAddress
+     * @param destinationAddress
+     * @param message
+     * @return
+     */
+    public static IPv6Packet constructIPv6Packet(final byte[] sourceAddress,
+                                                 final byte[] destinationAddress,
+                                                 final MLDMessage message) {
         IPv6HopByHopOptionsHeader optionsHeader = new IPv6HopByHopOptionsHeader();
         optionsHeader.addOption(new IPv6RouterAlertOption(MLD_ROUTER_ALERT_VALUE));
         IPv6Packet header =  new IPv6Packet((byte)0,            // Priority
@@ -268,7 +336,7 @@ public abstract class MLDMessage extends ICMPv6Message {
      * @param size
      * @param type
      */
-    protected MLDMessage(int size, byte type) {
+    protected MLDMessage(final int size, final byte type) {
         super(size);
         
         if (logger.isLoggable(Level.FINER)) {
@@ -287,14 +355,14 @@ public abstract class MLDMessage extends ICMPv6Message {
 
     /**
      * 
-     * @param segment
+     * @param buffer
      * @throws ParseException
      */
-    protected MLDMessage(ByteBuffer segment) throws ParseException {
-        super(segment);
+    protected MLDMessage(final ByteBuffer buffer) throws ParseException {
+        super(buffer);
         
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "MLDMessage.MLDMessage", segment));
+            logger.finer(Logging.entering(ObjectId, "MLDMessage.MLDMessage", buffer));
             logState(logger);
         }
     }
@@ -305,7 +373,7 @@ public abstract class MLDMessage extends ICMPv6Message {
     }
 
     @Override
-    public void log(Logger logger) {
+    public void log(final Logger logger) {
         super.log(logger);
         logState(logger);
     }
@@ -314,7 +382,7 @@ public abstract class MLDMessage extends ICMPv6Message {
      * Logs value of member variables declared or maintained by this class.
      * @param logger
      */
-    private void logState(Logger logger) {
+    private void logState(final Logger logger) {
         logger.info(ObjectId + " : message-length="+getTotalLength());
     }
     
@@ -330,7 +398,7 @@ public abstract class MLDMessage extends ICMPv6Message {
      * 
      * @param milliseconds
      */
-    public void setMaximumResponseDelay(short milliseconds) {
+    public void setMaximumResponseDelay(final short milliseconds) {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "MLDMessage.setMaximumResponseDelay", milliseconds));

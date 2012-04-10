@@ -56,10 +56,16 @@ public final class IPv6RouterAlertOption extends IPMultiByteHeaderOption {
 
     /*-- Inner Classes ---------------------------------------------------*/
 
+    /**
+     * 
+     * 
+     *
+     * @author gbumgard
+     */
     public static class Parser implements IPHeaderOption.ParserType {
 
         @Override
-        public IPHeaderOption parse(ByteBuffer buffer) throws ParseException {
+        public IPHeaderOption parse(final ByteBuffer buffer) throws ParseException {
             return new IPv6RouterAlertOption(buffer);
         }
 
@@ -72,6 +78,7 @@ public final class IPv6RouterAlertOption extends IPMultiByteHeaderOption {
 
     /*-- Static Variables ---------------------------------------------------*/
 
+    /** */
     public static final ShortField RouterAlertValue = new ShortField(2); 
 
     /**
@@ -84,10 +91,12 @@ public final class IPv6RouterAlertOption extends IPMultiByteHeaderOption {
      * </pre>
      */
     public static final byte OPTION_VALUE = (byte)0x05;
+    /** */
     public static final byte OPTION_CODE = (byte)0x05;
+    /** */
     public static final byte OPTION_LENGTH = 4;
 
-    
+
     /*-- Member Functions ---------------------------------------------------*/
 
     /**
@@ -102,7 +111,7 @@ public final class IPv6RouterAlertOption extends IPMultiByteHeaderOption {
      * 
      * @param routerAlertValue
      */
-    public IPv6RouterAlertOption(short routerAlertValue) {
+    public IPv6RouterAlertOption(final short routerAlertValue) {
         super(OPTION_VALUE,OPTION_LENGTH);
         
         if (logger.isLoggable(Level.FINER)) {
@@ -120,7 +129,7 @@ public final class IPv6RouterAlertOption extends IPMultiByteHeaderOption {
      * 
      * @param buffer
      */
-    public IPv6RouterAlertOption(ByteBuffer buffer) {
+    public IPv6RouterAlertOption(final ByteBuffer buffer) {
         super(buffer);
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entry(this, "IPv6RouterAlertOption.IPv6RouterAlertOption", buffer));
@@ -129,7 +138,7 @@ public final class IPv6RouterAlertOption extends IPMultiByteHeaderOption {
     }
 
     @Override
-    public void log(Logger logger) {
+    public void log(final Logger logger) {
         super.log(logger);
         logState(logger);
     }
@@ -138,7 +147,7 @@ public final class IPv6RouterAlertOption extends IPMultiByteHeaderOption {
      * Logs value of member variables declared or maintained by this class.
      * @param logger
      */
-    private void logState(Logger logger) {
+    private void logState(final Logger logger) {
         logger.info(ObjectId+" : router-alert-value="+getRouterAlertValue());
     }
 
@@ -154,7 +163,7 @@ public final class IPv6RouterAlertOption extends IPMultiByteHeaderOption {
      * 
      * @param routerAlertValue
      */
-    public void setRouterAlertValue(short routerAlertValue) {
+    public void setRouterAlertValue(final short routerAlertValue) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entry(this, "IPv6RouterAlertOption.setRouterAlertValue", routerAlertValue));

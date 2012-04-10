@@ -31,7 +31,7 @@ import com.larkwoodlabs.util.logging.Logging;
 
 /**
  * The Fragment header is used by an IPv6 source to send packets larger
- * than would fit in the path MTU to their destinations. The Fragment
+ * than would fit in the path MTU. The Fragment
  * header is identified by a Next Header value of 44 in the
  * immediately preceding header, and has the following format:
  * <pre>
@@ -83,15 +83,20 @@ public final class IPv6FragmentHeader extends IPExtensionHeader {
 
     /*-- Inner Classes ---------------------------------------------------*/
 
+    /**
+     * 
+     */
     public static class Parser implements IPMessage.ParserType {
 
         @Override
-        public IPMessage parse(ByteBuffer buffer) throws ParseException {
+        public IPMessage parse(final ByteBuffer buffer) throws ParseException {
             return new IPv6FragmentHeader(buffer);
         }
 
         @Override
-        public boolean verifyChecksum(ByteBuffer buffer, byte[] sourceAddress, byte[] destinationAddress) throws MissingParserException, ParseException {
+        public boolean verifyChecksum(final ByteBuffer buffer,
+                                      final byte[] sourceAddress,
+                                      final byte[] destinationAddress) throws MissingParserException, ParseException {
             return true; // Does nothing in this class
         }
 
@@ -105,16 +110,22 @@ public final class IPv6FragmentHeader extends IPExtensionHeader {
 
     /*-- Static Variables ---------------------------------------------------*/
 
+    /** Protocol number for IPv6 Fragment Headers */
     public static final byte IP_PROTOCOL_NUMBER = 44;
-    
+
+    /** */
     public static final ShortBitField   FragmentOffset = new ShortBitField(2,3,13);
+    /** */
     public static final BooleanField    MoreFragments = new BooleanField(3,0);
+    /** */
     public static final IntegerField    Identification = new IntegerField(4);
-    
+
+    /** */
     public static final int BASE_HEADER_LENGTH = 8;
     
     /*-- Member Variables ---------------------------------------------------*/
-    
+
+    /** */
     ByteBuffer fragment;
 
     /*-- Member Functions ---------------------------------------------------*/
@@ -125,7 +136,9 @@ public final class IPv6FragmentHeader extends IPExtensionHeader {
      * @param moreFragments
      * @param identification
      */
-    public IPv6FragmentHeader(short fragmentOffset, boolean moreFragments, int identification) {
+    public IPv6FragmentHeader(final short fragmentOffset,
+                              final boolean moreFragments,
+                              final int identification) {
         super(IP_PROTOCOL_NUMBER);
 
         if (logger.isLoggable(Level.FINER)) {
@@ -146,7 +159,7 @@ public final class IPv6FragmentHeader extends IPExtensionHeader {
      * @param buffer
      * @throws ParseException
      */
-    public IPv6FragmentHeader(ByteBuffer buffer) throws ParseException {
+    public IPv6FragmentHeader(final ByteBuffer buffer) throws ParseException {
         super(consume(buffer,BASE_HEADER_LENGTH), IP_PROTOCOL_NUMBER);
 
         if (logger.isLoggable(Level.FINER)) {
@@ -161,7 +174,7 @@ public final class IPv6FragmentHeader extends IPExtensionHeader {
     }
 
     @Override
-    public void log(Logger logger) {
+    public void log(final Logger logger) {
         super.log(logger);
         logState(logger);
     }
@@ -170,7 +183,7 @@ public final class IPv6FragmentHeader extends IPExtensionHeader {
      * Logs value of member variables declared or maintained by this class.
      * @param logger
      */
-    private void logState(Logger logger) {
+    private void logState(final Logger logger) {
         logger.fine(ObjectId + " : more-fragments="+getMoreFragments());
         logger.fine(ObjectId + " : fragment-offset="+getFragmentOffset());
         logger.fine(ObjectId + " : identification="+getIdentification());
@@ -208,7 +221,7 @@ public final class IPv6FragmentHeader extends IPExtensionHeader {
      * 
      * @param offset
      */
-    public void setFragmentOffset(short offset) {
+    public void setFragmentOffset(final short offset) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPv6FragmentHeader.setFragmentOffset", offset));
@@ -229,7 +242,7 @@ public final class IPv6FragmentHeader extends IPExtensionHeader {
      * 
      * @param moreFragments
      */
-    public void setMoreFragments(boolean moreFragments) {
+    public void setMoreFragments(final boolean moreFragments) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPv6FragmentHeader.setMoreFragments", moreFragments));
@@ -250,7 +263,7 @@ public final class IPv6FragmentHeader extends IPExtensionHeader {
      * 
      * @param identification
      */
-    public void setIdentification(int identification) {
+    public void setIdentification(final int identification) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPv6FragmentHeader.setIdentification", identification));

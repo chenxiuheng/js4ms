@@ -38,16 +38,35 @@ public interface IPMessage extends Loggable {
      */
     public static interface ParserType extends KeyedBufferParser<IPMessage> {
 
+        /**
+         * 
+         * @param buffer
+         * @param sourceAddress
+         * @param destinationAddress
+         * @return
+         * @throws MissingParserException
+         * @throws ParseException
+         */
         public boolean verifyChecksum(ByteBuffer buffer, byte[] sourceAddress, byte[] destinationAddress) throws MissingParserException, ParseException;
 
     }
-    
+
     /**
      * Base class for parsers that parse a family of IP messages.
      * Typically used in base message classes associated with a single IP protocol.
      */
     public static class Parser extends BufferParserMap<IPMessage> {
-        
+
+        /**
+         * 
+         * @param buffer
+         * @param protocolNumber
+         * @param sourceAddress
+         * @param destinationAddress
+         * @return
+         * @throws MissingParserException
+         * @throws ParseException
+         */
         public boolean verifyChecksum(final ByteBuffer buffer,
                                       final byte protocolNumber,
                                       final byte[] sourceAddress,
@@ -79,13 +98,15 @@ public interface IPMessage extends Loggable {
 
     /**
      * Returns the IP protocol number of the message.
+     * @return
      */
     public byte getProtocolNumber();
-    
+
     /**
      * Sets the IP protocol number of the message.
      * Most subclasses override this method to do nothing because
      * the protocol number is defined by the message subclass.
+     * @param protocolNumber
      */
     public void setProtocolNumber(byte protocolNumber);
 
@@ -95,18 +116,21 @@ public interface IPMessage extends Loggable {
      * return a value of {@link #NO_NEXT_HEADER}.
      * This function is primarily used to return the "Next Header" field in extension headers.
      * See {@link com.larkwoodlabs.net.ip.IPExtensionHeader#NextHeader IPExtensionHeader.NextHeader}.
+     * @return
      */
     public byte getNextProtocolNumber();
 
     /**
      * Returns the IP message that follows this message,
      * or <code>null</code> if no such message exists.
+     * @return
      */
     public IPMessage getNextMessage();
     
     /**
      * Sets the IP message that will follow this message.
      * This method is primarily intended for use in extension headers.
+     * @param header
      */
     public void setNextMessage(IPMessage header);
 
@@ -115,23 +139,23 @@ public interface IPMessage extends Loggable {
      * This method is primarily intended for with extension headers.
      */
     public void removeNextMessage();
-    
+
     /**
      * Returns the byte-length of the message header.
      * For fixed-size messages, this is often the same value as the returned from {@link #getTotalLength()}. 
+     * @return
      */
     public int getHeaderLength();
-    
+
     /**
      * Returns the total byte-length of the message including the message header.
+     * @return
      */
     public int getTotalLength();
-    
+
     /**
      * Writes the message to a byte buffer and advances the current position of that buffer.
      * @param buffer - the ByteBuffer into which the message will be written.
-     * @param offset - the offset within the array at which to write the message.
-     * @throws java.lang.IndexOutOfBoundsException if the buffer is not of sufficient size to accommodate the message. 
      */
     public void writeTo(ByteBuffer buffer);
 

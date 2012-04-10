@@ -47,16 +47,19 @@ public abstract class IGMPQueryMessage extends IGMPGroupMessage {
      */
     public static class Parser implements IGMPMessage.ParserType {
 
-        IGMPv2QueryMessage.Parser v2Parser = new IGMPv2QueryMessage.Parser();
-        IGMPv3QueryMessage.Parser v3Parser = new IGMPv3QueryMessage.Parser();
-        
+        /** */
+        final IGMPv2QueryMessage.Parser v2Parser = new IGMPv2QueryMessage.Parser();
+        /** */
+        final IGMPv3QueryMessage.Parser v3Parser = new IGMPv3QueryMessage.Parser();
+
+        /**
+         * 
+         */
         public Parser() {
-            this.v2Parser = new IGMPv2QueryMessage.Parser();
-            this.v3Parser = new IGMPv3QueryMessage.Parser();
         }
 
         @Override
-        public IGMPMessage parse(ByteBuffer buffer) throws ParseException {
+        public IGMPMessage parse(final ByteBuffer buffer) throws ParseException {
             if (buffer.limit() == IGMPv2QueryMessage.BASE_MESSAGE_LENGTH) {
                 return this.v2Parser.parse(buffer);
             }
@@ -89,21 +92,21 @@ public abstract class IGMPQueryMessage extends IGMPGroupMessage {
    }
 
     /*-- Static Variables ---------------------------------------------------*/
-    
+
+    /** */
     public static final byte MESSAGE_TYPE = 0x11;
 
     /**
      * Field that specifies the maximum response time (or Reserved).
      */
     public static final ByteField MaxRespCode = new ByteField(1);
-    
-    /**
-     * 
-     */
+
+    /** */
     public static final byte[] GENERAL_QUERY_GROUP = new byte[4];
 
+    /** */
     public static final byte[] QUERY_DESTINATION_ADDRESS;
-    
+
     static {
         byte[] address = new byte[4];
         address[0] = (byte)224;
@@ -120,7 +123,7 @@ public abstract class IGMPQueryMessage extends IGMPGroupMessage {
      * @param size
      * @param maximumResponseTime
      */
-    protected IGMPQueryMessage(int size, short maximumResponseTime) {
+    protected IGMPQueryMessage(final int size, final short maximumResponseTime) {
         super(size, MESSAGE_TYPE, maximumResponseTime, GENERAL_QUERY_GROUP);
         
         if (logger.isLoggable(Level.FINE)) {
@@ -135,7 +138,9 @@ public abstract class IGMPQueryMessage extends IGMPGroupMessage {
      * @param maximumResponseTime
      * @param groupAddress
      */
-    protected IGMPQueryMessage(int size, short maximumResponseTime, byte[] groupAddress) {
+    protected IGMPQueryMessage(final int size,
+                               final short maximumResponseTime,
+                               final byte[] groupAddress) {
         super(size, MESSAGE_TYPE, maximumResponseTime, groupAddress);
         
         if (logger.isLoggable(Level.FINE)) {
@@ -149,7 +154,7 @@ public abstract class IGMPQueryMessage extends IGMPGroupMessage {
      * @param buffer
      * @throws ParseException
      */
-    protected IGMPQueryMessage(ByteBuffer buffer) throws ParseException {
+    protected IGMPQueryMessage(final ByteBuffer buffer) throws ParseException {
         super(buffer);
 
         if (logger.isLoggable(Level.FINE)) {
@@ -159,7 +164,7 @@ public abstract class IGMPQueryMessage extends IGMPGroupMessage {
     }
 
     @Override
-    public void log(Logger logger) {
+    public void log(final Logger logger) {
         super.log(logger);
         logState(logger);
     }
@@ -168,7 +173,7 @@ public abstract class IGMPQueryMessage extends IGMPGroupMessage {
      * 
      * @param logger
      */
-    private void logState(Logger logger) {
+    private void logState(final Logger logger) {
         logger.info(ObjectId + " : max-resp-code="+String.format("%02X",getMaxRespCode())+" max-response-time="+getMaximumResponseTime()+"ms");
     }
 
@@ -180,6 +185,7 @@ public abstract class IGMPQueryMessage extends IGMPGroupMessage {
     /**
      * Returns the value of the message {@linkplain #MaxRespCode Max Resp Code} field.
      * The specifies the maximum time allowed for an IGMP response.
+     * @return
      */
     public byte getMaxRespCode() {
         return MaxRespCode.get(getBufferInternal());
@@ -187,8 +193,9 @@ public abstract class IGMPQueryMessage extends IGMPGroupMessage {
 
     /**
      * Sets the value of the message {@linkplain #MaxRespCode Max Resp Code} field.
+     * @param maxRespCode
      */
-    public void setMaxRespCode(byte maxRespCode) {
+    public void setMaxRespCode(final byte maxRespCode) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IGMPQueryMessage.setMaxRespCode", maxRespCode));

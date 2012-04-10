@@ -147,16 +147,22 @@ import com.larkwoodlabs.util.logging.Logging;
 public final class IGMPv3ReportMessage extends IGMPMessage {
 
     /*-- Inner Classes ------------------------------------------------------*/
-    
+
+    /**
+     * 
+     * 
+     *
+     * @author gbumgard
+     */
     public static final class Parser implements IGMPMessage.ParserType {
 
         @Override
-        public IGMPMessage parse(ByteBuffer buffer) throws ParseException {
+        public IGMPMessage parse(final ByteBuffer buffer) throws ParseException {
             return new IGMPv3ReportMessage(buffer);
         }
 
         @Override
-        public boolean verifyChecksum(ByteBuffer buffer) throws MissingParserException, ParseException {
+        public boolean verifyChecksum(final ByteBuffer buffer) throws MissingParserException, ParseException {
             return IGMPv3ReportMessage.verifyChecksum(buffer);
         }
 
@@ -169,50 +175,73 @@ public final class IGMPv3ReportMessage extends IGMPMessage {
 
 
     /*-- Static Variables ---------------------------------------------------*/
-    
+
+    /** */
     public static final byte MESSAGE_TYPE = 0x22;
 
+    /** */
     public static final int BASE_MESSAGE_LENGTH = 8;
 
+    /** */
     public static final ShortField NumberOfGroupRecords = new ShortField(6);
 
 
     /*-- Static Functions ---------------------------------------------------*/
-    
+
+    /**
+     * 
+     * @return
+     */
     public static IGMPMessage.Parser getIGMPMessageParser() {
         return getIGMPMessageParser(new IGMPv3ReportMessage.Parser());
     }
 
+    /**
+     * 
+     * @return
+     */
     public static IPMessage.Parser getIPMessageParser() {
         return getIPMessageParser(new IGMPv3ReportMessage.Parser());
     }
 
+    /**
+     * 
+     * @return
+     */
     public static IPv4Packet.Parser getIPv4PacketParser() {
         return getIPv4PacketParser(new IGMPv3ReportMessage.Parser());
     }
 
+    /**
+     * 
+     * @return
+     */
     public static IPPacket.Parser getIPPacketParser() {
         return getIPPacketParser(new IGMPv3ReportMessage.Parser());
     }
 
     /**
      * Verifies the IGMP message checksum. Called by the parser prior to constructing the packet.
-     * @param segment - the buffer segment containing the IGMP message.
+     * @param buffer - the buffer containing the IGMP message.
      */
-    public static boolean verifyChecksum(ByteBuffer buffer) {
+    public static boolean verifyChecksum(final ByteBuffer buffer) {
         return Checksum.get(buffer) == IGMPMessage.calculateChecksum(buffer, IGMPv3ReportMessage.calculateMessageSize(buffer));
     }
 
     /**
      * Writes the IGMP message checksum into a buffer containing an IGMP message.
      * @param buffer - a byte array.
-     * @param offset - the offset within the array at which to write the message.
      */
-    public static void setChecksum(ByteBuffer buffer) {
+    public static void setChecksum(final ByteBuffer buffer) {
         Checksum.set(buffer, IGMPMessage.calculateChecksum(buffer, IGMPv3ReportMessage.calculateMessageSize(buffer)));
     }
 
-    public static short calculateMessageSize(ByteBuffer buffer) {
+    /**
+     * 
+     * @param buffer
+     * @return
+     */
+    public static short calculateMessageSize(final ByteBuffer buffer) {
         short total = BASE_MESSAGE_LENGTH;
         short numberOfGroupRecords = NumberOfGroupRecords.get(buffer);
         ByteBuffer message = buffer.slice();
@@ -222,11 +251,14 @@ public final class IGMPv3ReportMessage extends IGMPMessage {
         }
         return total;
     }
-    
+
 
     /*-- Member Variables ---------------------------------------------------*/
 
-    private Vector<IGMPGroupRecord> groupRecords = new Vector<IGMPGroupRecord>();
+    /**
+     * 
+     */
+    final private Vector<IGMPGroupRecord> groupRecords = new Vector<IGMPGroupRecord>();
 
 
     /*-- Member Functions ---------------------------------------------------*/
@@ -255,7 +287,7 @@ public final class IGMPv3ReportMessage extends IGMPMessage {
      * @param buffer
      * @throws ParseException
      */
-    public IGMPv3ReportMessage(ByteBuffer buffer) throws ParseException {
+    public IGMPv3ReportMessage(final ByteBuffer buffer) throws ParseException {
         super(consume(buffer, BASE_MESSAGE_LENGTH));
         
         if (logger.isLoggable(Level.FINER)) {
@@ -276,7 +308,7 @@ public final class IGMPv3ReportMessage extends IGMPMessage {
     }
 
     @Override
-    public void log(Logger logger) {
+    public void log(final Logger logger) {
         super.log(logger);
         logState(logger);
     }
@@ -285,7 +317,7 @@ public final class IGMPv3ReportMessage extends IGMPMessage {
      * 
      * @param logger
      */
-    private void logState(Logger logger) {
+    private void logState(final Logger logger) {
         logger.info(ObjectId + " : number-of-group-records="+getNumberOfGroupRecords());
         logger.info(ObjectId + " : ----> group records");
         int numberOfGroupRecords = getNumberOfGroupRecords();
@@ -299,7 +331,7 @@ public final class IGMPv3ReportMessage extends IGMPMessage {
     }
 
     @Override
-    public void writeTo(ByteBuffer buffer) {
+    public void writeTo(final ByteBuffer buffer) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IGMPv3ReportMessage.writeTo", buffer));
@@ -317,7 +349,9 @@ public final class IGMPv3ReportMessage extends IGMPMessage {
     }
 
     @Override
-    public void writeChecksum(ByteBuffer buffer, byte[] sourceAddress, byte[] destinationAddress) {
+    public void writeChecksum(final ByteBuffer buffer,
+                              final byte[] sourceAddress,
+                              final byte[] destinationAddress) {
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId,
                                           "IGMPv3ReportMessage.writeChecksum",
@@ -358,7 +392,7 @@ public final class IGMPv3ReportMessage extends IGMPMessage {
      * 
      * @param numberOfGroupRecords
      */
-    protected void setNumberOfGroupRecords(short numberOfGroupRecords) {
+    protected void setNumberOfGroupRecords(final short numberOfGroupRecords) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IGMPv3ReportMessage.setNumberOfGroupRecords", numberOfGroupRecords));
@@ -372,7 +406,7 @@ public final class IGMPv3ReportMessage extends IGMPMessage {
      * @param groupRecord
      * @return
      */
-    public int addGroupRecord(IGMPGroupRecord groupRecord) {
+    public int addGroupRecord(final IGMPGroupRecord groupRecord) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IGMPv3ReportMessage.addGroupRecord", groupRecord));
@@ -388,7 +422,7 @@ public final class IGMPv3ReportMessage extends IGMPMessage {
      * 
      * @param index
      */
-    public void removeGroupRecord(int index) {
+    public void removeGroupRecord(final int index) {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IGMPv3ReportMessage.removeGroupRecord", index));
@@ -402,7 +436,7 @@ public final class IGMPv3ReportMessage extends IGMPMessage {
      * @param index
      * @return
      */
-    public IGMPGroupRecord getGroupRecord(int index) {
+    public IGMPGroupRecord getGroupRecord(final int index) {
         return this.groupRecords.get(index);
     }
 

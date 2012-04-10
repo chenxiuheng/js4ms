@@ -16,6 +16,8 @@
 
 package com.larkwoodlabs.net.ip.ipv4;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -231,33 +233,65 @@ import com.larkwoodlabs.util.logging.Logging;
 public final class IPv4Packet extends IPPacket {
 
     /*-- Inner Classes ---------------------------------------------------*/
-    
+
+    /**
+     * 
+     * 
+     *
+     * @author gbumgard
+     */
     public static class Parser implements IPPacket.ParserType {
 
+        /** */
         IPHeaderOption.Parser optionParser;
+        /** */
         IPMessage.Parser protocolParser;
-        
+
+        /**
+         * 
+         */
         public Parser() {
             this(null, null);
         }
 
+        /**
+         * 
+         * @param optionParser
+         * @param protocolParser
+         */
         public Parser(final IPHeaderOption.Parser optionParser, final IPMessage.Parser protocolParser) {
             setOptionParser(optionParser);
             setProtocolParser(protocolParser);
         }
 
+        /**
+         * 
+         * @param optionParser
+         */
         public void setOptionParser(final IPHeaderOption.Parser optionParser) {
             this.optionParser = optionParser;
         }
 
+        /**
+         * 
+         * @return
+         */
         public IPHeaderOption.Parser getOptionParser() {
             return this.optionParser;
         }
 
+        /**
+         * 
+         * @param protocolParser
+         */
         public void setProtocolParser(final IPMessage.Parser protocolParser) {
             this.protocolParser = protocolParser;
         }
 
+        /**
+         * 
+         * @return
+         */
         public IPMessage.Parser getProtocolParser() {
             return this.protocolParser;
         }
@@ -265,6 +299,22 @@ public final class IPv4Packet extends IPPacket {
         @Override
         public IPPacket parse(final ByteBuffer buffer) throws ParseException, MissingParserException {
             IPv4Packet header = new IPv4Packet(buffer);
+
+            if (this.optionParser != null) {
+                // Parse IP header options
+                header.parseOptions(this.optionParser);
+            }
+
+            if (this.protocolParser != null) {
+                header.parsePayload(this.protocolParser);
+            }
+
+            return header;
+        }
+
+        @Override
+        public IPPacket parse(final InputStream is) throws ParseException, MissingParserException, IOException {
+            IPv4Packet header = new IPv4Packet(is);
 
             if (this.optionParser != null) {
                 // Parse IP header options
@@ -291,35 +341,57 @@ public final class IPv4Packet extends IPPacket {
     }
 
     /*-- Static Variables ---------------------------------------------------*/
-    
+
+    /** Logger used to generate IPv4Packet log entries. */
     public static final Logger logger = Logger.getLogger(IPv4Packet.class.getName());
 
     /**
-     * IPv4 header version.
+     * Protocol version for IPv4 headers.
      */
     public static final byte INTERNET_PROTOCOL_VERSION = 4;
 
+    /** */
     public static final int BASE_HEADER_LENGTH = 20;
 
+    /** */
     public static final FixedBufferField  BaseHeader = new FixedBufferField(0,BASE_HEADER_LENGTH);
+    /** */
     public static final ByteBitField      Version = new ByteBitField(0,4,4); 
+    /** */
     public static final ByteBitField      HeaderLength = new ByteBitField(0,0,4); 
+    /** */
     public static final ByteField         TypeOfService = new ByteField(1);
+    /** */
     public static final ByteBitField      Precedence = new ByteBitField(1,5,3);
+    /** */
     public static final BooleanField      MinimizeDelay = new BooleanField(1,4);
+    /** */
     public static final BooleanField      MaximizeThroughput = new BooleanField(1,3);
+    /** */
     public static final BooleanField      MaximizeReliability = new BooleanField(1,2);
+    /** */
     public static final BooleanField      MinimizeMonetaryCost = new BooleanField(1,1);
+    /** */
     public static final ShortField        TotalLength = new ShortField(2);
+    /** */
     public static final ShortField        Identification = new ShortField(4);
+    /** */
     public static final ByteBitField      Flags = new ByteBitField(6,5,3);
+    /** */
     public static final BooleanField      MoreFragments = new BooleanField(6,5);
+    /** */
     public static final BooleanField      DontFragment = new BooleanField(6,6);
+    /** */
     public static final ShortBitField     FragmentOffset = new ShortBitField(6,0,13);
+    /** */
     public static final ByteField         TTL = new ByteField(8);
+    /** */
     public static final ByteField         Protocol = new ByteField(9);
+    /** */
     public static final ShortField        HeaderChecksum = new ShortField(10);
+    /** */
     public static final ByteArrayField    SourceAddressBytes = new ByteArrayField(12,4);
+    /** */
     public static final ByteArrayField    DestinationAddressBytes = new ByteArrayField(16,4);
 
 
@@ -327,7 +399,7 @@ public final class IPv4Packet extends IPPacket {
  
     /**
      * Verifies the IPv4 header checksum. Called by the parser prior to constructing the packet.
-     * @param segment - the buffer segment containing the IPv4 header.
+     * @param buffer - the buffer containing the IPv4 header.
      */
     public static boolean verifyChecksum(final ByteBuffer buffer) {
         short checksum = HeaderChecksum.get(buffer);
@@ -341,8 +413,7 @@ public final class IPv4Packet extends IPPacket {
 
     /**
      * Calculates the IPv4 header checksum for an IPv4 header contained in a buffer.
-     * @param segment - the buffer segment containing the IPv4 header.
-     * @param messageLength - the length of the IPv4 header.
+     * @param buffer - the buffer containing the IPv4 header.
      */
     public static short calculateChecksum(final ByteBuffer buffer) {
         return IPPacket.calculateChecksum(buffer, HeaderChecksum, HeaderLength.get(buffer) * 4);
@@ -351,7 +422,6 @@ public final class IPv4Packet extends IPPacket {
     /**
      * Writes the IPv4 header checksum into a buffer containing an IPv4 header.
      * @param buffer - a byte array.
-     * @param offset - the offset within the array at which to write the message.
      */
     public static void setChecksum(final ByteBuffer buffer) {
         HeaderChecksum.set(buffer, IPv4Packet.calculateChecksum(buffer));
@@ -359,11 +429,14 @@ public final class IPv4Packet extends IPPacket {
 
 
     /*-- Member Variables ---------------------------------------------------*/
-    
+
+    /** */
     protected ByteBuffer unparsedOptions = null;
 
+    /** */
     protected ByteBuffer unparsedPayload = null;
 
+    /** */
     protected Vector<IPHeaderOption> options = null;
 
 
@@ -488,7 +561,8 @@ public final class IPv4Packet extends IPPacket {
     }
 
     /**
-     * 
+     * Constructs an IPv4 packet representation from the contents of the 
+     * specified ByteBuffer.
      * @param buffer
      * @throws ParseException
      */
@@ -507,6 +581,27 @@ public final class IPv4Packet extends IPPacket {
         }
     }
     
+    /**
+     * Constructs an IPv6 packet representation from the specified byte stream..
+     * @param is
+     * @throws ParseException
+     * @throws IOException 
+     */
+    public IPv4Packet(final InputStream is) throws ParseException, IOException {
+        super(consume(is,BASE_HEADER_LENGTH));
+
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer(Logging.entering(ObjectId, "IPv4Packet.IPv4Packet", is));
+        }
+
+        this.unparsedOptions = consume(is, getHeaderLength() - BASE_HEADER_LENGTH);
+        this.unparsedPayload = consume(is, getTotalLength()-getHeaderLength());
+
+        if (logger.isLoggable(Level.FINE)) {
+            logState(logger);
+        }
+    }
+
     @Override
     public Logger getLogger() {
         return logger;
@@ -610,7 +705,7 @@ public final class IPv4Packet extends IPPacket {
             }
         }
     }
-    
+
     @Override
     public void writeChecksum(final ByteBuffer buffer) {
 
@@ -640,6 +735,7 @@ public final class IPv4Packet extends IPPacket {
     /**
      * Gets the computed length of the header including options expressed in
      * bytes. This value is stored in the header as the length in 4-byte words.
+     * @return
      */
     public int getComputedHeaderLength() {
         return (((BASE_HEADER_LENGTH + getOptionsLength() + 3) / 4) * 4);
@@ -654,10 +750,10 @@ public final class IPv4Packet extends IPPacket {
      *  |       |  IHL  |               |                               |
      *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      * </pre>
+     * @return
      */
     public int getHeaderLength() {
         return HeaderLength.get(getBufferInternal()) * 4;
-        
     }
 
     /**
@@ -704,6 +800,7 @@ public final class IPv4Packet extends IPPacket {
      *  |Precedence | D | T | R | M | 0 |
      *  +---+---+---+---+---+---+---+---+
      * </pre>
+     * @return
      */
     public byte getTypeOfService() {
         return TypeOfService.get(getBufferInternal());
@@ -712,6 +809,7 @@ public final class IPv4Packet extends IPPacket {
     /**
      * Sets the Type of Service flags from a single byte. See
      * {@link #getTypeOfService()}.
+     * @param tos
      */
     public void setTypeOfService(final byte tos) {
         
@@ -722,13 +820,21 @@ public final class IPv4Packet extends IPPacket {
         TypeOfService.set(getBufferInternal(), tos);
     }
 
+    /** */
     public static final byte PRECEDENCE_ROUTINE = 0;
+    /** */
     public static final byte PRECEDENCE_PRIORITY = 1;
+    /** */
     public static final byte PRECEDENCE_IMMEDIATE = 2;
+    /** */
     public static final byte PRECEDENCE_FLASH = 3;
+    /** */
     public static final byte PRECEDENCE_FLASH_OVERRIDE = 4;
+    /** */
     public static final byte PRECEDENCE_CRITICAL = 5;
+    /** */
     public static final byte PRECEDENCE_INTERNETWORK_CONTROL = 6;
+    /** */
     public static final byte PRECEDENCE_NETWORK_CONTROL = 7;
 
     /**
@@ -749,6 +855,7 @@ public final class IPv4Packet extends IPPacket {
      * <li>5: CRITIC/ECP ({@link #PRECEDENCE_CRITICAL})
      * <li>6: Internetwork control ({@link #PRECEDENCE_INTERNETWORK_CONTROL})
      * <li>7: Network control ({@link #PRECEDENCE_NETWORK_CONTROL}) </ol>
+     * @return
      */
     public byte getPrecedence() {
         return Precedence.get(getBufferInternal());
@@ -780,6 +887,7 @@ public final class IPv4Packet extends IPPacket {
      * <li>false = Normal delay. 
      * <li>true = Low delay.
      * </ul>
+     * @return
      */
     public boolean getMinimizeDelay() {
         return MinimizeDelay.get(getBufferInternal());
@@ -787,6 +895,7 @@ public final class IPv4Packet extends IPPacket {
 
     /**
      * Sets Minimize Delay flag value. See {@link #getMinimizeDelay()}.
+     * @param minimizeDelay
      */
     public void setMinimizeDelay(final boolean minimizeDelay) {
         
@@ -811,6 +920,7 @@ public final class IPv4Packet extends IPPacket {
      * <li>false = Normal throughput. 
      * <li>true = High throughput.
      * </ul>
+     * @return
      */
     public boolean getMaximizeThroughput() {
         return MaximizeThroughput.get(getBufferInternal());
@@ -819,6 +929,7 @@ public final class IPv4Packet extends IPPacket {
     /**
      * Sets Maximize Throughput flag value. 
      * See {@link #getMaximizeThroughput()}.
+     * @param maximizeThroughput
      */
     public void setMaximizeThroughput(final boolean maximizeThroughput) {
 
@@ -842,6 +953,7 @@ public final class IPv4Packet extends IPPacket {
      * <li>false = Normal monetary cost. 
      * <li>true = Minimize monetary cost.
      * </ul>
+     * @return
      */
     public boolean getMaximizeReliability() {
         return MaximizeReliability.get(getBufferInternal());
@@ -850,6 +962,7 @@ public final class IPv4Packet extends IPPacket {
     /**
      * Sets Maximize Reliability flag value. 
      * See {@link #getMaximizeReliability()}.
+     * @param maximizeReliability
      */
     public void setMaximizeReliability(final boolean maximizeReliability) {
         
@@ -873,6 +986,7 @@ public final class IPv4Packet extends IPPacket {
      * <li>false = Normal monetary cost. 
      * <li>true = Minimize monetary cost.
      * </ul>
+     * @return
      */
     public boolean getMinimizeMonetaryCost() {
         return MinimizeMonetaryCost.get(getBufferInternal());
@@ -881,6 +995,7 @@ public final class IPv4Packet extends IPPacket {
     /**
      * Sets Minimize Monetary Cost flag value. 
      * See {@link #getMinimizeMonetaryCost()}.
+     * @param minimizeMonetaryCost
      */
     public void setMinimizeMonetaryCost(final boolean minimizeMonetaryCost) {
         
@@ -899,6 +1014,7 @@ public final class IPv4Packet extends IPPacket {
      *  |       |       |               |          Total Length         |
      *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      * </pre>
+     * @return
      */
     public int getTotalLength() {
         return TotalLength.get(getBufferInternal());
@@ -907,6 +1023,7 @@ public final class IPv4Packet extends IPPacket {
     /**
      * Sets the total length value. 
      * See {@link #getTotalLength()}.
+     * @param totalLength
      */
     protected void setTotalLength(final short totalLength) {
 
@@ -922,9 +1039,6 @@ public final class IPv4Packet extends IPPacket {
         return getTotalLength()-getHeaderLength();
     }
 
-    /**
-     * Updates the total length field using computed header length and specified payload length.
-     */
     @Override
     protected void setPayloadLength(final int length) {
         
@@ -943,6 +1057,7 @@ public final class IPv4Packet extends IPPacket {
      *  |         Identification        |     |                         |
      *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      *  </pre>
+     *  @return
      */
     public short getIdentification() {
         return Identification.get(getBufferInternal());
@@ -951,6 +1066,7 @@ public final class IPv4Packet extends IPPacket {
     /**
      * Sets the Identification field value. 
      * See {@link #getIdentification()}.
+     * @param identification
      */
     public void setIdentification(final short identification) {
         
@@ -974,6 +1090,7 @@ public final class IPv4Packet extends IPPacket {
      * <li>false = do not fragment
      * <li>true = may fragment
      * </ul>
+     * @return
      */
     public boolean getDoNotFragment() {
         return DontFragment.get(getBufferInternal());
@@ -982,6 +1099,7 @@ public final class IPv4Packet extends IPPacket {
     /**
      * Sets the Don't Fragment flag value. 
      * See {@link #getDoNotFragment()}.
+     * @param doNotFragment
      */
     public void setDoNotFragment(final boolean doNotFragment) {
         
@@ -1006,6 +1124,7 @@ public final class IPv4Packet extends IPPacket {
      * <li>true = more fragments
      * </ul>
      * See {@link #getFlags()}.
+     * @return
      */
     public boolean getMoreFragments() {
         return MoreFragments.get(getBufferInternal());
@@ -1014,6 +1133,7 @@ public final class IPv4Packet extends IPPacket {
     /**
      * Sets the More Fragments flag value. 
      * See {@link #getMoreFragments()}.
+     * @param moreFragments
      */
     public void setMoreFragments(final boolean moreFragments) {
 
@@ -1043,6 +1163,7 @@ public final class IPv4Packet extends IPPacket {
      * source-destination pair and protocol for the time the datagram will
      * be active in the internet system. The value of this field is typically
      * incremented by one for each datagram distribution.
+     * @return
      */
     @Override
     public int getFragmentOffset() {
@@ -1052,6 +1173,7 @@ public final class IPv4Packet extends IPPacket {
     /**
      * Sets the Fragment Offset field value. 
      * See {@link #getFragmentOffset()}.
+     * @param fragmentOffset
      */
     public void setFragmentOffset(final short fragmentOffset) {
         
@@ -1079,6 +1201,7 @@ public final class IPv4Packet extends IPPacket {
      * thought of only as an upper bound on the time a datagram may exist.
      * The intention is to cause undeliverable datagrams to be discarded and
      * to establish a limit the maximum datagram lifetime.
+     * @return
      */
     public byte getTTL() {
         return TTL.get(getBufferInternal());
@@ -1086,6 +1209,7 @@ public final class IPv4Packet extends IPPacket {
 
     /**
      * Sets the Time to Live (TTL) field value. See {@link #getTTL()}.
+     * @param ttl
      */
     public void setTTL(final byte ttl) {
         
@@ -1107,6 +1231,7 @@ public final class IPv4Packet extends IPPacket {
      * </pre>
      * The protocol indicates the higher-level protocol used in the
      * payload portion of the packet.
+     * @return
      */
     public byte getProtocol() {
         return Protocol.get(getBufferInternal());
@@ -1115,6 +1240,7 @@ public final class IPv4Packet extends IPPacket {
     /**
      * Sets the Protocol field value. 
      * See {@link #getProtocol()}.
+     * @param protocol
      */
     protected void setProtocol(final byte protocol) {
         
@@ -1133,6 +1259,7 @@ public final class IPv4Packet extends IPPacket {
      *  |               |               |         Header Checksum       |
      *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      * </pre>
+     * @return
      */
     public short getHeaderChecksum() {
         return HeaderChecksum.get(getBufferInternal());
@@ -1141,6 +1268,7 @@ public final class IPv4Packet extends IPPacket {
     /**
      * Sets the Checksum field value. 
      * See {@link #getChecksum()}.
+     * @param checksum
      */
     public void setHeaderChecksum(final short checksum) {
         
@@ -1159,6 +1287,7 @@ public final class IPv4Packet extends IPPacket {
      *  |                       Source Address                          |
      *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      * </pre>
+     * @return
      */
     @Override
     public byte[] getSourceAddress() {
@@ -1173,6 +1302,7 @@ public final class IPv4Packet extends IPPacket {
      *  |                       Source Address                          |
      *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      * </pre>
+     * @return
      */
     @Override
     public InetAddress getSourceInetAddress() {
@@ -1226,6 +1356,7 @@ public final class IPv4Packet extends IPPacket {
      *  |                   Destination Address                         |
      *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      * </pre>
+     * @return
      */
     @Override
     public byte[] getDestinationAddress() {
@@ -1240,6 +1371,7 @@ public final class IPv4Packet extends IPPacket {
      *  |                   Destination Address                         |
      *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      * </pre>
+     * @return
      */
     @Override
     public InetAddress getDestinationInetAddress() {
@@ -1320,6 +1452,7 @@ public final class IPv4Packet extends IPPacket {
     /**
      * Calculates the total bytes required by all options currently attached to
      * the packet header.
+     * @return
      */
     public int getOptionsLength() {
         if (this.options == null) {

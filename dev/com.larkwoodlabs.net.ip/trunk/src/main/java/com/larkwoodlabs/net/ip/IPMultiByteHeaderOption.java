@@ -42,10 +42,13 @@ public class IPMultiByteHeaderOption extends IPHeaderOption {
 
     /*-- Inner Classes ------------------------------------------------------*/
 
+    /**
+     * 
+     */
     public static class Parser implements IPHeaderOption.ParserType {
 
         @Override
-        public IPHeaderOption parse(ByteBuffer buffer) throws ParseException {
+        public IPHeaderOption parse(final ByteBuffer buffer) throws ParseException {
             return new IPMultiByteHeaderOption(buffer);
         }
 
@@ -58,6 +61,7 @@ public class IPMultiByteHeaderOption extends IPHeaderOption {
 
     /*-- Static Variables ---------------------------------------------------*/
 
+    /** */
     public static final ByteField OptionLength = new ByteField(1); 
 
 
@@ -68,7 +72,7 @@ public class IPMultiByteHeaderOption extends IPHeaderOption {
      * @param option
      * @param optionLength
      */
-    protected IPMultiByteHeaderOption(byte option, int optionLength) {
+    protected IPMultiByteHeaderOption(final byte option, final int optionLength) {
         super(optionLength,option);
         setOptionLength(optionLength);
 
@@ -82,7 +86,7 @@ public class IPMultiByteHeaderOption extends IPHeaderOption {
      * 
      * @param buffer
      */
-    public IPMultiByteHeaderOption(ByteBuffer buffer) {
+    public IPMultiByteHeaderOption(final ByteBuffer buffer) {
         super(consume(buffer,OptionLength.get(buffer)));
         
         if (logger.isLoggable(Level.FINER)) {
@@ -92,7 +96,7 @@ public class IPMultiByteHeaderOption extends IPHeaderOption {
     }
 
     @Override
-    public void log(Logger logger) {
+    public void log(final Logger logger) {
         super.log(logger);
         logState(logger);
     }
@@ -101,12 +105,13 @@ public class IPMultiByteHeaderOption extends IPHeaderOption {
      * Logs value of member variables declared or maintained by this class.
      * @param logger
      */
-    private void logState(Logger logger) {
+    private void logState(final Logger logger) {
         logger.info(ObjectId + " : length="+getOptionLength());
     }
 
     /**
      * 
+     * @return
      */
     public final int getOptionLength() {
         return OptionLength.get(getBufferInternal());
@@ -116,7 +121,7 @@ public class IPMultiByteHeaderOption extends IPHeaderOption {
      * 
      * @param length
      */
-    public final void setOptionLength(int length) {
+    public final void setOptionLength(final int length) {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPMultiByteHeaderOption.setOptionLength", length));

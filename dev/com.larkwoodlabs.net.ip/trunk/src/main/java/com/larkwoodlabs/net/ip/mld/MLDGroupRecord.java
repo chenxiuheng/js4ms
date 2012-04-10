@@ -265,14 +265,24 @@ public final class MLDGroupRecord extends BufferBackedObject {
      */
     public final static byte BLOCK_OLD_SOURCES = 6;
 
+    /** */
     public static final int BASE_RECORD_LENGTH = 8;
 
+    /** */
     public static final ByteField       RecordType = new ByteField(0);
+    /** */
     public static final ByteField       AuxDataLen = new ByteField(1);
+    /** */
     public static final ShortField      NumberOfSources = new ShortField(2);
+    /** */
     public static final ByteArrayField  GroupAddress = new ByteArrayField(4,16);
 
-    public static String getTypeName(byte type) {
+    /**
+     * 
+     * @param type
+     * @return
+     */
+    public static String getTypeName(final byte type) {
         switch(type) {
             case MODE_IS_INCLUDE: return "MODE_IS_INCLUDE";
             case MODE_IS_EXCLUDE: return "MODE_IS_EXCLUDE";
@@ -284,12 +294,19 @@ public final class MLDGroupRecord extends BufferBackedObject {
         }
     }
 
-    public static short calculateGroupRecordSize(ByteBuffer buffer) {
+    /**
+     * 
+     * @param buffer
+     * @return
+     */
+    public static short calculateGroupRecordSize(final ByteBuffer buffer) {
         return (short)(BASE_RECORD_LENGTH + NumberOfSources.get(buffer) * 16 + AuxDataLen.get(buffer) * 4);
     }
 
 
-    private Vector<byte[]> sources = new Vector<byte[]>();
+    /** */
+    final private Vector<byte[]> sources = new Vector<byte[]>();
+    /** */
     private ByteBuffer auxData;
 
     /**
@@ -297,7 +314,7 @@ public final class MLDGroupRecord extends BufferBackedObject {
      * @param type
      * @param groupAddress
      */
-    public MLDGroupRecord(byte type, byte[] groupAddress) {
+    public MLDGroupRecord(final byte type, final byte[] groupAddress) {
         this(type, groupAddress, null);
         
         if (MLDMessage.logger.isLoggable(Level.FINER)) {
@@ -311,7 +328,7 @@ public final class MLDGroupRecord extends BufferBackedObject {
      * @param groupAddress
      * @param auxData
      */
-    public MLDGroupRecord(byte type, byte[] groupAddress, ByteBuffer auxData) {
+    public MLDGroupRecord(final byte type, final byte[] groupAddress, final ByteBuffer auxData) {
         super(BASE_RECORD_LENGTH);
         
         if (MLDMessage.logger.isLoggable(Level.FINER)) {
@@ -332,7 +349,7 @@ public final class MLDGroupRecord extends BufferBackedObject {
      * @param buffer
      * @throws ParseException
      */
-    public MLDGroupRecord(ByteBuffer buffer) throws ParseException {
+    public MLDGroupRecord(final ByteBuffer buffer) throws ParseException {
         super(consume(buffer, BASE_RECORD_LENGTH));
         
         if (MLDMessage.logger.isLoggable(Level.FINE)) {
@@ -359,16 +376,16 @@ public final class MLDGroupRecord extends BufferBackedObject {
     }
 
     @Override
-    public void log(Logger logger) {
+    public void log(final Logger logger) {
         super.log(logger);
         logState(logger);
     }
-    
+
     /**
      * Logs value of member variables declared or maintained by this class.
      * @param logger
      */
-    private void logState(Logger logger) {
+    private void logState(final Logger logger) {
         logger.info(ObjectId + " : record-type="+getType()+" "+getTypeName(getType()));
         logger.info(ObjectId + " : aux-data-length="+getAuxDataLength());
         logger.info(ObjectId + " : number-of-sources="+getNumberOfSources());
@@ -382,7 +399,7 @@ public final class MLDGroupRecord extends BufferBackedObject {
     }
 
     @Override
-    public void writeTo(ByteBuffer buffer) {
+    public void writeTo(final ByteBuffer buffer) {
         
         if (MLDMessage.logger.isLoggable(Level.FINER)) {
             MLDMessage.logger.finer(Logging.entering(ObjectId, "MLDGroupRecord.writeTo", buffer));
@@ -423,7 +440,7 @@ public final class MLDGroupRecord extends BufferBackedObject {
      * 
      * @param type
      */
-    public void setType(byte type) {
+    public void setType(final byte type) {
         
         if (MLDMessage.logger.isLoggable(Level.FINER)) {
             MLDMessage.logger.finer(Logging.entering(ObjectId, "MLDGroupRecord.setType", type));
@@ -453,7 +470,7 @@ public final class MLDGroupRecord extends BufferBackedObject {
      * 
      * @param numberOfSources
      */
-    protected void setNumberOfSources(short numberOfSources) {
+    protected void setNumberOfSources(final short numberOfSources) {
 
         if (MLDMessage.logger.isLoggable(Level.FINER)) {
             MLDMessage.logger.finer(Logging.entering(ObjectId, "MLDGroupRecord.setNumberOfSources", numberOfSources));
@@ -474,7 +491,7 @@ public final class MLDGroupRecord extends BufferBackedObject {
      * Sets the auxiliary data length field.
      * @param length - the data length specified as a number of 32-bit words.
      */
-    protected void setAuxDataLength(int length) {
+    protected void setAuxDataLength(final int length) {
         
         if (MLDMessage.logger.isLoggable(Level.FINER)) {
             MLDMessage.logger.finer(Logging.entering(ObjectId, "MLDGroupRecord.setAuxDataLength", length));
@@ -495,7 +512,7 @@ public final class MLDGroupRecord extends BufferBackedObject {
      * 
      * @param groupAddress
      */
-    public void setGroupAddress(InetAddress groupAddress) {
+    public void setGroupAddress(final InetAddress groupAddress) {
 
         if (MLDMessage.logger.isLoggable(Level.FINER)) {
             MLDMessage.logger.finer(Logging.entering(ObjectId, "MLDGroupRecord.setGroupAddress", Logging.address(groupAddress)));
@@ -508,7 +525,7 @@ public final class MLDGroupRecord extends BufferBackedObject {
      * 
      * @param groupAddress
      */
-    public void setGroupAddress(byte[] groupAddress) {
+    public void setGroupAddress(final byte[] groupAddress) {
         
         if (MLDMessage.logger.isLoggable(Level.FINER)) {
             MLDMessage.logger.finer(Logging.entering(ObjectId, "MLDGroupRecord.setGroupAddress", Logging.address(groupAddress)));
@@ -523,7 +540,7 @@ public final class MLDGroupRecord extends BufferBackedObject {
      * @param sourceAddress
      * @throws UnknownHostException
      */
-    public void addSource(InetAddress sourceAddress) throws UnknownHostException {
+    public void addSource(final InetAddress sourceAddress) throws UnknownHostException {
         
         if (MLDMessage.logger.isLoggable(Level.FINER)) {
             MLDMessage.logger.finer(Logging.entering(ObjectId, "MLDGroupRecord.addSource", Logging.address(sourceAddress)));
@@ -538,7 +555,7 @@ public final class MLDGroupRecord extends BufferBackedObject {
      * @param sourceAddress
      * @return
      */
-    public int addSource(byte[] sourceAddress) {
+    public int addSource(final byte[] sourceAddress) {
 
         if (MLDMessage.logger.isLoggable(Level.FINER)) {
             MLDMessage.logger.finer(Logging.entering(ObjectId, "MLDGroupRecord.addSource", Logging.address(sourceAddress)));
@@ -564,7 +581,7 @@ public final class MLDGroupRecord extends BufferBackedObject {
      * @param index
      * @return
      */
-    public byte[] getSource(int index) {
+    public byte[] getSource(final int index) {
         return this.sources.get(index);
     }
     
@@ -572,7 +589,7 @@ public final class MLDGroupRecord extends BufferBackedObject {
      * 
      * @param index
      */
-    public void removeSource(int index) {
+    public void removeSource(final int index) {
         
         if (MLDMessage.logger.isLoggable(Level.FINER)) {
             MLDMessage.logger.finer(Logging.entering(ObjectId, "MLDGroupRecord.removeSource", index));
@@ -593,7 +610,7 @@ public final class MLDGroupRecord extends BufferBackedObject {
      * 
      * @param auxData
      */
-    public void setAuxData(ByteBuffer auxData) {
+    public void setAuxData(final ByteBuffer auxData) {
 
         if (MLDMessage.logger.isLoggable(Level.FINER)) {
             MLDMessage.logger.finer(Logging.entering(ObjectId, "MLDGroupRecord.setAuxData", auxData));

@@ -138,6 +138,9 @@ public final class IPAuthenticationHeader extends IPExtensionHeader {
 
     /*-- Inner Classes ------------------------------------------------------*/
 
+    /**
+     * 
+     */
     public static class Parser implements IPMessage.ParserType {
 
         @Override
@@ -161,6 +164,7 @@ public final class IPAuthenticationHeader extends IPExtensionHeader {
 
     /*-- Static Variables ---------------------------------------------------*/
 
+    /** Protocol number for Authentication headers. */
     public static final byte IP_PROTOCOL_NUMBER = 51;
     
 
@@ -169,6 +173,11 @@ public final class IPAuthenticationHeader extends IPExtensionHeader {
 
     /*-- Member Functions ---------------------------------------------------*/
 
+    /**
+     * 
+     * @param buffer
+     * @throws ParseException
+     */
     public IPAuthenticationHeader(final ByteBuffer buffer) throws ParseException {
         super(consume(buffer, ((HeaderLength.get(buffer)+2) * 4)), IP_PROTOCOL_NUMBER);
 
@@ -187,9 +196,6 @@ public final class IPAuthenticationHeader extends IPExtensionHeader {
     private void logState(final Logger logger) {
     }
 
-    /**
-     * Gets the total length of this header in bytes.
-     */
     @Override
     public final int getHeaderLength() {
         return (HeaderLength.get(getBufferInternal()) + 2)*4;

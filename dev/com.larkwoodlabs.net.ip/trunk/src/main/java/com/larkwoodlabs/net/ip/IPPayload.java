@@ -25,19 +25,30 @@ import com.larkwoodlabs.util.buffer.BufferBackedObject;
 import com.larkwoodlabs.util.buffer.parser.MissingParserException;
 import com.larkwoodlabs.util.logging.Logging;
 
+/**
+ * 
+ * 
+ *
+ * @author gbumgard
+ */
 public class IPPayload extends BufferBackedObject implements IPMessage {
 
     /*-- Inner Classes ------------------------------------------------------*/
 
+    /**
+     * 
+     */
     public static class Parser implements IPMessage.ParserType {
 
         @Override
-        public IPPayload parse(ByteBuffer buffer) {
+        public IPPayload parse(final ByteBuffer buffer) {
             return new IPPayload(buffer);
         }
 
         @Override
-        public boolean verifyChecksum(ByteBuffer buffer, byte[] sourceAddress, byte[] destinationAddress) throws MissingParserException, ParseException {
+        public boolean verifyChecksum(final ByteBuffer buffer,
+                                      final byte[] sourceAddress,
+                                      final byte[] destinationAddress) throws MissingParserException, ParseException {
             return true; // Does nothing in this class
         }
 
@@ -50,8 +61,10 @@ public class IPPayload extends BufferBackedObject implements IPMessage {
 
     /*-- Member Variables ---------------------------------------------------*/
 
+    /** Logger used to generate IPPayload log entries. */
     public static final Logger logger = Logger.getLogger(IPPayload.class.getName());
 
+    /** */
     private byte protocolNumber;
  
     
@@ -61,7 +74,7 @@ public class IPPayload extends BufferBackedObject implements IPMessage {
      * 
      * @param buffer
      */
-    public IPPayload(ByteBuffer buffer) {
+    public IPPayload(final ByteBuffer buffer) {
         this((byte)0, buffer);
     }
 
@@ -70,7 +83,7 @@ public class IPPayload extends BufferBackedObject implements IPMessage {
      * @param protocolNumber
      * @param buffer
      */
-    public IPPayload(byte protocolNumber, ByteBuffer buffer) {
+    public IPPayload(final byte protocolNumber, final ByteBuffer buffer) {
         super(buffer);
         this.protocolNumber = protocolNumber;
 
@@ -81,7 +94,7 @@ public class IPPayload extends BufferBackedObject implements IPMessage {
     }
 
     @Override
-    public void log(Logger logger) {
+    public void log(final Logger logger) {
         super.log(logger);
         logState(logger);
     }
@@ -90,7 +103,7 @@ public class IPPayload extends BufferBackedObject implements IPMessage {
      * Logs value of member variables declared or maintained by this class.
      * @param logger
      */
-    private void logState(Logger logger) {
+    private void logState(final Logger logger) {
         logger.info(ObjectId + " : protocol="+getProtocolNumber());
     }
 
@@ -100,7 +113,9 @@ public class IPPayload extends BufferBackedObject implements IPMessage {
     }
 
     @Override
-    public void writeChecksum(ByteBuffer buffer, byte[] sourceAddress, byte[] destinationAddress) {
+    public void writeChecksum(final ByteBuffer buffer,
+                              final byte[] sourceAddress,
+                              final byte[] destinationAddress) {
         // Does nothing in this class
     }
 
@@ -110,7 +125,7 @@ public class IPPayload extends BufferBackedObject implements IPMessage {
     }
 
     @Override
-    public void setProtocolNumber(byte protocolNumber) {
+    public void setProtocolNumber(final byte protocolNumber) {
         this.protocolNumber = protocolNumber;
     }
     
@@ -125,7 +140,7 @@ public class IPPayload extends BufferBackedObject implements IPMessage {
     }
 
     @Override
-    public void setNextMessage(IPMessage header) {
+    public void setNextMessage(final IPMessage header) {
         throw new UnsupportedOperationException();
     }
 

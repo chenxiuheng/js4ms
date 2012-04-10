@@ -28,19 +28,32 @@ import com.larkwoodlabs.util.buffer.fields.Field;
 import com.larkwoodlabs.util.buffer.fields.SelectorField;
 import com.larkwoodlabs.util.buffer.parser.BufferParserSelector;
 import com.larkwoodlabs.util.buffer.parser.KeyedBufferParser;
+import com.larkwoodlabs.util.buffer.parser.KeyedStreamParser;
 import com.larkwoodlabs.util.buffer.parser.MissingParserException;
 import com.larkwoodlabs.util.logging.Logging;
 
+/**
+ * 
+ * 
+ *
+ * @author gbumgard
+ */
 public abstract class IPPacket extends BufferBackedObject {
 
     /*-- Inner Classes ------------------------------------------------------*/
     
-    public static interface ParserType extends KeyedBufferParser<IPPacket> {
+    /**
+     * 
+     */
+    public static interface ParserType extends KeyedBufferParser<IPPacket>, KeyedStreamParser<IPPacket> {
 
         public boolean verifyChecksum(ByteBuffer buffer) throws MissingParserException, ParseException;
         
     }
     
+    /**
+     * 
+     */
     public static class Parser extends BufferParserSelector<IPPacket> {
 
         public Parser() {
@@ -62,14 +75,17 @@ public abstract class IPPacket extends BufferBackedObject {
     
 
     /*-- Static Variables ---------------------------------------------------*/
-    
+
+    /** Logger used to generate IPPacket log entries. */
     public static final Logger logger = Logger.getLogger(IPPacket.class.getName());
 
+    /** */
     public static final ByteBitField Version = new ByteBitField(0,4,4); 
 
 
     /*-- Member Variables ---------------------------------------------------*/
-    
+
+    /** */
     private IPMessage firstProtocolHeader = null;
     
 
@@ -133,6 +149,7 @@ public abstract class IPPacket extends BufferBackedObject {
      *  |Version|       |               |                               |
      *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      * </pre>
+     * @return
      */
     public final byte getVersion() {
         return Version.get(getBufferInternal());
@@ -142,28 +159,28 @@ public abstract class IPPacket extends BufferBackedObject {
      * 
      * @param version
      */
-    protected final void setVersion(byte version) {
+    protected final void setVersion(final byte version) {
         Version.set(getBufferInternal(),version);
     }
- 
+
     /**
      * 
      * @return
      */
     public abstract byte[] getSourceAddress();
-    
+
     /**
      * 
      * @return
      */
     public abstract InetAddress getSourceInetAddress();
-    
+
     /**
      * 
      * @return
      */
     public abstract byte[] getDestinationAddress();
-    
+
     /**
      * 
      * @return
@@ -182,6 +199,7 @@ public abstract class IPPacket extends BufferBackedObject {
      * Indicates whether this packet carries the first, or left-most fragment in a datagram.
      * Only applies to packets that carry datagram fragments, but will return <code>true</code>
      * if the packet carries a complete datagram.
+     * @return
      * @see  {@link #isFragmented()}
      */
     public final boolean isFirstFragment() {
@@ -192,6 +210,7 @@ public abstract class IPPacket extends BufferBackedObject {
      * Indicates whether this packet carries the last, or right-most fragment in a datagram.
      * Only applies to packets that carry datagram fragments, but will return <code>false</code>
      * if the packet carries a complete datagram.
+     * @return
      * @see  {@link #isFragmented()}
      */
     public final boolean isLastFragment() {
@@ -202,18 +221,21 @@ public abstract class IPPacket extends BufferBackedObject {
      * Indicates whether additional packets are required to reconstruct a complete datagram.
      * Returns <code>false</code> if this packet carries the last, or right-most fragment of a datagram
      * or if the packet carries a complete datagram.
+     * @return
      * @see  {@link #isFragmented()}
      */
     public abstract boolean isMoreFragments();
 
     /**
      * Returns the temporally unique identifier assigned to all fragments that comprise a single datagram.
+     * @return
      */
     public abstract int getFragmentIdentifier();
  
     /**
      * Returns the fragment location within the original datagram.
      * The fragment offset is expressed in 8-byte units.
+     * @return
      */
     public abstract int getFragmentOffset();
 
@@ -224,7 +246,7 @@ public abstract class IPPacket extends BufferBackedObject {
      * @return
      */
     public abstract ByteBuffer getFragment();
-    
+
     /**
      * 
      * @return
@@ -243,13 +265,13 @@ public abstract class IPPacket extends BufferBackedObject {
      * @return
      */
     public abstract int getHeaderLength();
-    
+
     /**
      * 
      * @return
      */
     public abstract int getPayloadLength();
-    
+
     /**
      * 
      * @return
@@ -257,7 +279,7 @@ public abstract class IPPacket extends BufferBackedObject {
     public int getTotalLength() {
         return getHeaderLength() + getPayloadLength();
     }
-    
+
     /**
      * 
      * @param length
@@ -269,7 +291,7 @@ public abstract class IPPacket extends BufferBackedObject {
      * @return
      */
     public abstract byte getNextProtocolNumber();
-    
+
     /**
      * 
      * @param protocolNumber
@@ -344,7 +366,7 @@ public abstract class IPPacket extends BufferBackedObject {
             setPayloadLength(length);
         }
     }
-    
+
     /**
      * 
      * @param protocolNumber
@@ -362,7 +384,7 @@ public abstract class IPPacket extends BufferBackedObject {
             return nextMessage;
         }
     }
-    
+
     /**
      * Calculates upper-layer message checksum for protocols that include
      * an IP pseudo header in the checksum calculation.
@@ -460,6 +482,7 @@ public abstract class IPPacket extends BufferBackedObject {
      * @param destinationAddress An IPv4 (4-byte) or IPv6 (16-byte) address. Size must match that of the destination address.
      * @param protocolNumber - the IP protocol number of the upper-layer protocol.
      * @param packetLength - the total length of the upper-layer message.
+     * @return
      */
     public final static short calculateChecksum(final ByteBuffer buffer,
                                                 final Field<Short> checksumField,
@@ -548,6 +571,7 @@ public abstract class IPPacket extends BufferBackedObject {
      * @param sourceAddress An IPv4 (4-byte) or IPv6 (16-byte) address. Size must match that of the destination address.
      * @param destinationAddress An IPv4 (4-byte) or IPv6 (16-byte) address. Size must match that of the destination address.
      * @param packetLength - the total length of the upper-layer message.
+     * @return
      */
     public final static short calculateChecksum(final ByteBuffer buffer,
                                                 final Field<Short> checksumField,

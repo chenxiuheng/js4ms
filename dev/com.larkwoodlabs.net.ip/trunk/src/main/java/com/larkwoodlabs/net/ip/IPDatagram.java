@@ -30,6 +30,7 @@ public final class IPDatagram extends LoggableBase {
 
     /*-- Static Variables ---------------------------------------------------*/
 
+    /** Logger used to generate IPDatagram log entries. */
     public static final Logger logger = Logger.getLogger(IPDatagram.class.getName());
 
     /**
@@ -40,9 +41,13 @@ public final class IPDatagram extends LoggableBase {
 
     /*-- Member Variables ---------------------------------------------------*/
 
+    /** */
     InetAddress sourceInetAddress;
+
+    /** */
     InetAddress destinationInetAddress;
     
+    /** */
     IPMessage payload;
 
 
@@ -61,7 +66,9 @@ public final class IPDatagram extends LoggableBase {
      * @param destinationInetAddress
      * @param payload
      */
-    public IPDatagram(InetAddress sourceInetAddress, InetAddress destinationInetAddress, IPMessage payload) {
+    public IPDatagram(final InetAddress sourceInetAddress,
+                      final InetAddress destinationInetAddress,
+                      final IPMessage payload) {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId,
@@ -87,7 +94,9 @@ public final class IPDatagram extends LoggableBase {
      * @param destinationAddress
      * @param payload
      */
-    public IPDatagram(byte[] sourceAddress, byte[] destinationAddress, IPMessage payload) {
+    public IPDatagram(final byte[] sourceAddress,
+                      final byte[] destinationAddress,
+                      final IPMessage payload) {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId,
@@ -120,7 +129,7 @@ public final class IPDatagram extends LoggableBase {
     }
 
     @Override
-    public void log(Logger logger) {
+    public void log(final Logger logger) {
         super.log(logger);
         logState(logger);
     }
@@ -129,7 +138,7 @@ public final class IPDatagram extends LoggableBase {
      * Logs state variables declared or maintained by this class.
      * @param logger
      */
-    private void logState(Logger logger) {
+    private void logState(final Logger logger) {
         logger.info(ObjectId + " : source="+Logging.address(getSourceAddress()));
         logger.info(ObjectId + " : destination="+Logging.address(getDestinationAddress()));
         logger.info(ObjectId + " ----> payload");
@@ -141,7 +150,7 @@ public final class IPDatagram extends LoggableBase {
      * 
      * @param buffer
      */
-    public void writeTo(ByteBuffer buffer) {
+    public void writeTo(final ByteBuffer buffer) {
         this.payload.writeTo(buffer);
     }
 
@@ -182,7 +191,8 @@ public final class IPDatagram extends LoggableBase {
      * @param sourceInetAddress
      * @param destinationInetAddress
      */
-    public void setAddresses(InetAddress sourceInetAddress, InetAddress destinationInetAddress) {
+    public void setAddresses(final InetAddress sourceInetAddress,
+                             final InetAddress destinationInetAddress) {
         Precondition.checkAddresses(sourceInetAddress, destinationInetAddress);
         this.sourceInetAddress = sourceInetAddress;
         this.destinationInetAddress = destinationInetAddress;
@@ -193,7 +203,8 @@ public final class IPDatagram extends LoggableBase {
      * @param sourceAddress
      * @param destinationAddress
      */
-    public void setAddresses(byte[] sourceAddress, byte[] destinationAddress) {
+    public void setAddresses(final byte[] sourceAddress,
+                             final byte[] destinationAddress) {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPDatagram.setAddresses", Logging.address(sourceAddress), Logging.address(destinationAddress)));
@@ -222,7 +233,7 @@ public final class IPDatagram extends LoggableBase {
      * 
      * @param payload
      */
-    public void setPayload(IPMessage payload) {
+    public void setPayload(final IPMessage payload) {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPDatagram.setPayload", payload));

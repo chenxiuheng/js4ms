@@ -25,18 +25,33 @@ import com.larkwoodlabs.net.ip.IPPacket;
 import com.larkwoodlabs.net.ip.ipv4.IPv4Packet;
 import com.larkwoodlabs.util.logging.Logging;
 
+/**
+ * 
+ * 
+ *
+ * @author gbumgard
+ */
 public final class IGMPv2QueryMessage extends IGMPQueryMessage {
 
     /*-- Inner Classes ------------------------------------------------------*/
-    
+
+    /**
+     * 
+     * 
+     *
+     * @author gbumgard
+     */
     public static final class Parser implements IGMPMessage.ParserType {
 
         @Override
-        public IGMPMessage parse(ByteBuffer buffer) throws ParseException {
+        public IGMPMessage parse(final ByteBuffer buffer) throws ParseException {
             return new IGMPv2QueryMessage(buffer);
         }
 
-        public boolean verifyChecksum(ByteBuffer buffer) {
+        /**
+         * @param buffer
+         */
+        public boolean verifyChecksum(final ByteBuffer buffer) {
             return IGMPv2QueryMessage.verifyChecksum(buffer);
         }
 
@@ -49,24 +64,41 @@ public final class IGMPv2QueryMessage extends IGMPQueryMessage {
 
 
     /*-- Static Variables ---------------------------------------------------*/
-    
+
+    /** */
     public static final int BASE_MESSAGE_LENGTH = 8;
 
 
     /*-- Static Functions ---------------------------------------------------*/
 
+    /**
+     * 
+     * @return
+     */
     public static IGMPMessage.Parser getIGMPMessageParser() {
         return getIGMPMessageParser(new IGMPv2QueryMessage.Parser());
     }
 
+    /**
+     * 
+     * @return
+     */
     public static IPMessage.Parser getIPMessageParser() {
         return getIPMessageParser(new IGMPv2QueryMessage.Parser());
     }
 
+    /**
+     * 
+     * @return
+     */
     public static IPv4Packet.Parser getIPv4PacketParser() {
         return getIPv4PacketParser(new IGMPv2QueryMessage.Parser());
     }
 
+    /**
+     * 
+     * @return
+     */
     public static IPPacket.Parser getIPPacketParser() {
         return getIPPacketParser(new IGMPv2QueryMessage.Parser());
     }
@@ -74,16 +106,17 @@ public final class IGMPv2QueryMessage extends IGMPQueryMessage {
     
     /**
      * Verifies the IGMP message checksum. Called by the parser prior to constructing the packet.
-     * @param segment - the buffer segment containing the IGMP message.
+     * @param buffer - the buffer containing the IGMP message.
      */
-    public static boolean verifyChecksum(ByteBuffer buffer) {
+    public static boolean verifyChecksum(final ByteBuffer buffer) {
         return Checksum.get(buffer) == IGMPMessage.calculateChecksum(buffer, BASE_MESSAGE_LENGTH);
     }
 
     /**
      * Writes the IGMP message checksum into a buffer containing an IGMP message.
+     * @param buffer
      */
-    public static void setChecksum(ByteBuffer buffer) {
+    public static void setChecksum(final ByteBuffer buffer) {
         Checksum.set(buffer, IGMPMessage.calculateChecksum(buffer, BASE_MESSAGE_LENGTH));
     }
 
@@ -95,7 +128,7 @@ public final class IGMPv2QueryMessage extends IGMPQueryMessage {
      * @param maximumResponseTime
      * @param groupAddress
      */
-    public IGMPv2QueryMessage(short maximumResponseTime, byte[] groupAddress) {
+    public IGMPv2QueryMessage(final short maximumResponseTime, final byte[] groupAddress) {
         super(BASE_MESSAGE_LENGTH, maximumResponseTime, groupAddress);
         
         if (logger.isLoggable(Level.FINER)) {
@@ -108,7 +141,7 @@ public final class IGMPv2QueryMessage extends IGMPQueryMessage {
      * @param buffer
      * @throws ParseException
      */
-    public IGMPv2QueryMessage(ByteBuffer buffer) throws ParseException {
+    public IGMPv2QueryMessage(final ByteBuffer buffer) throws ParseException {
         super(consume(buffer, BASE_MESSAGE_LENGTH));
         
         if (logger.isLoggable(Level.FINER)) {
@@ -117,7 +150,9 @@ public final class IGMPv2QueryMessage extends IGMPQueryMessage {
     }
 
     @Override
-    public void writeChecksum(ByteBuffer buffer, byte[] sourceAddress, byte[] destinationAddress) {
+    public void writeChecksum(final ByteBuffer buffer,
+                              final byte[] sourceAddress,
+                              final byte[] destinationAddress) {
         IGMPv2QueryMessage.setChecksum(buffer);
     }
 
@@ -138,9 +173,9 @@ public final class IGMPv2QueryMessage extends IGMPQueryMessage {
     /**
      * Sets the "<code>Max Resp Time</code>" value in milliseconds.
      * This value is converted into a {@linkplain #MaxRespCode Max Resp Code} value.
-     * @return
+     * @param milliseconds
      */
-    public void setMaximumResponseTime(int milliseconds) {
+    public void setMaximumResponseTime(final int milliseconds) {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IGMPv2QueryMessage.setMaximumResponseTime", milliseconds));
