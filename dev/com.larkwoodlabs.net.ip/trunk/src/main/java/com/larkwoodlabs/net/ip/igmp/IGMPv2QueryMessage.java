@@ -99,7 +99,7 @@ public final class IGMPv2QueryMessage extends IGMPQueryMessage {
      * 
      * @return
      */
-    public static IPPacket.Parser getIPPacketParser() {
+    public static IPPacket.BufferParser getIPPacketParser() {
         return getIPPacketParser(new IGMPv2QueryMessage.Parser());
     }
 

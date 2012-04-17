@@ -32,20 +32,20 @@ public class IPinIPHeader extends LoggableBase implements IPMessage {
      */
     public static class Parser implements IPMessage.ParserType {
 
-        IPPacket.Parser ipParser = null;
+        IPPacket.BufferParser ipParser = null;
 
         /**
          * 
          */
         public Parser() {
-            this(new IPPacket.Parser());
+            this(new IPPacket.BufferParser());
         }
 
         /**
          * 
          * @param ipParser
          */
-        public Parser(final IPPacket.Parser ipParser) {
+        public Parser(final IPPacket.BufferParser ipParser) {
             setIPHeaderParser(ipParser);
         }
 
@@ -53,7 +53,7 @@ public class IPinIPHeader extends LoggableBase implements IPMessage {
          * 
          * @param ipParser
          */
-        public void setIPHeaderParser(final IPPacket.Parser ipParser) {
+        public void setIPHeaderParser(final IPPacket.BufferParser ipParser) {
             //Precondition.checkReference(ipParser);
             this.ipParser = ipParser;
         }
@@ -62,7 +62,7 @@ public class IPinIPHeader extends LoggableBase implements IPMessage {
          * 
          * @return
          */
-        public IPPacket.Parser getIPHeaderParser() {
+        public IPPacket.BufferParser getIPHeaderParser() {
             return this.ipParser;
         }
 

@@ -216,7 +216,7 @@ public final class IGMPv3ReportMessage extends IGMPMessage {
      * 
      * @return
      */
-    public static IPPacket.Parser getIPPacketParser() {
+    public static IPPacket.BufferParser getIPPacketParser() {
         return getIPPacketParser(new IGMPv3ReportMessage.Parser());
     }
 

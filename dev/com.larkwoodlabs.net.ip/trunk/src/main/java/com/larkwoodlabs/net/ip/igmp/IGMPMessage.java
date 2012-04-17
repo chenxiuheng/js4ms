@@ -194,6 +194,7 @@ public abstract class IGMPMessage extends BufferBackedObject implements IPMessag
         IGMPMessage.Parser parser = new IGMPMessage.Parser();
         parser.add(new IGMPQueryMessage.Parser());
         parser.add(new IGMPv3ReportMessage.Parser());
+        parser.add(new IGMPv2ReportMessage.Parser());
         parser.add(new IGMPv2LeaveMessage.Parser());
         return parser;
     }
@@ -222,8 +223,8 @@ public abstract class IGMPMessage extends BufferBackedObject implements IPMessag
      * 
      * @return
      */
-    public static IPPacket.Parser getIPPacketParser() {
-        IPPacket.Parser parser = new IPPacket.Parser();
+    public static IPPacket.BufferParser getIPPacketParser() {
+        IPPacket.BufferParser parser = new IPPacket.BufferParser();
         parser.add(getIPv4PacketParser());
         return parser;
     }
@@ -266,8 +267,8 @@ public abstract class IGMPMessage extends BufferBackedObject implements IPMessag
      * @param messageParser
      * @return
      */
-    public static IPPacket.Parser getIPPacketParser(final IGMPMessage.ParserType messageParser) {
-        IPPacket.Parser parser = new IPPacket.Parser();
+    public static IPPacket.BufferParser getIPPacketParser(final IGMPMessage.ParserType messageParser) {
+        IPPacket.BufferParser parser = new IPPacket.BufferParser();
         parser.add(getIPv4PacketParser(messageParser));
         return parser;
     }

@@ -293,7 +293,7 @@ public final class IGMPv3QueryMessage extends IGMPQueryMessage {
      * 
      * @return
      */
-    public static IPPacket.Parser getIPPacketParser() {
+    public static IPPacket.BufferParser getIPPacketParser() {
         return getIPPacketParser(new IGMPv3QueryMessage.Parser());
     }
 

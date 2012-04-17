@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 
 import com.larkwoodlabs.common.exceptions.ParseException;
 import com.larkwoodlabs.net.ip.IPMessage;
+import com.larkwoodlabs.net.ip.IPPacket;
 import com.larkwoodlabs.util.buffer.BufferBackedObject;
 import com.larkwoodlabs.util.buffer.fields.ByteArrayField;
 import com.larkwoodlabs.util.buffer.fields.ByteField;
@@ -68,7 +69,7 @@ import com.larkwoodlabs.util.logging.Logging;
  * 
  * @author Gregory Bumgardner
  */
-public abstract class ICMPv6Message extends BufferBackedObject implements IPMessage {
+public class ICMPv6Message extends BufferBackedObject implements IPMessage {
 
     /*-- Inner Classes ------------------------------------------------------*/
 
@@ -81,6 +82,30 @@ public abstract class ICMPv6Message extends BufferBackedObject implements IPMess
                                       byte[] sourceAddress,
                                       byte[] destinationAddress) throws MissingParserException, ParseException;
 
+    }
+
+    /**
+     * 
+     */
+    public static class DefaultParser implements ICMPv6Message.ParserType {
+
+        @Override
+        public ICMPv6Message parse(final ByteBuffer buffer) throws ParseException {
+            return new ICMPv6Message(buffer);
+        }
+
+        @Override
+        public boolean verifyChecksum(final ByteBuffer buffer,
+                                      final byte[] sourceAddress,
+                                      final byte[] destinationAddress) throws MissingParserException, ParseException {
+            return ICMPv6Message.verifyChecksum(buffer, sourceAddress, destinationAddress);
+        }
+
+        @Override
+        public Object getKey() {
+            return null;
+        }
+        
     }
 
     /**
@@ -116,6 +141,50 @@ public abstract class ICMPv6Message extends BufferBackedObject implements IPMess
         }
     }
 
+    /**
+     * Verifies the ICMPv6 message checksum. Called by the parser prior to constructing the packet.
+     * @param buffer - the buffer containing the ICMPv6 message.
+     * @param sourceAddress An IPv6 (16-byte) address..
+     * @param destinationAddress An IPv6 (16-byte) address.
+     * @return
+     */
+    public static boolean verifyChecksum(final ByteBuffer buffer,
+                                         final byte[] sourceAddress,
+                                         final byte[] destinationAddress) {
+        return Checksum.get(buffer) == ICMPv6Message.calculateChecksum(buffer, calculateMessageSize(buffer), sourceAddress, destinationAddress);
+    }
+
+    /**
+     * Writes the ICMPv6 message checksum into a buffer containing an ICMPv6 message.
+     * @param buffer - a byte array.
+     * @param offset - the offset within the array at which to write the message.
+     * @param sourceAddress An IPv6 (16-byte) address..
+     * @param destinationAddress An IPv6 (16-byte) address.
+     */
+    public static void setChecksum(final ByteBuffer buffer,
+                                   final byte[] sourceAddress,
+                                   final byte[] destinationAddress) {
+        Checksum.set(buffer, ICMPv6Message.calculateChecksum(buffer, calculateMessageSize(buffer), sourceAddress, destinationAddress));
+    }
+
+    public static short calculateMessageSize(ByteBuffer buffer) {
+        return (short) buffer.remaining();
+    }
+
+    /**
+     * Calculates the ICMPv6 message checksum for an ICMPv6 message contained in a buffer.
+     * @param buffer - the buffer containing the ICMPv6 message.
+     * @param messageLength - the length of the ICMPv6 message.
+     * @param sourceAddress An IPv6 (16-byte) address..
+     * @param destinationAddress An IPv6 (16-byte) address.
+     * @return
+     */
+    public static short calculateChecksum(final ByteBuffer buffer,
+                                          final int messageLength,
+                                          final byte[] sourceAddress,
+                                          final byte[] destinationAddress) {
+        return IPPacket.calculateChecksum(buffer, Checksum, sourceAddress, destinationAddress, IP_PROTOCOL_NUMBER, messageLength);
+    }
 
     /*-- Static Variables ---------------------------------------------------*/
 
@@ -124,6 +193,9 @@ public abstract class ICMPv6Message extends BufferBackedObject implements IPMess
 
     /** */
     protected static final int HEADER_LENGTH = 4;
+    /** */
+    public static final int BASE_MESSAGE_LENGTH = 4;
+
 
     /** Protocol number for ICMPv6 headers. */
     public static final byte IP_PROTOCOL_NUMBER = 58;
@@ -390,6 +462,22 @@ public abstract class ICMPv6Message extends BufferBackedObject implements IPMess
         setChecksum((short)0);
         short checksum = calculateChecksum(sourceAddress, destinationAddress, packetLength);
         setChecksum(checksum);
+    }
+
+    @Override
+    public void writeChecksum(final ByteBuffer buffer,
+                              final byte[] sourceAddress,
+                              final byte[] destinationAddress) {
+        
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer(Logging.entering(ObjectId,
+                                        "ICMPv6Message.writeChecksum",
+                                        buffer,
+                                        Logging.address(sourceAddress),
+                                        Logging.address(destinationAddress)));
+        }
+
+        ICMPv6Message.setChecksum(buffer, sourceAddress, destinationAddress);
     }
 
     /**

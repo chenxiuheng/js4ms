@@ -165,14 +165,14 @@ public class IPv6RoutingHeader extends IPExtensionHeader {
 
     /**
      * 
-     * @param segment
+     * @param buffer
      * @throws ParseException
      */
-    public IPv6RoutingHeader(final ByteBuffer segment) throws ParseException {
-        super(segment, IP_PROTOCOL_NUMBER);
+    public IPv6RoutingHeader(final ByteBuffer buffer) throws ParseException {
+        super(consume(buffer, MIN_HEADER_LENGTH + HeaderLength.get(buffer) * 8), IP_PROTOCOL_NUMBER);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv6RoutingHeader.IPv6RoutingHeader", segment));
+            logger.finer(Logging.entering(ObjectId, "IPv6RoutingHeader.IPv6RoutingHeader", buffer));
             logState(logger);
         }
     }

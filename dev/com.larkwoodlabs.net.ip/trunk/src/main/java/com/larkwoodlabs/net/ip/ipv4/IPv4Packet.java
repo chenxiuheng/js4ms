@@ -1573,7 +1573,7 @@ public final class IPv4Packet extends IPPacket {
         if (this.unparsedPayload != null && this.unparsedPayload.remaining() > 0) {
 
             // Parse IP protocol headers
-            byte lastProtocolNumber = getNextProtocolNumber();
+            byte lastProtocolNumber = getLastProtocolNumber();
 
             // Check checksum before we consume the payload
             if (!protocolParser.verifyChecksum(this.unparsedPayload, lastProtocolNumber, getSourceAddress(), getDestinationAddress())) {

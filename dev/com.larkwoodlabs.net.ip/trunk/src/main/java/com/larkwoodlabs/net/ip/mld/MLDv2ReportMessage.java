@@ -221,7 +221,7 @@ public final class MLDv2ReportMessage extends MLDMessage {
      * 
      * @return
      */
-    public static IPPacket.Parser getIPPacketParser() {
+    public static IPPacket.BufferParser getIPPacketParser() {
         return getIPPacketParser(new MLDv2ReportMessage.Parser());
     }
 

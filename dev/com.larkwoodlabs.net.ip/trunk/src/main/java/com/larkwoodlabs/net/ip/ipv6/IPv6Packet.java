@@ -161,7 +161,7 @@ public final class IPv6Packet extends IPPacket {
             IPv6Packet header = new IPv6Packet(buffer);
 
             if (this.protocolParser != null) {
-                header.parsePayload(protocolParser);
+                header.parsePayload(this.protocolParser);
             }
 
             return header;
@@ -172,7 +172,7 @@ public final class IPv6Packet extends IPPacket {
             IPv6Packet header = new IPv6Packet(is);
 
             if (this.protocolParser != null) {
-                header.parsePayload(protocolParser);
+                header.parsePayload(this.protocolParser);
             }
 
             return header;
@@ -804,7 +804,7 @@ public final class IPv6Packet extends IPPacket {
         }
         
         // Parse IP protocol headers
-        byte lastProtocolNumber = getNextProtocolNumber();
+        byte lastProtocolNumber = getLastProtocolNumber();
         // Check checksum before we consume the payload
         if (!protocolParser.verifyChecksum(this.unparsedPayload, lastProtocolNumber, getSourceAddress(), getDestinationAddress())) {
             if (logger.isLoggable(Level.INFO)) {
@@ -834,33 +834,37 @@ public final class IPv6Packet extends IPPacket {
      * @param payload
      * @throws ParseException
      */
-    private void parseExtensionHeaders(final byte nextHeader, final ByteBuffer payload) throws ParseException {
+    private void parseExtensionHeaders(byte nextHeader, final ByteBuffer payload) throws ParseException {
         while (true) {
             if (nextHeader == IPv6HopByHopOptionsHeader.IP_PROTOCOL_NUMBER) {
                 IPv6HopByHopOptionsHeader header = new IPv6HopByHopOptionsHeader(payload);
                 this.addProtocolMessage(header);
                 this.parsedPayloadLength += header.getTotalLength();
+                nextHeader = header.getNextProtocolNumber();
             }
             else if (nextHeader == IPv6RoutingHeader.IP_PROTOCOL_NUMBER ) {
                 IPv6RoutingHeader header = new IPv6RoutingHeader(payload);
                 this.addProtocolMessage(header);
                 this.parsedPayloadLength += header.getTotalLength();
+                nextHeader = header.getNextProtocolNumber();
             }
             else if (nextHeader == IPv6FragmentHeader.IP_PROTOCOL_NUMBER) {
                 // Construct the fragment header - it will track what remains of the payload
                 this.fragmentHeader = new IPv6FragmentHeader(payload);
                 this.unparsedPayload = null;
-                break;
+                nextHeader = this.fragmentHeader.getNextProtocolNumber();
             }
             else if (nextHeader == IPv6DestinationOptionsHeader.IP_PROTOCOL_NUMBER) {
                 IPv6DestinationOptionsHeader header = new IPv6DestinationOptionsHeader(payload);
                 this.addProtocolMessage(header);
                 this.parsedPayloadLength += header.getTotalLength();
+                nextHeader = header.getNextProtocolNumber();
             }
             else if (nextHeader == IPAuthenticationHeader.IP_PROTOCOL_NUMBER) {
                 IPv6DestinationOptionsHeader header = new IPv6DestinationOptionsHeader(payload);
                 this.addProtocolMessage(header);
                 this.parsedPayloadLength += header.getTotalLength();
+                nextHeader = header.getNextProtocolNumber();
             }
             else {
                 // We've reached a protocol header that we don't recognize

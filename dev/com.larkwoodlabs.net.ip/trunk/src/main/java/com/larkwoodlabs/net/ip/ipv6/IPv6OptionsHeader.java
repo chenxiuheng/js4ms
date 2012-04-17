@@ -158,9 +158,10 @@ public abstract class IPv6OptionsHeader extends IPExtensionHeader {
      * @throws ParseException
      */
     public IPv6OptionsHeader(final ByteBuffer buffer, final byte protocolNumber) throws ParseException {
-        super(consume(buffer,BASE_HEADER_LENGTH), protocolNumber);
+        super(consume(buffer, BASE_HEADER_LENGTH), protocolNumber);
         
-        this.unparsedOptions = consume(buffer, HeaderLength.get(getBufferInternal()) - BASE_HEADER_LENGTH);
+        int headerLength = HeaderLength.get(getBufferInternal());
+        this.unparsedOptions = consume(buffer, (MIN_HEADER_LENGTH-BASE_HEADER_LENGTH) + headerLength * 8);
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPv6OptionsHeader.IPv6OptionsHeader", buffer));
@@ -279,7 +280,7 @@ public abstract class IPv6OptionsHeader extends IPExtensionHeader {
         }
         
         //Precondition.checkReference(parser);
-        if (this.unparsedOptions != null) {
+        if (this.unparsedOptions != null && parser != null) {
 
             if (this.options == null) {
                 this.options = new Vector<IPHeaderOption>();

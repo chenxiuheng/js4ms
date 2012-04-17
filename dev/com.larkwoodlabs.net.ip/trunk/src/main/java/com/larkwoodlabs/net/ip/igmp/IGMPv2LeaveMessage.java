@@ -43,9 +43,9 @@ import com.larkwoodlabs.util.logging.Logging;
  * 
  *    0x17 = Leave Group
  * 
- * Max Response Time
+ * Max Response Code
  * 
- *    The Max Response Time field is meaningful only in Membership Query
+ *    The Max Response Code field is meaningful only in Membership Query
  *    messages.
  *
  * Checksum
@@ -132,7 +132,7 @@ public final class IGMPv2LeaveMessage extends IGMPGroupMessage {
      * 
      * @return
      */
-    public static IPPacket.Parser getIPPacketParser() {
+    public static IPPacket.BufferParser getIPPacketParser() {
         return getIPPacketParser(new IGMPv2LeaveMessage.Parser());
     }
 

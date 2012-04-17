@@ -30,6 +30,7 @@ import com.larkwoodlabs.util.buffer.parser.BufferParserSelector;
 import com.larkwoodlabs.util.buffer.parser.KeyedBufferParser;
 import com.larkwoodlabs.util.buffer.parser.KeyedStreamParser;
 import com.larkwoodlabs.util.buffer.parser.MissingParserException;
+import com.larkwoodlabs.util.buffer.parser.StreamParserSelector;
 import com.larkwoodlabs.util.logging.Logging;
 
 /**
@@ -54,13 +55,13 @@ public abstract class IPPacket extends BufferBackedObject {
     /**
      * 
      */
-    public static class Parser extends BufferParserSelector<IPPacket> {
+    public static class BufferParser extends BufferParserSelector<IPPacket> {
 
-        public Parser() {
+        public BufferParser() {
             super(new SelectorField<Byte>(IPPacket.Version));
         }
         
-        public boolean verifyChecksum(ByteBuffer buffer) throws MissingParserException, ParseException {
+        public boolean verifyChecksum(final ByteBuffer buffer) throws MissingParserException, ParseException {
             ParserType parser = (ParserType)get(getKeyField(buffer));
             if (parser == null) {
                 // Check for default parser (null key)
@@ -72,7 +73,17 @@ public abstract class IPPacket extends BufferBackedObject {
             return parser.verifyChecksum(buffer);
         }
     }
-    
+
+    /**
+     * 
+     */
+    public static class StreamParser extends StreamParserSelector<IPPacket> {
+
+        public StreamParser() {
+            super(new SelectorField<Byte>(IPPacket.Version));
+        }
+
+    }
 
     /*-- Static Variables ---------------------------------------------------*/
 
@@ -306,7 +317,7 @@ public abstract class IPPacket extends BufferBackedObject {
         byte lastProtocolNumber = getNextProtocolNumber();
         IPMessage nextMessage = getFirstProtocolMessage();
         while (nextMessage != null) {
-            lastProtocolNumber = nextMessage.getProtocolNumber();
+            lastProtocolNumber = nextMessage.getNextProtocolNumber();
             nextMessage = nextMessage.getNextMessage();
         }
         return lastProtocolNumber;
@@ -512,11 +523,11 @@ public abstract class IPPacket extends BufferBackedObject {
         
         int total = 0;
 
-        for (int i = 0; i < 4;) {
+        for (int i = 0; i < sourceAddress.length;) {
             total += (((sourceAddress[i++] & 0xFF) << 8) | (sourceAddress[i++] & 0xFF));
         }
 
-        for (int i = 0; i < 4;) {
+        for (int i = 0; i < destinationAddress.length;) {
             total += (((destinationAddress[i++] & 0xFF) << 8) | (destinationAddress[i++] & 0xFF));
         }
 

@@ -244,8 +244,8 @@ public final class UdpPacket extends BufferBackedObject implements IPMessage {
      * 
      * @return
      */
-    public final static IPPacket.Parser constructIPPacketParser() {
-        IPPacket.Parser parser = new IPPacket.Parser();
+    public final static IPPacket.BufferParser constructIPPacketParser() {
+        IPPacket.BufferParser parser = new IPPacket.BufferParser();
         parser.add(constructIPv4PacketParser());
         parser.add(constructIPv6PacketParser());
         return parser;

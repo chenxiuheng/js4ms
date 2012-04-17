@@ -168,7 +168,7 @@ public final class MLDv1ReportMessage extends MLDGroupMessage {
      * 
      * @return
      */
-    public static IPPacket.Parser getIPPacketParser() {
+    public static IPPacket.BufferParser getIPPacketParser() {
         return getIPPacketParser(new MLDv1ReportMessage.Parser());
     }
 

@@ -241,8 +241,8 @@ public abstract class MLDMessage extends ICMPv6Message {
      * 
      * @return
      */
-    public static IPPacket.Parser getIPPacketParser() {
-        IPPacket.Parser parser = new IPPacket.Parser();
+    public static IPPacket.BufferParser getIPPacketParser() {
+        IPPacket.BufferParser parser = new IPPacket.BufferParser();
         parser.add(getIPv6PacketParser());
         return parser;
     }
@@ -285,8 +285,8 @@ public abstract class MLDMessage extends ICMPv6Message {
      * @param messageParser
      * @return
      */
-    public static IPPacket.Parser getIPPacketParser(final MLDMessage.ParserType messageParser) {
-        IPPacket.Parser parser = new IPPacket.Parser();
+    public static IPPacket.BufferParser getIPPacketParser(final MLDMessage.ParserType messageParser) {
+        IPPacket.BufferParser parser = new IPPacket.BufferParser();
         parser.add(getIPv6PacketParser(messageParser));
         return parser;
     }

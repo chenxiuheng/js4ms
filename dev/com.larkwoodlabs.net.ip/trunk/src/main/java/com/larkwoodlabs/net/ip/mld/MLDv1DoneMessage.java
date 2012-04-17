@@ -166,7 +166,7 @@ public final class MLDv1DoneMessage extends MLDGroupMessage {
      * 
      * @return
      */
-    public static IPPacket.Parser getIPPacketParser() {
+    public static IPPacket.BufferParser getIPPacketParser() {
         return getIPPacketParser(new MLDv1DoneMessage.Parser());
     }
 
