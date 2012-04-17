@@ -23,32 +23,32 @@ import com.larkwoodlabs.common.exceptions.ParseException;
 
 public class BufferParserMap<T> {
 
-    private HashMap<Object,BufferParser<T>> parsers = new HashMap<Object,BufferParser<T>>();
+    final private HashMap<Object,BufferParser<T>> parsers = new HashMap<Object,BufferParser<T>>();
     
     public BufferParserMap() {
     }
 
-    public void add(KeyedBufferParser<T> parser) {
+    public void add(final KeyedBufferParser<T> parser) {
         add(parser.getKey(), parser);
     }
 
-    public void add(Object key, BufferParser<T> parser) {
+    public void add(final Object key, final BufferParser<T> parser) {
         this.parsers.put(key, parser);
     }
 
-    public BufferParser<T> get(Object key) {
+    public BufferParser<T> get(final Object key) {
         return this.parsers.get(key);
     }
 
-    public boolean contains(Object key) {
+    public boolean contains(final Object key) {
         return this.parsers.containsKey(key);
     }
 
-    public void remove(Object key) {
+    public void remove(final Object key) {
         this.parsers.remove(key);
     }
 
-    public T parse(ByteBuffer buffer, Object key) throws ParseException, MissingParserException {
+    public T parse(final ByteBuffer buffer, final Object key) throws ParseException, MissingParserException {
         BufferParser<T> parser = this.parsers.get(key);
         if (parser == null) {
             // Check for default parser (null key)
@@ -59,4 +59,5 @@ public class BufferParserMap<T> {
         }
         return parser.parse(buffer);
     }
+
 }

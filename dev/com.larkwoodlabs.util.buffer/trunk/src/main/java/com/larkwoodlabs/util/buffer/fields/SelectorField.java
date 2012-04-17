@@ -16,6 +16,8 @@
 
 package com.larkwoodlabs.util.buffer.fields;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 public final class SelectorField<T> implements Field<Object> {
@@ -24,6 +26,11 @@ public final class SelectorField<T> implements Field<Object> {
 
     public SelectorField(final Field<T> field) {
         this.field = field;
+    }
+
+    @Override
+    public Object get(final InputStream is) throws IOException {
+        return (Object)field.get(is);
     }
 
     @Override

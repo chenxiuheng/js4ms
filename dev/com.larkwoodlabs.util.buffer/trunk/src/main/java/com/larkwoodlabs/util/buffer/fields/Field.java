@@ -16,10 +16,13 @@
 
 package com.larkwoodlabs.util.buffer.fields;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 
 public interface Field<Type> {
+    public Type get(final InputStream is) throws IOException;
     public Type get(final ByteBuffer buffer);
     public void set(final ByteBuffer buffer, final Type value);
 }

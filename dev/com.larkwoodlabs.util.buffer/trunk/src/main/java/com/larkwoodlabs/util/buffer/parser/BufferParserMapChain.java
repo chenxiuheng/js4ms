@@ -24,17 +24,17 @@ import com.larkwoodlabs.common.exceptions.ParseException;
 
 public class BufferParserMapChain<T> {
 
-    LinkedList<BufferParser<T>> chain = new LinkedList<BufferParser<T>>();
+    final LinkedList<BufferParser<T>> chain = new LinkedList<BufferParser<T>>();
     
-    public void add(BufferParser<T> parser) {
+    public void add(final BufferParser<T> parser) {
         this.chain.add(parser);
     }
     
-    public void remove(BufferParser<T> parser) {
+    public void remove(final BufferParser<T> parser) {
         this.chain.remove(parser);
     }
 
-    public T parse(ByteBuffer buffer) throws ParseException, MissingParserException {
+    public T parse(final ByteBuffer buffer) throws ParseException, MissingParserException {
         Iterator<BufferParser<T>> iter = this.chain.iterator();
         while (iter.hasNext()) {
             T object = iter.next().parse(buffer);

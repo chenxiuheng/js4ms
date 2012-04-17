@@ -16,6 +16,8 @@
 
 package com.larkwoodlabs.util.buffer.fields;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 public final class ByteBitField extends BitField<Byte> {
@@ -25,6 +27,16 @@ public final class ByteBitField extends BitField<Byte> {
         if ((bitOffset+bitWidth) > 8) {
             throw new java.lang.IndexOutOfBoundsException();
         }
+    }
+
+    @Override
+    public Byte get(final InputStream is) throws IOException {
+        is.mark(this.offset+1);
+        is.skip(this.offset);
+        int b = (byte)is.read();
+        is.reset();
+        if (b == -1) throw new java.io.EOFException();
+        return (byte)(((byte)b >> this.shift) & this.valueMask);
     }
 
     @Override

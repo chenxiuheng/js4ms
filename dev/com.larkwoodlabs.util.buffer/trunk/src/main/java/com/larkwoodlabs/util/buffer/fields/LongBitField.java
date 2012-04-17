@@ -16,15 +16,32 @@
 
 package com.larkwoodlabs.util.buffer.fields;
 
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 
 public final class LongBitField extends BitField<Long> {
 
+    private final static int SIZE = (Long.SIZE >> 3);
+    
     public LongBitField(final int byteOffset, final int bitOffset, final int bitWidth) {
         super(byteOffset, bitOffset, bitWidth);
         if ((bitOffset+bitWidth) > 32) {
             throw new java.lang.IndexOutOfBoundsException();
         }
+    }
+
+    @Override
+    public Long get(final InputStream is) throws IOException {
+        is.mark(this.offset + SIZE);
+        is.skip(this.offset);
+        byte bytes[] = new byte[SIZE];
+        int count = is.read(bytes);
+        if (count != 0) throw new EOFException();
+        BigInteger bigInt = new BigInteger(bytes);
+        return (long)((bigInt.longValue() >> this.shift) & this.valueMask);
     }
 
     @Override

@@ -16,6 +16,8 @@
 
 package com.larkwoodlabs.util.buffer;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.logging.Logger;
 
@@ -43,6 +45,16 @@ public abstract class BufferBackedObject extends LoggableBase {
     }
 
     /**
+     * Creates a buffer containing bytes read from an InputStream.
+     * @throws IOException 
+     */
+    public static ByteBuffer consume(final InputStream is, final int size) throws IOException {
+        ByteBuffer buffer = ByteBuffer.allocate(size);
+        is.read(buffer.array(),0,size);
+        return buffer;
+    }
+
+    /**
      * 
      * @param size
      */
@@ -65,6 +77,16 @@ public abstract class BufferBackedObject extends LoggableBase {
      */
     public BufferBackedObject(final ByteBuffer buffer, final int size) {
         this.buffer = consume(buffer, size);
+    }
+
+    /**
+     * 
+     * @param buffer
+     * @param size
+     * @throws IOException 
+     */
+    public BufferBackedObject(final InputStream is, final int size) throws IOException {
+        this.buffer = consume(is, size);
     }
 
     /**

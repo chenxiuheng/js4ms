@@ -16,6 +16,9 @@
 
 package com.larkwoodlabs.util.buffer.fields;
 
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 public final class VariableByteArrayField<LengthType> extends ByteAlignedField<byte[]> {
@@ -27,8 +30,23 @@ public final class VariableByteArrayField<LengthType> extends ByteAlignedField<b
         this.lengthField = new SelectorField<LengthType>(lengthField);
     }
     
+    public int getSize(final InputStream is) throws IOException {
+        return (Integer)this.lengthField.get(is);
+    }
+
     public int getSize(final ByteBuffer buffer) {
         return (Integer)this.lengthField.get(buffer);
+    }
+
+    public byte[] get(final InputStream is) throws IOException {
+        int size = getSize(is);
+        byte[] bytes = new byte[getSize(is)];
+        is.mark(this.offset+size);
+        is.skip(this.offset);
+        int count = is.read(bytes);
+        is.reset();
+        if (count != size) throw new EOFException();
+        return bytes;
     }
 
     public byte[] get(final ByteBuffer buffer) {

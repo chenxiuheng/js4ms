@@ -25,16 +25,16 @@ public class BufferParserSelector<T> extends BufferParserMap<T> {
 
     private Field<Object> keyField;
     
-    public BufferParserSelector(Field<Object> keyField) {
+    public BufferParserSelector(final Field<Object> keyField) {
         this.keyField = keyField;
     }
 
-    protected Object getKeyField(ByteBuffer buffer) {
+    protected Object getKeyField(final ByteBuffer buffer) {
         return this.keyField != null ? this.keyField.get(buffer) : null;
     }
 
-    public T parse(ByteBuffer buffer) throws ParseException, MissingParserException {
+    public T parse(final ByteBuffer buffer) throws ParseException, MissingParserException {
         return parse(buffer, getKeyField(buffer));
     }
-    
+
 }

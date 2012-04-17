@@ -16,12 +16,26 @@
 
 package com.larkwoodlabs.util.buffer.fields;
 
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 public class FixedBufferField extends ArrayField<ByteBuffer> {
 
     public FixedBufferField(final int offset, final int size) {
         super(offset, size);
+    }
+
+    @Override
+    public ByteBuffer get(final InputStream is) throws IOException {
+        is.mark(this.offset+this.size);
+        is.skip(this.offset);
+        byte bytes[] = new byte[this.size];
+        int count = is.read(bytes);
+        is.reset();
+        if (count != this.size) throw new EOFException();
+        return ByteBuffer.wrap(bytes, 0, count);
     }
 
     @Override
