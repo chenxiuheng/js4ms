@@ -156,7 +156,7 @@ public final class AmtMembershipQueryMessage extends AmtEncapsulationMessage {
             this(DEFAULT_QUERY_PACKET_PARSER);
         }
 
-        public Parser(IPPacket.Parser ipParser) {
+        public Parser(IPPacket.BufferParser ipParser) {
             super(ipParser);
         }
 
@@ -182,7 +182,7 @@ public final class AmtMembershipQueryMessage extends AmtEncapsulationMessage {
     /**
      * Singleton instance of parser for IP packets carrying IGMP or MLD query messages. 
      */
-    public static final IPPacket.Parser DEFAULT_QUERY_PACKET_PARSER = getQueryPacketParser();
+    public static final IPPacket.BufferParser DEFAULT_QUERY_PACKET_PARSER = getQueryPacketParser();
 
     public static final ByteField       GatewayAddressFlag = new ByteField(1);
     public static final ByteArrayField  ResponseMac = new ByteArrayField(2,6);
@@ -209,8 +209,8 @@ public final class AmtMembershipQueryMessage extends AmtEncapsulationMessage {
      * 
      * @return
      */
-    public static IPPacket.Parser getQueryPacketParser() {
-        IPPacket.Parser parser = new IPPacket.Parser();
+    public static IPPacket.BufferParser getQueryPacketParser() {
+        IPPacket.BufferParser parser = new IPPacket.BufferParser();
         parser.add(IGMPMessage.getIPv4PacketParser());
         parser.add(MLDMessage.getIPv6PacketParser());
         return parser;

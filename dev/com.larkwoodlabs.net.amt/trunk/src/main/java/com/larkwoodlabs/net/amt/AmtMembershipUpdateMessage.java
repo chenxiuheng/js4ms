@@ -113,7 +113,7 @@ public final class AmtMembershipUpdateMessage extends AmtEncapsulationMessage {
             this(DEFAULT_UPDATE_PACKET_PARSER);
         }
 
-        public Parser(IPPacket.Parser ipParser) {
+        public Parser(IPPacket.BufferParser ipParser) {
             super(ipParser);
         }
 
@@ -138,7 +138,7 @@ public final class AmtMembershipUpdateMessage extends AmtEncapsulationMessage {
     /**
      * Singleton instance of parser for IP packets carrying IGMP or MLD membership update messages. 
      */
-    public static final IPPacket.Parser DEFAULT_UPDATE_PACKET_PARSER = getUpdatePacketParser();
+    public static final IPPacket.BufferParser DEFAULT_UPDATE_PACKET_PARSER = getUpdatePacketParser();
 
     public static final ByteField       Reserved = new ByteField(1);
     public static final ByteArrayField  ResponseMac = new ByteArrayField(2,6);
@@ -147,7 +147,7 @@ public final class AmtMembershipUpdateMessage extends AmtEncapsulationMessage {
     
     /*-- Static Functions ---------------------------------------------------*/
     
-    public static IPPacket.Parser getUpdatePacketParser() {
+    public static IPPacket.BufferParser getUpdatePacketParser() {
         IGMPMessage.Parser igmpMessageParser = new IGMPMessage.Parser();
         igmpMessageParser.add(new IGMPv3ReportMessage.Parser());
         igmpMessageParser.add(new IGMPv2LeaveMessage.Parser());
@@ -158,7 +158,7 @@ public final class AmtMembershipUpdateMessage extends AmtEncapsulationMessage {
         ipv4MessageParser.add(igmpMessageParser);
         IPMessage.Parser ipv6MessageParser = new IPMessage.Parser();
         ipv6MessageParser.add(mldMessageParser);
-        IPPacket.Parser ipParser = new IPPacket.Parser();
+        IPPacket.BufferParser ipParser = new IPPacket.BufferParser();
         return ipParser;
     }
 

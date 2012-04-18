@@ -40,17 +40,17 @@ abstract class AmtEncapsulationMessage extends AmtMessage {
 
     public static abstract class Parser implements AmtMessage.ParserType {
 
-        IPPacket.Parser ipParser = null;
+        IPPacket.BufferParser ipParser = null;
 
-        protected Parser(final IPPacket.Parser ipParser) {
+        protected Parser(final IPPacket.BufferParser ipParser) {
             setIPPacketParser(ipParser);
         }
 
-        public void setIPPacketParser(final IPPacket.Parser ipParser) {
+        public void setIPPacketParser(final IPPacket.BufferParser ipParser) {
             this.ipParser = ipParser;
         }
 
-        public IPPacket.Parser getIPPacketParser() {
+        public IPPacket.BufferParser getIPPacketParser() {
             return this.ipParser;
         }
 
@@ -182,7 +182,7 @@ abstract class AmtEncapsulationMessage extends AmtMessage {
      * @throws MissingParserException
      * @throws ParseException
      */
-    public final void verifyPacketChecksum(final IPPacket.Parser parser) throws MissingParserException, ParseException {
+    public final void verifyPacketChecksum(final IPPacket.BufferParser parser) throws MissingParserException, ParseException {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "AmtEncapsulationMessage.verifyPacketChecksum", parser));
@@ -201,7 +201,7 @@ abstract class AmtEncapsulationMessage extends AmtMessage {
      * @throws ParseException
      * @throws MissingParserException
      */
-    public final IPPacket parsePacket(final IPPacket.Parser parser) throws ParseException, MissingParserException {
+    public final IPPacket parsePacket(final IPPacket.BufferParser parser) throws ParseException, MissingParserException {
         
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "AmtEncapsulationMessage.parsePacket", parser));

@@ -65,7 +65,7 @@ import com.larkwoodlabs.util.logging.Logging;
  *     relay to the gateways including the original IP header.<br/>
  *     See {@link AmtEncapsulationMessage#getPacket() getPacket()},
  *         {@link AmtEncapsulationMessage#setPacket(IPPacket) setPacket(IPPacket)},
- *         {@link AmtEncapsulationMessage#parsePacket(IPPacket.Parser) parsePacket(IPPacket.Parser)}.
+ *         {@link AmtEncapsulationMessage#parsePacket(IPPacket.BufferParser) parsePacket(IPPacket.Parser)}.
  * </dl><p>
  * @author Gregory Bumgardner
  */
@@ -79,7 +79,7 @@ public final class AmtMulticastDataMessage extends AmtEncapsulationMessage {
             this(DEFAULT_DATA_PACKET_PARSER);
         }
 
-        public Parser(IPPacket.Parser ipParser) {
+        public Parser(IPPacket.BufferParser ipParser) {
             super(ipParser);
         }
 
@@ -106,12 +106,12 @@ public final class AmtMulticastDataMessage extends AmtEncapsulationMessage {
     /**
      * Singleton instance of parser for IP packets carrying UDP protocol messages. 
      */
-    public static final IPPacket.Parser DEFAULT_DATA_PACKET_PARSER = getDataPacketParser();
+    public static final IPPacket.BufferParser DEFAULT_DATA_PACKET_PARSER = getDataPacketParser();
 
 
     /*-- Static Functions ---------------------------------------------------*/
     
-    public static IPPacket.Parser getDataPacketParser() {
+    public static IPPacket.BufferParser getDataPacketParser() {
         //UdpPacket.Parser udpParser = new UdpPacket.Parser();
         //IPMessage.Parser ipMessageParser = new IPMessage.Parser();
         //ipMessageParser.add(udpParser);
@@ -120,7 +120,7 @@ public final class AmtMulticastDataMessage extends AmtEncapsulationMessage {
         //ipv4Parser.setProtocolParser(ipMessageParser);
         IPv6Packet.Parser ipv6Parser = IPv6Packet.getIPv6MessageParser(); // Adds extension headers (or skip?)
         //ipv6Parser.setProtocolParser(ipMessageParser);
-        IPPacket.Parser ipParser = new IPPacket.Parser();
+        IPPacket.BufferParser ipParser = new IPPacket.BufferParser();
         ipParser.add(ipv4Parser);
         ipParser.add(ipv6Parser);
         return ipParser;
