@@ -18,7 +18,7 @@ import javax.sdp.SessionDescription;
 import com.larkwoodlabs.channels.MessageSource;
 import com.larkwoodlabs.channels.OutputChannel;
 import com.larkwoodlabs.net.amt.SourceFilter;
-import com.larkwoodlabs.net.amt.client.AmtGateway;
+import com.larkwoodlabs.net.amt.gateway.AmtGateway;
 import com.larkwoodlabs.service.protocol.rtsp.TransportDescription;
 import com.larkwoodlabs.service.protocol.rtsp.presentation.MediaStream;
 import com.larkwoodlabs.service.protocol.rtsp.presentation.Presentation;

@@ -11,6 +11,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/com.larkwoodlabs.service.protocol.rtsp.server"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/com.larkwoodlabs.io"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/com.larkwoodlabs.net.udp"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.larkwoodlabs.net.amt.client"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.larkwoodlabs.net.amt.gateway"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
