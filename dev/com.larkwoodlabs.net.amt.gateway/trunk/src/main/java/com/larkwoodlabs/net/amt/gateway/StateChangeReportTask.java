@@ -14,7 +14,7 @@
  * limitations under the license.
  */
 
-package com.larkwoodlabs.net.amt.client;
+package com.larkwoodlabs.net.amt.gateway;
 
 import java.net.InetAddress;
 import java.util.HashSet;
