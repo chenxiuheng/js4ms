@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="MacRoman" standalone="no"?>
+<jardesc>
+    <jar path="com.larkwoodlabs.util.logging.android/bin/logging-android.jar"/>
+    <options buildIfNeeded="true" compress="true" descriptionLocation="/com.larkwoodlabs.util.logging.android/logging-android.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+    <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
+    <selectedProjects/>
+    <manifest generateManifest="false" manifestLocation="/com.larkwoodlabs.service/MANIFEST.MF" manifestVersion="1.0" reuseManifest="true" saveManifest="true" usesManifest="true">
+        <sealing sealJar="false">
+            <packagesToSeal/>
+            <packagesToUnSeal/>
+        </sealing>
+    </manifest>
+    <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
+        <javaElement handleIdentifier="=com.larkwoodlabs.util.logging.android/src\/main\/java"/>
+    </selectedElements>
+</jardesc>
