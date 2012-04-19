@@ -89,7 +89,6 @@ public abstract class MessageParser {
 
         StartLine startLine = null;
 
-        int i = 0;
         int j = 0;
 
         StringBuffer lastHeaderRecord = new StringBuffer();
@@ -189,7 +188,6 @@ public abstract class MessageParser {
             else {
                 if (j < this.maxLineSize) {
                     isPrevCRLF = false;
-                    i++;
                     linebuf[j++] = (byte) c;
                 }
                 else {
