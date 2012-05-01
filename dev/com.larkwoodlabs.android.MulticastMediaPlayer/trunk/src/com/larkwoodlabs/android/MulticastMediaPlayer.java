@@ -1,9 +1,28 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * 
+ * File: MulticastMediaPlayer.java (com.larkwoodlabs.net)
+ * 
+ * Copyright © 2011-2012 Cisco Systems, Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.larkwoodlabs.android;
 
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -22,16 +41,22 @@ import com.larkwoodlabs.service.launcher.java.ServiceLauncher;
 import com.larkwoodlabs.util.logging.android.LogCatFormatter;
 import com.larkwoodlabs.util.logging.android.LogCatHandler;
 
+/**
+ * @author Greg Bumgardner (gbumgard)
+ */
 public class MulticastMediaPlayer extends Activity {
 
-    final static int ON_START_FAILURE_DIALOG = 0;
-    final static int ON_DISCONNECT_FAILURE_DIALOG = 1;
-    final static int ON_STREAM_COMPLETE_DIALOG = 2;
-    final static int ON_MEDIA_ERROR_DIALOG = 4;
-
-    final static String RTSP_REFLECTOR_URI = "rtsp://127.0.0.1:8554/reflect?";
-
+    /**
+     * 
+     */
     public static final Logger logger = Logger.getLogger(MulticastMediaPlayer.class.getName());
+
+    final private static int ON_START_FAILURE_DIALOG = 0;
+    final private static int ON_DISCONNECT_FAILURE_DIALOG = 1;
+    final private static int ON_STREAM_COMPLETE_DIALOG = 2;
+    final private static int ON_MEDIA_ERROR_DIALOG = 4;
+
+    final private static String RTSP_REFLECTOR_URI = "rtsp://127.0.0.1:8554/reflect?";
 
     private Uri presentationUri;
 
@@ -42,7 +67,7 @@ public class MulticastMediaPlayer extends Activity {
     private ServiceLauncher launcher = null;
 
     private ProgressDialog progressDialog;
-    
+
     private final com.larkwoodlabs.util.logging.Log log = new com.larkwoodlabs.util.logging.Log(this);
 
     static {
@@ -55,21 +80,21 @@ public class MulticastMediaPlayer extends Activity {
         com.larkwoodlabs.service.launcher.java.ServiceLauncher.logger.setLevel(Level.FINER);
     }
 
+    /**
+     * 
+     */
     public MulticastMediaPlayer() {
 
         // TODO: remove this for standalone execution
-        //Debug.waitForDebugger();
+        // Debug.waitForDebugger();
 
     }
 
-    /**
-     *  Called when the activity is first created.
-     *   */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        logger.finer(log.entry("onCreate",savedInstanceState));
+        logger.finer(log.entry("onCreate", savedInstanceState));
 
         this.progressDialog = ProgressDialog.show(this, "", getResources().getText(R.string.progress_msg), true);
 
@@ -109,17 +134,18 @@ public class MulticastMediaPlayer extends Activity {
 
         this.presentationUri = getIntent().getData();
 
-        this.reflectorRequestUri = Uri.parse(RTSP_REFLECTOR_URI+this.presentationUri.toString());
+        this.reflectorRequestUri = Uri.parse(RTSP_REFLECTOR_URI + this.presentationUri.toString());
 
         this.mVideoView = (VideoView) findViewById(R.id.videoView);
 
         this.mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
-                logger.fine(log.msg("onPrepared called for "+mp.getClass().getName()));
+                logger.fine(log.msg("onPrepared called for " + mp.getClass().getName()));
                 MulticastMediaPlayer.this.progressDialog.dismiss();
                 Toast.makeText(MulticastMediaPlayer.this,
-                               getResources().getText(R.string.playing_msg).toString() + " " + MulticastMediaPlayer.this.presentationUri,
+                               getResources().getText(R.string.playing_msg).toString() + " "
+                                       + MulticastMediaPlayer.this.presentationUri,
                                Toast.LENGTH_LONG).show();
             }
         });
@@ -127,7 +153,7 @@ public class MulticastMediaPlayer extends Activity {
         this.mVideoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                logger.fine(log.msg("onCompletion called for "+mp.getClass().getName()));
+                logger.fine(log.msg("onCompletion called for " + mp.getClass().getName()));
                 MulticastMediaPlayer.this.progressDialog.dismiss();
                 showDialog(ON_STREAM_COMPLETE_DIALOG);
             }
@@ -137,7 +163,7 @@ public class MulticastMediaPlayer extends Activity {
 
             @Override
             public boolean onError(MediaPlayer mp, int what, int extra) {
-                logger.fine(log.msg("onError called for "+mp.getClass().getName()));
+                logger.fine(log.msg("onError called for " + mp.getClass().getName()));
                 MulticastMediaPlayer.this.progressDialog.dismiss();
                 showDialog(ON_MEDIA_ERROR_DIALOG);
                 return true;
@@ -146,9 +172,6 @@ public class MulticastMediaPlayer extends Activity {
 
     }
 
-    /**
-     * Called when the activity is started.
-     */
     @Override
     public void onStart() {
         super.onStart();
@@ -159,9 +182,6 @@ public class MulticastMediaPlayer extends Activity {
 
     }
 
-    /**
-     * Called when the activity is stopped.
-     */
     @Override
     public void onStop() {
 
@@ -172,9 +192,6 @@ public class MulticastMediaPlayer extends Activity {
         super.onStop();
     }
 
-    /**
-     * Called when the activity is destroyed.
-     */
     @Override
     public void onDestroy() {
 
@@ -188,7 +205,7 @@ public class MulticastMediaPlayer extends Activity {
     @Override
     protected Dialog onCreateDialog(int id) {
 
-        logger.finer(log.entry("onCreateDialog",id));
+        logger.finer(log.entry("onCreateDialog", id));
 
         switch (id) {
         case ON_START_FAILURE_DIALOG:
@@ -213,6 +230,9 @@ public class MulticastMediaPlayer extends Activity {
         return null;
     }
 
+    /**
+     * 
+     */
     private void startPlayout() {
         MulticastMediaPlayer.this.progressDialog.show();
         try {
@@ -223,7 +243,8 @@ public class MulticastMediaPlayer extends Activity {
             else {
                 MulticastMediaPlayer.this.progressDialog.dismiss();
                 Toast.makeText(MulticastMediaPlayer.this,
-                               getResources().getText(R.string.service_start_failed_msg), Toast.LENGTH_LONG).show();
+                               getResources().getText(R.string.service_start_failed_msg),
+                               Toast.LENGTH_LONG).show();
                 showDialog(ON_START_FAILURE_DIALOG);
             }
         }
@@ -232,51 +253,59 @@ public class MulticastMediaPlayer extends Activity {
         }
     }
 
+    /**
+     * @param failureMsgId
+     * @param positiveLabelId
+     * @param negativeLabelId
+     * @param failedMsgId
+     * @return
+     */
     private Dialog buildServiceFailureDialog(int failureMsgId, int positiveLabelId, int negativeLabelId, final int failedMsgId) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(getResources().getText(failureMsgId))
-               .setCancelable(false)
-               .setPositiveButton(getResources().getText(positiveLabelId), new DialogInterface.OnClickListener() {
-                   public void onClick(DialogInterface dialog, int id) {
-                       dialog.dismiss();
-                       startPlayout();
-                   }
-               })
-               .setNegativeButton(getResources().getText(negativeLabelId), new DialogInterface.OnClickListener() {
-                   public void onClick(DialogInterface dialog, int id) {
-                       MulticastMediaPlayer.this.finish();
-                   }
-               });
+        builder.setMessage(getResources().getText(failureMsgId)).setCancelable(false)
+                .setPositiveButton(getResources().getText(positiveLabelId), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                        startPlayout();
+                    }
+                }).setNegativeButton(getResources().getText(negativeLabelId), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        MulticastMediaPlayer.this.finish();
+                    }
+                });
         return builder.create();
     }
 
+    /**
+     * @return
+     */
     private Dialog buildStreamCompleteDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(getResources().getText(R.string.stream_complete_msg))
-               .setCancelable(false)
-               .setNeutralButton(getResources().getText(R.string.ok_label), new DialogInterface.OnClickListener() {
-                   public void onClick(DialogInterface dialog, int id) {
-                       finish();
-                   }
-               });
+        builder.setMessage(getResources().getText(R.string.stream_complete_msg)).setCancelable(false)
+                .setNeutralButton(getResources().getText(R.string.ok_label), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        finish();
+                    }
+                });
         return builder.create();
     }
 
+    /**
+     * @return
+     */
     private Dialog buildMediaErrorDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(getResources().getText(R.string.media_error_msg))
-               .setCancelable(false)
-               .setPositiveButton(getResources().getText(R.string.retry_label), new DialogInterface.OnClickListener() {
-                   public void onClick(DialogInterface dialog, int id) {
-                       dialog.dismiss();
-                       startPlayout();
-                   }
-               })
-               .setNegativeButton(getResources().getText(R.string.exit_label), new DialogInterface.OnClickListener() {
-                   public void onClick(DialogInterface dialog, int id) {
-                       MulticastMediaPlayer.this.finish();
-                   }
-               });
+        builder.setMessage(getResources().getText(R.string.media_error_msg)).setCancelable(false)
+                .setPositiveButton(getResources().getText(R.string.retry_label), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                        startPlayout();
+                    }
+                }).setNegativeButton(getResources().getText(R.string.exit_label), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        MulticastMediaPlayer.this.finish();
+                    }
+                });
         return builder.create();
     }
 }
