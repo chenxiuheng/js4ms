@@ -1,17 +1,21 @@
 /*
- * Copyright © 2009-2010 Larkwood Labs Software.
- *
- * Licensed under the Larkwood Labs Software Source Code License, Version 1.0.
- * You may not use this file except in compliance with this License.
- *
- * You may view the Source Code License at
- * http://www.larkwoodlabs.com/source-license
- *
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * 
+ * File: ApplicationMessage.java (com.larkwoodlabs.net)
+ * 
+ * Copyright © 2010-2012 Cisco Systems, Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- * limitations under the license.
+ * limitations under the License.
  */
 
 package com.larkwoodlabs.net;
@@ -22,36 +26,45 @@ import com.larkwoodlabs.util.buffer.parser.BufferParser;
 import com.larkwoodlabs.util.logging.Loggable;
 
 /**
+ * Interface implemented by various application-protocol classes.
  * 
- * @author Gregory Bumgardner
+ * @author Greg Bumgardner (gbumgard)
  */
-public interface ApplicationMessage extends Loggable {
+public interface ApplicationMessage
+                extends Loggable {
 
     /*-- Inner Classes ------------------------------------------------------*/
-    
-    public static interface Parser extends BufferParser<ApplicationMessage> {
-        
+
+    /**
+     * Top-level parser interface for application message parsers.
+     */
+    public static interface Parser
+                    extends BufferParser<ApplicationMessage> {
+
     }
 
     /*-- Member Functions ---------------------------------------------------*/
 
     /**
      * Returns the byte-length of the message header.
-     * For fixed-size messages, this is often the same value as the returned from {@link #getTotalLength()}. 
+     * For fixed-size messages, this is often the same value as the returned from
+     * {@link #getTotalLength()}.
      */
     public int getHeaderLength();
-    
+
     /**
      * Returns the total byte-length of the message including the message header.
      */
     public int getTotalLength();
-    
+
     /**
      * Writes the message to a byte buffer.
-     * @param buffer - a byte array.
-     * @param offset - the offset within the array at which to write the message.
-     * @throws java.lang.IndexOutOfBoundsException if the buffer is not of sufficient size to accommodate the message. 
+     * This method will advance the ByteBuffer position by an amount equal to
+     * the total length of the message.
+     * 
+     * @param buffer
+     *            The destination ByteBuffer.
      */
     public void writeTo(ByteBuffer buffer);
-    
+
 }
