@@ -44,7 +44,7 @@
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
-            <fileset dir="../com.larkwoodlabs.applet.ServiceLauncherApplet/bin">
+            <fileset dir="../com.larkwoodlabs.jws.applet.ServiceLauncherApplet/bin">
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
