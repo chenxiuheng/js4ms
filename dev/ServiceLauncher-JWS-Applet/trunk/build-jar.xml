@@ -44,9 +44,8 @@
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
-            <fileset dir="../com.larkwoodlabs.jws.applet.ServiceLauncherApplet/bin">
+            <fileset dir="./build/classes">
                 <include name="**/*.class" />
-                <exclude name="**/test/*.class" />
             </fileset>
             <manifest>
                 <attribute name="Main-Class" value="${applet.class}" />
