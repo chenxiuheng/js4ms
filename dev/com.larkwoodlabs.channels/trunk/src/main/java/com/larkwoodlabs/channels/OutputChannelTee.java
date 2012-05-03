@@ -1,17 +1,21 @@
 /*
- * Copyright © 2009-2010 Larkwood Labs Software.
- *
- * Licensed under the Larkwood Labs Software Source Code License, Version 1.0.
- * You may not use this file except in compliance with this License.
- *
- * You may view the Source Code License at
- * http://www.larkwoodlabs.com/source-license
- *
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * 
+ * File: OutputChannelTee.java (com.larkwoodlabs.channels)
+ * 
+ * Copyright © 2009-2012 Cisco Systems, Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- * limitations under the license.
+ * limitations under the License.
  */
 
 package com.larkwoodlabs.channels;
@@ -28,20 +32,20 @@ import com.larkwoodlabs.common.exceptions.MultiIOException;
  * Messages are delivered to channels in the order the channels were added to the Tee.
  * The Tee does not allow an output channel to be added multiple times -
  * it will ignore any attempt to add the same output channel more than once.
- * A thread should not attempt to add or remove channels while executing in the 
+ * A thread should not attempt to add or remove channels while executing in the
  * {@link #send(Object, int)} method as this may result in an exception.
- *
+ * 
  * @param <MessageType>
- *
- * @author gbumgard@cisco.com
+ * @author Greg Bumgardner (gbumgard)
  */
 public final class OutputChannelTee<MessageType>
-                   implements OutputChannel<MessageType> {
+                implements OutputChannel<MessageType> {
 
     /*-- Member Variables ----------------------------------------------------*/
 
     /**
-     * Collection of output channels that will receive messages sent to this output channel.
+     * Collection of output channels that will receive messages sent to this output
+     * channel.
      */
     private final LinkedHashSet<OutputChannel<MessageType>> channels = new LinkedHashSet<OutputChannel<MessageType>>();
 
@@ -50,21 +54,21 @@ public final class OutputChannelTee<MessageType>
      */
     private final Object lock = new Object();
 
- 
     /*-- Member Functions ----------------------------------------------------*/
 
     /**
      * Constructs an Tee with no output channels.
      * Use {@link #add(OutputChannel)} to attach channels to the Tee.
      */
-    public OutputChannelTee() {    
+    public OutputChannelTee() {
     }
 
     /**
      * Constructs a Tee and attaches one or more output channels to the Tee.
+     * 
      * @param channels
      */
-    public OutputChannelTee(final OutputChannel<MessageType> ... channels) {
+    public OutputChannelTee(final OutputChannel<MessageType>... channels) {
         for (OutputChannel<MessageType> channel : channels) {
             this.channels.add(channel);
         }
@@ -72,6 +76,7 @@ public final class OutputChannelTee<MessageType>
 
     /**
      * Adds the specified channel to the Tee.
+     * 
      * @param channel
      */
     public final void add(OutputChannel<MessageType> channel) {
@@ -82,6 +87,7 @@ public final class OutputChannelTee<MessageType>
 
     /**
      * Removes the specified channel from the Tee.
+     * 
      * @param channel
      */
     public final void remove(OutputChannel<MessageType> channel) {
@@ -92,7 +98,10 @@ public final class OutputChannelTee<MessageType>
 
     /**
      * Indicates whether there are any output channel attached to the Tee.
-     * @return
+     * 
+     * @return A boolean value of <code>true</code> indicates that no
+     *         output channels are currently attached to the tee and <code>false</code>
+     *         indicates that one or more channels are currently attached.
      */
     public final boolean isEmpty() {
         synchronized (this.lock) {
@@ -109,7 +118,7 @@ public final class OutputChannelTee<MessageType>
                     channel.close();
                 }
                 catch (IOException e) {
-                    me.add(new BoundException(channel,e));
+                    me.add(new BoundException(channel, e));
                 }
             }
             // Throws the multi-exception if an IOException was stored in it
@@ -120,8 +129,8 @@ public final class OutputChannelTee<MessageType>
 
     @Override
     public final void send(final MessageType message, final int milliseconds) throws IOException,
-                                                                                     InterruptedIOException,
-                                                                                     InterruptedException {
+                                                                             InterruptedIOException,
+                                                                             InterruptedException {
         synchronized (this.lock) {
             MultiIOException me = new MultiIOException();
             for (OutputChannel<MessageType> channel : this.channels) {
@@ -129,7 +138,7 @@ public final class OutputChannelTee<MessageType>
                     channel.send(message, milliseconds);
                 }
                 catch (IOException e) {
-                    me.add(new BoundException(channel,e));
+                    me.add(new BoundException(channel, e));
                 }
             }
             // Throws the multi-exception if an IOException was stored in it

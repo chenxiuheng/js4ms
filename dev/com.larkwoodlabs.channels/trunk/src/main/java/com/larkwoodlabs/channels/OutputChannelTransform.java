@@ -1,17 +1,21 @@
 /*
- * Copyright © 2009-2010 Larkwood Labs Software.
- *
- * Licensed under the Larkwood Labs Software Source Code License, Version 1.0.
- * You may not use this file except in compliance with this License.
- *
- * You may view the Source Code License at
- * http://www.larkwoodlabs.com/source-license
- *
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * 
+ * File: OutputChannelTransform.java (com.larkwoodlabs.channels)
+ * 
+ * Copyright © 2009-2012 Cisco Systems, Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- * limitations under the license.
+ * limitations under the License.
  */
 
 package com.larkwoodlabs.channels;
@@ -19,17 +23,20 @@ package com.larkwoodlabs.channels;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 
-
 /**
+ * An output channel adapter that transforms message objects sent to it into message
+ * objects of the same or different type that it then forwards to another OutputChannel.
+ * Instances of this class use a {@link MessageTransform} instance to perform the
+ * the desired transformation.
  * 
  * @param <OuterMessageType>
+ *            The message object type to be transformed.
  * @param <InnerMessageType>
- *
- * @author gbumgard@cisco.com
+ *            The message object type produced by the transformation.
+ * @author Greg Bumgardner (gbumgard)
  */
 public final class OutputChannelTransform<OuterMessageType, InnerMessageType>
-                   extends OutputChannelAdapter<OuterMessageType, InnerMessageType> {
-
+                extends OutputChannelAdapter<OuterMessageType, InnerMessageType> {
 
     /*-- Member Functions ----------------------------------------------------*/
 
@@ -39,6 +46,10 @@ public final class OutputChannelTransform<OuterMessageType, InnerMessageType>
      */
     protected final MessageTransform<OuterMessageType, InnerMessageType> transform;
 
+    /**
+     * @param innerChannel
+     * @param transform
+     */
     public OutputChannelTransform(final OutputChannel<InnerMessageType> innerChannel,
                                   final MessageTransform<OuterMessageType, InnerMessageType> transform) {
         super(innerChannel);

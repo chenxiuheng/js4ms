@@ -1,3 +1,23 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * 
+ * File: MessageSource.java (com.larkwoodlabs.channels)
+ * 
+ * Copyright © 2009-2012 Cisco Systems, Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.larkwoodlabs.channels;
 
 import java.io.IOException;
@@ -5,10 +25,10 @@ import java.io.IOException;
 /**
  * An abstract message source that sends a stream of messages to an {@link OutputChannel}.
  * 
- * @author gbumgard@cisco.com
+ * @author Greg Bumgardner (gbumgard)
  */
 public abstract class MessageSource<Message> {
-    
+
     /*-- Inner Classes -------------------------------------------------------*/
 
     /**
@@ -46,26 +66,37 @@ public abstract class MessageSource<Message> {
     /*-- Member Functions ----------------------------------------------------*/
 
     /**
-     * Constructs the message source leaving it in the {@link MessageSource.State#Ready Ready} state.
+     * Constructs the message source leaving it in the {@link MessageSource.State#Ready
+     * Ready} state.
+     * 
+     * @param outputChannel
      */
     protected MessageSource(final OutputChannel<Message> outputChannel) {
         this.state = State.Ready;
         this.outputChannel = outputChannel;
     }
-    
+
     /**
      * Gets the current {@link MessageSource.State State} of this source.
+     * 
+     * @return An enumerator value describing the current state.
      */
     public State getState() {
         return this.state;
     }
 
     /**
-     * Attempts to start this message source leaving the source in the {@link MessageSource.State#Started Started} state if successful.
-     * Calls the {@link #doStart()} method which derived classes must implement to perform any actions required to start the source.
-     * @throws IOException If an I/O error occurs while starting the source.
+     * Attempts to start this message source leaving the source in the
+     * {@link MessageSource.State#Started Started} state if
+     * successful.
+     * Calls the {@link #doStart()} method which derived classes must implement to perform
+     * any actions required to start the source.
+     * 
+     * @throws IOException
+     *             If an I/O error occurs while starting the source.
      * @throws InterruptedException
-     * @throws IllegalStateException - The message source cannot be started in its current state.
+     * @throws IllegalStateException
+     *             The message source cannot be started in its current state.
      */
     public final void start() throws IOException, InterruptedException {
 
@@ -91,17 +122,25 @@ public abstract class MessageSource<Message> {
 
     /**
      * Performs actions required to start the start source.
-     * @throws IOException If an I/O error occurs while starting the source.
-     * @throws InterruptedException 
+     * 
+     * @throws IOException
+     *             If an I/O error occurs while starting the source.
+     * @throws InterruptedException
      */
     protected abstract void doStart() throws IOException, InterruptedException;
 
     /**
-     * Attempts to stop this message source leaving the source in the {@link MessageSource.State#Ready Ready} state if successful.
-     * Calls the {@link #doStop()} method which derived classes must implement to perform any actions required to stop the source.
-     * @throws IOException If an I/O error occurs while stopping the source.
-     * @throws InterruptedException If the calling thread is interrupted while stopping the source.
-     * @throws IllegalStateException - The message source cannot be stopped in its current state.
+     * Attempts to stop this message source leaving the source in the
+     * {@link MessageSource.State#Ready Ready} state if successful.
+     * Calls the {@link #doStop()} method which derived classes must implement to perform
+     * any actions required to stop the source.
+     * 
+     * @throws IOException
+     *             If an I/O error occurs while stopping the source.
+     * @throws InterruptedException
+     *             If the calling thread is interrupted while stopping the source.
+     * @throws IllegalStateException
+     *             The message source cannot be stopped in its current state.
      */
     public final void stop() throws IOException, InterruptedException {
 
@@ -127,16 +166,24 @@ public abstract class MessageSource<Message> {
 
     /**
      * Performs actions required to stop the message source.
-     * @throws IOException If an I/O error occurs while stopping the source.
-     * @throws InterruptedException If the calling thread is interrupted while stopping the source.
+     * 
+     * @throws IOException
+     *             If an I/O error occurs while stopping the source.
+     * @throws InterruptedException
+     *             If the calling thread is interrupted while stopping the source.
      */
     protected abstract void doStop() throws IOException, InterruptedException;
 
     /**
-     * Attempts to close this message source leaving the source in the {@link MessageSource.State#Closed Closed} state if successful.
-     * Calls the {@link #doClose()} method which derived classes must implement to perform any actions required to stop the source.
-     * @throws InterruptedException If the calling thread is interrupted while closing the source.
-     * @throws IllegalStateException - The message source cannot be closed in its current state.
+     * Attempts to close this message source leaving the source in the
+     * {@link MessageSource.State#Closed Closed} state if successful.
+     * Calls the {@link #doClose()} method which derived classes must implement to perform
+     * any actions required to stop the source.
+     * 
+     * @throws InterruptedException
+     *             If the calling thread is interrupted while closing the source.
+     * @throws IllegalStateException
+     *             The message source cannot be closed in its current state.
      */
     public final void close() throws InterruptedException {
 
@@ -162,8 +209,11 @@ public abstract class MessageSource<Message> {
     /**
      * Performs actions required to close the message source.
      * Default implementation closes the OutputChannel bound to this message source.
-     * @throws IOException If an I/O error occurs while closing the source.
-     * @throws InterruptedException If the calling thread is interrupted while closing the source.
+     * 
+     * @throws IOException
+     *             If an I/O error occurs while closing the source.
+     * @throws InterruptedException
+     *             If the calling thread is interrupted while closing the source.
      */
     protected void doClose() throws IOException, InterruptedException {
         this.outputChannel.close();
@@ -171,29 +221,32 @@ public abstract class MessageSource<Message> {
 
     /**
      * Called to indicate that another operation has failed.
-     * Attempts to close this message source and places the source in the {@link MessageSource.State#Failed Failed} state.
-     * @throws InterruptedException If the calling thread is interrupted while closing the source.
+     * Attempts to close this message source and places the source in the
+     * {@link MessageSource.State#Failed Failed} state.
+     * 
+     * @throws InterruptedException
+     *             If the calling thread is interrupted while closing the source.
      */
     protected void abort() throws InterruptedException {
         switch (this.state) {
-        case Ready:
-        case Starting:
-        case Started:
-        case Stopping:
-            try {
-                doClose();
-                this.state = State.Closed;
-            }
-            catch (IOException e) {
+            case Ready:
+            case Starting:
+            case Started:
+            case Stopping:
+                try {
+                    doClose();
+                    this.state = State.Closed;
+                }
+                catch (IOException e) {
+                    this.state = State.Failed;
+                }
+                break;
+            case Closing:
                 this.state = State.Failed;
-            }
-            break;
-        case Closing:
-            this.state = State.Failed;
-            break;
-        case Closed:
-        case Failed:
-            break;
+                break;
+            case Closed:
+            case Failed:
+                break;
         }
     }
 

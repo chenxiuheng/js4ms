@@ -1,17 +1,21 @@
 /*
- * Copyright © 2009-2010 Larkwood Labs Software.
- *
- * Licensed under the Larkwood Labs Software Source Code License, Version 1.0.
- * You may not use this file except in compliance with this License.
- *
- * You may view the Source Code License at
- * http://www.larkwoodlabs.com/source-license
- *
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * 
+ * File: MessageOutputMap.java (com.larkwoodlabs.channels)
+ * 
+ * Copyright © 2009-2012 Cisco Systems, Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- * limitations under the license.
+ * limitations under the License.
  */
 
 package com.larkwoodlabs.channels;
@@ -25,18 +29,20 @@ import java.util.Set;
 /**
  * An message channel that routes an incoming message to one in a set of message channels.
  * The message output channel is chosen using a key value extracted from the message.
- * The message channel map only allows one channel per key value. A channel added previously
+ * The message channel map only allows one channel per key value. A channel added
+ * previously
  * can be replaced by adding a different channel using the same key value.
- * A thread should not attempt to add or remove channels while executing in the 
- * {@link #send(Object, int)} method as this may result in an exception.
- *
- * @param <MessageType> - The message object type.
- * @see {@link MessageKeyExtractor}
- *
- * @author gbumgard@cisco.com
+ * A thread should not attempt to add or remove channels while executing in the
+ * {@link #send(Object, int)} method as this may result
+ * in an exception.
+ * 
+ * @param <MessageType>
+ *            The message object type.
+ * @see MessageKeyExtractor
+ * @author Greg Bumgardner (gbumgard)
  */
 public final class MessageOutputMap<MessageType>
-                   implements MessageOutput<MessageType> {
+                implements MessageOutput<MessageType> {
 
     /*-- Member Variables ----------------------------------------------------*/
 
@@ -56,12 +62,12 @@ public final class MessageOutputMap<MessageType>
      */
     private final Object lock = new Object();
 
-
     /*-- Member Functions ----------------------------------------------------*/
 
     /**
-     * Constructs an message channel map that uses the specified {@link MessageKeyExtractor}
-     * to retrieve the key value from each message that will be used to select which output
+     * Constructs an message channel map that uses the specified
+     * {@link MessageKeyExtractor} to retrieve the key value from each
+     * message that will be used to select which output
      * channel will receive the message.
      */
     public MessageOutputMap(final MessageKeyExtractor<MessageType> keyExtractor) {
@@ -70,18 +76,23 @@ public final class MessageOutputMap<MessageType>
 
     /**
      * Adds or replaces a message channel in the map.
-     * @param key - The key value that will be used to select the channel.
-     * @param channel - The output channel that will be selected for the specified key.
+     * 
+     * @param key
+     *            The key value that will be used to select the channel.
+     * @param channel
+     *            The output channel that will be selected for the specified key.
      */
     public final void put(final Object key, final MessageOutput<MessageType> channel) {
         synchronized (this.lock) {
-            this.channelMap.put(key,channel);
+            this.channelMap.put(key, channel);
         }
     }
 
     /**
      * Returns the message channel, if any, added using the specified key.
-     * @param key - The key value used to add a channel.
+     * 
+     * @param key
+     *            The key value used to add a channel.
      */
     public final MessageOutput<MessageType> get(final Object key) {
         synchronized (this.lock) {
@@ -100,7 +111,6 @@ public final class MessageOutputMap<MessageType>
 
     /**
      * Returns the current key set.
-     * @param key - The key value used to add a channel.
      */
     public final Set<Object> getKeys() {
         synchronized (this.lock) {
@@ -110,7 +120,9 @@ public final class MessageOutputMap<MessageType>
 
     /**
      * Removes any channel added using the specified key from the map.
-     * @param key - The key value used to add a channel.
+     * 
+     * @param key
+     *            The key value used to add a channel.
      */
     public final void remove(final Object key) {
         synchronized (this.lock) {
@@ -120,7 +132,9 @@ public final class MessageOutputMap<MessageType>
 
     /**
      * Removes the specified message channel from the map.
-     * @param channel - The channel to remove.
+     * 
+     * @param channel
+     *            The channel to remove.
      */
     public final void remove(final MessageOutput<MessageType> channel) {
         synchronized (this.lock) {
@@ -137,8 +151,8 @@ public final class MessageOutputMap<MessageType>
 
     @Override
     public final void send(final MessageType message, final int milliseconds) throws IOException,
-                                                                                     InterruptedIOException,
-                                                                                     InterruptedException {
+                                                                             InterruptedIOException,
+                                                                             InterruptedException {
         synchronized (this.lock) {
             MessageOutput<MessageType> channel = this.channelMap.get(this.keyExtractor.getKey(message));
             if (channel != null) {
@@ -147,5 +161,5 @@ public final class MessageOutputMap<MessageType>
         }
 
     }
-    
+
 }
