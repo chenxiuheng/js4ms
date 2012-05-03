@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: ServiceLauncherApplet.java (com.larkwoodlabs.applet)
+ * File: ServiceLauncherApplet.java (com.larkwoodlabs.jws.applet)
  * 
  * Copyright © 2011-2012 Cisco Systems, Inc.
  * 
@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package com.larkwoodlabs.applet;
+package com.larkwoodlabs.jws.applet;
 
 import java.applet.Applet;
 import java.io.IOException;
