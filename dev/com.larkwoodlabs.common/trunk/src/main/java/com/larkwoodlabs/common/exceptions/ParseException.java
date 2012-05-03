@@ -1,37 +1,58 @@
 /*
- * Copyright © 2009-2010 Larkwood Labs Software.
- *
- * Licensed under the Larkwood Labs Software Source Code License, Version 1.0.
- * You may not use this file except in compliance with this License.
- *
- * You may view the Source Code License at
- * http://www.larkwoodlabs.com/source-license
- *
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * 
+ * File: ParseException.java (com.larkwoodlabs.common)
+ * 
+ * Copyright © 2009 Cisco Systems, Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- * limitations under the license.
+ * limitations under the License.
  */
 
 package com.larkwoodlabs.common.exceptions;
 
-public class ParseException extends Exception {
+/**
+ * @author Greg Bumgardner (gbumgard)
+ */
+public class ParseException
+                extends Exception {
 
     private static final long serialVersionUID = -8100180238203347845L;
 
+    /**
+     * 
+     */
     public ParseException() {
         super();
     }
 
+    /**
+     * @param message
+     */
     public ParseException(String message) {
         super(message);
     }
 
+    /**
+     * @param message
+     * @param throwable
+     */
     public ParseException(String message, Throwable throwable) {
-        super(message,throwable);
+        super(message, throwable);
     }
 
+    /**
+     * @param throwable
+     */
     public ParseException(Throwable throwable) {
         super(throwable);
     }
