@@ -62,7 +62,7 @@
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
-            <fileset dir="../com.larkwoodlabs.net.amt.client/bin">
+            <fileset dir="../com.larkwoodlabs.net.amt.gateway/bin">
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
