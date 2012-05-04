@@ -34,55 +34,56 @@ import com.larkwoodlabs.net.ip.IPPacket;
 import com.larkwoodlabs.util.logging.Logging;
 
 /**
- * Manages an AMT tunnel end-point.
- * The {@link AmtGateway} constructs a separate AmtInterface for each unique 
- * AMT relay or AMT gateway peer acting as a remote AMT tunnel end-point.
- * An AmtInterface provides functions for joining, leaving and receiving packets
- * for any number of multicast groups. The AmtInterface tracks local group
- * membership state and handles the exchange of IGMP/MLD messages used
+ * Manages an IPv6 AMT tunnel end-point.
+ * The {@link AmtInterfaceManager} constructs a separate AmtIPv6Interface for each unique
+ * AMT relay or AMT gateway peer acting as a remote IPv6 AMT tunnel end-point.
+ * An AmtIPv6Interface provides functions for joining, leaving and receiving packets
+ * for any number of IPv6 multicast groups. The AmtIPv6Interface tracks local group
+ * membership state and handles the exchange of MLD messages used
  * to query or update that state.
- *
- * @author gbumgard
+ * 
+ * @author Greg Bumgardner (gbumgard)
  */
-public final class AmtIPv6Interface extends AmtInterface {
+public final class AmtIPv6Interface
+                extends AmtInterface {
 
     /*-- Static Variables ----------------------------------------------------*/
 
+    /**
+     * 
+     */
     public static final Logger logger = Logger.getLogger(AmtIPv6Interface.class.getName());
-
 
     /*-- Member Variables ---------------------------------------------------*/
 
-    final String ObjectId = Logging.identify(this);
-
+    private final String ObjectId = Logging.identify(this);
 
     /*-- Member Functions ---------------------------------------------------*/
-    
+
     /**
-     * 
-     * @param gateway
+     * @param manager
      * @param relayDiscoveryAddress
      * @throws IOException
      */
-    public AmtIPv6Interface(final AmtGateway gateway, final InetAddress relayDiscoveryAddress) throws IOException {
-        super(gateway, relayDiscoveryAddress);
+    public AmtIPv6Interface(final AmtInterfaceManager manager, final InetAddress relayDiscoveryAddress) throws IOException {
+        super(manager, relayDiscoveryAddress);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtIPv6Interface.AmtIPv6Interface", gateway, Logging.address(relayDiscoveryAddress)));
+            logger.finer(Logging.entering(ObjectId, "AmtIPv6Interface.AmtIPv6Interface", manager,
+                                          Logging.address(relayDiscoveryAddress)));
         }
 
         // Connect report channel of interface membership manager to tunnel endpoint
         this.interfaceManager.setOutgoingReportChannel(
-                new OutputChannelTransform<MembershipReport,IPPacket>(
-                        this.tunnelEndpoint.getOutgoingUpdateChannel(),
-                        new IPv6MembershipReportTransform()));
-        
+                        new OutputChannelTransform<MembershipReport, IPPacket>(
+                                                                               this.tunnelEndpoint.getOutgoingUpdateChannel(),
+                                                                               new IPv6MembershipReportTransform()));
+
         // Connect query channel of tunnel endpoint to interface membership manager
         this.tunnelEndpoint.setIncomingQueryChannel(
-                new OutputChannelTransform<IPPacket, MembershipQuery>(
-                        this.interfaceManager.getIncomingQueryChannel(),
-                        new IPv6MembershipQueryTransform()));
-        
+                        new OutputChannelTransform<IPPacket, MembershipQuery>(
+                                                                              this.interfaceManager.getIncomingQueryChannel(),
+                                                                              new IPv6MembershipQueryTransform()));
 
         this.tunnelEndpoint.start();
     }

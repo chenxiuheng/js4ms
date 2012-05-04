@@ -33,15 +33,15 @@ import com.larkwoodlabs.net.udp.UdpDatagram;
 import com.larkwoodlabs.util.logging.Logging;
 
 /**
- * Manages an AMT tunnel end-point.
- * The {@link AmtGateway} constructs a separate AmtInterface for each unique 
+ * Base class that manages an AMT tunnel end-point.
+ * The {@link AmtInterfaceManager} constructs a separate AMT interface for each unique
  * AMT relay or AMT gateway peer acting as a remote AMT tunnel end-point.
  * An AmtInterface provides functions for joining, leaving and receiving packets
  * for any number of multicast groups. The AmtInterface tracks local group
  * membership state and handles the exchange of IGMP/MLD messages used
  * to query or update that state.
- *
- * @author gbumgard
+ * 
+ * @author Greg Bumgardner (gbumgard)
  */
 public abstract class AmtInterface {
 
@@ -49,38 +49,38 @@ public abstract class AmtInterface {
 
     public static final Logger logger = Logger.getLogger(AmtInterface.class.getName());
 
-
     /*-- Member Variables ---------------------------------------------------*/
 
-    final String ObjectId = Logging.identify(this);
-    
-    final AmtGateway gateway;
-    final InetAddress relayDiscoveryAddress;
+    private final String ObjectId = Logging.identify(this);
 
-    int referenceCount = 0;
+    private final AmtInterfaceManager manager;
 
-    final AmtTunnelEndpoint tunnelEndpoint;
-    final InterfaceMembershipManager interfaceManager;
-    final ChannelMembershipManager channelManager;
-    
-    final Timer taskTimer;
+    private final InetAddress relayDiscoveryAddress;
 
+    private int referenceCount = 0;
+
+    protected final AmtTunnelEndpoint tunnelEndpoint;
+
+    protected final InterfaceMembershipManager interfaceManager;
+
+    protected final ChannelMembershipManager channelManager;
+
+    private final Timer taskTimer;
 
     /*-- Member Functions ---------------------------------------------------*/
-    
+
     /**
-     * 
-     * @param gateway
+     * @param manager
      * @param relayDiscoveryAddress
      * @throws IOException
      */
-    protected AmtInterface(final AmtGateway gateway, final InetAddress relayDiscoveryAddress) throws IOException {
+    protected AmtInterface(final AmtInterfaceManager manager, final InetAddress relayDiscoveryAddress) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtInterface.AmtInterface", gateway, Logging.address(relayDiscoveryAddress)));
+            logger.finer(Logging.entering(ObjectId, "AmtInterface.AmtInterface", manager, Logging.address(relayDiscoveryAddress)));
         }
 
-        this.gateway = gateway;
+        this.manager = manager;
         this.relayDiscoveryAddress = relayDiscoveryAddress;
 
         this.taskTimer = new Timer("AMT interface");
@@ -88,25 +88,25 @@ public abstract class AmtInterface {
         this.tunnelEndpoint = new AmtTunnelEndpoint(this, relayDiscoveryAddress, this.taskTimer);
         this.interfaceManager = new InterfaceMembershipManager(this.taskTimer, this.tunnelEndpoint);
 
-        // Connect a channel membership state manager to the interface membership state manager
+        // Connect a channel membership state manager to the interface membership state
+        // manager
         this.channelManager = new ChannelMembershipManager(this.interfaceManager);
 
         this.tunnelEndpoint.setIncomingDataChannel(
-                new OutputChannelTransform<IPPacket, UdpDatagram>(
-                        this.channelManager.getDispatchChannel(),
-                        new MulticastDataTransform()));
+                        new OutputChannelTransform<IPPacket, UdpDatagram>(
+                                                                          this.channelManager.getDispatchChannel(),
+                                                                          new MulticastDataTransform()));
 
         this.tunnelEndpoint.start();
     }
 
     /**
-     * 
      * @return
      */
     public final InetAddress getRelayDiscoveryAddress() {
         return this.relayDiscoveryAddress;
     }
-    
+
     /**
      * 
      */
@@ -115,19 +115,17 @@ public abstract class AmtInterface {
     }
 
     /**
-     * 
      * @throws InterruptedException
      * @throws IOException
      */
     public final synchronized void release() throws InterruptedException, IOException {
         if (--this.referenceCount == 0) {
             this.taskTimer.cancel();
-            this.gateway.closeIpv4Endpoint(this);
+            this.manager.closeIpv4Interface(this);
         }
     }
 
     /**
-     * 
      * @throws InterruptedException
      * @throws IOException
      */
@@ -136,12 +134,11 @@ public abstract class AmtInterface {
     }
 
     /**
-     * 
      * @param pushChannel
      * @param groupAddress
      * @param port
      * @throws IOException
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     public final void join(final OutputChannel<UdpDatagram> pushChannel,
                            final InetAddress groupAddress,
@@ -150,18 +147,17 @@ public abstract class AmtInterface {
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "AmtInterface.join", pushChannel, Logging.address(groupAddress), port));
         }
-        
+
         this.channelManager.join(pushChannel, groupAddress, port);
     }
 
     /**
-     * 
      * @param pushChannel
      * @param groupAddress
      * @param sourceAddress
      * @param port
      * @throws IOException
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     public final void join(final OutputChannel<UdpDatagram> pushChannel,
                            final InetAddress groupAddress,
@@ -181,7 +177,6 @@ public abstract class AmtInterface {
     }
 
     /**
-     * 
      * @param pushChannel
      * @param groupAddress
      * @throws IOException
@@ -197,7 +192,6 @@ public abstract class AmtInterface {
     }
 
     /**
-     * 
      * @param pushChannel
      * @param groupAddress
      * @param port
@@ -215,7 +209,6 @@ public abstract class AmtInterface {
     }
 
     /**
-     * 
      * @param pushChannel
      * @param groupAddress
      * @param sourceAddress
@@ -226,7 +219,7 @@ public abstract class AmtInterface {
                             final InetAddress sourceAddress) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, 
+            logger.finer(Logging.entering(ObjectId,
                                           "AmtInterface.leave",
                                           pushChannel,
                                           Logging.address(groupAddress),
@@ -237,7 +230,6 @@ public abstract class AmtInterface {
     }
 
     /**
-     * 
      * @param pushChannel
      * @param groupAddress
      * @param sourceAddress
@@ -263,7 +255,6 @@ public abstract class AmtInterface {
     }
 
     /**
-     * 
      * @param pushChannel
      * @throws IOException
      */
@@ -274,11 +265,10 @@ public abstract class AmtInterface {
         }
 
         this.channelManager.leave(pushChannel);
-        
+
     }
-    
+
     /**
-     * 
      * @throws InterruptedException
      */
     final void shutdown() throws InterruptedException {

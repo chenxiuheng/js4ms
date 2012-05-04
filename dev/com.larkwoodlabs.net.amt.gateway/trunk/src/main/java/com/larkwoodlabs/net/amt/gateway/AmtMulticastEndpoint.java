@@ -89,7 +89,7 @@ public final class AmtMulticastEndpoint implements MulticastEndpoint {
      */
     public AmtMulticastEndpoint(final int port,
                                 final int bufferCapacity) throws IOException {
-        this(port, AmtGateway.getDefaultRelayDiscoveryAddress(), bufferCapacity);
+        this(port, AmtInterfaceManager.getDefaultRelayDiscoveryAddress(), bufferCapacity);
     }
     
     /**
@@ -100,7 +100,7 @@ public final class AmtMulticastEndpoint implements MulticastEndpoint {
      */
     public AmtMulticastEndpoint(final int port,
                                 final OutputChannel<UdpDatagram> pushChannel) throws IOException {
-        this(port, AmtGateway.getDefaultRelayDiscoveryAddress(), pushChannel);
+        this(port, AmtInterfaceManager.getDefaultRelayDiscoveryAddress(), pushChannel);
     }
     
     /**
@@ -210,13 +210,13 @@ public final class AmtMulticastEndpoint implements MulticastEndpoint {
 
         if (groupAddress instanceof Inet4Address) {
             if (this.amtIpv4Interface == null) {
-                this.amtIpv4Interface = AmtGateway.getInstance().getIPv4Interface(this.relayDiscoveryAddress);
+                this.amtIpv4Interface = AmtInterfaceManager.getInstance().getIPv4Interface(this.relayDiscoveryAddress);
             }
             this.amtIpv4Interface.join(this.pushChannel, groupAddress, port);
         }
         else {
             if (this.amtIpv6Interface == null) {
-                this.amtIpv6Interface = AmtGateway.getInstance().getIPv6Interface(this.relayDiscoveryAddress);
+                this.amtIpv6Interface = AmtInterfaceManager.getInstance().getIPv6Interface(this.relayDiscoveryAddress);
             }
             this.amtIpv6Interface.join(this.pushChannel, groupAddress, port);
         }
@@ -242,13 +242,13 @@ public final class AmtMulticastEndpoint implements MulticastEndpoint {
 
         if (groupAddress instanceof Inet4Address) {
             if (this.amtIpv4Interface == null) {
-                this.amtIpv4Interface = AmtGateway.getInstance().getIPv4Interface(this.relayDiscoveryAddress);
+                this.amtIpv4Interface = AmtInterfaceManager.getInstance().getIPv4Interface(this.relayDiscoveryAddress);
             }
             this.amtIpv4Interface.join(this.pushChannel, groupAddress, sourceAddress, port);
         }
         else {
             if (this.amtIpv6Interface == null) {
-                this.amtIpv6Interface = AmtGateway.getInstance().getIPv6Interface(this.relayDiscoveryAddress);
+                this.amtIpv6Interface = AmtInterfaceManager.getInstance().getIPv6Interface(this.relayDiscoveryAddress);
             }
             this.amtIpv6Interface.join(this.pushChannel, groupAddress, sourceAddress, port);
         }

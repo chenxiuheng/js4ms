@@ -33,18 +33,20 @@ import com.larkwoodlabs.net.udp.UdpDatagram;
 import com.larkwoodlabs.util.logging.Log;
 
 /**
- * A datagram source that constructs an AMT tunnel to receive packets sent to an ASM or SSM destination address
- * and port and forwards those packets to an {@link OutputChannel<UdpDatagram>} instance.
- * Forwarding can be enabled or disabled using the {@link #start()} and {@link #stop()} methods.
+ * A {@link MessageSource} that constructs an AMT multicast endpoint to receive datagrams
+ * sent to an ASM or SSM destination address and port and forwards those datagrams
+ * to an {@link OutputChannel} instance.
+ * Forwarding can be enabled or disabled using the {@link #start()} and {@link #stop()}
+ * methods.
  * 
  * @author Greg Bumgardner (gbumgard)
  */
-public class AmtDatagramSource extends MessageSource<UdpDatagram> {
+public class AmtDatagramSource
+                extends MessageSource<UdpDatagram> {
 
     /*-- Static Variables ----------------------------------------------------*/
 
     public static final Logger logger = Logger.getLogger(AmtDatagramSource.class.getName());
-
 
     /*-- Member Variables ----------------------------------------------------*/
 
@@ -54,56 +56,68 @@ public class AmtDatagramSource extends MessageSource<UdpDatagram> {
 
     private final AmtMulticastEndpoint amtEndpoint;
 
-
     /**
-     * Constructs a relay for UDP datagrams sent to a multicast address.
-     * @param sourcePort - The destination port of the UDP stream.
-     * @param sourceFilter - A source filter that identifies the any-source multicast (ASM) 
-     *                       or source-specific multicast (SSM) destination address and
-     *                       source host address(es) of the UDP datagrams.
-     * @param outputChannel - The channel that will receive datagrams as they arrive.
-     * @throws IOException - If an I/O error occurred while constructing the AMT endpoint.
+     * Constructs a message source for UDP datagrams sent to a multicast address.
+     * 
+     * @param destinationPort
+     *            The destination port of the UDP stream.
+     * @param sourceFilter
+     *            A source filter that identifies the any-source multicast (ASM)
+     *            or source-specific multicast (SSM) destination address and
+     *            source host address(es) of the UDP datagrams.
+     * @param outputChannel
+     *            The channel that will receive datagrams as they arrive.
+     * @throws IOException
+     *             If an I/O error occurred while constructing the AMT endpoint.
      */
-    public AmtDatagramSource(final int sourcePort,
+    public AmtDatagramSource(final int destinationPort,
                              final SourceFilter sourceFilter,
                              final OutputChannel<UdpDatagram> outputChannel) throws IOException {
         super(outputChannel);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(log.entry("AmtDatagramSource", sourcePort, sourceFilter, outputChannel));
+            logger.finer(log.entry("AmtDatagramSource", destinationPort, sourceFilter, outputChannel));
         }
 
         this.sourceFilter = sourceFilter;
-        this.amtEndpoint = new AmtMulticastEndpoint(sourcePort, outputChannel);
+        this.amtEndpoint = new AmtMulticastEndpoint(destinationPort, outputChannel);
     }
 
     /**
-     * Constructs a relay for UDP datagrams sent to a multicast address.
-     * @param sourcePort - The destination port of the UDP stream.
-     * @param sourceFilter - A source filter that identifies the any-source multicast (ASM) 
-     *                       or source-specific multicast (SSM) destination address and
-     *                       source host address(es) of the UDP datagrams.
-     * @param relayDiscoveryAddress - The anycast or unicast address used to locate an AMT relay.
-     * @param outputChannel - The channel that will receive datagrams as they arrive.
-     * @throws IOException - If an I/O error occurred while constructing the AMT endpoint.
+     * Constructs a message source for UDP datagrams sent to a multicast address.
+     * 
+     * @param destinationPort
+     *            The destination port of the UDP stream.
+     * @param sourceFilter
+     *            A source filter that identifies the any-source multicast (ASM)
+     *            or source-specific multicast (SSM) destination address and
+     *            source host address(es) of the UDP datagrams.
+     * @param relayDiscoveryAddress
+     *            The anycast or unicast address used to locate an AMT relay.
+     * @param outputChannel
+     *            The channel that will receive datagrams as they arrive.
+     * @throws IOException
+     *             If an I/O error occurred while constructing the AMT endpoint.
      */
-    public AmtDatagramSource(final int sourcePort,
+    public AmtDatagramSource(final int destinationPort,
                              final SourceFilter sourceFilter,
                              final InetAddress relayDiscoveryAddress,
                              final OutputChannel<UdpDatagram> outputChannel) throws IOException {
         super(outputChannel);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(log.entry("<ctor>", sourcePort, sourceFilter, relayDiscoveryAddress, outputChannel));
+            logger.finer(log.entry("<ctor>", destinationPort, sourceFilter, relayDiscoveryAddress, outputChannel));
         }
 
         this.sourceFilter = sourceFilter;
-        this.amtEndpoint = new AmtMulticastEndpoint(sourcePort, relayDiscoveryAddress, outputChannel);
+        this.amtEndpoint = new AmtMulticastEndpoint(destinationPort, relayDiscoveryAddress, outputChannel);
     }
 
     /**
-     * Performs actions required to start the relay.
-     * @throws IOException If an I/O error occurs while starting the relay.
+     * Performs actions required to start the message source.
+     * 
+     * @throws IOException
+     *             If an I/O error occurs while starting the message source.
      */
     @Override
     protected void doStart() throws IOException {
@@ -124,11 +138,13 @@ public class AmtDatagramSource extends MessageSource<UdpDatagram> {
         }
     }
 
-
     /**
-     * Performs actions required to stop the relay.
-     * @throws IOException If an I/O error occurs while stopping the relay.
-     * @throws InterruptedException If the calling thread is interrupted while stopping the relay.
+     * Performs actions required to stop the message source.
+     * 
+     * @throws IOException
+     *             If an I/O error occurs while stopping the message source.
+     * @throws InterruptedException
+     *             If the calling thread is interrupted while stopping the message source.
      */
     @Override
     protected void doStop() throws IOException {
@@ -136,14 +152,17 @@ public class AmtDatagramSource extends MessageSource<UdpDatagram> {
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(log.entry("doStop"));
         }
-        
+
         this.amtEndpoint.leave();
     }
 
     /**
-     * Performs actions required to close the relay.
-     * @throws IOException If an I/O error occurs while closing the relay.
-     * @throws InterruptedException If the calling thread is interrupted while closing the relay.
+     * Performs actions required to close the message source.
+     * 
+     * @throws IOException
+     *             If an I/O error occurs while closing the message source.
+     * @throws InterruptedException
+     *             If the calling thread is interrupted while closing the message source.
      */
     @Override
     protected void doClose() throws IOException, InterruptedException {
