@@ -29,6 +29,12 @@ import com.larkwoodlabs.net.ip.mld.MLDGroupRecord;
 import com.larkwoodlabs.net.ip.mld.MLDMessage;
 import com.larkwoodlabs.net.ip.mld.MLDv2ReportMessage;
 
+/**
+ * Transforms a protocol-independent MembershipReport object into an IPPacket object
+ * containing an MLDv2 report message.
+ * 
+ * @author Greg Bumgardner (gbumgard)
+ */
 public final class IPv6MembershipReportTransform
                 implements MessageTransform<MembershipReport, IPPacket> {
 

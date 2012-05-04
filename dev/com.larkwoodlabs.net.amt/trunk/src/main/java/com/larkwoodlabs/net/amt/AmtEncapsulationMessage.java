@@ -43,7 +43,7 @@ abstract class AmtEncapsulationMessage
     /*-- Inner Classes ------------------------------------------------------*/
 
     /**
-     * 
+     * A parser for AMT messages that encapsulate an IP packet.
      * 
      */
     public static abstract class Parser
