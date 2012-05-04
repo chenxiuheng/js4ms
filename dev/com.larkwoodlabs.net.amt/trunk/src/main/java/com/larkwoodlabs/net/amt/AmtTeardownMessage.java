@@ -162,7 +162,7 @@ public final class AmtTeardownMessage
     /*-- Inner Classes ------------------------------------------------------*/
 
     /**
-     * An AMT Teardown message parser.
+     * An AMT Teardown message parser/factory.
      */
     public static class Parser
                     implements AmtMessage.ParserType {
@@ -214,7 +214,7 @@ public final class AmtTeardownMessage
      * corresponding message fields.
      * 
      * @param responseMac
-     *            A 6-byte array containing a response MAC.
+     *            A 6-byte array containing a 48-bit response MAC.
      * @param requestNonce
      *            An integer request nonce value.
      * @param gatewayAddress

@@ -330,7 +330,7 @@ public final class AmtMembershipQueryMessage
      * corresponding message fields.
      * 
      * @param responseMac
-     *            A 6-byte array containing a response MAC.
+     *            A 6-byte array containing a 48-bit response MAC.
      * @param requestNonce
      *            An integer request nonce value.
      * @param queryPacket
