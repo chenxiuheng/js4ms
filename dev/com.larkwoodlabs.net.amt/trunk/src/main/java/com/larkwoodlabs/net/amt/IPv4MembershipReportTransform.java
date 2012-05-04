@@ -20,13 +20,8 @@
 
 package com.larkwoodlabs.net.amt;
 
-
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.util.Enumeration;
 
 import com.larkwoodlabs.channels.MessageTransform;
 import com.larkwoodlabs.net.ip.IPPacket;
@@ -34,49 +29,73 @@ import com.larkwoodlabs.net.ip.igmp.IGMPGroupRecord;
 import com.larkwoodlabs.net.ip.igmp.IGMPMessage;
 import com.larkwoodlabs.net.ip.igmp.IGMPv3ReportMessage;
 
-public final class IPv4MembershipReportTransform implements MessageTransform<MembershipReport, IPPacket> {
+/**
+ * Transforms a protocol-independent MembershipReport object into an IPPacket object
+ * containing an IGMPv3 report message.
+ * 
+ * @author Greg Bumgardner (gbumgard)
+ */
+public final class IPv4MembershipReportTransform
+                implements MessageTransform<MembershipReport, IPPacket> {
 
-    private byte[] ipv4SourceAddress = null;
-    
+    /**
+     * An IANA-assigned link-local address used by AMT gateways as an IGMP packet
+     * source address.
+     */
+    private static final byte[] ASSIGNED_IGMP_SOURCE_ADDRESS = {
+                    (byte) 154, (byte) 7, (byte) 1, (byte) 2
+    };
+
+    // private byte[] ipv4SourceAddress = null;
+
+    /**
+     * Constructs a transform instance.
+     * This constructor iterates over the set of network interfaces
+     * to acquire an IPv4 address to use as the source address in the
+     * packets
+     */
     public IPv4MembershipReportTransform() {
 
-        InetAddress localHostAddress;
-        try {
-            localHostAddress = InetAddress.getLocalHost();
-        }
-        catch (UnknownHostException e) {
-            throw new Error(e);
-        }
-
-        NetworkInterface networkInterface = null;
-
-        try {
-            networkInterface = NetworkInterface.getByInetAddress(localHostAddress);
-        }
-        catch (SocketException e) {
-            /*
-            throw new UnknownHostException("attempt to identify network interface for local host address " +
-                                           localHostAddress.getHostAddress() +
-                                           " failed - " + e.getMessage());
-            */
-        }
-
-        if (networkInterface != null) {
-            Enumeration<InetAddress> iter = networkInterface.getInetAddresses();
-            while (iter.hasMoreElements()) {
-                byte[] address = iter.nextElement().getAddress();
-                if (address.length == 4) {
-                    this.ipv4SourceAddress = address;
-                }
-            }
-        }
-        
-        if (this.ipv4SourceAddress == null) {
-            this.ipv4SourceAddress = new byte[4];
-        }
-
+        /*
+         * NOTE: A host IPv4 address is no longer used as the source address in the IGMP
+         * packet.
+         * 
+         * InetAddress localHostAddress;
+         * try {
+         * localHostAddress = InetAddress.getLocalHost();
+         * }
+         * catch (UnknownHostException e) {
+         * throw new Error(e);
+         * }
+         * 
+         * NetworkInterface networkInterface = null;
+         * 
+         * try {
+         * networkInterface = NetworkInterface.getByInetAddress(localHostAddress);
+         * }
+         * catch (SocketException e) {
+         * //throw new UnknownHostException(
+         * "attempt to identify network interface for local host address " +
+         * // localHostAddress.getHostAddress() +
+         * // " failed - " + e.getMessage());
+         * }
+         * 
+         * if (networkInterface != null) {
+         * Enumeration<InetAddress> iter = networkInterface.getInetAddresses();
+         * while (iter.hasMoreElements()) {
+         * byte[] address = iter.nextElement().getAddress();
+         * if (address.length == 4) {
+         * this.ipv4SourceAddress = address;
+         * }
+         * }
+         * }
+         * 
+         * if (this.ipv4SourceAddress == null) {
+         * this.ipv4SourceAddress = new byte[4];
+         * }
+         */
     }
-    
+
     @Override
     public IPPacket transform(final MembershipReport message) throws IOException {
 
@@ -85,17 +104,18 @@ public final class IPv4MembershipReportTransform implements MessageTransform<Mem
         IGMPv3ReportMessage reportMessage = new IGMPv3ReportMessage();
 
         for (GroupMembershipRecord record : message.getRecords()) {
-            IGMPGroupRecord groupRecord = new IGMPGroupRecord((byte)record.getRecordType().getValue(), record.getGroup().getAddress());
+            IGMPGroupRecord groupRecord = new IGMPGroupRecord((byte) record.getRecordType().getValue(), record.getGroup()
+                            .getAddress());
             for (InetAddress sourceAddress : record.getSources()) {
                 groupRecord.addSource(sourceAddress);
             }
             reportMessage.addGroupRecord(groupRecord);
         }
 
-        reportPacket = IGMPMessage.constructIPv4Packet(this.ipv4SourceAddress,
+        reportPacket = IGMPMessage.constructIPv4Packet(ASSIGNED_IGMP_SOURCE_ADDRESS,
                                                        IGMPMessage.IPv4ReportDestinationAddress,
                                                        reportMessage);
-        
+
         return reportPacket;
     }
 }

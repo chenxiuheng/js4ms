@@ -24,6 +24,13 @@ import java.net.InetAddress;
 import java.util.HashSet;
 import java.util.Iterator;
 
+/**
+ * Describes the current reception state, or a change in reception state
+ * for a single multicast group address. This class is used to provide a
+ * protocol-independent representation of an IGMPv3 or MLDv2 group record.
+ * 
+ * @author Greg Bumgardner (gbumgard)
+ */
 public final class GroupMembershipRecord {
 
     /**
@@ -84,47 +91,76 @@ public final class GroupMembershipRecord {
          * the list.
          */
         BLOCK_OLD_SOURCES(6);
-        
+
         int value;
+
         Type(int value) {
             this.value = value;
         }
-        
+
         public int getValue() {
             return this.value;
         }
     }
 
     InetAddress group;
+
     Type recordType;
+
     HashSet<InetAddress> sourceSet;
-    
+
     /**
+     * Constructs an instance for the specified group.
      * 
      * @param group
+     *            A multicast group address.
      * @param recordType
-     * @param sourceSet - The sources to list in the record - set is stored by reference, not copied.
+     *            An enumerator describing the state or state change for the group.
+     * @param sourceSet
+     *            - The sources to list in the record - set is stored by reference, not
+     *            copied.
      */
     public GroupMembershipRecord(InetAddress group, Type recordType, HashSet<InetAddress> sourceSet) {
         this.group = group;
         this.recordType = recordType;
         this.sourceSet = sourceSet;
     }
-    
+
+    /**
+     * Gets the multicast group address.
+     * 
+     * @return An InetAddress (IPv4 or IPv6) object containing the group address.
+     */
     public InetAddress getGroup() {
         return this.group;
     }
 
+    /**
+     * Gets the group record type.
+     * 
+     * @return A Type enumerator describing the record type.
+     */
     public Type getRecordType() {
         return this.recordType;
     }
 
+    /**
+     * Gets the HashSet containing the source addresses that describe the current
+     * include/exclude state or are used to describe a state change.
+     * 
+     * @return The HashSet originally provided when the record was constructed.
+     */
     public HashSet<InetAddress> getSources() {
         return this.sourceSet;
     }
 
+    /**
+     * Gets an Iterator for the source address HashSet.
+     * 
+     * @return An Iterator that can be used to iterator over the set of source addresses.
+     */
     public Iterator<InetAddress> getSourceIterator() {
         return this.sourceSet.iterator();
     }
-    
+
 }

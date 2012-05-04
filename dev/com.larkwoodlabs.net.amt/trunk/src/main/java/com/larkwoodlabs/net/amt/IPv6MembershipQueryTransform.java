@@ -34,34 +34,44 @@ import com.larkwoodlabs.net.ip.mld.MLDMessage;
 import com.larkwoodlabs.net.ip.mld.MLDQueryMessage;
 import com.larkwoodlabs.net.ip.mld.MLDv2QueryMessage;
 
-public final class IPv6MembershipQueryTransform implements MessageTransform<IPPacket, MembershipQuery> {
+/**
+ * Transforms an IPPacket object containing an MLDv2 query message into a
+ * protocol-independent MembershipQuery object.
+ * 
+ * @author Greg Bumgardner (gbumgard)
+ */
+public final class IPv6MembershipQueryTransform
+                implements MessageTransform<IPPacket, MembershipQuery> {
 
+    /**
+     * Default constructor.
+     */
     public IPv6MembershipQueryTransform() {
     }
 
     @Override
     public MembershipQuery transform(final IPPacket packet) throws IOException {
-        
+
         MembershipQuery membershipQuery = null;
-        
+
         if (packet.getVersion() == IPv6Packet.INTERNET_PROTOCOL_VERSION) {
-        
+
             IPMessage ipMessage = packet.getProtocolMessage(MLDMessage.IP_PROTOCOL_NUMBER);
-            
+
             if (ipMessage == null || !(ipMessage instanceof MLDQueryMessage)) {
                 throw new ProtocolException("IP packet does not contain an MLD Membership Query Message");
             }
-    
-            MLDQueryMessage queryMessage = (MLDQueryMessage)ipMessage;
-    
+
+            MLDQueryMessage queryMessage = (MLDQueryMessage) ipMessage;
+
             InetAddress groupAddress = InetAddress.getByAddress(queryMessage.getGroupAddress());
-        
+
             int maximumResponseTime = queryMessage.getMaximumResponseDelay();
             int robustnessVariable = 2;
             int queryInterval = 125000; // Default query interval
             HashSet<InetAddress> sourceSet = null;
             if (queryMessage instanceof MLDv2QueryMessage) {
-                MLDv2QueryMessage v2QueryMessage = (MLDv2QueryMessage)queryMessage;
+                MLDv2QueryMessage v2QueryMessage = (MLDv2QueryMessage) queryMessage;
                 robustnessVariable = v2QueryMessage.getQuerierRobustnessVariable();
                 queryInterval = v2QueryMessage.getQueryIntervalTime() * 1000;
                 if (v2QueryMessage.getNumberOfSources() > 0) {

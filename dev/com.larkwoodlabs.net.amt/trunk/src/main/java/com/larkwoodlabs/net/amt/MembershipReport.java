@@ -23,22 +23,45 @@ package com.larkwoodlabs.net.amt;
 import java.util.HashSet;
 import java.util.Iterator;
 
-
+/**
+ * A protocol-independent representation of an IGMPv3 or MLDv2 report message.
+ * 
+ * @author Greg Bumgardner (gbumgard)
+ */
 public final class MembershipReport {
 
     private final HashSet<GroupMembershipRecord> records = new HashSet<GroupMembershipRecord>();
-    
+
+    /**
+     * Default constructor.
+     */
     public MembershipReport() {
     }
-    
+
+    /**
+     * Adds a group record to the report.
+     * 
+     * @param record
+     *            A GroupMembershipRecord that describes the reception state
+     *            for a single multicast group address.
+     */
     public void addRecord(final GroupMembershipRecord record) {
         this.records.add(record);
     }
-    
+
+    /**
+     * Gets a HashSet containing the group membership records.
+     * @return A reference to the internal group record HashSet.
+     */
     public HashSet<GroupMembershipRecord> getRecords() {
         return this.records;
     }
 
+    /**
+     * Gets an Iterator that may be used to iterate over the set of
+     * group records contained in the report.
+     * @return An Iterator for the internal HashSet.
+     */
     public Iterator<GroupMembershipRecord> getRecordIterator() {
         return this.records.iterator();
     }

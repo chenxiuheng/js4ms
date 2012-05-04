@@ -34,8 +34,17 @@ import com.larkwoodlabs.net.ip.igmp.IGMPQueryMessage;
 import com.larkwoodlabs.net.ip.igmp.IGMPv3QueryMessage;
 import com.larkwoodlabs.net.ip.ipv4.IPv4Packet;
 
+/**
+ * Transforms an IPPacket object containing an IGMPv3 query message into a 
+ * protocol-independent MembershipQuery object.
+ *
+ * @author Greg Bumgardner (gbumgard)
+ */
 public final class IPv4MembershipQueryTransform implements MessageTransform<IPPacket, MembershipQuery> {
 
+    /**
+     * Default constructor.
+     */
     public IPv4MembershipQueryTransform() {
     }
 
