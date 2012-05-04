@@ -1,17 +1,21 @@
 /*
- * Copyright © 2009-2010 Larkwood Labs Software.
- *
- * Licensed under the Larkwood Labs Software Source Code License, Version 1.0.
- * You may not use this file except in compliance with this License.
- *
- * You may view the Source Code License at
- * http://www.larkwoodlabs.com/source-license
- *
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * 
+ * File: AmtMulticastDataMessage.java (com.larkwoodlabs.net.amt)
+ * 
+ * Copyright © 2010-2012 Cisco Systems, Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- * limitations under the license.
+ * limitations under the License.
  */
 
 package com.larkwoodlabs.net.amt;
@@ -27,58 +31,96 @@ import com.larkwoodlabs.util.buffer.fields.ByteField;
 import com.larkwoodlabs.util.logging.Logging;
 
 /**
- * Class representing an AMT IP Multicast data message.
+ * Represents an AMT Multicast Data message.
+ * The following description is excerpted from the
+ * <a href="http://tools.ietf.org/html/draft-ietf-mboned-auto-multicast">Automatic
+ * Multicast Tunneling (AMT)</a> specification.
  * 
- * The AMT Data message is a UDP packet encapsulating the IP Multicast
- * data requested by the originator based on a previous AMT Membership
- * Update message.<p>
- * 
- * It is sent from the unicast destination address of the Membership
- * update to the source address of the Membership Update.<p>
- * 
- * The UDP source and destination port numbers should be the same ones
- * sent in the original Query.  The UDP checksum SHOULD be 0 in the AMT
- * IP Multicast Data message.<p>
- * 
- * From the draft specification
- * <a href="http://tools.ietf.org/html/draft-ietf-mboned-auto-multicast-09#section-6.6">[draft-ietf-mboned-auto-multicast-09][6.1]</a><p>
- * The payload of the UDP packet contains the following fields.
  * <pre>
+ * 5.1.6.  Multicast Data
+ * 
+ *    A relay sends a Multicast Data message to deliver an IP multicast
+ *    packet to a gateway.
+ * 
+ *    The checksum field in the UDP header of this message MAY contain a
+ *    value of zero when sent over IPv4 but SHOULD, if possible, contain a
+ *    valid, non-zero value when sent over IPv6 (See Section 4.2.2.3).
+ * 
+ *    The UDP/IP datagram containing this message MUST carry the following
+ *    IP address and UDP port values:
+ * 
+ *    Source IP Address -  The unicast IP address of the relay.
+ * 
+ *    Source UDP Port -  The IANA-assigned AMT port number.
+ * 
+ *    Destination IP Address -  A tunnel endpoint IP address, i.e. the
+ *       source IP address carried by the Membership Update message sent by
+ *       a gateway to indicate an interest in receiving the multicast
+ *       packet.  Note: The value of this field may be changed as a result
+ *       of network address translation before arriving at the gateway.
+ * 
+ *    Destination UDP Port -  A tunnel endpoint UDP port, i.e. the source
+ *       UDP port carried by the Membership Update message sent by a
+ *       gateway to indicate an interest in receiving the multicast packet.
+ *       Note: The value of this field may be changed as a result of
+ *       network address translation before arriving at the gateway.
+ * 
  *     0                   1                   2                   3
  *     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
  *    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- *    |     Type=0x6  |    Reserved   |     IP Multicast Data ...     |
- *    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- *    |            ...                                                |
- *    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *    |  V=0  |Type=6 |    Reserved   |                               |
+ *    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               +
+ *    |                                                               |
+ *    ~                     IP Multicast Packet                       ~
+ *    |                                                               |
+ *    +                - - - - - - - - - - - - - - - - - - - - - - - -+
+ *    |               :               :               :               :
+ *    +-+-+-+-+-+-+-+-+- - - - - - - - - - - - - - - - - - - - - - - -
+ * 
+ *                        Multicast Data Message Format
+ * 
+ * 5.1.6.1.  Version (V)
+ * 
+ *    The protocol version number for this message is 0.
+ * 
+ * 5.1.6.2.  Type
+ * 
+ *    The type number for this message is 6.
+ * 
+ * 5.1.6.3.  Reserved
+ * 
+ *    Bits that MUST be set to zero by the relay and ignored by the
+ *    gateway.
+ * 
+ * 5.1.6.4.  IP Multicast Data
+ * 
+ *    A complete IPv4 or IPv6 Multicast datagram.
+ * 
  * </pre>
- * <dl>
- * <dt>Type
- * <dd>The type of the message.<br/>
- *     See {@link AmtMessage#getType() getType()},
- *         {@link AmtMessage#setType(byte) setType()}.
- * <dt>Reserved 
- * <dd>An 8-bit reserved field.  Sent as 0, ignored on receipt.<br/>
- *     See {@link #Reserved}.
- * <dt>IP Multicast Data
- * <dd>The original IP Multicast data packet that is being replicated by the
- *     relay to the gateways including the original IP header.<br/>
- *     See {@link AmtEncapsulationMessage#getPacket() getPacket()},
- *         {@link AmtEncapsulationMessage#setPacket(IPPacket) setPacket(IPPacket)},
- *         {@link AmtEncapsulationMessage#parsePacket(IPPacket.BufferParser) parsePacket(IPPacket.Parser)}.
- * </dl><p>
- * @author Gregory Bumgardner
+ * 
+ * @author Gregory Bumgardner (gbumgard)
  */
-public final class AmtMulticastDataMessage extends AmtEncapsulationMessage {
+public final class AmtMulticastDataMessage
+                extends AmtEncapsulationMessage {
 
     /*-- Inner Classes ---------------------------------------------------*/
-    
-    public static class Parser extends AmtEncapsulationMessage.Parser {
 
+    /**
+     * An AMT Multicast Data message parser/factory.
+     */
+    public static class Parser
+                    extends AmtEncapsulationMessage.Parser {
+
+        /**
+         * 
+         */
         public Parser() {
             this(DEFAULT_DATA_PACKET_PARSER);
         }
 
+        /**
+         * @param ipParser
+         */
         public Parser(IPPacket.BufferParser ipParser) {
             super(ipParser);
         }
@@ -95,68 +137,83 @@ public final class AmtMulticastDataMessage extends AmtEncapsulationMessage {
 
     }
 
-
     /*-- Static Variables ---------------------------------------------------*/
-    
+
     public static final byte MESSAGE_TYPE = 0x6;
-    public static final int BASE_MESSAGE_LENGTH = 2;
-    
-    public static final ByteField Reserved = new ByteField(1); 
+
+    private static final int BASE_MESSAGE_LENGTH = 2;
+
+    @SuppressWarnings("unused")
+    private static final ByteField Reserved = new ByteField(1);
 
     /**
-     * Singleton instance of parser for IP packets carrying UDP protocol messages. 
+     * Singleton instance of parser for IP packets carrying UDP protocol messages.
      */
     public static final IPPacket.BufferParser DEFAULT_DATA_PACKET_PARSER = getDataPacketParser();
 
-
     /*-- Static Functions ---------------------------------------------------*/
-    
+
+    /**
+     * @return A parser that constructs an IPPacket object from the contents
+     *         of a ByteBuffer.
+     */
     public static IPPacket.BufferParser getDataPacketParser() {
-        //UdpPacket.Parser udpParser = new UdpPacket.Parser();
-        //IPMessage.Parser ipMessageParser = new IPMessage.Parser();
-        //ipMessageParser.add(udpParser);
+        // UdpPacket.Parser udpParser = new UdpPacket.Parser();
+        // IPMessage.Parser ipMessageParser = new IPMessage.Parser();
+        // ipMessageParser.add(udpParser);
         IPv4Packet.Parser ipv4Parser = new IPv4Packet.Parser();
         // TODO header options?
-        //ipv4Parser.setProtocolParser(ipMessageParser);
-        IPv6Packet.Parser ipv6Parser = IPv6Packet.getIPv6MessageParser(); // Adds extension headers (or skip?)
-        //ipv6Parser.setProtocolParser(ipMessageParser);
+        // ipv4Parser.setProtocolParser(ipMessageParser);
+        IPv6Packet.Parser ipv6Parser = IPv6Packet.getIPv6MessageParser(); // Adds
+                                                                          // extension
+                                                                          // headers (or
+                                                                          // skip?)
+        // ipv6Parser.setProtocolParser(ipMessageParser);
         IPPacket.BufferParser ipParser = new IPPacket.BufferParser();
         ipParser.add(ipv4Parser);
         ipParser.add(ipv6Parser);
         return ipParser;
     }
 
+    /**
+     * @return A parser that construct an AmtMulticastDataMessage object from the
+     *         contents of a ByteBuffer.
+     */
     public static AmtMulticastDataMessage.Parser constructParser() {
         AmtMulticastDataMessage.Parser parser = new AmtMulticastDataMessage.Parser();
         parser.setIPPacketParser(getDataPacketParser());
         return parser;
     }
 
-    
     /*-- Member Functions ---------------------------------------------------*/
 
     /**
+     * Constructs an instance that encapsulates the specified IP packet.
      * 
      * @param dataPacket
      */
     public AmtMulticastDataMessage(final IPPacket dataPacket) {
         super(BASE_MESSAGE_LENGTH, MESSAGE_TYPE, dataPacket);
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "AmtMulticastDataMessage.AmtMulticastDataMessage", dataPacket));
         }
     }
 
     /**
+     * Constructs an instance from the contents of the specified ByteBuffer.
      * 
-     * @param segment
+     * @param buffer
+     *            The ByteBuffer containing the message.
      * @throws ParseException
+     *             The buffer could not be parsed to produce a value AMT Multicast Data
+     *             message.
      */
-    public AmtMulticastDataMessage(final ByteBuffer segment) throws ParseException {
-        super(segment, BASE_MESSAGE_LENGTH);
-        
+    public AmtMulticastDataMessage(final ByteBuffer buffer) throws ParseException {
+        super(buffer, BASE_MESSAGE_LENGTH);
+
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtMulticastDataMessage.AmtMulticastDataMessage", segment));
+            logger.finer(Logging.entering(ObjectId, "AmtMulticastDataMessage.AmtMulticastDataMessage", buffer));
         }
     }
 

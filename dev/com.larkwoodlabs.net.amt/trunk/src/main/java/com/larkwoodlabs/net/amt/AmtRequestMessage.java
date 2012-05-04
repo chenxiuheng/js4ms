@@ -1,17 +1,21 @@
 /*
- * Copyright © 2009-2010 Larkwood Labs Software.
- *
- * Licensed under the Larkwood Labs Software Source Code License, Version 1.0.
- * You may not use this file except in compliance with this License.
- *
- * You may view the Source Code License at
- * http://www.larkwoodlabs.com/source-license
- *
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * 
+ * File: AmtRequestMessage.java (com.larkwoodlabs.net.amt)
+ * 
+ * Copyright © 2010-2012 Cisco Systems, Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- * limitations under the license.
+ * limitations under the License.
  */
 
 package com.larkwoodlabs.net.amt;
@@ -21,57 +25,103 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.larkwoodlabs.common.exceptions.ParseException;
+import com.larkwoodlabs.util.buffer.fields.BooleanField;
 import com.larkwoodlabs.util.buffer.fields.IntegerField;
 import com.larkwoodlabs.util.logging.Logging;
 
 /**
- * An AMT request message.
+ * Represents an AMT Request message.
+ * The following description is excerpted from the
+ * <a href="http://tools.ietf.org/html/draft-ietf-mboned-auto-multicast">Automatic
+ * Multicast Tunneling (AMT)</a> specification.
+ * 
  * <pre>
- * 6.3. AMT Request
+ * 5.1.3.  Request
  * 
- *    A Request packet is sent to begin a 3-way handshake for sending an
- *    IGMP/MLD Membership/Listener Report or Leave/Done.  It can be sent
- *    from a gateway to a relay, from a gateway to another gateway, or from
- *    a relay to a gateway.
+ *    A gateway sends a Request message to a relay to solicit a Membership
+ *    Query response.
  * 
- *    It is sent from the originator's unique unicast address to the
- *    respondents' unique unicast address.
+ *    The successful delivery of this message marks the start of the first
+ *    stage in the three-way handshake used to create or update state
+ *    within a relay.
  * 
- *    The UDP source port is uniquely selected by the local host operating
- *    system.  It can be different for each Request and different from the
- *    source port used in Discovery messages but does not have to be.  The
- *    UDP destination port is the IANA reserved AMT port number.  The UDP
- *    checksum MUST be valid in AMT control messages.
+ *    The UDP/IP datagram containing this message MUST carry a valid, non-
+ *    zero UDP checksum and carry the following IP address and UDP port
+ *    values:
+ * 
+ *    Source IP Address -  The IP address of the gateway interface on which
+ *       the gateway will listen for a response from the relay.  Note: The
+ *       value of this field may be changed as a result of network address
+ *       translation before arriving at the relay.
+ * 
+ *    Source UDP Port -  The UDP port number on which the gateway will
+ *       listen for a response from the relay.  Note: The value of this
+ *       field may be changed as a result of network address translation
+ *       before arriving at the relay.
+ * 
+ *    Destination IP Address -  The unicast IP address of the relay.
+ * 
+ *    Destination UDP Port -  The IANA-assigned AMT port number.
  * 
  *     0                   1                   2                   3
  *     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
  *    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- *    |     Type=0x3  |     Reserved                                  |
+ *    |  V=0  |Type=3 |   Reserved  |P|            Reserved           |
  *    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- *    |            Request Nonce                                      |
+ *    |                         Request Nonce                         |
  *    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  * 
- * 6.3.1. Type
+ *                           Request Message Format
  * 
- *    The type of the message.
+ * 5.1.3.1.  Version (V)
  * 
- * 6.3.2. Reserved
+ *    The protocol version number for this message is 0.
  * 
- *    A 24-bit reserved field.  Sent as 0, ignored on receipt.
+ * 5.1.3.2.  Type
  * 
- * 6.3.3. Request Nonce
+ *    The type number for this message is 3.
  * 
- *    A 32-bit identifier used to distinguish this request.
+ * 5.1.3.3.  Reserved
+ * 
+ *    Reserved bits that MUST be set to zero by the gateway and ignored by
+ *    the relay.
+ * 
+ * 5.1.3.4.  P Flag
+ * 
+ *    The "P" flag is set to indicate which group membership protocol the
+ *    gateway wishes the relay to use in the Membership Query response:
+ * 
+ *    Value Meaning
+ * 
+ *      0   The relay MUST respond with a Membership Query message that
+ *          contains an IPv4 packet carrying an IGMPv3 general query
+ *          message.
+ * 
+ *      1   The relay MUST respond with a Membership Query message that
+ *          contains an IPv6 packet carrying an MLDv2 general query
+ *          message.
+ * 
+ * 5.1.3.5.  Request Nonce
+ * 
+ *    A 32-bit random value generated by the gateway and echoed by the
+ *    relay in a Membership Query message.  This value is used by the relay
+ *    to compute the Response MAC value and is used by the gateway to
+ *    correlate Membership Query messages with Request messages.  Request
+ *    nonce generation is described in Section 5.2.3.5.6.
  * </pre>
  * 
- * @author Gregory Bumgardner
- * 
+ * @author Greg Bumgardner (gbumgard)
  */
-public final class AmtRequestMessage extends AmtMessage {
+public final class AmtRequestMessage
+                extends AmtMessage {
 
     /*-- Inner Classes ------------------------------------------------------*/
 
-    public static class Parser implements AmtMessage.ParserType {
+    /**
+     * An AMT Request message parser/factory.
+     */
+    public static class Parser
+                    implements AmtMessage.ParserType {
 
         @Override
         public AmtMessage parse(ByteBuffer buffer) throws ParseException {
@@ -85,50 +135,75 @@ public final class AmtRequestMessage extends AmtMessage {
 
     }
 
-
     /*-- Static Variables ---------------------------------------------------*/
 
     public static final byte MESSAGE_TYPE = 0x3;
+
     public static final int MESSAGE_LENGTH = 8;
-    
-    public static final IntegerField RequestNonce = new IntegerField(4);
+
+    private static final BooleanField ProtocolFlag = new BooleanField(1, 0);
+
+    private static final IntegerField RequestNonce = new IntegerField(4);
 
     public static int nextRequestNonce = 1;
 
-
     /*-- Static Functions ---------------------------------------------------*/
 
+    /**
+     * @return A parser that constructs an AmtRequestMessage object from the
+     *         contents of a ByteBuffer.
+     */
     public static AmtRequestMessage.Parser constructParser() {
         return new AmtRequestMessage.Parser();
     }
 
+    /**
+     * @return The next value in an static integer sequence.
+     */
     public static synchronized int getNextRequestNonce() {
         return nextRequestNonce++;
     }
 
     /*-- Member Functions ---------------------------------------------------*/
 
+    /**
+     * Constructs an instance using a sequential nonce value.
+     */
     public AmtRequestMessage() {
         this(getNextRequestNonce());
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "AmtRequestMessage.AmtRequestMessage"));
         }
     }
 
+    /**
+     * Constructs and instance using the specified nonce value.
+     * 
+     * @param requestNonce
+     *            A random integer value.
+     */
     public AmtRequestMessage(int requestNonce) {
-        super(MESSAGE_LENGTH,MESSAGE_TYPE);
-        
+        super(MESSAGE_LENGTH, MESSAGE_TYPE);
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "AmtRequestMessage.AmtRequestMessage", requestNonce));
         }
-        
+
         setRequestNonce(requestNonce);
         if (logger.isLoggable(Level.FINER)) {
             logState(logger);
         }
     }
 
+    /**
+     * Constructs an instance from the contents of a ByteBuffer.
+     * 
+     * @param buffer
+     *            A buffer containing a single AMT Request message.
+     * @throws ParseException
+     *             The buffer could not be parsed to produce a valid AMT Request message.
+     */
     public AmtRequestMessage(ByteBuffer buffer) throws ParseException {
         super(consume(buffer, MESSAGE_LENGTH));
 
@@ -143,13 +218,15 @@ public final class AmtRequestMessage extends AmtMessage {
         super.log(logger);
         logState(logger);
     }
-    
+
     /**
      * Logs value of member variables declared or maintained by this class.
+     * 
      * @param logger
+     *            The logger to use when generating log messages.
      */
     private void logState(Logger logger) {
-        logger.info(ObjectId + " : request-nonce="+getRequestNonce());
+        logger.info(ObjectId + " : request-nonce=" + getRequestNonce());
     }
 
     @Override
@@ -162,17 +239,49 @@ public final class AmtRequestMessage extends AmtMessage {
         return MESSAGE_LENGTH;
     }
 
+    /**
+     * Gets the protocol (P) flag field value.
+     * 
+     * @return The boolean value of the protocol (P) flag field.
+     */
+    public boolean getProtocolFlag() {
+        return ProtocolFlag.get(getBufferInternal());
+    }
+
+    /**
+     * Sets the protocol (P) flag field to the specified value.
+     * 
+     * @param requestMLD
+     *            A boolean value where <code>false</code> indicates which group
+     *            membership protocol the gateway wishes to use for this request
+     *            where <code>false</code> is IGMPv3 and <code>true</code> is MLDv2.
+     */
+    public void setProtocolFlag(final boolean requestMLD) {
+        ProtocolFlag.set(getBufferInternal(), requestMLD);
+    }
+
+    /**
+     * Gets the request nonce field value.
+     * 
+     * @return The integer value of the request nonce field.
+     */
     public int getRequestNonce() {
         return RequestNonce.get(getBufferInternal());
     }
 
+    /**
+     * Sets the request nonce field value.
+     * 
+     * @param requestNonce
+     *            An opaque integer nonce value..
+     */
     public void setRequestNonce(int requestNonce) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "AmtRequestMessage.setRequestNonce", requestNonce));
         }
-        
-        RequestNonce.set(getBufferInternal(),requestNonce);
+
+        RequestNonce.set(getBufferInternal(), requestNonce);
     }
 
 }

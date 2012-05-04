@@ -1,17 +1,21 @@
 /*
- * Copyright © 2009-2010 Larkwood Labs Software.
- *
- * Licensed under the Larkwood Labs Software Source Code License, Version 1.0.
- * You may not use this file except in compliance with this License.
- *
- * You may view the Source Code License at
- * http://www.larkwoodlabs.com/source-license
- *
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * 
+ * File: AmtRelayAdvertisementMessage.java (com.larkwoodlabs.net.amt)
+ * 
+ * Copyright © 2010-2012 Cisco Systems, Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- * limitations under the license.
+ * limitations under the License.
  */
 
 package com.larkwoodlabs.net.amt;
@@ -27,52 +31,94 @@ import com.larkwoodlabs.util.buffer.fields.IntegerField;
 import com.larkwoodlabs.util.logging.Logging;
 
 /**
- * An AMT Relay Advertisement Message.
+ * Represents an AMT Relay Advertisement message.
+ * The following description is excerpted from the <a
+ * href="http://tools.ietf.org/html/draft-ietf-mboned-auto-multicast">Automatic Multicast
+ * Tunneling (AMT)</a> specification.
+ * 
  * <pre>
- * 6.2 AMT Relay Advertisement.
+ * 5.1.2.  Relay Advertisement
  * 
- *   The AMT Relay Advertisement message is a UDP packet sent from the AMT relay
- *   anycast address to the source of the discovery message.
+ *    The Relay Advertisement message is used to supply a gateway with a
+ *    unicast IP address of a relay.  A relay sends this message to a
+ *    gateway when it receives a Relay Discovery message from that gateway.
  * 
- *   The UDP source port is the IANA reserved AMT port number and the UDP
- *   destination port is the source port received in the Discovery message. The
- *   UDP checksum MUST be valid in AMT control messages.
+ *    The UDP/IP datagram containing this message MUST carry a valid, non-
+ *    zero UDP checksum and carry the following IP address and UDP port
+ *    values:
  * 
- *   The payload of the UDP packet contains the following fields:
+ *    Source IP Address -  The destination IP address carried by the Relay
+ *       Discovery message (i.e. the Relay Discovery Address advertised by
+ *       the relay).
  * 
- *    0                   1                   2                   3
- *    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
- *   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- *   |     Type=0x2  |     Reserved                                  |
- *   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- *   |            Discovery Nonce                                    |
- *   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- *   |            Relay Address                                      |
- *   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *    Source UDP Port -  The destination UDP port carried by the Relay
+ *       Discovery message (i.e. the IANA-assigned AMT port number).
  * 
- * 6.2.1. Type
+ *    Destination IP Address -  The source IP address carried by the Relay
+ *       Discovery message.  Note: The value of this field may be changed
+ *       as a result of network address translation before arriving at the
+ *       gateway.
  * 
- *   The type of the message.
+ *    Destination UDP Port -  The source UDP port carried by the Relay
+ *       Discovery message.  Note: The value of this field may be changed
+ *       as a result of network address translation before arriving at the
+ *       gateway.
  * 
- * 6.2.2. Reserved
  * 
- *   A 24-bit reserved field. Sent as 0, ignored on receipt.
+ *     0                   1                   2                   3
+ *     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+ *    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *    |  V=0  |Type=2 |                   Reserved                    |
+ *    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *    |                        Discovery Nonce                        |
+ *    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *    |                                                               |
+ *    ~                  Relay Address (IPv4 or IPv6)                 ~
+ *    |                                                               |
+ *    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  * 
- * 6.2.3. Discovery Nonce
+ *                     Relay Advertisement Message Format
  * 
- *   A 32-bit random value generated by the gateway and replayed by the relay.
+ * 5.1.2.1.  Version (V)
  * 
- * 6.2.4. Relay Address
+ *    The protocol version number for this message is 0.
  * 
- *   The unicast IPv4 or IPv6 address of the AMT relay. The family can be
- *   determined by the length of the Advertisement.
+ * 5.1.2.2.  Type
+ * 
+ *    The type number for this message is 2.
+ * 
+ * 5.1.2.3.  Reserved
+ * 
+ *    Reserved bits that MUST be set to zero by the relay and ignored by
+ *    the gateway.
+ * 
+ * 5.1.2.4.  Discovery Nonce
+ * 
+ *    A 32-bit value copied from the Discovery Nonce field
+ *    (Section 5.1.1.4) contained in the Relay Discovery message.  The
+ *    gateway uses this value to match a Relay Advertisement to a Relay
+ *    Discovery message.
+ * 
+ * 5.1.2.5.  Relay Address
+ * 
+ *    The unicast IPv4 or IPv6 address of the relay.  A gateway uses the
+ *    length of the UDP datagram containing the Relay Advertisement message
+ *    to determine the address family; i.e. length - 8 = 4 (IPv4) or 16
+ *    (IPv6).
  * </pre>
+ * 
+ * @author Greg Bumgardner (gbumgard)
  */
-public final class AmtRelayAdvertisementMessage extends AmtMessage {
+public final class AmtRelayAdvertisementMessage
+                extends AmtMessage {
 
     /*-- Inner Classes ------------------------------------------------------*/
 
-    public static class Parser implements AmtMessage.ParserType {
+    /**
+     * An AMT Relay Advertisement message parser/factory.
+     */
+    public static class Parser
+                    implements AmtMessage.ParserType {
 
         @Override
         public AmtMessage parse(ByteBuffer buffer) throws ParseException {
@@ -86,43 +132,52 @@ public final class AmtRelayAdvertisementMessage extends AmtMessage {
 
     }
 
-
     /*-- Static Variables ---------------------------------------------------*/
 
     public static final byte MESSAGE_TYPE = 0x2;
-    public static final int BASE_MESSAGE_LENGTH = 12;
-    public static final int MIN_MESSAGE_LENGTH = 12;
-    public static final int MAX_MESSAGE_LENGTH = 24;
-    
-    public static final IntegerField   DiscoveryNonce = new IntegerField(4);
-    public static final ByteArrayField IPv4RelayAddress = new ByteArrayField(8,4);
-    public static final ByteArrayField IPv6RelayAddress = new ByteArrayField(8,16);
 
+    private static final int BASE_MESSAGE_LENGTH = 12;
+
+    private static final int MIN_MESSAGE_LENGTH = 12;
+
+    private static final int MAX_MESSAGE_LENGTH = 24;
+
+    private static final IntegerField DiscoveryNonce = new IntegerField(4);
+
+    private static final ByteArrayField IPv4RelayAddress = new ByteArrayField(8, 4);
+
+    private static final ByteArrayField IPv6RelayAddress = new ByteArrayField(8, 16);
 
     /*-- Static Functions ---------------------------------------------------*/
 
+    /**
+     * @return A parser that constructs an AmtRelayAdvertisementMessage from the
+     *         contents of a ByteBuffer.
+     */
     public static AmtRelayAdvertisementMessage.Parser constructParser() {
         return new AmtRelayAdvertisementMessage.Parser();
     }
 
-
     /*-- Member Functions ---------------------------------------------------*/
 
     /**
+     * Constructs an instance with the specified discovery nonce and relay address values.
      * 
      * @param discoveryNonce
+     *            An integer nonce value.
      * @param relayAddress
+     *            An InetAddress containing the relay unicast address.
      */
     public AmtRelayAdvertisementMessage(int discoveryNonce, byte[] relayAddress) {
-        super(BASE_MESSAGE_LENGTH + relayAddress.length,MESSAGE_TYPE);
-        
+        super(BASE_MESSAGE_LENGTH + relayAddress.length, MESSAGE_TYPE);
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId,
-                                        "AmtRelayAdvertisementMessage.AmtRelayAdvertisementMessage",
-                                        discoveryNonce,
-                                        Logging.address(relayAddress)));
+                                          "AmtRelayAdvertisementMessage.AmtRelayAdvertisementMessage",
+                                          discoveryNonce,
+                                          Logging.address(relayAddress)));
         }
-        
+
         setDiscoveryNonce(discoveryNonce);
         setRelayAddress(relayAddress);
 
@@ -132,13 +187,18 @@ public final class AmtRelayAdvertisementMessage extends AmtMessage {
     }
 
     /**
+     * Constructs an instance from the contents of a ByteBuffer.
      * 
      * @param buffer
+     *            A ByteBuffer containing a single AMT Relay Advertisement message.
      * @throws ParseException
+     *             The buffer could not be parsed to produce a valid AMT Relay
+     *             Advertisement
+     *             message.
      */
     public AmtRelayAdvertisementMessage(ByteBuffer buffer) throws ParseException {
         super(consume(buffer, buffer.limit() > MIN_MESSAGE_LENGTH ? MAX_MESSAGE_LENGTH : MIN_MESSAGE_LENGTH));
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "AmtRelayAdvertisementMessage.AmtRelayAdvertisementMessage", buffer));
             logState(logger);
@@ -150,14 +210,15 @@ public final class AmtRelayAdvertisementMessage extends AmtMessage {
         super.log(logger);
         logState(logger);
     }
-    
+
     /**
      * Logs value of member variables declared or maintained by this class.
+     * 
      * @param logger
      */
     private void logState(Logger logger) {
-        logger.info(ObjectId + " : discovery-nonce="+getDiscoveryNonce());
-        logger.info(ObjectId + " : relay-address="+Logging.address(getRelayAddress()));
+        logger.info(ObjectId + " : discovery-nonce=" + getDiscoveryNonce());
+        logger.info(ObjectId + " : relay-address=" + Logging.address(getRelayAddress()));
     }
 
     @Override
@@ -171,21 +232,27 @@ public final class AmtRelayAdvertisementMessage extends AmtMessage {
     }
 
     /**
-     * Gets the current value of the Discovery Nonce field.
+     * Gets the discovery nonce field value.
+     * 
+     * @return The integer value of the discovery nonce field.
      */
     public int getDiscoveryNonce() {
         return DiscoveryNonce.get(getBufferInternal());
     }
 
     /**
-     * Sets the value of the Discovery Nonce field.
+     * Sets the discovery nonce field to the specified value.
+     * 
+     * @param discoveryNonce
+     *            An integer nonce value. Typically copied from the
+     *            corresponding field in an {@link AmtRelayDiscoveryMessage}.
      */
     public void setDiscoveryNonce(int discoveryNonce) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "AmtRelayAdvertisementMessage.setDiscoveryNonce", discoveryNonce));
         }
-        
+
         DiscoveryNonce.set(getBufferInternal(), discoveryNonce);
     }
 
@@ -222,12 +289,12 @@ public final class AmtRelayAdvertisementMessage extends AmtMessage {
      *            - an IPv4 address.
      */
     public void setRelayAddress(byte[] relayAddress) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "AmtRelayAdvertisementMessage.setRelayAddress", Logging.address(relayAddress)));
         }
-        
-        //Precondition.checkAddress(relayAddress);
+
+        // Precondition.checkAddress(relayAddress);
         if (relayAddress.length == 4) {
             IPv4RelayAddress.set(getBufferInternal(), relayAddress);
         }

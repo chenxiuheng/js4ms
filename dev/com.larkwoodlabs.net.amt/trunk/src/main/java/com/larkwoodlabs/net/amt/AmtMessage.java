@@ -1,17 +1,21 @@
 /*
- * Copyright © 2009-2010 Larkwood Labs Software.
- *
- * Licensed under the Larkwood Labs Software Source Code License, Version 1.0.
- * You may not use this file except in compliance with this License.
- *
- * You may view the Source Code License at
- * http://www.larkwoodlabs.com/source-license
- *
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * 
+ * File: AmtMessage.java (com.larkwoodlabs.net.amt)
+ * 
+ * Copyright © 2010-2012 Cisco Systems, Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- * limitations under the license.
+ * limitations under the License.
  */
 
 package com.larkwoodlabs.net.amt;
@@ -26,16 +30,34 @@ import com.larkwoodlabs.util.buffer.fields.ByteField;
 import com.larkwoodlabs.util.buffer.fields.SelectorField;
 import com.larkwoodlabs.util.logging.Logging;
 
-public abstract class AmtMessage extends BufferBackedObject implements KeyedApplicationMessage<Byte> {
+/**
+ * Base class for all AMT message classes.
+ * 
+ * @author Greg Bumgardner (gbumgard)
+ */
+public abstract class AmtMessage
+                extends BufferBackedObject
+                implements KeyedApplicationMessage<Byte> {
 
     /*-- Inner Classes ------------------------------------------------------*/
-    
-    public static interface ParserType extends KeyedApplicationMessage.ParserType {
+
+    /**
+     * The parser interface for AMT messages.
+     */
+    public static interface ParserType
+                    extends KeyedApplicationMessage.ParserType {
 
     }
 
-    public static class Parser extends KeyedApplicationMessage.Parser {
+    /**
+     * Base AMT message parser.
+     */
+    public static class Parser
+                    extends KeyedApplicationMessage.Parser {
 
+        /**
+         * 
+         */
         public Parser() {
             super(new SelectorField<Byte>(AmtMessage.MessageType));
         }
@@ -49,11 +71,14 @@ public abstract class AmtMessage extends BufferBackedObject implements KeyedAppl
      */
     public static final Logger logger = Logger.getLogger(AmtMessage.class.getName());
 
-    public static final ByteField MessageType = new ByteField(0); 
-
+    private static final ByteField MessageType = new ByteField(0);
 
     /*-- Static Functions ---------------------------------------------------*/
 
+    /**
+     * @return A parser that constructs an AMT messages object from the contents of a ByteBuffer.
+     * Used to parse messages sent from a relay to a gateway.
+     */
     public final static AmtMessage.Parser constructAmtGatewayParser() {
         AmtMessage.Parser parser = new AmtMessage.Parser();
         parser.add(AmtRelayAdvertisementMessage.constructParser());
@@ -62,6 +87,10 @@ public abstract class AmtMessage extends BufferBackedObject implements KeyedAppl
         return parser;
     }
 
+    /**
+     * @return A parser that constructs an AMT message object from the contents of a ByteBuffer.
+     * Used to parse messages sent from a gateway to a relay.
+     */
     public final static AmtMessage.Parser constructAmtRelayParser() {
         AmtMessage.Parser parser = new AmtMessage.Parser();
         parser.add(AmtRelayDiscoveryMessage.constructParser());
@@ -69,6 +98,9 @@ public abstract class AmtMessage extends BufferBackedObject implements KeyedAppl
         return parser;
     }
 
+    /**
+     * @return A parser that constructs an AMT message object from the contents of a ByteBuffer.
+     */
     public final static AmtMessage.Parser constructAmtMessageParser() {
         AmtMessage.Parser parser = new AmtMessage.Parser();
         parser.add(AmtRelayDiscoveryMessage.constructParser());
@@ -78,31 +110,29 @@ public abstract class AmtMessage extends BufferBackedObject implements KeyedAppl
         parser.add(AmtMulticastDataMessage.constructParser());
         return parser;
     }
-    
 
     /*-- Member Functions ---------------------------------------------------*/
 
     /**
-     * 
-     * @param size
-     * @param type
+     * Constructs an instance with the specified message size and type.
+     * @param size The number of bytes that representing the fixed portion of the message.
+     * @param type The message type.
      */
     protected AmtMessage(final int size, final byte type) {
         super(size);
-        
+
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtMessage.AmtMessage", size,type));
+            logger.finer(Logging.entering(ObjectId, "AmtMessage.AmtMessage", size, type));
         }
-        
+
         setType(type);
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logState(logger);
         }
     }
 
     /**
-     * 
      * @param buffer
      */
     protected AmtMessage(final ByteBuffer buffer) {
@@ -123,32 +153,32 @@ public abstract class AmtMessage extends BufferBackedObject implements KeyedAppl
         super.log(logger);
         logState(logger);
     }
-    
+
     /**
      * Logs value of member variables declared or maintained by this class.
+     * 
      * @param logger
      */
     private void logState(final Logger logger) {
-        logger.info(ObjectId + " : message-length="+getTotalLength());
-        logger.info(ObjectId + " : type="+getType());
+        logger.info(ObjectId + " : message-length=" + getTotalLength());
+        logger.info(ObjectId + " : type=" + getType());
     }
 
     @Override
     public Byte getType() {
         return MessageType.get(getBufferInternal());
     }
-    
+
     /**
-     * 
      * @param type
      */
     protected final void setType(final byte type) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.fine(Logging.entering(ObjectId, "AmtMessage.setType", type));
         }
-        
-        MessageType.set(getBufferInternal(),type);
+
+        MessageType.set(getBufferInternal(), type);
     }
 
     @Override

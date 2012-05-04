@@ -1,17 +1,21 @@
 /*
- * Copyright © 2009-2010 Larkwood Labs Software.
- *
- * Licensed under the Larkwood Labs Software Source Code License, Version 1.0.
- * You may not use this file except in compliance with this License.
- *
- * You may view the Source Code License at
- * http://www.larkwoodlabs.com/source-license
- *
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * 
+ * File: AmtTeardownMessage.java (com.larkwoodlabs.net.amt)
+ * 
+ * Copyright © 2010-2012 Cisco Systems, Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- * limitations under the license.
+ * limitations under the License.
  */
 
 package com.larkwoodlabs.net.amt;
@@ -31,98 +35,137 @@ import com.larkwoodlabs.util.buffer.fields.ShortField;
 import com.larkwoodlabs.util.logging.Logging;
 
 /**
- * An AMT Teardown Message.
+ * Represents an AMT Teardown message.
+ * The following description is excerpted from <a
+ * href="http://tools.ietf.org/html/draft-ietf-mboned-auto-multicast">Automatic Multicast
+ * Tunneling (AMT)</a> specification.
  * 
  * <pre>
- * 6.8. AMT Teardown
+ * 5.1.7.  Teardown
  * 
- *    An AMT Teardown is sent by a Gateway after a valid Response MAC has
- *    been received and after the source address that was used to generate
- *    the Response MAC is no longer available for sending packets.
+ *    A gateway sends a Teardown message to a relay to request that it stop
+ *    sending Multicast Data messages to a tunnel endpoint created by an
+ *    earlier Membership Update message.  A gateway sends this message when
+ *    it detects that a Request message sent to the relay carries an
+ *    address that differs from that carried by a previous Request message.
+ *    The gateway uses the Gateway IP Address and Gateway Port Number
+ *    Fields in the Membership Query message to detect these address
+ *    changes.
  * 
- *    It is sent to the source address received in the original Query which
- *    should be the same as the original Request.
+ *    To provide backwards compatibility with early implementations of the
+ *    AMT protocol, support for this message and associated procedures is
+ *    considered OPTIONAL - gateways are not required to send this message
+ *    and relays are not required to act upon it.
  * 
- *    The UDP destination port number should be the same one sent in the
- *    original Request.
+ *    The UDP/IP datagram containing this message MUST carry a valid, non-
+ *    zero UDP checksum and carry the following IP address and UDP port
+ *    values:
  * 
- *    An AMT Teardown from the original source address and source port is
- *    NOT valid and should be discarded if received.  Use an AMT Membership
- *    Update instead.
+ *    Source IP Address -  The IP address of the gateway interface used to
+ *       send the message.  This address may differ from that used to send
+ *       earlier messages.  Note: The value of this field may be changed as
+ *       a result of network address translation before arriving at the
+ *       relay.
  * 
- *    In order for the Relay to verify the Teardown message, this message
- *    must contain the original source address and source port in addition
- *    to the Original Request Nonce and Original Response MAC.  In
- *    situations where NAT is used, this information can be known by the
- *    Gateway thanks to the optional Gateway information fields in the
- *    Query message (Section 6.5.6).  Hence, a Relay supporting the
- *    Teardown mechanism SHOULD include the Gateway information fields in
- *    the Query messages it sends.
+ *    Source UDP Port -  The UDP port number.  This port number may differ
+ *       from that used to send earlier messages.  Note: The value of this
+ *       field may be changed as a result of network address translation
+ *       before arriving at the relay.
  * 
- *    On reception of a valid Teardown message, a Relay should remove all
- *    state corresponding to the gateway identified by the (original source
- *    address, original source port) tuple, and stop forwarding all traffic
- *    to this destination.
+ *    Destination IP Address -  The unicast IP address of the relay.
+ * 
+ *    Destination UDP Port -  The IANA-assigned AMT port number.
  * 
  *     0                   1                   2                   3
  *     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
  *    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- *    |     Type=0x7  |    Reserved   |    Original Response MAC      |
+ *    |  V=0  |Type=7 |  Reserved     |         Response MAC          |
+ *    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               +
+ *    |                                                               |
  *    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- *    |            Original Response MAC (continued)                  |
+ *    |                         Request Nonce                         |
  *    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- *    |            Original Request Nonce                             |
- *    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- *    |     Original Source Port      |  Original Source Address ...  |
- *    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- *    |                  Original Source Address (ctd) ...            |
- *    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- *    |             ...  Original Source Address (ctd) ...            |
- *    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- *    |             ...  Original Source Address (ctd) ...            |
- *    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- *    | ... Original Src Addr. (ctd)  |
+ *    |     Gateway Port Number       |                               |
+ *    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               +
+ *    |                                                               |
+ *    +                                                               +
+ *    |              Gateway IP Address (IPv4 or IPv6)                |
+ *    +                                                               +
+ *    |                                                               |
+ *    +                               +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *    |                               |
  *    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  * 
+ *                     Membership Teardown Message Format
  * 
- * 6.8.1. Type
+ * 5.1.7.1.  Version (V)
  * 
- *    The type of the message.
+ *    The protocol version number for this message is 0.
  * 
- * 6.8.2. Reserved
+ * 5.1.7.2.  Type
  * 
- *    A 8-bit reserved field.  Sent as 0, ignored on receipt.
+ *    The type number for this message is 7.
  * 
- * 6.8.3. Original Response MAC
+ * 5.1.7.3.  Reserved
  * 
- *    The 48-bit MAC received in the Membership Query.
+ *    Reserved bits that MUST be set to zero by the gateway and ignored by
+ *    the relay.
  * 
- * 6.8.4. Original Request Nonce
+ * 5.1.7.4.  Response MAC
  * 
- *    A 32-bit identifier corresponding to the original Request.
+ *    A 48-bit value copied from the Response MAC field (Section 5.1.4.6)
+ *    in the last Membership Query message the relay sent to the gateway
+ *    endpoint address of the tunnel to be torn down.  The gateway endpoint
+ *    address is provided by the Gateway IP Address and Gateway Port Number
+ *    fields carried by the Membership Query message.
  * 
- * 6.8.5. Original Source Port
+ * 5.1.7.5.  Request Nonce
  * 
- *    The 16-bit port number used in the original AMT Request message that
- *    was used to generate the Original Response MAC.
+ *    A 32-bit value copied from the Request Nonce field (Section 5.1.4.7)
+ *    in the last Membership Query message the relay sent to the gateway
+ *    endpoint address of the tunnel to be torn down.  The gateway endpoint
+ *    address is provided by the Gateway IP Address and Gateway Port Number
+ *    fields carried by the Membership Query message.  This value must
+ *    match that used by the relay to compute the value stored in the
+ *    Response MAC field.
  * 
- * 6.8.6. Original Source Address
+ * 5.1.7.6.  Gateway Port Number
  * 
- *    A 16-byte field containing the IP source address used in the original
- *    AMT Request message that was used to generate the Original Response
- *    MAC of the Request message that triggered this Query message.  The
- *    field contains an IPv4-compatible IPv6 address ([RFC4291], section
- *    2.5.5.1) if the address is an IPv4 address (i.e. the IPv4 address
- *    prefixed with 96 bits set to zero), or an IPv6 address.
+ *    A 16-bit UDP port number that, when combined with the value contained
+ *    in the Gateway IP Address field, forms the tunnel endpoint address
+ *    that the relay will use to identify the tunnel instance to tear down.
+ *    The relay provides this value to the gateway using the Gateway Port
+ *    Number field (Section 5.1.4.9.1) in a Membership Query message.  This
+ *    port number must match that used by the relay to compute the value
+ *    stored in the Response MAC field.
+ * 
+ * 5.1.7.7.  Gateway IP Address
+ * 
+ *    A 16-byte IP address that, when combined with the value contained in
+ *    the Gateway Port Number field, forms the tunnel endpoint address that
+ *    the relay will used to identify the tunnel instance to tear down.
+ *    The relay provides this value to the gateway using the Gateway IP
+ *    Address field (Section 5.1.4.9.2) in a Membership Query message.
+ *    This field may contain an IPv6 address or an IPv4 address stored as
+ *    an IPv4-compatible IPv6 address, where the IPv4 address is prefixed
+ *    with 96 bits set to zero (See [RFC4291]).  This address must match
+ *    that used by the relay to compute the value stored in the Response
+ *    MAC field.
+ * 
  * </pre>
  * 
- * @author Gregory Bumgardner
+ * @author Greg Bumgardner (gbumgard)
  */
-public final class AmtTeardownMessage extends AmtMessage {
+public final class AmtTeardownMessage
+                extends AmtMessage {
 
     /*-- Inner Classes ------------------------------------------------------*/
 
-    public static class Parser implements AmtMessage.ParserType {
+    /**
+     * An AMT Teardown message parser.
+     */
+    public static class Parser
+                    implements AmtMessage.ParserType {
 
         @Override
         public AmtTeardownMessage parse(ByteBuffer buffer) throws ParseException {
@@ -136,43 +179,59 @@ public final class AmtTeardownMessage extends AmtMessage {
 
     }
 
-
     /*-- Static Variables ---------------------------------------------------*/
 
     public static final byte MESSAGE_TYPE = 0x7;
-    public static final int MESSAGE_LENGTH = 30;
 
-    public static final ByteField       Reserved = new ByteField(1);
-    public static final ByteArrayField  ResponseMac = new ByteArrayField(2,6);
-    public static final IntegerField    RequestNonce = new IntegerField(8);
-    public static final ShortField      GatewayPort = new ShortField(12);
-    public static final ByteArrayField  GatewayAddress = new ByteArrayField(14,16);
- 
-    
+    private static final int MESSAGE_LENGTH = 30;
+
+    @SuppressWarnings("unused")
+    private static final ByteField Reserved = new ByteField(1);
+
+    private static final ByteArrayField ResponseMac = new ByteArrayField(2, 6);
+
+    private static final IntegerField RequestNonce = new IntegerField(8);
+
+    private static final ShortField GatewayPort = new ShortField(12);
+
+    private static final ByteArrayField GatewayAddress = new ByteArrayField(14, 16);
+
     /*-- Static Functions ---------------------------------------------------*/
-    
-     public static AmtTeardownMessage.Parser constructParser() {
+
+    /**
+     * @return A parser that constructs an AmtTeardownMessage object from the contents
+     *         of a ByteBuffer.
+     */
+    public static AmtTeardownMessage.Parser constructParser() {
         AmtTeardownMessage.Parser parser = new AmtTeardownMessage.Parser();
         return parser;
     }
 
     /*-- Member Functions---------------------------------------------------*/
-    
+
     /**
+     * Constructs an instance using the specified values to initialize the
+     * corresponding message fields.
      * 
      * @param responseMac
+     *            A 6-byte array containing a response MAC.
      * @param requestNonce
-     * @param updatePacket
+     *            An integer request nonce value.
+     * @param gatewayAddress
+     *            An InetSocketAddress object containing the
+     *            gateway IP address and UDP port number values.
      */
-    public AmtTeardownMessage(final byte[] responseMac, final int requestNonce, final InetSocketAddress gatewayAddress) {
+    public AmtTeardownMessage(final byte[] responseMac,
+                              final int requestNonce,
+                              final InetSocketAddress gatewayAddress) {
         super(MESSAGE_LENGTH, MESSAGE_TYPE);
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId,
-                                        "AmtTeardownMessage.AmtTeardownMessage",
-                                        Logging.mac(responseMac),
-                                        requestNonce,
-                                        Logging.address(gatewayAddress)));
+                                          "AmtTeardownMessage.AmtTeardownMessage",
+                                          Logging.mac(responseMac),
+                                          requestNonce,
+                                          Logging.address(gatewayAddress)));
         }
 
         setResponseMac(responseMac);
@@ -185,13 +244,17 @@ public final class AmtTeardownMessage extends AmtMessage {
     }
 
     /**
+     * Constructs an instance from the contents of a ByteBuffer.
      * 
      * @param buffer
+     *            A ByteBuffer containing a single AMT Teardown message.
      * @throws ParseException
+     *             The buffer could not be parsed to produce a valid AMT Teardown
+     *             message.
      */
     public AmtTeardownMessage(final ByteBuffer buffer) throws ParseException {
         super(consume(buffer, MESSAGE_LENGTH));
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "AmtTeardownMessage.AmtTeardownMessage", buffer));
             logState(logger);
@@ -206,12 +269,14 @@ public final class AmtTeardownMessage extends AmtMessage {
 
     /**
      * Logs value of member variables declared or maintained by this class.
+     * 
      * @param logger
+     *            The logger that will be used to generate the log messages.
      */
     private void logState(final Logger logger) {
-        logger.info(ObjectId + " : response-MAC="+Logging.mac(getResponseMac()));
-        logger.info(ObjectId + " : request-nonce="+getRequestNonce());
-        logger.info(ObjectId + " : gateway-address="+Logging.address(getGatewayAddress()));
+        logger.info(ObjectId + " : response-MAC=" + Logging.mac(getResponseMac()));
+        logger.info(ObjectId + " : request-nonce=" + getRequestNonce());
+        logger.info(ObjectId + " : gateway-address=" + Logging.address(getGatewayAddress()));
     }
 
     @Override
@@ -220,82 +285,96 @@ public final class AmtTeardownMessage extends AmtMessage {
     }
 
     /**
+     * Gets the response MAC field value.
      * 
-     * @return
+     * @return A 6-byte array containing the 48-bit response MAC field value.
      */
     public byte[] getResponseMac() {
         return ResponseMac.get(getBufferInternal());
     }
-    
+
     /**
+     * Sets the response MAC field value.
      * 
      * @param responseMac
+     *            A 6-byte array containing a 48-bit MAC value.
      */
     public void setResponseMac(final byte[] responseMac) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId,"AmtTeardownMessage.setResponseMac", Logging.mac(responseMac)));
+            logger.finer(Logging.entering(ObjectId, "AmtTeardownMessage.setResponseMac", Logging.mac(responseMac)));
         }
-        
-        ResponseMac.set(getBufferInternal(),responseMac);
+
+        ResponseMac.set(getBufferInternal(), responseMac);
     }
-    
+
     /**
+     * Gets the request nonce field value.
      * 
-     * @return
+     * @return The integer value of the request nonce field.
      */
     public int getRequestNonce() {
         return RequestNonce.get(getBufferInternal());
     }
-    
+
     /**
+     * Sets the request nonce field to the specified value.
      * 
      * @param requestNonce
+     *            An integer nonce value. Typically copied from the
+     *            corresponding field in an {@link AmtRequestMessage} or
+     *            {@link AmtMembershipQueryMessage}.
      */
     public void setRequestNonce(final int requestNonce) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "AmtTeardownMessage.setRequestNonce", requestNonce));
         }
-        
-        RequestNonce.set(getBufferInternal(),requestNonce);
+
+        RequestNonce.set(getBufferInternal(), requestNonce);
     }
 
     /**
+     * Gets the gateway IP address and UDP port number field values.
      * 
-     * @return
+     * @return An InetSocketAddress object containing the gateway IP Address and UDP port
+     *         field values.
      */
     public InetSocketAddress getGatewayAddress() {
         try {
-            return new InetSocketAddress(InetAddress.getByAddress(GatewayAddress.get(getBufferInternal())),GatewayPort.get(getBufferInternal()));
+            return new InetSocketAddress(InetAddress.getByAddress(GatewayAddress.get(getBufferInternal())),
+                                         GatewayPort.get(getBufferInternal()));
         }
         catch (UnknownHostException e) {
             e.printStackTrace();
             return null;
         }
     }
-    
+
     /**
+     * Sets the gateway IP address and and UDP port number field values.
      * 
      * @param gatewayAddress
+     *            An InetSocketAddress object containing the gateway IP Address and UDP
+     *            port number.
      */
     public void setGatewayAddress(final InetSocketAddress gatewayAddress) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "AmtTeardownMessage.setGatewayAddress", gatewayAddress));
         }
 
-        short port = (short)gatewayAddress.getPort();
+        short port = (short) gatewayAddress.getPort();
         GatewayPort.set(getBufferInternal(), port);
 
         byte[] address = gatewayAddress.getAddress().getAddress();
         if (address.length == 4) {
             byte[] ipv6Address = new byte[16];
-            for (int i=0;i<4;i++) {
-                ipv6Address[i+12] = address[i];
+            for (int i = 0; i < 4; i++) {
+                ipv6Address[i + 12] = address[i];
             }
             address = ipv6Address;
         }
-        GatewayAddress.set(getBufferInternal(),address);
+        GatewayAddress.set(getBufferInternal(), address);
     }
 }
