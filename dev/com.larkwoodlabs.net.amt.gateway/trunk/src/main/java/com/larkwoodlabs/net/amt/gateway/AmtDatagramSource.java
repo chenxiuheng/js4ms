@@ -33,9 +33,11 @@ import com.larkwoodlabs.net.udp.UdpDatagram;
 import com.larkwoodlabs.util.logging.Log;
 
 /**
- * A {@link MessageSource} that constructs an AMT multicast endpoint to receive datagrams
- * sent to an ASM or SSM destination address and port and forwards those datagrams
- * to an {@link OutputChannel} instance.
+ * A {@link MessageSource} that constructs an AMT multicast endpoint to forward datagrams
+ * sent to a specific port and one or more any-source or source-specific addresses.
+ * The multicast group and source addresses are specified when an instance is constructed
+ * using a {@link SourceFilter} object.
+ * <p>
  * Forwarding can be enabled or disabled using the {@link #start()} and {@link #stop()}
  * methods.
  * 
@@ -64,7 +66,8 @@ public class AmtDatagramSource
      * @param sourceFilter
      *            A source filter that identifies the any-source multicast (ASM)
      *            or source-specific multicast (SSM) destination address and
-     *            source host address(es) of the UDP datagrams.
+     *            source host address(es) of the UDP datagrams. The source
+     *            filter mode in each group record is ignored (assumed to be INCLUDE).
      * @param outputChannel
      *            The channel that will receive datagrams as they arrive.
      * @throws IOException
@@ -91,7 +94,8 @@ public class AmtDatagramSource
      * @param sourceFilter
      *            A source filter that identifies the any-source multicast (ASM)
      *            or source-specific multicast (SSM) destination address and
-     *            source host address(es) of the UDP datagrams.
+     *            source host address(es) of the UDP datagrams. The source
+     *            filter mode in each group record is ignored (assumed to be INCLUDE).
      * @param relayDiscoveryAddress
      *            The anycast or unicast address used to locate an AMT relay.
      * @param outputChannel

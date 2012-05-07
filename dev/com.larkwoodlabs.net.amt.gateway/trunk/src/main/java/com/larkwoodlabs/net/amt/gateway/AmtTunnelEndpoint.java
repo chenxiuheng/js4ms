@@ -49,12 +49,18 @@ import com.larkwoodlabs.net.udp.UdpOutputChannel;
 import com.larkwoodlabs.net.udp.UdpSocketEndpoint;
 import com.larkwoodlabs.util.logging.Logging;
 
+/**
+ * 
+ * 
+ *
+ * @author Greg Bumgardner (gbumgard)
+ */
 public final class AmtTunnelEndpoint implements Runnable {
 
         /*-- Static Variables ---------------------------------------------------*/
     
     /**
-     * The static {@link Logger} instance for this class.
+     * The static logger instance for this class.
      */
     public static final Logger logger = Logger.getLogger(AmtTunnelEndpoint.class.getName());
 

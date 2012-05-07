@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.InetAddress;
 import java.net.Inet4Address;
-import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,35 +34,48 @@ import com.larkwoodlabs.net.udp.MulticastEndpoint;
 import com.larkwoodlabs.net.udp.UdpDatagram;
 import com.larkwoodlabs.util.logging.Logging;
 
-public final class AmtMulticastEndpoint implements MulticastEndpoint {
-
+/**
+ * A {@link MulticastEndpoint} that uses AMT to request and receive multicast
+ * datagrams sent to a specific multicast group address and UDP port number.
+ * The endpoint provides "push" and "pull" methods for datagram delivery.
+ * If an {@link OutputChannel} is attached to the endpoint, incoming datagrams
+ * are pushed into the output channel as they arrive. If no output channel is
+ * provided, the incoming datagrams are queued internally and retrieved by calling
+ * the {@link #receive(int)} method.
+ * <p>
+ * A single multicast endpoint may be used to join both IPv4 and IPv6 multicast groups
+ * irrespective of the relay discovery address used.
+ * 
+ * @author Greg Bumgardner (gbumgard)
+ */
+public final class AmtMulticastEndpoint
+                implements MulticastEndpoint {
 
     /*-- Static Variables ---------------------------------------------------*/
 
+    /**
+     * That static logger used to trace member function calls in this class.
+     */
     public static final Logger logger = Logger.getLogger(AmtMulticastEndpoint.class.getName());
-
-
-    /*-- Static Functions ---------------------------------------------------*/
-
-    public static InetAddress getWildcardAddress() {
-        try {
-            return InetAddress.getByAddress(new byte[4]);
-        } catch (UnknownHostException e) {
-            throw new Error(e);
-        }
-    }
 
     /*-- Member Variables ---------------------------------------------------*/
 
     private final String ObjectId = Logging.identify(this);
-    
+
+    /**
+     * AMT interface used to handle joins on IPv4 group addresses.
+     */
     private AmtInterface amtIpv4Interface = null;
+
+    /**
+     * AMT interface used to handle joins on IPv6 group addresses.
+     */
     private AmtInterface amtIpv6Interface = null;
 
     private final int port;
 
     private final InetAddress relayDiscoveryAddress;
-    
+
     /**
      * This is the channel that the AMT interface will push datagrams into.
      * This channel may be constructed externally or internally.
@@ -75,71 +87,94 @@ public final class AmtMulticastEndpoint implements MulticastEndpoint {
      * The size of the internal buffer is set in the constructor.
      */
     private OutputChannel<UdpDatagram> pushChannel;
-    
+
+    /**
+     * The queue used to buffer datagrams. Not used if a push channel is used.
+     */
     private MessageQueue<UdpDatagram> datagramQueue = null;
-    
 
     /*-- Member Functions ---------------------------------------------------*/
 
     /**
+     * Constructs an instance bound that buffers incoming UDP datagrams in
+     * an internal queue that can be read using the {@link #receive(int)} method.
      * 
      * @param port
+     *            The endpoint will forward datagrams sent to this port number.
+     *            Additional port numbers may be included by calling an appropriate join
+     *            method, e.g. {@link #join(InetAddress, int)}.
      * @param bufferCapacity
-     * @throws IOException
+     *            The desired internal queue size.
      */
     public AmtMulticastEndpoint(final int port,
-                                final int bufferCapacity) throws IOException {
+                                final int bufferCapacity) {
         this(port, AmtInterfaceManager.getDefaultRelayDiscoveryAddress(), bufferCapacity);
     }
-    
+
     /**
-     * 
      * @param port
+     *            The endpoint will receive datagrams sent to this port number.
+     *            Additional port numbers may be included by calling an appropriate join
+     *            method,
+     *            e.g. {@link #join(InetAddress, int)}.
      * @param pushChannel
-     * @throws IOException
+     *            The endpoint will send incoming datagrams to this channel.
      */
     public AmtMulticastEndpoint(final int port,
-                                final OutputChannel<UdpDatagram> pushChannel) throws IOException {
+                                final OutputChannel<UdpDatagram> pushChannel) {
         this(port, AmtInterfaceManager.getDefaultRelayDiscoveryAddress(), pushChannel);
     }
-    
+
     /**
-     * 
      * @param port
+     *            The endpoint will forward datagrams sent to this port number.
+     *            Additional port numbers may be included by calling an appropriate join
+     *            method, e.g. {@link #join(InetAddress, int)}.
      * @param relayDiscoveryAddress
+     *            The address (anycast or unicast) that the endpoint will use to
+     *            locate an AMT relay that can be used to join specific multicast
+     *            group(s).
      * @param bufferCapacity
-     * @throws IOException
      */
     public AmtMulticastEndpoint(final int port,
                                 final InetAddress relayDiscoveryAddress,
-                                final int bufferCapacity) throws IOException {
+                                final int bufferCapacity) {
         this(port, relayDiscoveryAddress);
         this.datagramQueue = new MessageQueue<UdpDatagram>(bufferCapacity);
         this.pushChannel = new OutputChannelPipe<UdpDatagram>(this.datagramQueue);
     }
-    
+
     /**
-     * 
      * @param port
+     *            The endpoint will forward datagrams sent to this port number.
+     *            Additional port numbers may be included by calling an appropriate join
+     *            method, e.g. {@link #join(InetAddress, int)}.
      * @param relayDiscoveryAddress
+     *            The address (anycast or unicast) that the endpoint will use to
+     *            locate an AMT relay that can be used to join specific multicast
+     *            group(s).
      * @param pushChannel
-     * @throws IOException
      */
     public AmtMulticastEndpoint(final int port,
                                 final InetAddress relayDiscoveryAddress,
-                                final OutputChannel<UdpDatagram> pushChannel) throws IOException {
+                                final OutputChannel<UdpDatagram> pushChannel) {
         this(port, relayDiscoveryAddress);
-        this.pushChannel = pushChannel; // TODO wrap channel to intercept exceptions so channel can leave AMT interface
+        this.pushChannel = pushChannel; // TODO wrap channel to intercept exceptions so
+                                        // channel can leave AMT interface
     }
 
     /**
-     * 
      * @param port
+     *            The endpoint will forward datagrams sent to this port number.
+     *            Additional port numbers may be included by calling an appropriate join
+     *            method, e.g. {@link #join(InetAddress, int)}.
      * @param relayDiscoveryAddress
-     * @throws IOException
+     *            The address (anycast or unicast) that the endpoint will use to
+     *            locate an AMT relay that can be used to join specific multicast
+     *            group(s).
      */
     protected AmtMulticastEndpoint(final int port,
-                                   final InetAddress relayDiscoveryAddress) throws IOException {
+                                   final InetAddress relayDiscoveryAddress) {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId,
@@ -153,9 +188,13 @@ public final class AmtMulticastEndpoint implements MulticastEndpoint {
     }
 
     /**
+     * Closes the endpoint.
      * 
      * @throws IOException
+     *             The AMT interface(s) used by this endpoint has reported an I/O error.
      * @throws InterruptedException
+     *             The calling thread was interrupted while waiting for the
+     *             underlying AMT interface to complete an operation.
      */
     public final void close() throws IOException, InterruptedException {
 
@@ -175,16 +214,18 @@ public final class AmtMulticastEndpoint implements MulticastEndpoint {
     }
 
     /**
+     * Gets the UDP port number assigned to the endpoint when it was constructed.
      * 
-     * @return
+     * @return An integer port number in the range 0-32767.
      */
     public final int getPort() {
         return this.port;
     }
 
     /**
+     * Gets the relay discovery address assigned to the endpoint when it was constructed.
      * 
-     * @return
+     * @return An IPv4 or IPv6 address.
      */
     public final InetAddress getRelayDiscoveryAddress() {
         return this.relayDiscoveryAddress;
@@ -226,18 +267,19 @@ public final class AmtMulticastEndpoint implements MulticastEndpoint {
     public final void join(final InetAddress groupAddress, final InetAddress sourceAddress) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtMulticastEndpoint.join", Logging.address(groupAddress), Logging.address(sourceAddress)));
+            logger.finer(Logging.entering(ObjectId, "AmtMulticastEndpoint.join", Logging.address(groupAddress),
+                                          Logging.address(sourceAddress)));
         }
 
         join(groupAddress, sourceAddress, this.port);
     }
 
-
     @Override
     public final void join(final InetAddress groupAddress, final InetAddress sourceAddress, final int port) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtMulticastEndpoint.join", Logging.address(groupAddress), Logging.address(sourceAddress), port));
+            logger.finer(Logging.entering(ObjectId, "AmtMulticastEndpoint.join", Logging.address(groupAddress),
+                                          Logging.address(sourceAddress), port));
         }
 
         if (groupAddress instanceof Inet4Address) {
@@ -277,7 +319,8 @@ public final class AmtMulticastEndpoint implements MulticastEndpoint {
     public final void leave(final InetAddress groupAddress, final InetAddress sourceAddress) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtMulticastEndpoint.leave", Logging.address(groupAddress), Logging.address(sourceAddress)));
+            logger.finer(Logging.entering(ObjectId, "AmtMulticastEndpoint.leave", Logging.address(groupAddress),
+                                          Logging.address(sourceAddress)));
         }
 
         leave(groupAddress, sourceAddress, this.port);
@@ -306,7 +349,8 @@ public final class AmtMulticastEndpoint implements MulticastEndpoint {
     public final void leave(final InetAddress groupAddress, final InetAddress sourceAddress, final int port) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtMulticastEndpoint.join", Logging.address(groupAddress), Logging.address(sourceAddress), port));
+            logger.finer(Logging.entering(ObjectId, "AmtMulticastEndpoint.join", Logging.address(groupAddress),
+                                          Logging.address(sourceAddress), port));
         }
 
         if (groupAddress instanceof Inet4Address) {

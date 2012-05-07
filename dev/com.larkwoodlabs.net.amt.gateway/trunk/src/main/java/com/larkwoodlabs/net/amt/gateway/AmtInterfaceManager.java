@@ -38,7 +38,7 @@ import com.larkwoodlabs.util.logging.Logging;
  * {@link #getInterface(InetAddress)} to obtain an interface.
  * The interface manager maintains separate collections for IPv4 and IPv6 interfaces.
  * The AmtInterfaceManager and AmtInterface classes are not normally accessed directly -
- * applications should use the {@link AmtMulticastEndpoint)} class if AMT functionality
+ * applications should use the {@link AmtMulticastEndpoint)} class when AMT functionality
  * is required.
  * 
  * @author Gregory Bumgardner (gbumgard)

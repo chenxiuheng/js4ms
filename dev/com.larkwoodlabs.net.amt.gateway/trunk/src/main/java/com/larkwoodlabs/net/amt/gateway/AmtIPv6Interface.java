@@ -34,7 +34,7 @@ import com.larkwoodlabs.net.ip.IPPacket;
 import com.larkwoodlabs.util.logging.Logging;
 
 /**
- * Manages an IPv6 AMT tunnel end-point.
+ * An {@link AmtInterface} that manages an IPv6/MLD AMT tunnel end-point.
  * The {@link AmtInterfaceManager} constructs a separate AmtIPv6Interface for each unique
  * AMT relay or AMT gateway peer acting as a remote IPv6 AMT tunnel end-point.
  * An AmtIPv6Interface provides functions for joining, leaving and receiving packets

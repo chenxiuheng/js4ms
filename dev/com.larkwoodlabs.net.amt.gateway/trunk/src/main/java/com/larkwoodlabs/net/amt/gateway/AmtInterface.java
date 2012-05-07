@@ -33,9 +33,9 @@ import com.larkwoodlabs.net.udp.UdpDatagram;
 import com.larkwoodlabs.util.logging.Logging;
 
 /**
- * Base class that manages an AMT tunnel end-point.
+ * Manages an AMT tunnel end-point.
  * The {@link AmtInterfaceManager} constructs a separate AMT interface for each unique
- * AMT relay or AMT gateway peer acting as a remote AMT tunnel end-point.
+ * AMT relay acting as a remote AMT tunnel end-point.
  * An AmtInterface provides functions for joining, leaving and receiving packets
  * for any number of multicast groups. The AmtInterface tracks local group
  * membership state and handles the exchange of IGMP/MLD messages used
@@ -88,8 +88,8 @@ public abstract class AmtInterface {
         this.tunnelEndpoint = new AmtTunnelEndpoint(this, relayDiscoveryAddress, this.taskTimer);
         this.interfaceManager = new InterfaceMembershipManager(this.taskTimer, this.tunnelEndpoint);
 
-        // Connect a channel membership state manager to the interface membership state
-        // manager
+        // Connect a channel membership state manager to the 
+        // interface membership state manager
         this.channelManager = new ChannelMembershipManager(this.interfaceManager);
 
         this.tunnelEndpoint.setIncomingDataChannel(
@@ -101,7 +101,8 @@ public abstract class AmtInterface {
     }
 
     /**
-     * @return
+     * Gets the Relay Discovery Address associated with this interface.
+     * @return An InetAddress object containing the Relay Discovery Address
      */
     public final InetAddress getRelayDiscoveryAddress() {
         return this.relayDiscoveryAddress;
