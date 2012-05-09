@@ -23,20 +23,13 @@ package com.larkwoodlabs.net.amt.gateway;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import com.larkwoodlabs.channels.OutputChannelTransform;
 import com.larkwoodlabs.net.amt.IPv4MembershipQueryTransform;
 import com.larkwoodlabs.net.amt.IPv4MembershipReportTransform;
-import com.larkwoodlabs.net.amt.MembershipQuery;
-import com.larkwoodlabs.net.amt.MembershipReport;
-import com.larkwoodlabs.net.ip.IPPacket;
 import com.larkwoodlabs.util.logging.Logging;
 
 /**
- * An {@link AmtInterface} that manages an IPv4/IGMP AMT tunnel end-point.
- * The {@link AmtInterfaceManager} constructs a separate AmtIPv4Interface for each unique
- * AMT relay or AMT gateway peer acting as a remote IPv4 AMT tunnel end-point.
+ * An {@link AmtIPInterface} that manages an IPv4/IGMP AMT tunnel end-point.
  * An AmtIPv4Interface provides functions for joining, leaving and receiving packets
  * for any number of IPv4 multicast groups. The AmtIPv4Interface tracks local group
  * membership state and handles the exchange of IGMP messages used
@@ -45,15 +38,7 @@ import com.larkwoodlabs.util.logging.Logging;
  * @author Greg Bumgardner (gbumgard)
  */
 public final class AmtIPv4Interface
-                extends AmtInterface {
-
-    /*-- Static Variables ----------------------------------------------------*/
-
-    public static final Logger logger = Logger.getLogger(AmtIPv4Interface.class.getName());
-
-    /*-- Member Variables ---------------------------------------------------*/
-
-    private final String ObjectId = Logging.identify(this);
+                extends AmtIPInterface {
 
     /*-- Member Functions ---------------------------------------------------*/
 
@@ -62,27 +47,16 @@ public final class AmtIPv4Interface
      * @param relayDiscoveryAddress
      * @throws IOException
      */
-    public AmtIPv4Interface(final AmtInterfaceManager manager, final InetAddress relayDiscoveryAddress) throws IOException {
-        super(manager, relayDiscoveryAddress);
+    public AmtIPv4Interface(final InetAddress relayDiscoveryAddress) throws IOException {
+        super(relayDiscoveryAddress,
+              new IPv4MembershipQueryTransform(),
+              new IPv4MembershipReportTransform());
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtIPv4Interface.AmtIPv4Interface", manager,
+            logger.finer(Logging.entering(ObjectId, "AmtIPv4Interface.AmtIPv4Interface",
                                           Logging.address(relayDiscoveryAddress)));
         }
 
-        // Connect report channel of interface membership manager to tunnel endpoint
-        this.interfaceManager.setOutgoingReportChannel(
-                        new OutputChannelTransform<MembershipReport, IPPacket>(
-                                                                               this.tunnelEndpoint.getOutgoingUpdateChannel(),
-                                                                               new IPv4MembershipReportTransform()));
-
-        // Connect query channel of tunnel endpoint to interface membership manager
-        this.tunnelEndpoint.setIncomingQueryChannel(
-                        new OutputChannelTransform<IPPacket, MembershipQuery>(
-                                                                              this.interfaceManager.getIncomingQueryChannel(),
-                                                                              new IPv4MembershipQueryTransform()));
-
-        this.tunnelEndpoint.start();
     }
 
 }

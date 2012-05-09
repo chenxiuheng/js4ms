@@ -23,7 +23,6 @@ package com.larkwoodlabs.net.amt.gateway;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.InetAddress;
-import java.net.Inet4Address;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -65,12 +64,7 @@ public final class AmtMulticastEndpoint
     /**
      * AMT interface used to handle joins on IPv4 group addresses.
      */
-    private AmtInterface amtIpv4Interface = null;
-
-    /**
-     * AMT interface used to handle joins on IPv6 group addresses.
-     */
-    private AmtInterface amtIpv6Interface = null;
+    private AmtInterface amtInterface = null;
 
     private final int port;
 
@@ -202,14 +196,9 @@ public final class AmtMulticastEndpoint
             logger.finer(Logging.entering(ObjectId, "AmtMulticastEndpoint.onClose"));
         }
 
-        if (this.amtIpv4Interface != null) {
-            this.amtIpv4Interface.leave(this.pushChannel);
-            this.amtIpv4Interface.release();
-        }
-
-        if (this.amtIpv6Interface != null) {
-            this.amtIpv6Interface.leave(this.pushChannel);
-            this.amtIpv6Interface.release();
+        if (this.amtInterface != null) {
+            this.amtInterface.leave(this.pushChannel);
+            this.amtInterface.release();
         }
     }
 
@@ -249,18 +238,10 @@ public final class AmtMulticastEndpoint
             logger.finer(Logging.entering(ObjectId, "AmtMulticastEndpoint.join", Logging.address(groupAddress), port));
         }
 
-        if (groupAddress instanceof Inet4Address) {
-            if (this.amtIpv4Interface == null) {
-                this.amtIpv4Interface = AmtInterfaceManager.getInstance().getIPv4Interface(this.relayDiscoveryAddress);
-            }
-            this.amtIpv4Interface.join(this.pushChannel, groupAddress, port);
+        if (this.amtInterface == null) {
+            this.amtInterface = AmtInterfaceManager.getInstance().getInterface(this.relayDiscoveryAddress);
         }
-        else {
-            if (this.amtIpv6Interface == null) {
-                this.amtIpv6Interface = AmtInterfaceManager.getInstance().getIPv6Interface(this.relayDiscoveryAddress);
-            }
-            this.amtIpv6Interface.join(this.pushChannel, groupAddress, port);
-        }
+        this.amtInterface.join(this.pushChannel, groupAddress, port);
     }
 
     @Override
@@ -282,18 +263,10 @@ public final class AmtMulticastEndpoint
                                           Logging.address(sourceAddress), port));
         }
 
-        if (groupAddress instanceof Inet4Address) {
-            if (this.amtIpv4Interface == null) {
-                this.amtIpv4Interface = AmtInterfaceManager.getInstance().getIPv4Interface(this.relayDiscoveryAddress);
-            }
-            this.amtIpv4Interface.join(this.pushChannel, groupAddress, sourceAddress, port);
+        if (this.amtInterface == null) {
+            this.amtInterface = AmtInterfaceManager.getInstance().getInterface(this.relayDiscoveryAddress);
         }
-        else {
-            if (this.amtIpv6Interface == null) {
-                this.amtIpv6Interface = AmtInterfaceManager.getInstance().getIPv6Interface(this.relayDiscoveryAddress);
-            }
-            this.amtIpv6Interface.join(this.pushChannel, groupAddress, sourceAddress, port);
-        }
+        this.amtInterface.join(this.pushChannel, groupAddress, sourceAddress, port);
     }
 
     @Override
@@ -303,15 +276,8 @@ public final class AmtMulticastEndpoint
             logger.finer(Logging.entering(ObjectId, "AmtMulticastEndpoint.leave", Logging.address(groupAddress)));
         }
 
-        if (groupAddress instanceof Inet4Address) {
-            if (this.amtIpv4Interface != null) {
-                this.amtIpv4Interface.leave(this.pushChannel, groupAddress);
-            }
-        }
-        else {
-            if (this.amtIpv6Interface != null) {
-                this.amtIpv6Interface.leave(this.pushChannel, groupAddress);
-            }
+        if (this.amtInterface != null) {
+            this.amtInterface.leave(this.pushChannel, groupAddress);
         }
     }
 
@@ -333,15 +299,8 @@ public final class AmtMulticastEndpoint
             logger.finer(Logging.entering(ObjectId, "AmtMulticastEndpoint.leave", Logging.address(groupAddress), port));
         }
 
-        if (groupAddress instanceof Inet4Address) {
-            if (this.amtIpv4Interface != null) {
-                this.amtIpv4Interface.leave(this.pushChannel, groupAddress, port);
-            }
-        }
-        else {
-            if (this.amtIpv6Interface != null) {
-                this.amtIpv6Interface.leave(this.pushChannel, groupAddress, port);
-            }
+        if (this.amtInterface != null) {
+            this.amtInterface.leave(this.pushChannel, groupAddress, port);
         }
     }
 
@@ -353,15 +312,8 @@ public final class AmtMulticastEndpoint
                                           Logging.address(sourceAddress), port));
         }
 
-        if (groupAddress instanceof Inet4Address) {
-            if (this.amtIpv4Interface != null) {
-                this.amtIpv4Interface.leave(this.pushChannel, groupAddress, sourceAddress, port);
-            }
-        }
-        else {
-            if (this.amtIpv6Interface != null) {
-                this.amtIpv6Interface.leave(this.pushChannel, groupAddress, sourceAddress, port);
-            }
+        if (this.amtInterface != null) {
+            this.amtInterface.leave(this.pushChannel, groupAddress, sourceAddress, port);
         }
     }
 
@@ -372,11 +324,8 @@ public final class AmtMulticastEndpoint
             logger.finer(Logging.entering(ObjectId, "AmtMulticastEndpoint.leave"));
         }
 
-        if (this.amtIpv4Interface != null) {
-            this.amtIpv4Interface.leave(this.pushChannel);
-        }
-        if (this.amtIpv6Interface != null) {
-            this.amtIpv6Interface.leave(this.pushChannel);
+        if (this.amtInterface != null) {
+            this.amtInterface.leave(this.pushChannel);
         }
     }
 

@@ -84,7 +84,7 @@ public final class AmtTunnelEndpoint implements Runnable {
      */
     private final Object lock = new Object();
 
-    private final AmtInterface amtInterface;
+    private final AmtIPInterface amtIpInterface;
     private OutputChannel<IPPacket> incomingQueryChannel = null;
     private final OutputChannel<IPPacket> outgoingUpdateChannel;
     private OutputChannel<IPPacket> incomingDataChannel = null;
@@ -128,11 +128,11 @@ public final class AmtTunnelEndpoint implements Runnable {
 
     /**
      * 
-     * @param amtInterface
+     * @param amtIpInterface
      * @param relayDiscoveryAddress
      * @param taskTimer
      */
-    public AmtTunnelEndpoint(final AmtInterface amtInterface, final InetAddress relayDiscoveryAddress, final Timer taskTimer) {
+    public AmtTunnelEndpoint(final AmtIPInterface amtIpInterface, final InetAddress relayDiscoveryAddress, final Timer taskTimer) {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId,
@@ -141,7 +141,7 @@ public final class AmtTunnelEndpoint implements Runnable {
                                           taskTimer));
         }
 
-        this.amtInterface = amtInterface;
+        this.amtIpInterface = amtIpInterface;
         this.relayDiscoveryAddress = relayDiscoveryAddress;
         this.amtMessageParser = AmtMessage.constructAmtGatewayParser();
 
@@ -878,7 +878,7 @@ public final class AmtTunnelEndpoint implements Runnable {
 
         // Shutdown the AmtInterface to force it leave all joined streams.
         try {
-            this.amtInterface.shutdown();
+            this.amtIpInterface.shutdown();
         }
         catch (InterruptedException e) {
             // Ignore

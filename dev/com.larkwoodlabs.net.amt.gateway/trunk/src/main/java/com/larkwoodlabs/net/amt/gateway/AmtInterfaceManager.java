@@ -21,7 +21,6 @@
 package com.larkwoodlabs.net.amt.gateway;
 
 import java.io.IOException;
-import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
@@ -31,12 +30,11 @@ import java.util.logging.Logger;
 import com.larkwoodlabs.util.logging.Logging;
 
 /**
- * Constructs and manages {@link AmtInterface} objects.
+ * Constructs and manages a collection of {@link AmtInterface} objects.
  * The interface manager creates a new interface for each unique relay discovery address.
  * Objects wishing to acquire an AMT interface must use the {@link #getInstance()} method
  * to first retrieve the singleton interface manager and then call
  * {@link #getInterface(InetAddress)} to obtain an interface.
- * The interface manager maintains separate collections for IPv4 and IPv6 interfaces.
  * The AmtInterfaceManager and AmtInterface classes are not normally accessed directly -
  * applications should use the {@link AmtMulticastEndpoint)} class when AMT functionality
  * is required.
@@ -92,16 +90,10 @@ public final class AmtInterfaceManager {
     private final String ObjectId = Logging.identify(this);
 
     /**
-     * Map containing IPv4 AMT tunnel endpoints referenced by the local host
-     * and relay discovery address used to construct each instance.
+     * Map containing AMT IPv4 and IPv6 endpoints referenced by the
+     * relay discovery address used to construct each instance.
      */
-    private HashMap<InetAddress, AmtInterface> ipv4Interfaces;
-
-    /**
-     * Map containing IPv6 AMT tunnel endpoints referenced by the local host
-     * and relay discovery address used to construct each instance.
-     */
-    private HashMap<InetAddress, AmtInterface> ipv6Interfaces;
+    private HashMap<InetAddress, AmtInterface> interfaces;
 
     /*-- Member Functions ---------------------------------------------------*/
 
@@ -110,21 +102,7 @@ public final class AmtInterfaceManager {
      * Use {@link #getInstance()} to retrieve the singleton instance.
      */
     private AmtInterfaceManager() {
-        this.ipv4Interfaces = new HashMap<InetAddress, AmtInterface>();
-        this.ipv6Interfaces = new HashMap<InetAddress, AmtInterface>();
-    }
-
-    /**
-     * 
-     * @param relayDiscoveryAddress
-     * @return
-     * @throws IOException
-     */
-    public AmtInterface getInterface(final InetAddress relayDiscoveryAddress) throws IOException {
-        return relayDiscoveryAddress instanceof Inet4Address
-                        ? getIPv4Interface(relayDiscoveryAddress)
-                        : getIPv6Interface(relayDiscoveryAddress);
-
+        this.interfaces = new HashMap<InetAddress, AmtInterface>();
     }
 
     /**
@@ -132,49 +110,22 @@ public final class AmtInterfaceManager {
      * @return
      * @throws IOException
      */
-    public synchronized AmtInterface getIPv4Interface(final InetAddress relayDiscoveryAddress) throws IOException {
+    public synchronized AmtInterface getInterface(final InetAddress relayDiscoveryAddress) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtInterfaceManager.getIpv4Interface", Logging.address(relayDiscoveryAddress)));
+            logger.finer(Logging.entering(ObjectId, "AmtInterfaceManager.getInterface", Logging.address(relayDiscoveryAddress)));
         }
 
-        AmtInterface endpoint = this.ipv4Interfaces.get(relayDiscoveryAddress);
+        AmtInterface endpoint = this.interfaces.get(relayDiscoveryAddress);
 
         if (endpoint == null) {
 
             if (logger.isLoggable(Level.FINE)) {
-                logger.fine(ObjectId + " constructing new IPv4 AmtInterface");
+                logger.fine(ObjectId + " constructing new AmtInterface");
             }
 
-            endpoint = new AmtIPv4Interface(this, relayDiscoveryAddress);
-            this.ipv4Interfaces.put(relayDiscoveryAddress, endpoint);
-        }
-
-        endpoint.acquire();
-        return endpoint;
-    }
-
-    /**
-     * @param relayDiscoveryAddress
-     * @return
-     * @throws IOException
-     */
-    public synchronized AmtInterface getIPv6Interface(final InetAddress relayDiscoveryAddress) throws IOException {
-
-        if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtInterfaceManager.getIpv6Interface", Logging.address(relayDiscoveryAddress)));
-        }
-
-        AmtInterface endpoint = this.ipv6Interfaces.get(relayDiscoveryAddress);
-
-        if (endpoint == null) {
-
-            if (logger.isLoggable(Level.FINE)) {
-                logger.fine(ObjectId + " constructing new IPv6 AmtInterface");
-            }
-
-            endpoint = new AmtIPv6Interface(this, relayDiscoveryAddress);
-            this.ipv6Interfaces.put(relayDiscoveryAddress, endpoint);
+            endpoint = new AmtInterface(this, relayDiscoveryAddress);
+            this.interfaces.put(relayDiscoveryAddress, endpoint);
         }
 
         endpoint.acquire();
@@ -186,7 +137,7 @@ public final class AmtInterfaceManager {
      * @throws InterruptedException
      * @throws IOException
      */
-    synchronized void closeIpv4Interface(final AmtInterface amtInterface) throws InterruptedException, IOException {
+    synchronized void closeInterface(final AmtInterface amtInterface) throws InterruptedException, IOException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "AmtInterfaceManager.closeIpv4Interface", amtInterface));
@@ -195,23 +146,7 @@ public final class AmtInterfaceManager {
         amtInterface.close();
 
         // Remove the endpoint from the endpoints map
-        this.ipv4Interfaces.remove(amtInterface.getRelayDiscoveryAddress());
+        this.interfaces.remove(amtInterface.getRelayDiscoveryAddress());
     }
 
-    /**
-     * @param endpoint
-     * @throws InterruptedException
-     * @throws IOException
-     */
-    synchronized void closeIpv6Interface(final AmtInterface amtInterface) throws InterruptedException, IOException {
-
-        if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtInterfaceManager.closeIpv6Interface", amtInterface));
-        }
-
-        amtInterface.close();
-
-        // Remove the endpoint from the endpoints map
-        this.ipv6Interfaces.remove(amtInterface.getRelayDiscoveryAddress());
-    }
 }

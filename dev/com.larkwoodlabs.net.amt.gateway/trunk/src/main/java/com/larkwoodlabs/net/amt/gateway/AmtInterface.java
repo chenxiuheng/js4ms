@@ -22,13 +22,12 @@ package com.larkwoodlabs.net.amt.gateway;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.Timer;
+import java.net.Inet4Address;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.larkwoodlabs.channels.OutputChannel;
-import com.larkwoodlabs.channels.OutputChannelTransform;
-import com.larkwoodlabs.net.ip.IPPacket;
+import com.larkwoodlabs.net.Precondition;
 import com.larkwoodlabs.net.udp.UdpDatagram;
 import com.larkwoodlabs.util.logging.Logging;
 
@@ -43,7 +42,7 @@ import com.larkwoodlabs.util.logging.Logging;
  * 
  * @author Greg Bumgardner (gbumgard)
  */
-public abstract class AmtInterface {
+public class AmtInterface {
 
     /*-- Static Variables ----------------------------------------------------*/
 
@@ -59,13 +58,8 @@ public abstract class AmtInterface {
 
     private int referenceCount = 0;
 
-    protected final AmtTunnelEndpoint tunnelEndpoint;
-
-    protected final InterfaceMembershipManager interfaceManager;
-
-    protected final ChannelMembershipManager channelManager;
-
-    private final Timer taskTimer;
+    private AmtIPv4Interface ipv4Interface = null;
+    private AmtIPv6Interface ipv6Interface = null;
 
     /*-- Member Functions ---------------------------------------------------*/
 
@@ -74,7 +68,7 @@ public abstract class AmtInterface {
      * @param relayDiscoveryAddress
      * @throws IOException
      */
-    protected AmtInterface(final AmtInterfaceManager manager, final InetAddress relayDiscoveryAddress) throws IOException {
+    public AmtInterface(final AmtInterfaceManager manager, final InetAddress relayDiscoveryAddress) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "AmtInterface.AmtInterface", manager, Logging.address(relayDiscoveryAddress)));
@@ -83,21 +77,13 @@ public abstract class AmtInterface {
         this.manager = manager;
         this.relayDiscoveryAddress = relayDiscoveryAddress;
 
-        this.taskTimer = new Timer("AMT interface");
+        if (relayDiscoveryAddress instanceof Inet4Address) {
+            this.ipv4Interface = new AmtIPv4Interface(this.relayDiscoveryAddress);
+        }
+        else {
+            this.ipv6Interface = new AmtIPv6Interface(this.relayDiscoveryAddress);
+        }
 
-        this.tunnelEndpoint = new AmtTunnelEndpoint(this, relayDiscoveryAddress, this.taskTimer);
-        this.interfaceManager = new InterfaceMembershipManager(this.taskTimer, this.tunnelEndpoint);
-
-        // Connect a channel membership state manager to the 
-        // interface membership state manager
-        this.channelManager = new ChannelMembershipManager(this.interfaceManager);
-
-        this.tunnelEndpoint.setIncomingDataChannel(
-                        new OutputChannelTransform<IPPacket, UdpDatagram>(
-                                                                          this.channelManager.getDispatchChannel(),
-                                                                          new MulticastDataTransform()));
-
-        this.tunnelEndpoint.start();
     }
 
     /**
@@ -121,8 +107,7 @@ public abstract class AmtInterface {
      */
     public final synchronized void release() throws InterruptedException, IOException {
         if (--this.referenceCount == 0) {
-            this.taskTimer.cancel();
-            this.manager.closeIpv4Interface(this);
+            this.manager.closeInterface(this);
         }
     }
 
@@ -131,7 +116,14 @@ public abstract class AmtInterface {
      * @throws IOException
      */
     public final void close() throws InterruptedException, IOException {
-        this.tunnelEndpoint.stop();
+        if (this.ipv4Interface != null) {
+            this.ipv4Interface.close();
+            this.ipv4Interface = null;
+        }
+        else if (this.ipv6Interface != null) {
+            this.ipv6Interface.close();
+            this.ipv6Interface = null;
+        }
     }
 
     /**
@@ -149,7 +141,18 @@ public abstract class AmtInterface {
             logger.finer(Logging.entering(ObjectId, "AmtInterface.join", pushChannel, Logging.address(groupAddress), port));
         }
 
-        this.channelManager.join(pushChannel, groupAddress, port);
+        if (groupAddress instanceof Inet4Address) {
+            if (this.ipv4Interface == null) {
+                this.ipv4Interface = new AmtIPv4Interface(this.relayDiscoveryAddress);
+            }
+            this.ipv4Interface.join(pushChannel, groupAddress, port);
+        }
+        else {
+            if (this.ipv6Interface == null) {
+                this.ipv6Interface = new AmtIPv6Interface(this.relayDiscoveryAddress);
+            }
+            this.ipv6Interface.join(pushChannel, groupAddress, port);
+        }
     }
 
     /**
@@ -174,7 +177,20 @@ public abstract class AmtInterface {
                                           port));
         }
 
-        this.channelManager.join(pushChannel, groupAddress, sourceAddress, port);
+        Precondition.checkAddresses(groupAddress, sourceAddress);
+
+        if (groupAddress instanceof Inet4Address) {
+            if (this.ipv4Interface == null) {
+                this.ipv4Interface = new AmtIPv4Interface(this.relayDiscoveryAddress);
+            }
+            this.ipv4Interface.join(pushChannel, groupAddress, sourceAddress, port);
+        }
+        else {
+            if (this.ipv6Interface == null) {
+                this.ipv6Interface = new AmtIPv6Interface(this.relayDiscoveryAddress);
+            }
+            this.ipv6Interface.join(pushChannel, groupAddress, sourceAddress, port);
+        }
     }
 
     /**
@@ -189,7 +205,18 @@ public abstract class AmtInterface {
             logger.finer(Logging.entering(ObjectId, "AmtInterface.leave", pushChannel, Logging.address(groupAddress)));
         }
 
-        this.channelManager.leave(pushChannel, groupAddress);
+        if (groupAddress instanceof Inet4Address) {
+            if (this.ipv4Interface == null) {
+                this.ipv4Interface = new AmtIPv4Interface(this.relayDiscoveryAddress);
+            }
+            this.ipv4Interface.leave(pushChannel, groupAddress);
+        }
+        else {
+            if (this.ipv6Interface == null) {
+                this.ipv6Interface = new AmtIPv6Interface(this.relayDiscoveryAddress);
+            }
+            this.ipv6Interface.leave(pushChannel, groupAddress);
+        }
     }
 
     /**
@@ -206,7 +233,18 @@ public abstract class AmtInterface {
             logger.finer(Logging.entering(ObjectId, "AmtInterface.leave", pushChannel, Logging.address(groupAddress), port));
         }
 
-        this.channelManager.leave(pushChannel, groupAddress, port);
+        if (groupAddress instanceof Inet4Address) {
+            if (this.ipv4Interface == null) {
+                this.ipv4Interface = new AmtIPv4Interface(this.relayDiscoveryAddress);
+            }
+            this.ipv4Interface.leave(pushChannel, groupAddress, port);
+        }
+        else {
+            if (this.ipv6Interface == null) {
+                this.ipv6Interface = new AmtIPv6Interface(this.relayDiscoveryAddress);
+            }
+            this.ipv6Interface.leave(pushChannel, groupAddress, port);
+        }
     }
 
     /**
@@ -227,7 +265,20 @@ public abstract class AmtInterface {
                                           Logging.address(sourceAddress)));
         }
 
-        this.channelManager.leave(pushChannel, groupAddress, sourceAddress);
+        Precondition.checkAddresses(groupAddress, sourceAddress);
+
+        if (groupAddress instanceof Inet4Address) {
+            if (this.ipv4Interface == null) {
+                this.ipv4Interface = new AmtIPv4Interface(this.relayDiscoveryAddress);
+            }
+            this.ipv4Interface.leave(pushChannel, groupAddress, sourceAddress);
+        }
+        else {
+            if (this.ipv6Interface == null) {
+                this.ipv6Interface = new AmtIPv6Interface(this.relayDiscoveryAddress);
+            }
+            this.ipv6Interface.leave(pushChannel, groupAddress, sourceAddress);
+        }
     }
 
     /**
@@ -251,7 +302,20 @@ public abstract class AmtInterface {
                                           port));
         }
 
-        this.channelManager.leave(pushChannel, groupAddress, sourceAddress, port);
+        Precondition.checkAddresses(groupAddress, sourceAddress);
+
+        if (groupAddress instanceof Inet4Address) {
+            if (this.ipv4Interface == null) {
+                this.ipv4Interface = new AmtIPv4Interface(this.relayDiscoveryAddress);
+            }
+            this.ipv4Interface.leave(pushChannel, groupAddress, sourceAddress, port);
+        }
+        else {
+            if (this.ipv6Interface == null) {
+                this.ipv6Interface = new AmtIPv6Interface(this.relayDiscoveryAddress);
+            }
+            this.ipv6Interface.leave(pushChannel, groupAddress, sourceAddress, port);
+        }
 
     }
 
@@ -265,19 +329,13 @@ public abstract class AmtInterface {
             logger.finer(Logging.entering(ObjectId, "AmtInterface.leave", pushChannel));
         }
 
-        this.channelManager.leave(pushChannel);
-
-    }
-
-    /**
-     * @throws InterruptedException
-     */
-    final void shutdown() throws InterruptedException {
-
-        if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtInterface.shutdown"));
+        if (this.ipv4Interface != null) {
+            this.ipv4Interface.leave(pushChannel);
+        }
+        else if (this.ipv6Interface != null) {
+            this.ipv6Interface.leave(pushChannel);
         }
 
-        this.channelManager.shutdown();
     }
+
 }
