@@ -64,7 +64,7 @@ public interface KeyedApplicationMessage<KeyType>
     /*-- Member Functions ---------------------------------------------------*/
 
     /**
-     * Returns the message key value.
+     * Returns the message key or code value.
      */
     public KeyType getType();
 
