@@ -169,8 +169,8 @@ public final class AmtRequestMessage
     /**
      * Constructs an instance using a sequential nonce value.
      */
-    public AmtRequestMessage() {
-        this(getNextRequestNonce());
+    public AmtRequestMessage(boolean requestMLD) {
+        this(getNextRequestNonce(), requestMLD);
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "AmtRequestMessage.AmtRequestMessage"));
@@ -183,7 +183,7 @@ public final class AmtRequestMessage
      * @param requestNonce
      *            A random integer value.
      */
-    public AmtRequestMessage(int requestNonce) {
+    public AmtRequestMessage(int requestNonce, boolean requestMLD) {
         super(MESSAGE_LENGTH, MESSAGE_TYPE);
 
         if (logger.isLoggable(Level.FINER)) {
@@ -191,6 +191,7 @@ public final class AmtRequestMessage
         }
 
         setRequestNonce(requestNonce);
+        this.setProtocolFlag(requestMLD);
         if (logger.isLoggable(Level.FINER)) {
             logState(logger);
         }
