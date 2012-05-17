@@ -33,7 +33,7 @@ import com.larkwoodlabs.util.logging.LogFormatter;
  * the JSONP callback.
  * 
  * @see {@link LoggingConfigurationHandler} - provides logging configuration control via HTTP requests.
- * @author gbumgard@cisco.com
+ * @author Greg Bumgardner (gbumgard)
  */
 public class LoggingOutputHandler implements TransactionHandler {
 

@@ -47,7 +47,7 @@ import com.larkwoodlabs.util.logging.Logging;
  * </pre>
  * 
  * @see {@link LoggingOutputHandler} - generates log output stream in response to a request.
- * @author gbumgard@cisco.com
+ * @author Greg Bumgardner (gbumgard)
  */
 public class LoggingConfigurationHandler implements TransactionHandler {
 
