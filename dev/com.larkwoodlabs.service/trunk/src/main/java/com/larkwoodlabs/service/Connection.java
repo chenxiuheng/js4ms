@@ -29,7 +29,7 @@ import com.larkwoodlabs.util.logging.Log;
 /**
  * An abstract base class for persistent client-server connections. 
  *
- * @author gbumgard@cisco.com
+ * @author Greg Bumgardner (gbumgard)
  */
 public abstract class Connection  {
 

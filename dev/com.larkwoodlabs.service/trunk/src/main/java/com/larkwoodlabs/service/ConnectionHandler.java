@@ -29,7 +29,7 @@ import com.larkwoodlabs.util.logging.Log;
  * Base class for objects that manage the serialization of messages over a {@link Connection}.
  * This class simply flushes bytes from the connection input stream.
  * 
- * @author gbumgard@cisco.com
+ * @author Greg Bumgardner (gbumgard)
  */
 public class ConnectionHandler implements Runnable {
 

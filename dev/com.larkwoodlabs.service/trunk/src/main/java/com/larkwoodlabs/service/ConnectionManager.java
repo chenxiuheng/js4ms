@@ -10,7 +10,7 @@ import com.larkwoodlabs.util.logging.Log;
 /**
  * Manages a collection of active {@link Connection} objects.
  *
- * @author gbumgard@cisco.com
+ * @author Greg Bumgardner (gbumgard)
  */
 public class ConnectionManager {
 
