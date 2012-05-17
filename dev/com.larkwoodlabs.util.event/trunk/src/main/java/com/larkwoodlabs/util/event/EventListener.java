@@ -20,7 +20,7 @@ package com.larkwoodlabs.util.event;
  * Interface that must be implemented by event listeners that can be attached to an {@link Event}
  * @param <EventRecordType> The type of event object that will be passed to {@link #onEvent(EventRecordType)}
  * 
- * @author gbumgard@cisco.com
+ * @author Greg Bumgardner (gbumgard)
  */
 public interface EventListener<EventRecordType> {
 
