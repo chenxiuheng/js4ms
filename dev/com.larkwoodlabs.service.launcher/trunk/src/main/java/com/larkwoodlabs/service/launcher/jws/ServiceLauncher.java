@@ -21,7 +21,7 @@ import com.larkwoodlabs.util.logging.Log;
  * 
  * 
  *
- * @author gbumgard@cisco.com
+ * @author Greg Bumgardner (gbumgard)
  */
 public class ServiceLauncher {
 
