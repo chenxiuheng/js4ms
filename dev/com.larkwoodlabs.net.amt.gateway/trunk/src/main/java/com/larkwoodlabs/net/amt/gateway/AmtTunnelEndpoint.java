@@ -111,6 +111,8 @@ public final class AmtTunnelEndpoint implements Runnable {
     private AmtRelayAdvertisementMessage lastAdvertisementMessageReceived = null;
     private InetAddress relayAddress = null;
 
+    private boolean requestMLD = false;
+    
     private TimerTask requestTask = null;
     private AmtRequestMessage lastRequestMessageSent = null;
     private long requestRetransmissionInterval = REQUEST_RETRY_PERIOD;
@@ -132,7 +134,9 @@ public final class AmtTunnelEndpoint implements Runnable {
      * @param relayDiscoveryAddress
      * @param taskTimer
      */
-    public AmtTunnelEndpoint(final AmtIPInterface amtIpInterface, final InetAddress relayDiscoveryAddress, final Timer taskTimer) {
+    public AmtTunnelEndpoint(final AmtIPInterface amtIpInterface,
+                             final InetAddress relayDiscoveryAddress,
+                             final Timer taskTimer) {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId,
@@ -144,6 +148,7 @@ public final class AmtTunnelEndpoint implements Runnable {
         this.amtIpInterface = amtIpInterface;
         this.relayDiscoveryAddress = relayDiscoveryAddress;
         this.amtMessageParser = AmtMessage.constructAmtGatewayParser();
+        this.requestMLD = amtIpInterface instanceof AmtIPv6Interface;
 
         this.outgoingUpdateChannel = new OutputChannel<IPPacket>() {
             @Override
@@ -558,7 +563,7 @@ public final class AmtTunnelEndpoint implements Runnable {
         synchronized (this.lock) {
 
             if (this.lastRequestMessageSent == null) {
-                this.lastRequestMessageSent = new AmtRequestMessage();
+                this.lastRequestMessageSent = new AmtRequestMessage(this.requestMLD);
                 this.lastQueryMessageReceived = null;
             }
 
