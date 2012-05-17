@@ -15,7 +15,7 @@ import com.larkwoodlabs.util.logging.Log;
  * An {@link OutputChannel} that can be used to send a byte array containing an
  * RTP/RTCP packet to a specific address and port via UDP.
  *
- * @author gbumgard@cisco.com
+ * @author Greg Bumgardner (gbumgard)
  */
 public class UdpPacketOutputChannel implements OutputChannel<ByteBuffer> {
 
