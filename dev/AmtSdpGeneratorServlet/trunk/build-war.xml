@@ -22,7 +22,7 @@
 	<import file="build-jar.xml" />
     <import file="build-descriptor.xml" />
 	
-	<property name="war.file" value="${app.name}.war" />
+	<property name="war.file" value="${servlet.name}.war" />
 
     <target name="copy-jars" depends="build-jar" description="copies external jars required by application">
         <copy file="${jars-jain-sdp.location}/ext/jain-sdp-1.0.100.jar" toDir="WebContent/WEB-INF/lib"/>

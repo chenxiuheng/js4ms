@@ -29,7 +29,7 @@
 
         <copy file="jboss-web-template.xml" toFile="WebContent/WEB-INF/jboss-web.xml">
             <filterset>
-                <filter token="CONTEXT_ROOT" value="${app.context.path}" />
+                <filter token="CONTEXT_ROOT" value="${servlet.context.path}" />
             </filterset>
         </copy>
 

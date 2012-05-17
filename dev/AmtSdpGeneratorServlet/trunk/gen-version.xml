@@ -19,13 +19,13 @@
  -->
 <project>
 
-    <property file="app.properties" />
+    <property file="servlet.properties" />
 
     <target name="gen-version">
         <tstamp>
-            <format property="app.timestamp" timezone="GMT" pattern="yyyyMMddHHmm" />
+            <format property="servlet.timestamp" timezone="GMT" pattern="yyyyMMddHHmm" />
         </tstamp>
-        <property name="app.version" value="${app.version.major}.${app.version.minor}.${app.version.maint}.v${app.timestamp}"/>
+        <property name="servlet.version" value="${servlet.version.major}.${servlet.version.minor}.${servlet.version.maint}.v${servlet.timestamp}"/>
     </target>
 
 </project>

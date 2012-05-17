@@ -33,9 +33,13 @@ import java.io.InputStreamReader;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.Inet4Address;
+import java.net.Inet6Address;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.Enumeration;
 import java.util.Vector;
 
 import javax.sdp.Connection;
@@ -266,7 +270,33 @@ public class AmtSdpGeneratorServlet
                 }
 
                 OriginField originField = (OriginField) origin;
-                InetAddress sourceAddress = InetAddress.getByName(originField.getAddress());
+                String originHost = originField.getAddress();
+
+                InetAddress sourceAddress = null;
+                try {
+                    sourceAddress = InetAddress.getByName(originHost);
+                }
+                catch (UnknownHostException e) {
+                    try {
+                        sourceAddress = InetAddress.getByName(originHost + ".local");
+                    }
+                    catch (UnknownHostException e1) {
+                        throw e1;
+                    }
+                }
+                AttributeField originSource = new AttributeField();
+                originSource.setName("x-origin-source-address");
+                originSource.setValue(sourceAddress.getHostName()+" "+sourceAddress.getHostAddress());
+                
+
+                if (sourceAddress.isLoopbackAddress() || sourceAddress.isLinkLocalAddress()) {
+                    sourceAddress = getLocalHostIPAddress(originField.getAddressType().equals("IP6"));
+                }
+
+                AttributeField filterSource = new AttributeField();
+                filterSource.setName("x-filter-source-address");
+                filterSource.setValue(sourceAddress.getHostName()+" "+sourceAddress.getHostAddress());
+                
 
                 if (!groupAddress.getClass().equals(sourceAddress.getClass())) {
                     response.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE,
@@ -281,6 +311,8 @@ public class AmtSdpGeneratorServlet
                 sourceFilter.setName(SOURCE_FILTER_ATTRIBUTE_NAME);
                 sourceFilter.setValue(filterDesc);
                 Vector attributes = sessionDescription.getAttributes(false);
+                attributes.add(originSource);
+                attributes.add(filterSource);
                 attributes.add(sourceFilter);
                 sessionDescription.setAttributes(attributes);
             }
@@ -294,5 +326,29 @@ public class AmtSdpGeneratorServlet
         response.setContentType("application/sdp");
         response.getWriter().write(sessionDescription.toString());
         return;
+    }
+
+    InetAddress getLocalHostIPAddress(boolean getIpv6) throws UnknownHostException, SocketException {
+
+        Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+
+        while (interfaces.hasMoreElements()) {
+            NetworkInterface intf = interfaces.nextElement();
+            System.out.println("checking interface " + intf.getDisplayName());
+            Enumeration<InetAddress> addresses = intf.getInetAddresses();
+            while (addresses.hasMoreElements()) {
+                InetAddress address = addresses.nextElement();
+                System.out.println("checking interface address" + address.getHostAddress() +
+                                   " loopback=" + address.isLoopbackAddress() +
+                                   " link-local=" + address.isLinkLocalAddress() +
+                                   " site-local=" + address.isSiteLocalAddress());
+                if ((getIpv6 ? address instanceof Inet6Address : address instanceof Inet4Address) &&
+                    !address.isLoopbackAddress() &&
+                    !address.isLinkLocalAddress()) {
+                    return address;
+                }
+            }
+        }
+        return InetAddress.getLocalHost();
     }
 }
