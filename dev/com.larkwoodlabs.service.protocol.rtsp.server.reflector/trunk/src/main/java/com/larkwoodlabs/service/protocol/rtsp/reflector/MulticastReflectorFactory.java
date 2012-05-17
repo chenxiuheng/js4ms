@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
+import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -440,7 +441,12 @@ public class MulticastReflectorFactory implements PresentationResolver {
                     if (addressCount == 0) addressCount = 1;
 
                     // Set connection address to wildcard address and set count to 0 (one address).
-                    connection.setAddress("0.0.0.0");
+                    if (address instanceof Inet4Address) {
+                        connection.setAddress("0.0.0.0");
+                    }
+                    else {
+                        connection.setAddress("::");
+                    }
                     connectionAddress.setTtl(0);
                     connectionAddress.setPort(0);
                 }
