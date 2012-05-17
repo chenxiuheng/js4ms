@@ -13,7 +13,7 @@ import com.larkwoodlabs.channels.OutputChannel;
  * An {@link OutputChannel} that can be used to send a byte array containing an
  * RTP/RTCP packet over a TCP connection using the framing method described in RFC-4571.
  * 
- * @author gbumgard@cisco.com
+ * @author Greg Bumgardner (gbumgard)
  */
 public class TcpPacketOutputChannel implements OutputChannel<ByteBuffer> {
 

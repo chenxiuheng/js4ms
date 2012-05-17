@@ -16,7 +16,7 @@ import com.larkwoodlabs.util.logging.Log;
  * RTP/RTCP packet over an RTSP TCP control connection using the interleaved framing
  * method described in RFC-2326.
  * 
- * @author gbumgard@cisco.com
+ * @author Greg Bumgardner (gbumgard)
  */
 public final class InterleavedPacketOutputChannel implements OutputChannel<ByteBuffer> {
 
