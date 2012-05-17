@@ -224,7 +224,7 @@ public class Precondition {
      * @return
      */
     public static boolean isIPv6MulticastAddress(byte[] address) {
-        return (isIPv6Address(address) && address[0] == 0xFF);
+        return (isIPv6Address(address) && address[0] == (byte)0xFF);
     }
 
     /**
