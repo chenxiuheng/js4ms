@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: AmtIPv4Interface.java (com.larkwoodlabs.net.amt.gateway)
+ * File: AmtIPv4TunnelEndpoint.java (com.larkwoodlabs.net.amt.gateway)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -29,16 +29,17 @@ import com.larkwoodlabs.net.amt.IPv4MembershipReportTransform;
 import com.larkwoodlabs.util.logging.Logging;
 
 /**
- * An {@link AmtIPInterface} that manages an IPv4/IGMP AMT tunnel end-point.
- * An AmtIPv4Interface provides functions for joining, leaving and receiving packets
- * for any number of IPv4 multicast groups. The AmtIPv4Interface tracks local group
+ * An {@link AmtTunnelEndpoint} that uses IGMP to communicate IPv4 group membership
+ * changes to an AMT relay.
+ * An AmtIPv4TunnelEndpoint provides functions for joining, leaving and receiving packets
+ * for any number of IPv4 multicast groups. The AmtIPv4TunnelEndpoint tracks local group
  * membership state and handles the exchange of IGMP messages used
  * to query or update that state.
  * 
  * @author Greg Bumgardner (gbumgard)
  */
-public final class AmtIPv4Interface
-                extends AmtIPInterface {
+public final class AmtIPv4TunnelEndpoint
+                extends AmtTunnelEndpoint {
 
     /*-- Member Functions ---------------------------------------------------*/
 
@@ -47,13 +48,13 @@ public final class AmtIPv4Interface
      * @param relayDiscoveryAddress
      * @throws IOException
      */
-    public AmtIPv4Interface(final InetAddress relayDiscoveryAddress) throws IOException {
+    public AmtIPv4TunnelEndpoint(final InetAddress relayDiscoveryAddress) throws IOException {
         super(relayDiscoveryAddress,
               new IPv4MembershipQueryTransform(),
               new IPv4MembershipReportTransform());
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtIPv4Interface.AmtIPv4Interface",
+            logger.finer(Logging.entering(ObjectId, "AmtIPv4TunnelEndpoint.AmtIPv4Interface",
                                           Logging.address(relayDiscoveryAddress)));
         }
 

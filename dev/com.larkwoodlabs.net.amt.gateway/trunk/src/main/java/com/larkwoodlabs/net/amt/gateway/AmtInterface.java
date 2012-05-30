@@ -58,8 +58,8 @@ public class AmtInterface {
 
     private int referenceCount = 0;
 
-    private AmtIPv4Interface ipv4Interface = null;
-    private AmtIPv6Interface ipv6Interface = null;
+    private AmtIPv4TunnelEndpoint ipv4Interface = null;
+    private AmtIPv6TunnelEndpoint ipv6Interface = null;
 
     /*-- Member Functions ---------------------------------------------------*/
 
@@ -78,10 +78,10 @@ public class AmtInterface {
         this.relayDiscoveryAddress = relayDiscoveryAddress;
 
         if (relayDiscoveryAddress instanceof Inet4Address) {
-            this.ipv4Interface = new AmtIPv4Interface(this.relayDiscoveryAddress);
+            this.ipv4Interface = new AmtIPv4TunnelEndpoint(this.relayDiscoveryAddress);
         }
         else {
-            this.ipv6Interface = new AmtIPv6Interface(this.relayDiscoveryAddress);
+            this.ipv6Interface = new AmtIPv6TunnelEndpoint(this.relayDiscoveryAddress);
         }
 
     }
@@ -143,13 +143,13 @@ public class AmtInterface {
 
         if (groupAddress instanceof Inet4Address) {
             if (this.ipv4Interface == null) {
-                this.ipv4Interface = new AmtIPv4Interface(this.relayDiscoveryAddress);
+                this.ipv4Interface = new AmtIPv4TunnelEndpoint(this.relayDiscoveryAddress);
             }
             this.ipv4Interface.join(pushChannel, groupAddress, port);
         }
         else {
             if (this.ipv6Interface == null) {
-                this.ipv6Interface = new AmtIPv6Interface(this.relayDiscoveryAddress);
+                this.ipv6Interface = new AmtIPv6TunnelEndpoint(this.relayDiscoveryAddress);
             }
             this.ipv6Interface.join(pushChannel, groupAddress, port);
         }
@@ -181,13 +181,13 @@ public class AmtInterface {
 
         if (groupAddress instanceof Inet4Address) {
             if (this.ipv4Interface == null) {
-                this.ipv4Interface = new AmtIPv4Interface(this.relayDiscoveryAddress);
+                this.ipv4Interface = new AmtIPv4TunnelEndpoint(this.relayDiscoveryAddress);
             }
             this.ipv4Interface.join(pushChannel, groupAddress, sourceAddress, port);
         }
         else {
             if (this.ipv6Interface == null) {
-                this.ipv6Interface = new AmtIPv6Interface(this.relayDiscoveryAddress);
+                this.ipv6Interface = new AmtIPv6TunnelEndpoint(this.relayDiscoveryAddress);
             }
             this.ipv6Interface.join(pushChannel, groupAddress, sourceAddress, port);
         }
@@ -207,13 +207,13 @@ public class AmtInterface {
 
         if (groupAddress instanceof Inet4Address) {
             if (this.ipv4Interface == null) {
-                this.ipv4Interface = new AmtIPv4Interface(this.relayDiscoveryAddress);
+                this.ipv4Interface = new AmtIPv4TunnelEndpoint(this.relayDiscoveryAddress);
             }
             this.ipv4Interface.leave(pushChannel, groupAddress);
         }
         else {
             if (this.ipv6Interface == null) {
-                this.ipv6Interface = new AmtIPv6Interface(this.relayDiscoveryAddress);
+                this.ipv6Interface = new AmtIPv6TunnelEndpoint(this.relayDiscoveryAddress);
             }
             this.ipv6Interface.leave(pushChannel, groupAddress);
         }
@@ -235,13 +235,13 @@ public class AmtInterface {
 
         if (groupAddress instanceof Inet4Address) {
             if (this.ipv4Interface == null) {
-                this.ipv4Interface = new AmtIPv4Interface(this.relayDiscoveryAddress);
+                this.ipv4Interface = new AmtIPv4TunnelEndpoint(this.relayDiscoveryAddress);
             }
             this.ipv4Interface.leave(pushChannel, groupAddress, port);
         }
         else {
             if (this.ipv6Interface == null) {
-                this.ipv6Interface = new AmtIPv6Interface(this.relayDiscoveryAddress);
+                this.ipv6Interface = new AmtIPv6TunnelEndpoint(this.relayDiscoveryAddress);
             }
             this.ipv6Interface.leave(pushChannel, groupAddress, port);
         }
@@ -269,13 +269,13 @@ public class AmtInterface {
 
         if (groupAddress instanceof Inet4Address) {
             if (this.ipv4Interface == null) {
-                this.ipv4Interface = new AmtIPv4Interface(this.relayDiscoveryAddress);
+                this.ipv4Interface = new AmtIPv4TunnelEndpoint(this.relayDiscoveryAddress);
             }
             this.ipv4Interface.leave(pushChannel, groupAddress, sourceAddress);
         }
         else {
             if (this.ipv6Interface == null) {
-                this.ipv6Interface = new AmtIPv6Interface(this.relayDiscoveryAddress);
+                this.ipv6Interface = new AmtIPv6TunnelEndpoint(this.relayDiscoveryAddress);
             }
             this.ipv6Interface.leave(pushChannel, groupAddress, sourceAddress);
         }
@@ -306,13 +306,13 @@ public class AmtInterface {
 
         if (groupAddress instanceof Inet4Address) {
             if (this.ipv4Interface == null) {
-                this.ipv4Interface = new AmtIPv4Interface(this.relayDiscoveryAddress);
+                this.ipv4Interface = new AmtIPv4TunnelEndpoint(this.relayDiscoveryAddress);
             }
             this.ipv4Interface.leave(pushChannel, groupAddress, sourceAddress, port);
         }
         else {
             if (this.ipv6Interface == null) {
-                this.ipv6Interface = new AmtIPv6Interface(this.relayDiscoveryAddress);
+                this.ipv6Interface = new AmtIPv6TunnelEndpoint(this.relayDiscoveryAddress);
             }
             this.ipv6Interface.leave(pushChannel, groupAddress, sourceAddress, port);
         }

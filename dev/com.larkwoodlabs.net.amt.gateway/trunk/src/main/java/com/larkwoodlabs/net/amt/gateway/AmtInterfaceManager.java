@@ -133,14 +133,14 @@ public final class AmtInterfaceManager {
     }
 
     /**
-     * @param endpoint
+     * @param amtInterface
      * @throws InterruptedException
      * @throws IOException
      */
     synchronized void closeInterface(final AmtInterface amtInterface) throws InterruptedException, IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtInterfaceManager.closeIpv4Interface", amtInterface));
+            logger.finer(Logging.entering(ObjectId, "AmtInterfaceManager.closeInterface", amtInterface));
         }
 
         amtInterface.close();

@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: AmtIPv6Interface.java (com.larkwoodlabs.net.amt.gateway)
+ * File: AmtIPv6TunnelEndpoint.java (com.larkwoodlabs.net.amt.gateway)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -29,16 +29,17 @@ import com.larkwoodlabs.net.amt.IPv6MembershipQueryTransform;
 import com.larkwoodlabs.util.logging.Logging;
 
 /**
- * An {@link AmtIPInterface} that manages an IPv6/MLD AMT tunnel end-point.
- * An AmtIPv6Interface provides functions for joining, leaving and receiving packets
- * for any number of IPv6 multicast groups. The AmtIPv6Interface tracks local group
+ * An {@link AmtTunnelEndpoint} that uses MLD to communicate IPv6 group membership
+ * changes to an AMT relay.
+ * An AmtIPv6TunnelEndpoint provides functions for joining, leaving and receiving packets
+ * for any number of IPv6 multicast groups. The AmtIPv6TunnelEndpoint tracks local group
  * membership state and handles the exchange of MLD messages used
  * to query or update that state.
  * 
  * @author Greg Bumgardner (gbumgard)
  */
-public final class AmtIPv6Interface
-                extends AmtIPInterface {
+public final class AmtIPv6TunnelEndpoint
+                extends AmtTunnelEndpoint {
 
     /*-- Member Functions ---------------------------------------------------*/
 
@@ -47,13 +48,13 @@ public final class AmtIPv6Interface
      * @param relayDiscoveryAddress
      * @throws IOException
      */
-    public AmtIPv6Interface(final InetAddress relayDiscoveryAddress) throws IOException {
+    public AmtIPv6TunnelEndpoint(final InetAddress relayDiscoveryAddress) throws IOException {
         super(relayDiscoveryAddress,
               new IPv6MembershipQueryTransform(),
               new IPv6MembershipReportTransform());
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtIPv6Interface.AmtIPv6Interface",
+            logger.finer(Logging.entering(ObjectId, "AmtIPv6TunnelEndpoint.AmtIPv6Interface",
                                           Logging.address(relayDiscoveryAddress)));
         }
     }

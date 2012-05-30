@@ -33,7 +33,9 @@ import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.larkwoodlabs.channels.MessageTransform;
 import com.larkwoodlabs.channels.OutputChannel;
+import com.larkwoodlabs.channels.OutputChannelTransform;
 import com.larkwoodlabs.net.amt.AmtMembershipQueryMessage;
 import com.larkwoodlabs.net.amt.AmtMembershipUpdateMessage;
 import com.larkwoodlabs.net.amt.AmtMessage;
@@ -42,6 +44,8 @@ import com.larkwoodlabs.net.amt.AmtRelayAdvertisementMessage;
 import com.larkwoodlabs.net.amt.AmtRelayDiscoveryMessage;
 import com.larkwoodlabs.net.amt.AmtRequestMessage;
 import com.larkwoodlabs.net.amt.AmtTeardownMessage;
+import com.larkwoodlabs.net.amt.MembershipQuery;
+import com.larkwoodlabs.net.amt.MembershipReport;
 import com.larkwoodlabs.net.ip.IPPacket;
 import com.larkwoodlabs.net.udp.UdpDatagram;
 import com.larkwoodlabs.net.udp.UdpInputChannel;
@@ -50,15 +54,13 @@ import com.larkwoodlabs.net.udp.UdpSocketEndpoint;
 import com.larkwoodlabs.util.logging.Logging;
 
 /**
- * 
- * 
- *
  * @author Greg Bumgardner (gbumgard)
  */
-public final class AmtTunnelEndpoint implements Runnable {
+class AmtTunnelEndpoint
+                implements Runnable {
 
-        /*-- Static Variables ---------------------------------------------------*/
-    
+    /*-- Static Variables ---------------------------------------------------*/
+
     /**
      * The static logger instance for this class.
      */
@@ -68,89 +70,107 @@ public final class AmtTunnelEndpoint implements Runnable {
      * The IANA assigned port used when sending AMT messages.
      */
     public static final short AMT_PORT = 2268;
-    
-    public static final long DISCOVERY_RETRY_PERIOD = 10*1000; // 10 secs
-    public static final long REQUEST_RETRY_PERIOD = 10*1000; // 10 secs
+
+    public static final long DISCOVERY_RETRY_PERIOD = 10 * 1000; // 10 secs
+
+    public static final long REQUEST_RETRY_PERIOD = 10 * 1000; // 10 secs
 
     public static final int MAX_REASSEMBLY_CACHE_SIZE = 100;
-    
 
     /*-- Member Variables ---------------------------------------------------*/
-    
-    private final String ObjectId = Logging.identify(this);
+
+    protected final String ObjectId = Logging.identify(this);
 
     /**
      * Object used for synchronizing access to state variables.
      */
     private final Object lock = new Object();
 
-    private final AmtIPInterface amtIpInterface;
     private OutputChannel<IPPacket> incomingQueryChannel = null;
+
     private final OutputChannel<IPPacket> outgoingUpdateChannel;
+
     private OutputChannel<IPPacket> incomingDataChannel = null;
-    
+
     private UdpSocketEndpoint udpEndpoint;
+
     private UdpOutputChannel udpOutputChannel;
+
     private UdpInputChannel udpInputChannel;
 
     private final AmtMessage.Parser amtMessageParser;
 
     private Thread handlerThread;
+
     private boolean isRunning = false;
 
     private final InetAddress relayDiscoveryAddress;
-    
+
     private final Timer taskTimer;
 
     private TimerTask discoveryTask = null;
+
     private AmtRelayDiscoveryMessage lastDiscoveryMessageSent = null;
+
     private long discoveryRetransmissionInterval = DISCOVERY_RETRY_PERIOD;
+
     private int discoveryMaxRetransmissions = Integer.MAX_VALUE;
+
     private int discoveryRetransmissionCount = 0;
 
     private AmtRelayAdvertisementMessage lastAdvertisementMessageReceived = null;
+
     private InetAddress relayAddress = null;
 
     private boolean requestMLD = false;
-    
+
     private TimerTask requestTask = null;
+
     private AmtRequestMessage lastRequestMessageSent = null;
+
     private long requestRetransmissionInterval = REQUEST_RETRY_PERIOD;
+
     private int requestMaxRetransmissions = 2;
+
     private int requestRetransmissionCount = 0;
 
     private AmtMembershipQueryMessage lastQueryMessageReceived = null;
+
     private InetSocketAddress lastGatewayAddress;
 
     private TimerTask periodicRequestTask = null;
 
-    
+    protected final InterfaceMembershipManager interfaceManager;
+
+    protected final ChannelMembershipManager channelManager;
 
     /*-- Member Functions ---------------------------------------------------*/
 
     /**
-     * 
      * @param amtIpInterface
      * @param relayDiscoveryAddress
      * @param taskTimer
+     * @throws IOException 
      */
-    public AmtTunnelEndpoint(final AmtIPInterface amtIpInterface,
-                             final InetAddress relayDiscoveryAddress,
-                             final Timer taskTimer) {
+    protected AmtTunnelEndpoint(final InetAddress relayDiscoveryAddress,
+                             final MessageTransform<IPPacket, MembershipQuery> queryTransform,
+                             final MessageTransform<MembershipReport, IPPacket> reportTransform) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId,
                                           "AmtTunnelEndpoint.AmtTunnelEndpoint",
-                                          Logging.address(relayDiscoveryAddress),
-                                          taskTimer));
+                                          Logging.address(relayDiscoveryAddress)));
         }
 
-        this.amtIpInterface = amtIpInterface;
+        this.taskTimer = new Timer("AMT Tunnel Endpoint");
+
         this.relayDiscoveryAddress = relayDiscoveryAddress;
+
         this.amtMessageParser = AmtMessage.constructAmtGatewayParser();
-        this.requestMLD = amtIpInterface instanceof AmtIPv6Interface;
+        this.requestMLD = this instanceof AmtIPv6TunnelEndpoint;
 
         this.outgoingUpdateChannel = new OutputChannel<IPPacket>() {
+
             @Override
             public void send(IPPacket packet, int milliseconds) throws IOException, InterruptedException {
                 sendUpdate(packet);
@@ -161,42 +181,183 @@ public final class AmtTunnelEndpoint implements Runnable {
             }
         };
 
-        this.taskTimer = taskTimer;
+        this.interfaceManager = new InterfaceMembershipManager(this.taskTimer, this);
 
-   }
+        // Connect a channel membership state manager to the
+        // interface membership state manager
+        this.channelManager = new ChannelMembershipManager(this.interfaceManager);
 
+        this.incomingDataChannel = new Defragmenter(new OutputChannelTransform<IPPacket, UdpDatagram>(
+                                                                                                      this.channelManager.getDispatchChannel(),
+                                                                                                      new MulticastDataTransform()),
+                                                    MAX_REASSEMBLY_CACHE_SIZE,
+                                                    this.taskTimer);
 
-    /**
-     * Sets the destination channel for query packets extracted from AMT membership query messsages.
-     * @param incomingDataChannel
-     */
-    public void setIncomingQueryChannel(final OutputChannel<IPPacket> incomingQueryChannel) {
-        this.incomingQueryChannel = new Defragmenter(incomingQueryChannel, MAX_REASSEMBLY_CACHE_SIZE, this.taskTimer);
+        // Connect report channel of interface membership manager to tunnel endpoint
+        this.interfaceManager.setOutgoingReportChannel(
+                        new OutputChannelTransform<MembershipReport, IPPacket>(
+                                                                               this.outgoingUpdateChannel,
+                                                                               reportTransform));
+
+        // Connect query channel of tunnel endpoint to interface membership manager
+        this.incomingQueryChannel = new Defragmenter(new OutputChannelTransform<IPPacket, MembershipQuery>(
+                                                                                                           this.interfaceManager.getIncomingQueryChannel(),
+                                                                                                           queryTransform),
+                                                     MAX_REASSEMBLY_CACHE_SIZE,
+                                                     this.taskTimer);
+
+        start();
+
     }
 
     /**
-     * Returns the channel that accepts IGMP and MLD reports for encapsulation
-     * into AmtMembershipUpdateMessages.
-     * @return
-     */
-    public OutputChannel<IPPacket> getOutgoingUpdateChannel() {
-        return this.outgoingUpdateChannel;
-    }
-
-    /**
-     * Sets the destination channel for data packets extracted from AMT multicast data messages.
-     * @param incomingDataChannel
-     */
-    public void setIncomingDataChannel(final OutputChannel<IPPacket> incomingDataChannel) {
-        this.incomingDataChannel = new Defragmenter(incomingDataChannel, MAX_REASSEMBLY_CACHE_SIZE, this.taskTimer);
-    }
-
-    /**
-     * 
+     * @param pushChannel
+     * @param groupAddress
+     * @param port
      * @throws IOException
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
-    public void start() throws IOException {
+    public final void join(final OutputChannel<UdpDatagram> pushChannel,
+                           final InetAddress groupAddress,
+                           int port) throws IOException {
+
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer(Logging.entering(ObjectId, "AmtIPInterface.join", pushChannel, Logging.address(groupAddress), port));
+        }
+
+        this.channelManager.join(pushChannel, groupAddress, port);
+    }
+
+    /**
+     * @param pushChannel
+     * @param groupAddress
+     * @param sourceAddress
+     * @param port
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    public final void join(final OutputChannel<UdpDatagram> pushChannel,
+                           final InetAddress groupAddress,
+                           final InetAddress sourceAddress,
+                           final int port) throws IOException {
+
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer(Logging.entering(ObjectId,
+                                          "AmtIPInterface.join",
+                                          pushChannel,
+                                          Logging.address(groupAddress),
+                                          Logging.address(sourceAddress),
+                                          port));
+        }
+
+        this.channelManager.join(pushChannel, groupAddress, sourceAddress, port);
+    }
+
+    /**
+     * @param pushChannel
+     * @param groupAddress
+     * @throws IOException
+     */
+    public final void leave(final OutputChannel<UdpDatagram> pushChannel,
+                            final InetAddress groupAddress) throws IOException {
+
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer(Logging.entering(ObjectId, "AmtIPInterface.leave", pushChannel, Logging.address(groupAddress)));
+        }
+
+        this.channelManager.leave(pushChannel, groupAddress);
+    }
+
+    /**
+     * @param pushChannel
+     * @param groupAddress
+     * @param port
+     * @throws IOException
+     */
+    public final void leave(final OutputChannel<UdpDatagram> pushChannel,
+                            final InetAddress groupAddress,
+                            final int port) throws IOException {
+
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer(Logging.entering(ObjectId, "AmtIPInterface.leave", pushChannel, Logging.address(groupAddress), port));
+        }
+
+        this.channelManager.leave(pushChannel, groupAddress, port);
+    }
+
+    /**
+     * @param pushChannel
+     * @param groupAddress
+     * @param sourceAddress
+     * @throws IOException
+     */
+    public final void leave(final OutputChannel<UdpDatagram> pushChannel,
+                            final InetAddress groupAddress,
+                            final InetAddress sourceAddress) throws IOException {
+
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer(Logging.entering(ObjectId,
+                                          "AmtIPInterface.leave",
+                                          pushChannel,
+                                          Logging.address(groupAddress),
+                                          Logging.address(sourceAddress)));
+        }
+
+        this.channelManager.leave(pushChannel, groupAddress, sourceAddress);
+    }
+
+    /**
+     * @param pushChannel
+     * @param groupAddress
+     * @param sourceAddress
+     * @param port
+     * @throws IOException
+     */
+    public final void leave(final OutputChannel<UdpDatagram> pushChannel,
+                            final InetAddress groupAddress,
+                            final InetAddress sourceAddress,
+                            final int port) throws IOException {
+
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer(Logging.entering(ObjectId,
+                                          "AmtIPInterface.leave",
+                                          pushChannel,
+                                          Logging.address(groupAddress),
+                                          Logging.address(sourceAddress),
+                                          port));
+        }
+
+        this.channelManager.leave(pushChannel, groupAddress, sourceAddress, port);
+
+    }
+
+    /**
+     * @param pushChannel
+     * @throws IOException
+     */
+    public final void leave(final OutputChannel<UdpDatagram> pushChannel) throws IOException {
+
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer(Logging.entering(ObjectId, "AmtIPInterface.leave", pushChannel));
+        }
+
+        this.channelManager.leave(pushChannel);
+
+    }
+
+    /**
+     * @throws InterruptedException
+     * @throws IOException
+     */
+    public final void close() throws InterruptedException, IOException {
+        stop();
+    }
+
+    /**
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    private void start() throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.start"));
@@ -207,12 +368,12 @@ public final class AmtTunnelEndpoint implements Runnable {
         }
 
         synchronized (this.lock) {
-            
+
             if (!this.isRunning) {
 
                 this.udpEndpoint = new UdpSocketEndpoint(0);
 
-                this.udpEndpoint.connect(new InetSocketAddress(this.relayDiscoveryAddress,AMT_PORT));
+                this.udpEndpoint.connect(new InetSocketAddress(this.relayDiscoveryAddress, AMT_PORT));
 
                 this.udpOutputChannel = new UdpOutputChannel(this.udpEndpoint);
                 this.udpInputChannel = new UdpInputChannel(this.udpEndpoint);
@@ -224,7 +385,7 @@ public final class AmtTunnelEndpoint implements Runnable {
                 this.lastRequestMessageSent = null;
                 this.lastQueryMessageReceived = null;
 
-                this.handlerThread = new Thread(this,this.toString());
+                this.handlerThread = new Thread(this, this.toString());
                 this.handlerThread.setDaemon(true);
 
                 this.handlerThread.start();
@@ -236,11 +397,10 @@ public final class AmtTunnelEndpoint implements Runnable {
     }
 
     /**
-     * 
      * @throws InterruptedException
      * @throws IOException
      */
-    public void stop() throws InterruptedException, IOException {
+    private void stop() throws InterruptedException, IOException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.stop"));
@@ -267,8 +427,8 @@ public final class AmtTunnelEndpoint implements Runnable {
         }
     }
 
+
     /**
-     * 
      * @param packet
      * @throws IOException
      * @throws InterruptedException
@@ -283,10 +443,13 @@ public final class AmtTunnelEndpoint implements Runnable {
 
             /*
              * We can only send the update message if a tunnel has been established;
-             * The gateway interface must receive a relay advertisement and initial query message before
+             * The gateway interface must receive a relay advertisement and initial query
+             * message before
              * it can send an update.
-             * We can simply discard the update message if we cannot yet send it to the relay,
-             * since the first message that we will receive from the relay will be a general query
+             * We can simply discard the update message if we cannot yet send it to the
+             * relay,
+             * since the first message that we will receive from the relay will be a
+             * general query
              * that will trigger generation of a new update message.
              */
 
@@ -297,7 +460,8 @@ public final class AmtTunnelEndpoint implements Runnable {
             }
             else if (this.lastAdvertisementMessageReceived == null) {
                 if (logger.isLoggable(Level.INFO)) {
-                    logger.info(ObjectId + " cannot send AMT update message because no AMT relay has responded to the last AMT discovery message");
+                    logger.info(ObjectId
+                                + " cannot send AMT update message because no AMT relay has responded to the last AMT discovery message");
                 }
                 return;
             }
@@ -309,7 +473,8 @@ public final class AmtTunnelEndpoint implements Runnable {
             }
             else if (this.lastQueryMessageReceived == null) {
                 if (logger.isLoggable(Level.INFO)) {
-                    logger.info(ObjectId + " cannot send AMT update message because the AMT relay has not responded to the last AMT request");
+                    logger.info(ObjectId
+                                + " cannot send AMT update message because the AMT relay has not responded to the last AMT request");
                 }
                 return;
             }
@@ -329,7 +494,6 @@ public final class AmtTunnelEndpoint implements Runnable {
     }
 
     /**
-     * 
      * @param message
      * @throws IOException
      * @throws InterruptedException
@@ -341,24 +505,23 @@ public final class AmtTunnelEndpoint implements Runnable {
         }
 
         /*
-        if (logger.isLoggable(Level.FINE)) {
-            logger.fine(ObjectId + " sending " + message.getClass().getSimpleName());
-            if (logger.isLoggable(Level.FINEST)) {
-                message.log(logger);
-            }
-        }
-        */
+         * if (logger.isLoggable(Level.FINE)) {
+         * logger.fine(ObjectId + " sending " + message.getClass().getSimpleName());
+         * if (logger.isLoggable(Level.FINEST)) {
+         * message.log(logger);
+         * }
+         * }
+         */
 
         ByteBuffer buffer = ByteBuffer.allocate(message.getTotalLength());
         message.writeTo(buffer);
         buffer.flip();
 
         send(new UdpDatagram(relayAddress, AMT_PORT, buffer));
-        
+
     }
 
     /**
-     * 
      * @param datagram
      * @throws IOException
      * @throws InterruptedException
@@ -390,7 +553,8 @@ public final class AmtTunnelEndpoint implements Runnable {
         }
         catch (IOException e) {
             if (logger.isLoggable(Level.FINE)) {
-                logger.fine(ObjectId + " attempt to send datagram containing AMT message failed - " + e.getClass().getName() + " " + e.getMessage());
+                logger.fine(ObjectId + " attempt to send datagram containing AMT message failed - " + e.getClass().getName() + " "
+                            + e.getMessage());
             }
             throw e;
         }
@@ -403,10 +567,9 @@ public final class AmtTunnelEndpoint implements Runnable {
     }
 
     /**
-     * 
      * @param interval
      */
-    void startRelayDiscoveryTask() {
+    private void startRelayDiscoveryTask() {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.startRelayDiscoveryTask"));
@@ -419,8 +582,9 @@ public final class AmtTunnelEndpoint implements Runnable {
             if (this.discoveryTask != null) {
                 this.discoveryTask.cancel();
             }
-    
+
             this.discoveryTask = new TimerTask() {
+
                 @Override
                 public void run() {
                     if (AmtTunnelEndpoint.logger.isLoggable(Level.FINER)) {
@@ -433,14 +597,17 @@ public final class AmtTunnelEndpoint implements Runnable {
                                 AmtTunnelEndpoint.this.sendRelayDiscoveryMessage();
                             }
                             else {
-                                AmtTunnelEndpoint.logger.info(ObjectId + " maximum allowable relay discovery message retransmissions exceeded");
+                                AmtTunnelEndpoint.logger
+                                                .info(ObjectId
+                                                      + " maximum allowable relay discovery message retransmissions exceeded");
                                 AmtTunnelEndpoint.this.discoveryRetransmissionCount = 0;
                                 AmtTunnelEndpoint.this.lastDiscoveryMessageSent = null;
                                 this.cancel();
                             }
                         }
                         catch (Exception e) {
-                            AmtTunnelEndpoint.logger.warning(ObjectId + " attempt to send AMT Relay Discovery Message failed - " + e.getMessage());
+                            AmtTunnelEndpoint.logger.warning(ObjectId + " attempt to send AMT Relay Discovery Message failed - "
+                                                             + e.getMessage());
                             AmtTunnelEndpoint.this.discoveryRetransmissionCount = 0;
                             AmtTunnelEndpoint.this.lastDiscoveryMessageSent = null;
                             this.cancel();
@@ -448,16 +615,16 @@ public final class AmtTunnelEndpoint implements Runnable {
                     }
                 }
             };
-    
-            // Schedule relay discovery task for immediate execution with short retry period
+
+            // Schedule relay discovery task for immediate execution with short retry
+            // period
             this.taskTimer.schedule(this.discoveryTask, 0, this.discoveryRetransmissionInterval);
         }
     }
 
     /**
-     * 
-     * @throws InterruptedException 
-     * @throws IOException 
+     * @throws InterruptedException
+     * @throws IOException
      * @throws Exception
      */
     private void sendRelayDiscoveryMessage() throws IOException {
@@ -476,7 +643,8 @@ public final class AmtTunnelEndpoint implements Runnable {
             }
 
             if (logger.isLoggable(Level.FINE)) {
-                logger.fine(ObjectId + " sending AMT Relay Discovery Message: relay-discovery-address="+Logging.address(this.relayDiscoveryAddress));
+                logger.fine(ObjectId + " sending AMT Relay Discovery Message: relay-discovery-address="
+                            + Logging.address(this.relayDiscoveryAddress));
                 if (logger.isLoggable(Level.FINEST)) {
                     this.lastDiscoveryMessageSent.log();
                 }
@@ -489,10 +657,9 @@ public final class AmtTunnelEndpoint implements Runnable {
     }
 
     /**
-     * 
      * @param interval
      */
-    void startRequestTask() {
+    private void startRequestTask() {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.startRequestTask"));
@@ -510,8 +677,9 @@ public final class AmtTunnelEndpoint implements Runnable {
             if (this.requestTask != null) {
                 this.requestTask.cancel();
             }
-    
+
             this.requestTask = new TimerTask() {
+
                 @Override
                 public void run() {
                     if (AmtTunnelEndpoint.logger.isLoggable(Level.FINER)) {
@@ -524,33 +692,36 @@ public final class AmtTunnelEndpoint implements Runnable {
                                 AmtTunnelEndpoint.this.sendRequestMessage();
                             }
                             else {
-    
-                                // The relay did not respond with a query within the retransmission interval
-                                AmtTunnelEndpoint.logger.info(ObjectId + " maximum allowable request message retransmissions exceeded");
+
+                                // The relay did not respond with a query within the
+                                // retransmission interval
+                                AmtTunnelEndpoint.logger.info(ObjectId
+                                                              + " maximum allowable request message retransmissions exceeded");
                                 AmtTunnelEndpoint.this.requestRetransmissionCount = 0;
                                 AmtTunnelEndpoint.this.lastRequestMessageSent = null;
                                 this.cancel();
-    
+
                                 // Restart discovery process to locate another relay
                                 AmtTunnelEndpoint.this.startRelayDiscoveryTask();
                             }
                         }
                         catch (Exception e) {
-                            // Schedule request task for immediate execution with short retry period
-                            AmtTunnelEndpoint.logger.warning(ObjectId + " attempt to send AMT Request Message failed - " + e.getMessage());
+                            // Schedule request task for immediate execution with short
+                            // retry period
+                            AmtTunnelEndpoint.logger.warning(ObjectId + " attempt to send AMT Request Message failed - "
+                                                             + e.getMessage());
                             AmtTunnelEndpoint.this.requestRetransmissionCount = 0;
                             this.cancel();
                         }
                     }
                 }
             };
-        
+
             this.taskTimer.schedule(this.requestTask, 0, this.requestRetransmissionInterval);
         }
     }
 
     /**
-     * 
      * @throws IOException
      * @throws InterruptedException
      */
@@ -579,15 +750,13 @@ public final class AmtTunnelEndpoint implements Runnable {
 
     }
 
-
     /**
-     * 
-     * @param interval
+     * @param delay
      */
     void startPeriodicRequestTask(final long delay) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.startPeriodicRequestTask",delay));
+            logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.startPeriodicRequestTask", delay));
         }
 
         synchronized (this.lock) {
@@ -595,8 +764,9 @@ public final class AmtTunnelEndpoint implements Runnable {
             if (this.periodicRequestTask != null) {
                 this.periodicRequestTask.cancel();
             }
-    
+
             this.periodicRequestTask = new TimerTask() {
+
                 @Override
                 public void run() {
                     if (AmtTunnelEndpoint.logger.isLoggable(Level.FINER)) {
@@ -605,7 +775,7 @@ public final class AmtTunnelEndpoint implements Runnable {
                     AmtTunnelEndpoint.this.startRequestTask();
                 }
             };
-        
+
             this.taskTimer.schedule(this.periodicRequestTask, delay);
         }
     }
@@ -613,7 +783,7 @@ public final class AmtTunnelEndpoint implements Runnable {
     /**
      * 
      */
-    public void stopTasks() {
+    private void stopTasks() {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.stopTasks"));
@@ -621,7 +791,6 @@ public final class AmtTunnelEndpoint implements Runnable {
 
         synchronized (this.lock) {
 
-           
             if (this.periodicRequestTask != null) {
                 this.periodicRequestTask.cancel();
                 this.periodicRequestTask = null;
@@ -646,13 +815,12 @@ public final class AmtTunnelEndpoint implements Runnable {
     }
 
     /**
-     * 
      * @param message
      * @throws IOException
      * @throws InterruptedException
      */
     private void handleAdvertisementMessage(final AmtRelayAdvertisementMessage message) throws IOException, InterruptedException {
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.handleAdvertisementMessage", message));
         }
@@ -662,11 +830,11 @@ public final class AmtTunnelEndpoint implements Runnable {
             if (message.getDiscoveryNonce() != this.lastDiscoveryMessageSent.getDiscoveryNonce()) {
 
                 logger.info(ObjectId +
-                            " received unexpected AMT Relay Advertisement Message: discovery-nonce=" + 
-                            message.getDiscoveryNonce() + 
-                            " expected-nonce=" + 
+                            " received unexpected AMT Relay Advertisement Message: discovery-nonce=" +
+                            message.getDiscoveryNonce() +
+                            " expected-nonce=" +
                             this.lastDiscoveryMessageSent.getDiscoveryNonce());
-                
+
                 // Let the relay discovery process continue
                 return;
             }
@@ -682,7 +850,7 @@ public final class AmtTunnelEndpoint implements Runnable {
                 this.relayAddress = InetAddress.getByAddress(message.getRelayAddress());
 
                 try {
-                    this.udpEndpoint.connect(new InetSocketAddress(this.relayAddress,AMT_PORT));
+                    this.udpEndpoint.connect(new InetSocketAddress(this.relayAddress, AMT_PORT));
                 }
                 catch (UnknownHostException e) {
                     throw new Error(e);
@@ -695,15 +863,13 @@ public final class AmtTunnelEndpoint implements Runnable {
             }
         }
 
-
         if (logger.isLoggable(Level.INFO)) {
             logger.info(ObjectId + " interface connected to AMT Relay " + Logging.address(this.relayAddress));
         }
-        
+
     }
 
     /**
-     * 
      * @param message
      * @throws IOException
      * @throws InterruptedException
@@ -718,9 +884,9 @@ public final class AmtTunnelEndpoint implements Runnable {
 
             if (message.getRequestNonce() != this.lastRequestMessageSent.getRequestNonce()) {
                 logger.info(ObjectId +
-                            " received unexpected AMT Membership Query Message: request-nonce=" + 
-                            message.getRequestNonce() + 
-                            " expected-nonce=" + 
+                            " received unexpected AMT Membership Query Message: request-nonce=" +
+                            message.getRequestNonce() +
+                            " expected-nonce=" +
                             this.lastRequestMessageSent.getRequestNonce());
                 return;
             }
@@ -737,8 +903,10 @@ public final class AmtTunnelEndpoint implements Runnable {
                 if (this.lastGatewayAddress != null) {
                     if (!this.lastGatewayAddress.equals(gatewayAddress)) {
 
-                        // The source address for the request message has changed since the last request
-                        // This implies that the relay will construct a new session when the Membership Update is sent
+                        // The source address for the request message has changed since
+                        // the last request
+                        // This implies that the relay will construct a new session when
+                        // the Membership Update is sent
                         // Here we'll send a Teardown message to destroy the old session
                         AmtTeardownMessage teardown = new AmtTeardownMessage(this.lastQueryMessageReceived.getResponseMac(),
                                                                              this.lastQueryMessageReceived.getRequestNonce(),
@@ -766,7 +934,6 @@ public final class AmtTunnelEndpoint implements Runnable {
     }
 
     /**
-     * 
      * @param message
      * @throws InterruptedException
      * @throws InterruptedIOException
@@ -776,17 +943,19 @@ public final class AmtTunnelEndpoint implements Runnable {
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.handleDataMessage", message));
         }
-        
+
         try {
             this.incomingDataChannel.send(message.getPacket(), Integer.MAX_VALUE);
         }
         catch (InterruptedIOException e) {
             logger.fine(ObjectId + " attempt to send AMT multicast data packet was interrupted");
-            // Re-throw as this thread was interrupted in an IO operation and as is likely shutting down
+            // Re-throw as this thread was interrupted in an IO operation and as is likely
+            // shutting down
             throw e;
         }
         catch (IOException e) {
-            logger.fine(ObjectId + " attempt to send AMT multicast data packet failed - " + e.getClass().getName() + ":" + e.getMessage());
+            logger.fine(ObjectId + " attempt to send AMT multicast data packet failed - " + e.getClass().getName() + ":"
+                        + e.getMessage());
             // Continue on...
         }
         catch (InterruptedException e) {
@@ -796,14 +965,13 @@ public final class AmtTunnelEndpoint implements Runnable {
         }
     }
 
-    
     @Override
     public void run() {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "AmtTunnelEndpoint.run"));
         }
-        
+
         while (this.isRunning) {
 
             if (logger.isLoggable(Level.FINER)) {
@@ -811,7 +979,7 @@ public final class AmtTunnelEndpoint implements Runnable {
             }
 
             UdpDatagram inputDatagram = null;
-            
+
             try {
                 inputDatagram = this.udpInputChannel.receive(Integer.MAX_VALUE);
             }
@@ -824,7 +992,8 @@ public final class AmtTunnelEndpoint implements Runnable {
                 break;
             }
             catch (Exception e) {
-                logger.severe(ObjectId + " receive operation failed unexpectedly - " + e.getClass().getSimpleName() + ":" + e.getMessage());
+                logger.severe(ObjectId + " receive operation failed unexpectedly - " + e.getClass().getSimpleName() + ":"
+                              + e.getMessage());
                 e.printStackTrace();
                 throw new Error(e);
             }
@@ -835,10 +1004,10 @@ public final class AmtTunnelEndpoint implements Runnable {
 
                 try {
 
-                    message = (AmtMessage)amtMessageParser.parse(inputDatagram.getPayload());
+                    message = (AmtMessage) amtMessageParser.parse(inputDatagram.getPayload());
 
                     if (logger.isLoggable(Level.FINE)) {
-                        logger.fine(ObjectId + " received AMT message "+message.getClass().getSimpleName());
+                        logger.fine(ObjectId + " received AMT message " + message.getClass().getSimpleName());
                         if (logger.isLoggable(Level.FINEST)) {
                             message.log();
                         }
@@ -846,23 +1015,23 @@ public final class AmtTunnelEndpoint implements Runnable {
 
                     switch (message.getType()) {
 
-                    case AmtMulticastDataMessage.MESSAGE_TYPE:
-                        handleDataMessage((AmtMulticastDataMessage)message);
-                        break;
+                        case AmtMulticastDataMessage.MESSAGE_TYPE:
+                            handleDataMessage((AmtMulticastDataMessage) message);
+                            break;
 
-                    case AmtMembershipQueryMessage.MESSAGE_TYPE:
-                        handleQueryMessage((AmtMembershipQueryMessage)message);
-                        break;
+                        case AmtMembershipQueryMessage.MESSAGE_TYPE:
+                            handleQueryMessage((AmtMembershipQueryMessage) message);
+                            break;
 
-                    case AmtRelayAdvertisementMessage.MESSAGE_TYPE:
-                        handleAdvertisementMessage((AmtRelayAdvertisementMessage)message);
-                        break;
+                        case AmtRelayAdvertisementMessage.MESSAGE_TYPE:
+                            handleAdvertisementMessage((AmtRelayAdvertisementMessage) message);
+                            break;
 
-                    default:
-                        if (logger.isLoggable(Level.INFO)) {
-                            logger.info(ObjectId + " ignoring AMT message " + message.getClass().getSimpleName());
-                        }
-                        break;
+                        default:
+                            if (logger.isLoggable(Level.INFO)) {
+                                logger.info(ObjectId + " ignoring AMT message " + message.getClass().getSimpleName());
+                            }
+                            break;
                     }
                 }
                 catch (InterruptedIOException e) {
@@ -874,21 +1043,22 @@ public final class AmtTunnelEndpoint implements Runnable {
                     break;
                 }
                 catch (Exception e) {
-                    logger.severe(ObjectId + " message handler failed unexpectedly - " + e.getClass().getSimpleName() + ":" + e.getMessage());
+                    logger.severe(ObjectId + " message handler failed unexpectedly - " + e.getClass().getSimpleName() + ":"
+                                  + e.getMessage());
                     e.printStackTrace();
                     throw new Error(e);
                 }
             }
         }
 
-        // Shutdown the AmtInterface to force it leave all joined streams.
+        // Shutdown the channel manager to force it leave all joined streams.
         try {
-            this.amtIpInterface.shutdown();
+            this.channelManager.shutdown();
         }
         catch (InterruptedException e) {
             // Ignore
         }
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(ObjectId + " exiting message handler thread");
         }
