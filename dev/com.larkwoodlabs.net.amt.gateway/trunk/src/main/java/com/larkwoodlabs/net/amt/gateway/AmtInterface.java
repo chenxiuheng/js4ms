@@ -32,17 +32,15 @@ import com.larkwoodlabs.net.udp.UdpDatagram;
 import com.larkwoodlabs.util.logging.Logging;
 
 /**
- * Manages an AMT tunnel end-point.
+ * An AMT pseudo-interface.
  * The {@link AmtInterfaceManager} constructs a separate AMT interface for each unique
  * AMT relay acting as a remote AMT tunnel end-point.
- * An AmtInterface provides functions for joining, leaving and receiving packets
- * for any number of multicast groups. The AmtInterface tracks local group
- * membership state and handles the exchange of IGMP/MLD messages used
- * to query or update that state.
+ * An AmtInterface provides functions for registering {@link OutputChannel} objects
+ * to receive specific SSM or ASM traffic.
  * 
  * @author Greg Bumgardner (gbumgard)
  */
-public class AmtInterface {
+public final class AmtInterface {
 
     /*-- Static Variables ----------------------------------------------------*/
 
@@ -59,6 +57,7 @@ public class AmtInterface {
     private int referenceCount = 0;
 
     private AmtIPv4TunnelEndpoint ipv4Interface = null;
+
     private AmtIPv6TunnelEndpoint ipv6Interface = null;
 
     /*-- Member Functions ---------------------------------------------------*/
@@ -68,7 +67,7 @@ public class AmtInterface {
      * @param relayDiscoveryAddress
      * @throws IOException
      */
-    public AmtInterface(final AmtInterfaceManager manager, final InetAddress relayDiscoveryAddress) throws IOException {
+    AmtInterface(final AmtInterfaceManager manager, final InetAddress relayDiscoveryAddress) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "AmtInterface.AmtInterface", manager, Logging.address(relayDiscoveryAddress)));
@@ -88,6 +87,7 @@ public class AmtInterface {
 
     /**
      * Gets the Relay Discovery Address associated with this interface.
+     * 
      * @return An InetAddress object containing the Relay Discovery Address
      */
     public final InetAddress getRelayDiscoveryAddress() {
@@ -97,7 +97,7 @@ public class AmtInterface {
     /**
      * 
      */
-    public final synchronized void acquire() {
+    final synchronized void acquire() {
         this.referenceCount++;
     }
 
@@ -105,7 +105,7 @@ public class AmtInterface {
      * @throws InterruptedException
      * @throws IOException
      */
-    public final synchronized void release() throws InterruptedException, IOException {
+    final synchronized void release() throws InterruptedException, IOException {
         if (--this.referenceCount == 0) {
             this.manager.closeInterface(this);
         }

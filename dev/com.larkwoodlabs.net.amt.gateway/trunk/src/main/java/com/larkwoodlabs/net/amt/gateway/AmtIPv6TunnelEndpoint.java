@@ -29,16 +29,12 @@ import com.larkwoodlabs.net.amt.IPv6MembershipQueryTransform;
 import com.larkwoodlabs.util.logging.Logging;
 
 /**
- * An {@link AmtTunnelEndpoint} that uses MLD to communicate IPv6 group membership
- * changes to an AMT relay.
- * An AmtIPv6TunnelEndpoint provides functions for joining, leaving and receiving packets
- * for any number of IPv6 multicast groups. The AmtIPv6TunnelEndpoint tracks local group
- * membership state and handles the exchange of MLD messages used
- * to query or update that state.
+ * An {@link AmtTunnelEndpoint} that encodes and decodes MLD messages
+ * used to communicate IPv6 group membership changes to an AMT relay.
  * 
  * @author Greg Bumgardner (gbumgard)
  */
-public final class AmtIPv6TunnelEndpoint
+final class AmtIPv6TunnelEndpoint
                 extends AmtTunnelEndpoint {
 
     /*-- Member Functions ---------------------------------------------------*/
@@ -48,7 +44,7 @@ public final class AmtIPv6TunnelEndpoint
      * @param relayDiscoveryAddress
      * @throws IOException
      */
-    public AmtIPv6TunnelEndpoint(final InetAddress relayDiscoveryAddress) throws IOException {
+    AmtIPv6TunnelEndpoint(final InetAddress relayDiscoveryAddress) throws IOException {
         super(relayDiscoveryAddress,
               new IPv6MembershipQueryTransform(),
               new IPv6MembershipReportTransform());

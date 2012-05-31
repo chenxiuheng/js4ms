@@ -37,39 +37,44 @@ import com.larkwoodlabs.net.udp.UdpDatagram;
 import com.larkwoodlabs.util.logging.LoggableBase;
 import com.larkwoodlabs.util.logging.Logging;
 
-public final class ChannelMembershipManager
-            extends LoggableBase {
+final class ChannelMembershipManager
+                extends LoggableBase {
 
     /*-- Static Variables ---------------------------------------------------*/
-
-    public static final Logger logger = Logger.getLogger(ChannelMembershipManager.class.getName());
-
-
-    /*-- Member Variables ---------------------------------------------------*/
 
     /**
      * 
      */
+    public static final Logger logger = Logger.getLogger(ChannelMembershipManager.class.getName());
+
+    /*-- Member Variables ---------------------------------------------------*/
+
     private final InterfaceMembershipManager interfaceManager;
-    
+
     private final MessageKeyExtractor<UdpDatagram> groupExtractor;
+
     private final MessageKeyExtractor<UdpDatagram> sourceExtractor;
+
     private final MessageKeyExtractor<UdpDatagram> portExtractor;
 
-
     /**
-     * Base channel selector used to track reception state for each group, source, and port.
+     * Base channel selector used to track reception state for each group, source, and
+     * port.
      * The hierarchy of selectors and channels differs for ASM and SSM multicast groups.
-     * <p>ASM example:
+     * <p>
+     * ASM example:
+     * 
      * <pre>
      * Group Channel Map-+->Port Channel Map-+->Channel Tee--->Output Channel
      *                   |                   |
      *                   |                   +->Channel Tee-+->Output Channel
      *                   |                                  |
      *                   |                                  +->Output Channel
-     *                   +->Port Channel Map--->Channel Tee--->Output Channel             
+     *                   +->Port Channel Map--->Channel Tee--->Output Channel
      * </pre>
-     * <p>SSM example:
+     * <p>
+     * SSM example:
+     * 
      * <pre>
      * Group Channel Map-+->Source Channel Map-+->Port Channel Map--->Channel Tee--->Output Channel
      *                   |                     |
@@ -78,32 +83,32 @@ public final class ChannelMembershipManager
      *                   |                                                        +->Output Channel
      *                   +->Source Channel Map--->Port Channel Map-+->Channel Tee--->Output Channel
      *                                                             |
-     *                                                             +->Channel Tee--->Output Channel       
+     *                                                             +->Channel Tee--->Output Channel
      * </pre>
      */
     private final OutputChannelMap<UdpDatagram> groupMap;
 
     /**
-     * Channel that receives UdpDatagrams for dispatch to application-side output channels.
+     * Channel that receives UdpDatagrams for dispatch to application-side output
+     * channels.
      */
     private final OutputChannel<UdpDatagram> dispatchChannel;
 
-    
     /*-- Member Functions ---------------------------------------------------*/
-  
+
     /**
-     * 
      * @param interfaceManager
      */
-    public ChannelMembershipManager(final InterfaceMembershipManager interfaceManager) {
+    ChannelMembershipManager(final InterfaceMembershipManager interfaceManager) {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "ChannelMembershipManager.ChannelMembershipManager", interfaceManager));
         }
 
         this.interfaceManager = interfaceManager;
-        
+
         this.groupExtractor = new MessageKeyExtractor<UdpDatagram>() {
+
             @Override
             public InetAddress getKey(UdpDatagram message) {
                 return message.getDestinationInetAddress();
@@ -111,6 +116,7 @@ public final class ChannelMembershipManager
         };
 
         this.sourceExtractor = new MessageKeyExtractor<UdpDatagram>() {
+
             @Override
             public InetAddress getKey(UdpDatagram message) {
                 return message.getSourceInetAddress();
@@ -118,6 +124,7 @@ public final class ChannelMembershipManager
         };
 
         this.portExtractor = new MessageKeyExtractor<UdpDatagram>() {
+
             @Override
             public Integer getKey(UdpDatagram message) {
                 return message.getDestinationPort();
@@ -125,8 +132,9 @@ public final class ChannelMembershipManager
         };
 
         final ChannelMembershipManager manager = this;
-        
+
         this.dispatchChannel = new OutputChannel<UdpDatagram>() {
+
             @Override
             public void send(UdpDatagram message, int milliseconds) throws IOException, InterruptedException {
                 manager.send(message, milliseconds);
@@ -138,7 +146,7 @@ public final class ChannelMembershipManager
         };
 
         this.groupMap = new OutputChannelMap<UdpDatagram>(this.groupExtractor);
-        
+
     }
 
     @Override
@@ -147,7 +155,6 @@ public final class ChannelMembershipManager
     }
 
     /**
-     * 
      * @return
      */
     OutputChannel<UdpDatagram> getDispatchChannel() {
@@ -155,24 +162,24 @@ public final class ChannelMembershipManager
     }
 
     /**
-     * 
      * @param pushChannel
      * @param groupAddress
      * @param port
      * @throws IOException
      */
-    public void join(final OutputChannel<UdpDatagram> pushChannel,
-                     final InetAddress groupAddress,
-                     final int port) throws IOException {
+    void join(final OutputChannel<UdpDatagram> pushChannel,
+              final InetAddress groupAddress,
+              final int port) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "ChannelMembershipManager.join", pushChannel, Logging.address(groupAddress), port));
+            logger.finer(Logging.entering(ObjectId, "ChannelMembershipManager.join", pushChannel, Logging.address(groupAddress),
+                                          port));
         }
-        
+
         Precondition.checkASMMulticastAddress(groupAddress);
 
         synchronized (this.groupMap) {
-            OutputChannelMap<UdpDatagram> portMap = (OutputChannelMap<UdpDatagram>)this.groupMap.get(groupAddress);
+            OutputChannelMap<UdpDatagram> portMap = (OutputChannelMap<UdpDatagram>) this.groupMap.get(groupAddress);
             if (portMap == null) {
                 portMap = new OutputChannelMap<UdpDatagram>(this.portExtractor);
                 this.groupMap.put(groupAddress, portMap);
@@ -182,7 +189,7 @@ public final class ChannelMembershipManager
                 this.interfaceManager.join(groupAddress);
             }
             else {
-                OutputChannelTee<UdpDatagram> tee = (OutputChannelTee<UdpDatagram>)portMap.get(port);
+                OutputChannelTee<UdpDatagram> tee = (OutputChannelTee<UdpDatagram>) portMap.get(port);
                 if (tee == null) {
                     tee = new OutputChannelTee<UdpDatagram>();
                     portMap.put(port, tee);
@@ -193,17 +200,16 @@ public final class ChannelMembershipManager
     }
 
     /**
-     * 
      * @param pushChannel
      * @param groupAddress
      * @param sourceAddress
      * @param port
      * @throws IOException
      */
-    public void join(final OutputChannel<UdpDatagram> pushChannel,
-                     final InetAddress groupAddress,
-                     final InetAddress sourceAddress,
-                     final int port) throws IOException {
+    void join(final OutputChannel<UdpDatagram> pushChannel,
+              final InetAddress groupAddress,
+              final InetAddress sourceAddress,
+              final int port) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId,
@@ -213,12 +219,12 @@ public final class ChannelMembershipManager
                                           Logging.address(sourceAddress),
                                           port));
         }
-        
+
         Precondition.checkMulticastAddress(groupAddress);
         Precondition.checkAddresses(groupAddress, sourceAddress);
 
         synchronized (this.groupMap) {
-            OutputChannelMap<UdpDatagram> sourceMap = (OutputChannelMap<UdpDatagram>)this.groupMap.get(groupAddress);
+            OutputChannelMap<UdpDatagram> sourceMap = (OutputChannelMap<UdpDatagram>) this.groupMap.get(groupAddress);
             if (sourceMap == null) {
                 sourceMap = new OutputChannelMap<UdpDatagram>(this.sourceExtractor);
                 this.groupMap.put(groupAddress, sourceMap);
@@ -230,7 +236,7 @@ public final class ChannelMembershipManager
                 this.interfaceManager.join(groupAddress, sourceAddress);
             }
             else {
-                OutputChannelMap<UdpDatagram> portMap = (OutputChannelMap<UdpDatagram>)sourceMap.get(sourceAddress);
+                OutputChannelMap<UdpDatagram> portMap = (OutputChannelMap<UdpDatagram>) sourceMap.get(sourceAddress);
                 if (portMap == null) {
                     portMap = new OutputChannelMap<UdpDatagram>(this.portExtractor);
                     sourceMap.put(sourceAddress, portMap);
@@ -239,7 +245,7 @@ public final class ChannelMembershipManager
                     tee.add(pushChannel);
                 }
                 else {
-                    OutputChannelTee<UdpDatagram> tee = (OutputChannelTee<UdpDatagram>)portMap.get(port);
+                    OutputChannelTee<UdpDatagram> tee = (OutputChannelTee<UdpDatagram>) portMap.get(port);
                     if (tee == null) {
                         tee = new OutputChannelTee<UdpDatagram>();
                         portMap.put(port, tee);
@@ -251,52 +257,55 @@ public final class ChannelMembershipManager
     }
 
     /**
-     * 
      * @param pushChannel
      * @param groupAddress
      * @throws IOException
      */
-    public void leave(final OutputChannel<UdpDatagram> pushChannel,
-                      final InetAddress groupAddress) throws IOException {
+    void leave(final OutputChannel<UdpDatagram> pushChannel,
+               final InetAddress groupAddress) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "ChannelMembershipManager.leave", pushChannel, Logging.address(groupAddress)));
         }
- 
+
         Precondition.checkMulticastAddress(groupAddress);
 
         synchronized (this.groupMap) {
             // Get the source or port selector for this group
-            OutputChannelMap<UdpDatagram> entryMap = (OutputChannelMap<UdpDatagram>)this.groupMap.get(groupAddress);
+            OutputChannelMap<UdpDatagram> entryMap = (OutputChannelMap<UdpDatagram>) this.groupMap.get(groupAddress);
             if (entryMap != null) {
                 // Look for the channel under all entries
                 Iterator<Object> entryIter = entryMap.getKeys().iterator();
                 while (entryIter.hasNext()) {
                     Object entry = entryIter.next();
                     if (entry instanceof InetAddress) {
-                        InetAddress sourceAddress = (InetAddress)entry;
+                        InetAddress sourceAddress = (InetAddress) entry;
                         // Get the port selector for the source
-                        OutputChannelMap<UdpDatagram> portMap = (OutputChannelMap<UdpDatagram>)entryMap.get(sourceAddress);
+                        OutputChannelMap<UdpDatagram> portMap = (OutputChannelMap<UdpDatagram>) entryMap.get(sourceAddress);
                         if (portMap != null) {
-                            // Look for the channel under all of the port entries 
+                            // Look for the channel under all of the port entries
                             Iterator<Object> portIter = portMap.getKeys().iterator();
                             while (portIter.hasNext()) {
-                                int port = (Integer)portIter.next();
+                                int port = (Integer) portIter.next();
                                 // Get the splitter for this port
-                                OutputChannelTee<UdpDatagram> tee = (OutputChannelTee<UdpDatagram>)portMap.get(port);
+                                OutputChannelTee<UdpDatagram> tee = (OutputChannelTee<UdpDatagram>) portMap.get(port);
                                 // Remove the channel (even though it may not be there).
                                 tee.remove(pushChannel);
                                 if (tee.isEmpty()) {
-                                    // No more channels associated with this port - remove the port entry
+                                    // No more channels associated with this port - remove
+                                    // the port entry
                                     portIter.remove();
                                     if (portMap.isEmpty()) {
-                                        // No more ports associated with this source - remove the source entry
+                                        // No more ports associated with this source -
+                                        // remove the source entry
                                         entryIter.remove();
                                         if (entryMap.isEmpty()) {
-                                            // No more sources associated with this group - remove the group entry
+                                            // No more sources associated with this group
+                                            // - remove the group entry
                                             this.groupMap.remove(groupAddress);
                                         }
-                                        // No channels are left in this source group - update the interface reception state
+                                        // No channels are left in this source group -
+                                        // update the interface reception state
                                         this.interfaceManager.leave(groupAddress, sourceAddress);
                                     }
                                 }
@@ -304,18 +313,21 @@ public final class ChannelMembershipManager
                         }
                     }
                     else {
-                        int port = (Integer)entry;
+                        int port = (Integer) entry;
                         // Get the splitter for this port
-                        OutputChannelTee<UdpDatagram> tee = (OutputChannelTee<UdpDatagram>)entryMap.get(port);
+                        OutputChannelTee<UdpDatagram> tee = (OutputChannelTee<UdpDatagram>) entryMap.get(port);
                         // Remove the channel (even though it may not be there).
                         tee.remove(pushChannel);
                         if (tee.isEmpty()) {
-                            // No more channels associated with this port - remove the port entry
+                            // No more channels associated with this port - remove the
+                            // port entry
                             entryIter.remove();
                             if (entryMap.isEmpty()) {
-                                // No more ports associated with this group - remove the group entry
+                                // No more ports associated with this group - remove the
+                                // group entry
                                 this.groupMap.remove(groupAddress);
-                                // No channels are left in this group - update the interface reception state
+                                // No channels are left in this group - update the
+                                // interface reception state
                                 this.interfaceManager.leave(groupAddress);
                             }
                         }
@@ -326,24 +338,24 @@ public final class ChannelMembershipManager
     }
 
     /**
-     * 
      * @param pushChannel
      * @param groupAddress
      * @param port
      * @throws IOException
      */
-    public void leave(final OutputChannel<UdpDatagram> pushChannel,
-                      final InetAddress groupAddress,
-                      final int port) throws IOException {
+    void leave(final OutputChannel<UdpDatagram> pushChannel,
+               final InetAddress groupAddress,
+               final int port) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "ChannelMembershipManager.leave", pushChannel, Logging.address(groupAddress), port));
+            logger.finer(Logging.entering(ObjectId, "ChannelMembershipManager.leave", pushChannel, Logging.address(groupAddress),
+                                          port));
         }
-        
+
         Precondition.checkMulticastAddress(groupAddress);
 
         synchronized (this.groupMap) {
-            OutputChannelMap<UdpDatagram> entryMap = (OutputChannelMap<UdpDatagram>)this.groupMap.get(groupAddress);
+            OutputChannelMap<UdpDatagram> entryMap = (OutputChannelMap<UdpDatagram>) this.groupMap.get(groupAddress);
             if (entryMap != null) {
                 // Look for the channel under all entries
                 Iterator<Object> entryIter = entryMap.getKeys().iterator();
@@ -351,25 +363,29 @@ public final class ChannelMembershipManager
                     Object entry = entryIter.next();
                     if (entry instanceof InetAddress) {
                         // Entry map is a source map
-                        InetAddress sourceAddress = (InetAddress)entry;
+                        InetAddress sourceAddress = (InetAddress) entry;
                         // Get the port selector for the source
-                        OutputChannelMap<UdpDatagram> portMap = (OutputChannelMap<UdpDatagram>)entryMap.get(sourceAddress);
+                        OutputChannelMap<UdpDatagram> portMap = (OutputChannelMap<UdpDatagram>) entryMap.get(sourceAddress);
                         if (portMap != null) {
                             // Get the splitter for this port
-                            OutputChannelTee<UdpDatagram> tee = (OutputChannelTee<UdpDatagram>)portMap.get(port);
+                            OutputChannelTee<UdpDatagram> tee = (OutputChannelTee<UdpDatagram>) portMap.get(port);
                             // Remove the channel (even though it may not be there).
                             tee.remove(pushChannel);
                             if (tee.isEmpty()) {
-                                // No more channels associated with this port - remove the port entry
+                                // No more channels associated with this port - remove the
+                                // port entry
                                 portMap.remove(port);
                                 if (portMap.isEmpty()) {
-                                    // No more ports associated with this source - remove the source entry
+                                    // No more ports associated with this source - remove
+                                    // the source entry
                                     entryIter.remove();
                                     if (entryMap.isEmpty()) {
-                                        // No more sources associated with this group - remove the group entry
+                                        // No more sources associated with this group -
+                                        // remove the group entry
                                         this.groupMap.remove(groupAddress);
                                     }
-                                    // No channels are left in this source group - update the interface reception state
+                                    // No channels are left in this source group - update
+                                    // the interface reception state
                                     this.interfaceManager.leave(groupAddress, sourceAddress);
                                 }
                             }
@@ -377,16 +393,19 @@ public final class ChannelMembershipManager
                     }
                     else {
                         // Get the splitter for this port
-                        OutputChannelTee<UdpDatagram> tee = (OutputChannelTee<UdpDatagram>)entryMap.get(port);
+                        OutputChannelTee<UdpDatagram> tee = (OutputChannelTee<UdpDatagram>) entryMap.get(port);
                         // Remove the channel (even though it may not be there).
                         tee.remove(pushChannel);
                         if (tee.isEmpty()) {
-                            // No more channels associated with this port - remove the port entry
+                            // No more channels associated with this port - remove the
+                            // port entry
                             entryMap.remove(port);
                             if (entryMap.isEmpty()) {
-                                // No more ports associated with this group - remove the group entry
+                                // No more ports associated with this group - remove the
+                                // group entry
                                 this.groupMap.remove(groupAddress);
-                                // No channels are left in this group - update the interface reception state
+                                // No channels are left in this group - update the
+                                // interface reception state
                                 this.interfaceManager.leave(groupAddress);
                             }
                         }
@@ -400,49 +419,53 @@ public final class ChannelMembershipManager
     }
 
     /**
-     * 
      * @param channel
      * @param groupAddress
      * @param sourceAddress
      * @throws IOException
      */
-    public void leave(final OutputChannel<UdpDatagram> channel,
-                      final InetAddress groupAddress,
-                      final InetAddress sourceAddress) throws IOException {
+    void leave(final OutputChannel<UdpDatagram> channel,
+               final InetAddress groupAddress,
+               final InetAddress sourceAddress) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "ChannelMembershipManager.leave", channel, Logging.address(groupAddress), Logging.address(sourceAddress)));
+            logger.finer(Logging.entering(ObjectId, "ChannelMembershipManager.leave", channel, Logging.address(groupAddress),
+                                          Logging.address(sourceAddress)));
         }
-        
+
         Precondition.checkMulticastAddress(groupAddress);
         Precondition.checkAddresses(groupAddress, sourceAddress);
 
         synchronized (this.groupMap) {
             // Get the source selector for the group
-            OutputChannelMap<UdpDatagram> sourceMap = (OutputChannelMap<UdpDatagram>)this.groupMap.get(groupAddress);
+            OutputChannelMap<UdpDatagram> sourceMap = (OutputChannelMap<UdpDatagram>) this.groupMap.get(groupAddress);
             if (sourceMap != null) {
                 // Get the port selector for the source
-                OutputChannelMap<UdpDatagram> portMap = (OutputChannelMap<UdpDatagram>)sourceMap.get(sourceAddress);
+                OutputChannelMap<UdpDatagram> portMap = (OutputChannelMap<UdpDatagram>) sourceMap.get(sourceAddress);
                 if (portMap != null) {
-                    // Look for the channel under all of the port entries 
+                    // Look for the channel under all of the port entries
                     Iterator<Object> portIter = portMap.getKeys().iterator();
                     while (portIter.hasNext()) {
-                        int port = (Integer)portIter.next();
+                        int port = (Integer) portIter.next();
                         // Get the splitter for this port
-                        OutputChannelTee<UdpDatagram> tee = (OutputChannelTee<UdpDatagram>)portMap.get(port);
+                        OutputChannelTee<UdpDatagram> tee = (OutputChannelTee<UdpDatagram>) portMap.get(port);
                         // Remove the channel (even though it may not be there).
                         tee.remove(channel);
                         if (tee.isEmpty()) {
-                            // No more channels associated with this port - remove the port entry
+                            // No more channels associated with this port - remove the
+                            // port entry
                             portIter.remove();
                             if (portMap.isEmpty()) {
-                                // No more ports associated with this source - remove the source entry
+                                // No more ports associated with this source - remove the
+                                // source entry
                                 sourceMap.remove(sourceAddress);
                                 if (sourceMap.isEmpty()) {
-                                    // No more sources associated with this group - remove the group entry
+                                    // No more sources associated with this group - remove
+                                    // the group entry
                                     this.groupMap.remove(groupAddress);
                                 }
-                                // No channels are left in this source group - update the interface reception state
+                                // No channels are left in this source group - update the
+                                // interface reception state
                                 this.interfaceManager.leave(groupAddress, sourceAddress);
                             }
                         }
@@ -453,17 +476,16 @@ public final class ChannelMembershipManager
     }
 
     /**
-     * 
      * @param pushChannel
      * @param groupAddress
      * @param sourceAddress
      * @param port
      * @throws IOException
      */
-    public void leave(final OutputChannel<UdpDatagram> pushChannel,
-                      final InetAddress groupAddress,
-                      final InetAddress sourceAddress,
-                      final int port) throws IOException {
+    void leave(final OutputChannel<UdpDatagram> pushChannel,
+               final InetAddress groupAddress,
+               final InetAddress sourceAddress,
+               final int port) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId,
@@ -478,26 +500,30 @@ public final class ChannelMembershipManager
 
         synchronized (this.groupMap) {
             // Get the source selector for the group
-            OutputChannelMap<UdpDatagram> sourceMap = (OutputChannelMap<UdpDatagram>)this.groupMap.get(groupAddress);
+            OutputChannelMap<UdpDatagram> sourceMap = (OutputChannelMap<UdpDatagram>) this.groupMap.get(groupAddress);
             if (sourceMap != null) {
                 // Get the port selector for the source
-                OutputChannelMap<UdpDatagram> portMap = (OutputChannelMap<UdpDatagram>)sourceMap.get(sourceAddress);
+                OutputChannelMap<UdpDatagram> portMap = (OutputChannelMap<UdpDatagram>) sourceMap.get(sourceAddress);
                 if (portMap != null) {
                     // Get the splitter for the port
-                    OutputChannelTee<UdpDatagram> tee = (OutputChannelTee<UdpDatagram>)portMap.get(port);
+                    OutputChannelTee<UdpDatagram> tee = (OutputChannelTee<UdpDatagram>) portMap.get(port);
                     // Remove the channel from the splitter
                     tee.remove(pushChannel);
                     if (tee.isEmpty()) {
-                        // No more channels associated with this port - remove the port entry
+                        // No more channels associated with this port - remove the port
+                        // entry
                         portMap.remove(port);
                         if (portMap.isEmpty()) {
-                            // No more ports associated with this source - remove the source entry
+                            // No more ports associated with this source - remove the
+                            // source entry
                             sourceMap.remove(sourceAddress);
                             if (sourceMap.isEmpty()) {
-                                // No more sources associated with this group - remove the group entry
+                                // No more sources associated with this group - remove the
+                                // group entry
                                 this.groupMap.remove(groupAddress);
                             }
-                            // No channels are left in this source group - update the interface reception state
+                            // No channels are left in this source group - update the
+                            // interface reception state
                             this.interfaceManager.leave(groupAddress, sourceAddress);
                         }
                     }
@@ -507,11 +533,10 @@ public final class ChannelMembershipManager
     }
 
     /**
-     * 
      * @param pushChannel
      * @throws IOException
      */
-    public void leave(final OutputChannel<UdpDatagram> pushChannel) throws IOException {
+    void leave(final OutputChannel<UdpDatagram> pushChannel) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "ChannelMembershipManager.leave", pushChannel));
@@ -521,38 +546,43 @@ public final class ChannelMembershipManager
             // Look for the channel under all group entries
             Iterator<Object> groupIter = this.groupMap.getKeys().iterator();
             while (groupIter.hasNext()) {
-                InetAddress groupAddress = (InetAddress)groupIter.next();
+                InetAddress groupAddress = (InetAddress) groupIter.next();
                 // Get the source or port selector for this group
-                OutputChannelMap<UdpDatagram> entryMap = (OutputChannelMap<UdpDatagram>)this.groupMap.get(groupAddress);
+                OutputChannelMap<UdpDatagram> entryMap = (OutputChannelMap<UdpDatagram>) this.groupMap.get(groupAddress);
                 if (entryMap != null) {
                     // Look for the channel under all entries
                     Iterator<Object> entryIter = entryMap.getKeys().iterator();
                     while (entryIter.hasNext()) {
                         Object entry = entryIter.next();
                         if (entry instanceof InetAddress) {
-                            InetAddress sourceAddress = (InetAddress)entry;
+                            InetAddress sourceAddress = (InetAddress) entry;
                             // Get the port selector for the source
-                            OutputChannelMap<UdpDatagram> portMap = (OutputChannelMap<UdpDatagram>)entryMap.get(sourceAddress);
+                            OutputChannelMap<UdpDatagram> portMap = (OutputChannelMap<UdpDatagram>) entryMap.get(sourceAddress);
                             if (portMap != null) {
-                                // Look for the channel under all of the port entries 
+                                // Look for the channel under all of the port entries
                                 Iterator<Object> portIter = portMap.getKeys().iterator();
                                 while (portIter.hasNext()) {
-                                    int port = (Integer)portIter.next();
+                                    int port = (Integer) portIter.next();
                                     // Get the splitter for this port
-                                    OutputChannelTee<UdpDatagram> tee = (OutputChannelTee<UdpDatagram>)portMap.get(port);
-                                    // Remove the channel (even though it may not be there).
+                                    OutputChannelTee<UdpDatagram> tee = (OutputChannelTee<UdpDatagram>) portMap.get(port);
+                                    // Remove the channel (even though it may not be
+                                    // there).
                                     tee.remove(pushChannel);
                                     if (tee.isEmpty()) {
-                                        // No more channels associated with this port - remove the port entry
+                                        // No more channels associated with this port -
+                                        // remove the port entry
                                         portIter.remove();
                                         if (portMap.isEmpty()) {
-                                            // No more ports associated with this source - remove the source entry
+                                            // No more ports associated with this source -
+                                            // remove the source entry
                                             entryIter.remove();
                                             if (entryMap.isEmpty()) {
-                                                // No more sources associated with this group - remove the group entry
+                                                // No more sources associated with this
+                                                // group - remove the group entry
                                                 groupIter.remove();
                                             }
-                                            // No channels are left in this source group - update the interface reception state
+                                            // No channels are left in this source group -
+                                            // update the interface reception state
                                             this.interfaceManager.leave(groupAddress, sourceAddress);
                                         }
                                     }
@@ -560,18 +590,21 @@ public final class ChannelMembershipManager
                             }
                         }
                         else {
-                            int port = (Integer)entry;
+                            int port = (Integer) entry;
                             // Get the splitter for this port
-                            OutputChannelTee<UdpDatagram> tee = (OutputChannelTee<UdpDatagram>)entryMap.get(port);
+                            OutputChannelTee<UdpDatagram> tee = (OutputChannelTee<UdpDatagram>) entryMap.get(port);
                             // Remove the channel (even though it may not be there).
                             tee.remove(pushChannel);
                             if (tee.isEmpty()) {
-                                // No more channels associated with this port - remove the port entry
+                                // No more channels associated with this port - remove the
+                                // port entry
                                 entryIter.remove();
                                 if (entryMap.isEmpty()) {
-                                    // No more ports associated with this group - remove the group entry
+                                    // No more ports associated with this group - remove
+                                    // the group entry
                                     groupIter.remove();
-                                    // No channels are left in this group - update the interface reception state
+                                    // No channels are left in this group - update the
+                                    // interface reception state
                                     this.interfaceManager.leave(groupAddress);
                                 }
                             }
@@ -581,12 +614,11 @@ public final class ChannelMembershipManager
             }
         }
     }
-    
+
     /**
-     * 
      * @throws InterruptedException
      */
-    public void shutdown() throws InterruptedException {
+    void shutdown() throws InterruptedException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "ChannelMembershipManager.shutdown"));
@@ -605,10 +637,8 @@ public final class ChannelMembershipManager
             }
         }
     }
-    
 
     /**
-     * 
      * @param message
      * @param milliseconds
      * @throws InterruptedException
@@ -622,21 +652,21 @@ public final class ChannelMembershipManager
             }
             catch (IOException e) {
                 if (e instanceof MultiIOException) {
-                    MultiIOException me = (MultiIOException)e;
+                    MultiIOException me = (MultiIOException) e;
                     Iterator<Throwable> iter = me.iterator();
                     while (iter.hasNext()) {
                         Throwable t = iter.next();
                         if (t instanceof BoundException) {
-                            BoundException be = (BoundException)t;
+                            BoundException be = (BoundException) t;
                             Object o = be.getObject();
-                            if (o instanceof OutputChannel<?>){
+                            if (o instanceof OutputChannel<?>) {
                                 if (logger.isLoggable(Level.FINE)) {
                                     Throwable te = be.getThrowable();
                                     logger.fine(ObjectId +
-                                            " removing channel " + Logging.identify(o) + " due to exception - " +
-                                            te.getClass().getName() + ": " + te.getMessage());
+                                                " removing channel " + Logging.identify(o) + " due to exception - " +
+                                                te.getClass().getName() + ": " + te.getMessage());
                                 }
-                                OutputChannel<UdpDatagram> channel = (OutputChannel<UdpDatagram>)o;
+                                OutputChannel<UdpDatagram> channel = (OutputChannel<UdpDatagram>) o;
                                 leave(channel);
                                 return;
                             }

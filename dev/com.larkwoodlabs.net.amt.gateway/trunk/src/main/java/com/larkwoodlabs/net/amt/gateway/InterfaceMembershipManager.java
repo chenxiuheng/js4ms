@@ -37,13 +37,12 @@ import com.larkwoodlabs.net.amt.SourceFilter;
 import com.larkwoodlabs.util.logging.LoggableBase;
 import com.larkwoodlabs.util.logging.Logging;
 
-public final class InterfaceMembershipManager
-            extends LoggableBase {
+final class InterfaceMembershipManager
+                extends LoggableBase {
 
     /*-- Static Variables ---------------------------------------------------*/
 
     public static final Logger logger = Logger.getLogger(InterfaceMembershipManager.class.getName());
-
 
     /*-- Member Variables ---------------------------------------------------*/
 
@@ -55,47 +54,43 @@ public final class InterfaceMembershipManager
     private final HashMap<InetAddress, SourceFilter> interfaceReceptionState = new HashMap<InetAddress, SourceFilter>();
 
     private final HashMap<InetAddress, StateChangeReportTask> pendingStateChangeReports = new HashMap<InetAddress, StateChangeReportTask>();
-    
+
     private final HashMap<InetAddress, GroupQueryReportTask> pendingGroupQueryReports = new HashMap<InetAddress, GroupQueryReportTask>();
-    
+
     private GeneralQueryReportTimer pendingGeneralQueryReport = null;
 
     private AmtTunnelEndpoint endpoint;
 
     private OutputChannel<MembershipQuery> incomingQueryChannel;
+
     private OutputChannel<MembershipReport> outgoingReportChannel;
-    
+
     private final Timer taskTimer;
-    
-    boolean hasReportBeenSent = false;
-    
-    int robustnessVariable = 2;
-    
-    int queryResponseIntervalMs = 10000; // Default maximum response interval
 
-    int unsolicitedReportIntervalMs = 125000; // Default query interval
-    
-    boolean useRandomDelay = false;
+    private int robustnessVariable = 2;
 
+    private int unsolicitedReportIntervalMs = 125000; // Default query interval
+
+    private boolean useRandomDelay = false;
 
     /*-- Member Functions ---------------------------------------------------*/
 
     /**
-     * 
      * @param taskTimer
      */
-    public InterfaceMembershipManager(final Timer taskTimer, final AmtTunnelEndpoint endpoint) {
-    
+    InterfaceMembershipManager(final Timer taskTimer, final AmtTunnelEndpoint endpoint) {
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "InterfaceMembershipManager.InterfaceMembershipManager", taskTimer, endpoint));
         }
-        
+
         this.taskTimer = taskTimer;
         this.endpoint = endpoint;
 
         this.pendingGeneralQueryReport = new GeneralQueryReportTimer(taskTimer, this);
 
         this.incomingQueryChannel = new OutputChannel<MembershipQuery>() {
+
             @Override
             public void send(MembershipQuery message, int milliseconds) throws IOException, InterruptedException {
                 handle(message);
@@ -113,35 +108,32 @@ public final class InterfaceMembershipManager
     }
 
     /**
-     * 
      * @return
      */
-    public OutputChannel<MembershipQuery> getIncomingQueryChannel() {
+    OutputChannel<MembershipQuery> getIncomingQueryChannel() {
         return this.incomingQueryChannel;
     }
 
     /**
-     * 
      * @param outgoingReportChannel
      */
-    public void setOutgoingReportChannel(final OutputChannel<MembershipReport> outgoingReportChannel) {
+    void setOutgoingReportChannel(final OutputChannel<MembershipReport> outgoingReportChannel) {
         this.outgoingReportChannel = outgoingReportChannel;
     }
 
     /**
-     * 
      * @param groupAddress
      * @throws IOException
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
-    public void join(final InetAddress groupAddress) throws IOException {
+    void join(final InetAddress groupAddress) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId,
                                           "InterfaceMembershipManager.join",
                                           Logging.address(groupAddress)));
         }
-       
+
         synchronized (this.interfaceReceptionState) {
 
             SourceFilter filter = this.interfaceReceptionState.get(groupAddress);
@@ -161,13 +153,12 @@ public final class InterfaceMembershipManager
     }
 
     /**
-     * 
      * @param groupAddress
      * @param sourceAddress
      * @throws IOException
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
-    public void join(final InetAddress groupAddress,
+    void join(final InetAddress groupAddress,
                      final InetAddress sourceAddress) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
@@ -176,7 +167,7 @@ public final class InterfaceMembershipManager
                                           Logging.address(groupAddress),
                                           Logging.address(sourceAddress)));
         }
-        
+
         synchronized (this.interfaceReceptionState) {
 
             SourceFilter filter = this.interfaceReceptionState.get(groupAddress);
@@ -196,49 +187,47 @@ public final class InterfaceMembershipManager
     }
 
     /**
-     * 
      * @param groupAddress
      * @throws IOException
      */
-    public void leave(final InetAddress groupAddress) throws IOException {
+    void leave(final InetAddress groupAddress) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId,
                                           "InterfaceMembershipManager.leave",
                                           Logging.address(groupAddress)));
         }
-       
+
         synchronized (this.interfaceReceptionState) {
 
             SourceFilter filter = this.interfaceReceptionState.get(groupAddress);
-            
+
             if (filter != null) {
                 HashSet<InetAddress> oldSourceSet = filter.getSourceSet();
                 SourceFilter.Mode oldFilterMode = filter.getMode();
-    
+
                 filter.leave();
-                
+
                 updateInterfaceGroupState(oldFilterMode, oldSourceSet, filter);
             }
         }
     }
 
     /**
-     * 
      * @param groupAddress
      * @param sourceAddress
      * @throws IOException
      */
-    public void leave(final InetAddress groupAddress,
+    void leave(final InetAddress groupAddress,
                       final InetAddress sourceAddress) throws IOException {
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId,
                                           "InterfaceMembershipManager.leave",
                                           Logging.address(groupAddress),
                                           Logging.address(sourceAddress)));
         }
-        
+
         synchronized (this.interfaceReceptionState) {
 
             SourceFilter filter = this.interfaceReceptionState.get(groupAddress);
@@ -246,9 +235,9 @@ public final class InterfaceMembershipManager
             if (filter != null) {
                 HashSet<InetAddress> oldSourceSet = new HashSet<InetAddress>(filter.getSourceSet());
                 SourceFilter.Mode oldFilterMode = filter.getMode();
-    
+
                 filter.leave(sourceAddress);
-    
+
                 updateInterfaceGroupState(oldFilterMode, oldSourceSet, filter);
             }
         }
@@ -283,6 +272,7 @@ public final class InterfaceMembershipManager
 
     /**
      * From <a href="http://www.rfc-editor.org/rfc/rfc3376.txt">[RFC-3376]</a>
+     * 
      * <pre>
      *      The general rules for deriving the per-interface state from the
      *      per-socket state are as follows:  For each distinct (interface,
@@ -346,16 +336,15 @@ public final class InterfaceMembershipManager
                                           oldSourceSet,
                                           filter));
         }
-        
 
-        // Block threads calling other methods from changing the interface reception state 
+        // Block threads calling other methods from changing the interface reception state
         // until we have updated the state and generated a group state change report
         synchronized (this.interfaceReceptionState) {
 
             InetAddress groupAddress = filter.getGroupAddress();
             SourceFilter.Mode newFilterMode = filter.getMode();
             HashSet<InetAddress> newSourceSet = filter.getSourceSet();
-            
+
             if (newFilterMode == SourceFilter.Mode.INCLUDE && newSourceSet.isEmpty()) {
                 // The new group state does not include any sources - remove the filter
                 this.interfaceReceptionState.remove(groupAddress);
@@ -363,13 +352,14 @@ public final class InterfaceMembershipManager
                     this.pendingGeneralQueryReport.cancel();
                 }
             }
-            
-            // Block access to the pending reports until the group state change report is created/updated
+
+            // Block access to the pending reports until the group state change report is
+            // created/updated
             synchronized (this.pendingStateChangeReports) {
-            
+
                 // Look for pending group state change report
                 StateChangeReportTask stateChangeReport = this.pendingStateChangeReports.get(groupAddress);
-    
+
                 if (stateChangeReport == null) {
 
                     // There is no pending report - create a new one
@@ -378,22 +368,22 @@ public final class InterfaceMembershipManager
                     if (newFilterMode != oldFilterMode) {
                         // Generate filter mode change report
                         stateChangeReport = new StateChangeReportTask(this.taskTimer,
-                                                                       this,
-                                                                       groupAddress,
-                                                                       retransmissionCount,
-                                                                       newFilterMode,
-                                                                       newSourceSet);
+                                                                      this,
+                                                                      groupAddress,
+                                                                      retransmissionCount,
+                                                                      newFilterMode,
+                                                                      newSourceSet);
                     }
                     else {
                         if (logger.isLoggable(Level.FINE)) {
                             logger.fine(ObjectId + " generating groups state change report");
                             logger.fine(ObjectId + " ----> Old Source Set for " + Logging.address(groupAddress));
-                            for (InetAddress address : oldSourceSet ) {
+                            for (InetAddress address : oldSourceSet) {
                                 logger.fine(ObjectId + "  " + Logging.address(address));
                             }
                             logger.fine(ObjectId + " <----");
                             logger.fine(ObjectId + " ----> New Source Set for " + Logging.address(groupAddress));
-                            for (InetAddress address : newSourceSet ) {
+                            for (InetAddress address : newSourceSet) {
                                 logger.fine(ObjectId + "  " + Logging.address(address));
                             }
                             logger.fine(ObjectId + " <----");
@@ -401,27 +391,30 @@ public final class InterfaceMembershipManager
 
                         // Generate source set change report
                         stateChangeReport = new StateChangeReportTask(this.taskTimer,
-                                                                       this,
-                                                                       groupAddress,
-                                                                       retransmissionCount,
-                                                                       newFilterMode,
-                                                                       oldSourceSet,
-                                                                       newSourceSet);
+                                                                      this,
+                                                                      groupAddress,
+                                                                      retransmissionCount,
+                                                                      newFilterMode,
+                                                                      oldSourceSet,
+                                                                      newSourceSet);
                     }
 
                     if (retransmissionCount > 1) {
 
-                        // This is supposed to be random (0,interval) but can't do that with TimerTasks
+                        // This is supposed to be random (0,interval) but can't do that
+                        // with TimerTasks
                         long taskPeriod = this.unsolicitedReportIntervalMs;
 
-                        // We delay one task period because we will call run() immediately.
+                        // We delay one task period because we will call run()
+                        // immediately.
                         stateChangeReport.schedule(taskPeriod, taskPeriod);
 
                         this.pendingStateChangeReports.put(groupAddress, stateChangeReport);
                     }
                 }
                 else {
-                    // There is a pending report - update the group change sets and reset the retransmission count
+                    // There is a pending report - update the group change sets and reset
+                    // the retransmission count
                     stateChangeReport.updateSourceSet(newSourceSet);
                 }
 
@@ -433,6 +426,7 @@ public final class InterfaceMembershipManager
 
     /**
      * From <a href="http://www.rfc-editor.org/rfc/rfc3376.txt">[RFC-3376]</a>
+     * 
      * <pre>
      * 5.2. Action on Reception of a Query
      * 
@@ -497,16 +491,17 @@ public final class InterfaceMembershipManager
      *       be sent at the earliest of the remaining time for the pending
      *       report and the selected delay.
      * </pre>
+     * 
      * @param queryMessage
      */
-    public void handle(final MembershipQuery queryMessage) {
+    void handle(final MembershipQuery queryMessage) {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "InterfaceMembershipManager.handle", queryMessage));
         }
-        
+
         this.unsolicitedReportIntervalMs = queryMessage.getQueryInterval();
-        
+
         this.robustnessVariable = queryMessage.getRobustnessVariable();
 
         if (!this.useRandomDelay) {
@@ -519,48 +514,52 @@ public final class InterfaceMembershipManager
         }
         else {
 
-            // Response must be delayed by a random amount of time within 
+            // Response must be delayed by a random amount of time within
             // the range (0,maximum response delay) as specified in the query.
             long taskDelay = Math.round(Math.random() * queryMessage.getMaximumResponseDelay());
 
             if (queryMessage.isGeneralQuery()) {
 
-                // Schedule the general query if none is pending, or reschedule pending General Query
+                // Schedule the general query if none is pending, or reschedule pending
+                // General Query
 
                 if (logger.isLoggable(Level.FINER)) {
                     logger.finer(ObjectId + " rescheduling general query report delay=" + taskDelay + "ms");
                 }
-    
+
                 this.pendingGeneralQueryReport.schedule(taskDelay);
             }
             else {
                 // Query is group-specific or group-source-specific
-                
+
                 // Check for pending general query response
-                // No need to send a group query if a general query is already scheduled for earlier delivery.
+                // No need to send a group query if a general query is already scheduled
+                // for earlier delivery.
                 if (this.pendingGeneralQueryReport.getTimeRemaining() > taskDelay) {
-    
+
                     synchronized (this.pendingGroupQueryReports) {
-    
+
                         // Check for pending group query response
                         GroupQueryReportTask response = this.pendingGroupQueryReports.get(queryMessage.getGroupAddress());
                         if (response == null) {
                             response = new GroupQueryReportTask(this.taskTimer,
-                                                                 this,
-                                                                 queryMessage.getGroupAddress(),
-                                                                 queryMessage.getSourceAddresses());
+                                                                this,
+                                                                queryMessage.getGroupAddress(),
+                                                                queryMessage.getSourceAddresses());
                             this.pendingGroupQueryReports.put(queryMessage.getGroupAddress(), response);
                             response.schedule(taskDelay);
                         }
                         else {
                             // There may be a pending response
-                            // Get the time remaining, if any, for the existing response (will be MAX_VALUE if not scheduled)
+                            // Get the time remaining, if any, for the existing response
+                            // (will be MAX_VALUE if not scheduled)
                             long timeRemaining = response.getTimeRemaining();
-    
+
                             // Set delay to earliest of the two
                             taskDelay = timeRemaining < taskDelay ? timeRemaining : taskDelay;
-                            
-                            // Cancel the response so we can update the source set and reschedule with a new session token
+
+                            // Cancel the response so we can update the source set and
+                            // reschedule with a new session token
                             response.cancel();
                             response.updateQuerySourceSet(queryMessage.getSourceAddresses());
                             response.schedule(taskDelay);
@@ -572,7 +571,6 @@ public final class InterfaceMembershipManager
     }
 
     /**
-     * 
      * @param groupAddress
      * @param type
      * @param sourceSet
@@ -588,16 +586,15 @@ public final class InterfaceMembershipManager
                                           type,
                                           sourceSet));
         }
-        
+
         MembershipReport report = new MembershipReport();
         report.addRecord(new GroupMembershipRecord(groupAddress, type, sourceSet));
-        
+
         try {
             this.outgoingReportChannel.send(report, Integer.MAX_VALUE);
-            this.hasReportBeenSent = true;
         }
         catch (PortUnreachableException e) {
-            this.hasReportBeenSent = false;
+            // TODO:
         }
         catch (IOException e) {
             // TODO
@@ -608,7 +605,6 @@ public final class InterfaceMembershipManager
     }
 
     /**
-     * 
      * @param groupAddress
      * @param mode
      * @param sourceSet
@@ -618,7 +614,7 @@ public final class InterfaceMembershipManager
                                          final SourceFilter.Mode mode,
                                          final HashSet<InetAddress> sourceSet,
                                          final int transmissionsRemaining) {
-    
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId,
                                           "InterfaceMembershipManager.sendGroupFilterModeChangeReport",
@@ -627,26 +623,25 @@ public final class InterfaceMembershipManager
                                           sourceSet,
                                           transmissionsRemaining));
         }
-        
+
         if (logger.isLoggable(Level.FINE)) {
             logger.fine(ObjectId + " sending membership report for group filter mode change");
         }
-        
+
         GroupMembershipRecord.Type type = (mode == SourceFilter.Mode.INCLUDE ?
-                                           GroupMembershipRecord.Type.CHANGE_TO_INCLUDE_MODE :
-                                           GroupMembershipRecord.Type.CHANGE_TO_EXCLUDE_MODE);
-        
+                        GroupMembershipRecord.Type.CHANGE_TO_INCLUDE_MODE :
+                        GroupMembershipRecord.Type.CHANGE_TO_EXCLUDE_MODE);
+
         sendGroupMembershipReport(groupAddress, type, sourceSet);
-        
+
         if (transmissionsRemaining == 0) {
             synchronized (this.pendingStateChangeReports) {
                 this.pendingStateChangeReports.remove(groupAddress);
             }
         }
     }
-    
+
     /**
-     * 
      * @param groupAddress
      * @param allowNewSources
      * @param blockOldSources
@@ -656,7 +651,7 @@ public final class InterfaceMembershipManager
                                         final HashSet<InetAddress> allowNewSources,
                                         final HashSet<InetAddress> blockOldSources,
                                         final int transmissionsRemaining) {
-    
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId,
                                           "InterfaceMembershipManager.sendGroupStateChangeReport",
@@ -665,29 +660,32 @@ public final class InterfaceMembershipManager
                                           blockOldSources,
                                           transmissionsRemaining));
         }
-    
+
         if (!allowNewSources.isEmpty() || !blockOldSources.isEmpty()) {
-    
+
             MembershipReport report = new MembershipReport();
-        
+
             if (!allowNewSources.isEmpty()) {
-                report.addRecord(new GroupMembershipRecord(groupAddress, GroupMembershipRecord.Type.ALLOW_NEW_SOURCES, allowNewSources));
+                report.addRecord(new GroupMembershipRecord(groupAddress,
+                                                           GroupMembershipRecord.Type.ALLOW_NEW_SOURCES,
+                                                           allowNewSources));
             }
-        
+
             if (!blockOldSources.isEmpty()) {
-                report.addRecord(new GroupMembershipRecord(groupAddress, GroupMembershipRecord.Type.BLOCK_OLD_SOURCES, blockOldSources));
+                report.addRecord(new GroupMembershipRecord(groupAddress,
+                                                           GroupMembershipRecord.Type.BLOCK_OLD_SOURCES,
+                                                           blockOldSources));
             }
-            
+
             if (logger.isLoggable(Level.FINE)) {
                 logger.fine(ObjectId + " sending membership report for group source set change");
             }
-            
+
             try {
                 this.outgoingReportChannel.send(report, Integer.MAX_VALUE);
-                this.hasReportBeenSent = true;
             }
             catch (PortUnreachableException e) {
-                this.hasReportBeenSent = false;
+                // TODO
             }
             catch (IOException e) {
                 // TODO
@@ -696,19 +694,19 @@ public final class InterfaceMembershipManager
             catch (InterruptedException e) {
             }
         }
-            
+
         if (transmissionsRemaining == 0) {
             synchronized (this.pendingStateChangeReports) {
                 this.pendingStateChangeReports.remove(groupAddress);
             }
         }
     }
-    
+
     /**
      * 
      */
     void sendGeneralQueryResponse() {
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "InterfaceMembershipManager.sendGeneralQueryResponse"));
         }
@@ -718,11 +716,12 @@ public final class InterfaceMembershipManager
         for (SourceFilter filter : this.interfaceReceptionState.values()) {
 
             GroupMembershipRecord.Type type = (filter.getMode() == SourceFilter.Mode.INCLUDE ?
-                                               GroupMembershipRecord.Type.MODE_IS_INCLUDE :
-                                               GroupMembershipRecord.Type.MODE_IS_EXCLUDE);
-                        
+                            GroupMembershipRecord.Type.MODE_IS_INCLUDE :
+                            GroupMembershipRecord.Type.MODE_IS_EXCLUDE);
+
             if (logger.isLoggable(Level.FINER)) {
-                logger.finer(ObjectId + " adding record type=" + type.name() + " group=" + Logging.address(filter.getGroupAddress()) + " source-count=" + filter.getSourceSet().size());
+                logger.finer(ObjectId + " adding record type=" + type.name() + " group="
+                             + Logging.address(filter.getGroupAddress()) + " source-count=" + filter.getSourceSet().size());
             }
 
             report.addRecord(new GroupMembershipRecord(filter.getGroupAddress(), type, filter.getSourceSet()));
@@ -731,13 +730,12 @@ public final class InterfaceMembershipManager
         if (logger.isLoggable(Level.FINE)) {
             logger.fine(ObjectId + " sending membership report for general query");
         }
-        
+
         try {
             this.outgoingReportChannel.send(report, Integer.MAX_VALUE);
-            this.hasReportBeenSent = true;
         }
         catch (PortUnreachableException e) {
-            this.hasReportBeenSent = false;
+            // TODO
         }
         catch (IOException e) {
             // TODO
@@ -754,6 +752,7 @@ public final class InterfaceMembershipManager
 
     /**
      * From <a href="http://www.rfc-editor.org/rfc/rfc3376.txt">[RFC-3376]</a>
+     * 
      * <pre>
      *  If the expired timer is a group timer and the list of recorded
      *  sources for that group is non-empty (i.e., it is a pending
@@ -772,12 +771,13 @@ public final class InterfaceMembershipManager
      *  If the resulting Current-State Record has an empty set of source
      *  addresses, then no response is sent.
      * </pre>
+     * 
      * @param groupAddress
      * @param sourceSet
      */
     void sendGroupQueryResponse(final InetAddress groupAddress,
                                 final HashSet<InetAddress> querySourceSet) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId,
                                           "InterfaceMembershipManager.sendGroupMembershipReport",
@@ -790,17 +790,19 @@ public final class InterfaceMembershipManager
         synchronized (this.interfaceReceptionState) {
 
             SourceFilter filter = this.interfaceReceptionState.get(groupAddress);
-            
-            // Don't send a response if there is no filter - there is no reception state for group
+
+            // Don't send a response if there is no filter - there is no reception state
+            // for group
             if (filter != null) {
                 if (querySourceSet == null || querySourceSet.isEmpty()) {
 
-                    // Group-specific query - report the filter mode and source set for the group
+                    // Group-specific query - report the filter mode and source set for
+                    // the group
                     responseSourceSet = filter.getSourceSet();
 
                     GroupMembershipRecord.Type type = (filter.getMode() == SourceFilter.Mode.INCLUDE ?
-                                                       GroupMembershipRecord.Type.MODE_IS_INCLUDE :
-                                                       GroupMembershipRecord.Type.MODE_IS_EXCLUDE);
+                                    GroupMembershipRecord.Type.MODE_IS_INCLUDE :
+                                    GroupMembershipRecord.Type.MODE_IS_EXCLUDE);
 
                     sendGroupMembershipReport(groupAddress, type, responseSourceSet);
                 }

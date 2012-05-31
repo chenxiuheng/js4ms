@@ -25,11 +25,11 @@ import java.util.Timer;
 import com.larkwoodlabs.util.task.ReschedulableTask;
 
 
-public final class GeneralQueryReportTimer extends ReschedulableTask {
+final class GeneralQueryReportTimer extends ReschedulableTask {
 
-    final InterfaceMembershipManager interfaceMembershipManager;
+    private final InterfaceMembershipManager interfaceMembershipManager;
 
-    public GeneralQueryReportTimer(final Timer taskTimer, final InterfaceMembershipManager interfaceMembershipManager) {
+    GeneralQueryReportTimer(final Timer taskTimer, final InterfaceMembershipManager interfaceMembershipManager) {
         super(taskTimer);
         this.interfaceMembershipManager = interfaceMembershipManager;
     }

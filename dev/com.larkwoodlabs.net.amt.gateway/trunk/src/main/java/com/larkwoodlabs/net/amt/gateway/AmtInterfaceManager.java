@@ -65,7 +65,6 @@ public final class AmtInterfaceManager {
     /*-- Static Functions ---------------------------------------------------*/
 
     /**
-     * 
      * @return
      */
     public static AmtInterfaceManager getInstance() {
@@ -73,7 +72,6 @@ public final class AmtInterfaceManager {
     }
 
     /**
-     * 
      * @return
      */
     public static InetAddress getDefaultRelayDiscoveryAddress() {

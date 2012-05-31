@@ -33,9 +33,9 @@ import com.larkwoodlabs.net.udp.UdpDatagram;
 final class MulticastDataTransform implements MessageTransform<IPPacket, UdpDatagram> {
 
 
-    final UdpPacket.Parser parser;
+    private final UdpPacket.Parser parser;
     
-    public MulticastDataTransform() {
+    MulticastDataTransform() {
         this.parser = new UdpPacket.Parser();
     }
 

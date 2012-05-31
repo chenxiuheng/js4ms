@@ -29,16 +29,12 @@ import com.larkwoodlabs.net.amt.IPv4MembershipReportTransform;
 import com.larkwoodlabs.util.logging.Logging;
 
 /**
- * An {@link AmtTunnelEndpoint} that uses IGMP to communicate IPv4 group membership
- * changes to an AMT relay.
- * An AmtIPv4TunnelEndpoint provides functions for joining, leaving and receiving packets
- * for any number of IPv4 multicast groups. The AmtIPv4TunnelEndpoint tracks local group
- * membership state and handles the exchange of IGMP messages used
- * to query or update that state.
+ * An {@link AmtTunnelEndpoint} that encodes and decodes IGMP messages
+ * used to communicate IPv4 group membership changes to an AMT relay.
  * 
  * @author Greg Bumgardner (gbumgard)
  */
-public final class AmtIPv4TunnelEndpoint
+final class AmtIPv4TunnelEndpoint
                 extends AmtTunnelEndpoint {
 
     /*-- Member Functions ---------------------------------------------------*/
@@ -48,7 +44,7 @@ public final class AmtIPv4TunnelEndpoint
      * @param relayDiscoveryAddress
      * @throws IOException
      */
-    public AmtIPv4TunnelEndpoint(final InetAddress relayDiscoveryAddress) throws IOException {
+    AmtIPv4TunnelEndpoint(final InetAddress relayDiscoveryAddress) throws IOException {
         super(relayDiscoveryAddress,
               new IPv4MembershipQueryTransform(),
               new IPv4MembershipReportTransform());

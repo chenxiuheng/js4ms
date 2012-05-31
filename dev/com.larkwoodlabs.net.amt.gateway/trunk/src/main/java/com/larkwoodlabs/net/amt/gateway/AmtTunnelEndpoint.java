@@ -54,9 +54,17 @@ import com.larkwoodlabs.net.udp.UdpSocketEndpoint;
 import com.larkwoodlabs.util.logging.Logging;
 
 /**
+ * An AmtTunnelEndpoint executes the AMT protocol by exchanging AMT messages with
+ * an AMT relay.
+ * An AmtTunnelEndpoint provides functions for registering {@link OutputChannel} objects
+ * to receive specific SSM or ASM traffic. The AmtTunnelEndpoint tracks local group
+ * membership state and handles the exchange of IGMP or MLD messages used
+ * to query or update that state.
+ * Separate subclasses are provided for IPv4/IGMP and IPv6/MLD tunnels.
+ * 
  * @author Greg Bumgardner (gbumgard)
  */
-class AmtTunnelEndpoint
+abstract class AmtTunnelEndpoint
                 implements Runnable {
 
     /*-- Static Variables ---------------------------------------------------*/
@@ -69,13 +77,13 @@ class AmtTunnelEndpoint
     /**
      * The IANA assigned port used when sending AMT messages.
      */
-    public static final short AMT_PORT = 2268;
+    static final short AMT_PORT = 2268;
 
-    public static final long DISCOVERY_RETRY_PERIOD = 10 * 1000; // 10 secs
+    static final long DISCOVERY_RETRY_PERIOD = 10 * 1000; // 10 secs
 
-    public static final long REQUEST_RETRY_PERIOD = 10 * 1000; // 10 secs
+    static final long REQUEST_RETRY_PERIOD = 10 * 1000; // 10 secs
 
-    public static final int MAX_REASSEMBLY_CACHE_SIZE = 100;
+    static final int MAX_REASSEMBLY_CACHE_SIZE = 100;
 
     /*-- Member Variables ---------------------------------------------------*/
 
@@ -140,9 +148,9 @@ class AmtTunnelEndpoint
 
     private TimerTask periodicRequestTask = null;
 
-    protected final InterfaceMembershipManager interfaceManager;
+    private final InterfaceMembershipManager interfaceManager;
 
-    protected final ChannelMembershipManager channelManager;
+    private final ChannelMembershipManager channelManager;
 
     /*-- Member Functions ---------------------------------------------------*/
 
@@ -150,11 +158,11 @@ class AmtTunnelEndpoint
      * @param amtIpInterface
      * @param relayDiscoveryAddress
      * @param taskTimer
-     * @throws IOException 
+     * @throws IOException
      */
     protected AmtTunnelEndpoint(final InetAddress relayDiscoveryAddress,
-                             final MessageTransform<IPPacket, MembershipQuery> queryTransform,
-                             final MessageTransform<MembershipReport, IPPacket> reportTransform) throws IOException {
+                                final MessageTransform<IPPacket, MembershipQuery> queryTransform,
+                                final MessageTransform<MembershipReport, IPPacket> reportTransform) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId,
@@ -187,7 +195,7 @@ class AmtTunnelEndpoint
         // interface membership state manager
         this.channelManager = new ChannelMembershipManager(this.interfaceManager);
 
-        this.incomingDataChannel = new Defragmenter(new OutputChannelTransform<IPPacket, UdpDatagram>(
+        this.incomingDataChannel = new PacketAssembler(new OutputChannelTransform<IPPacket, UdpDatagram>(
                                                                                                       this.channelManager.getDispatchChannel(),
                                                                                                       new MulticastDataTransform()),
                                                     MAX_REASSEMBLY_CACHE_SIZE,
@@ -200,7 +208,7 @@ class AmtTunnelEndpoint
                                                                                reportTransform));
 
         // Connect query channel of tunnel endpoint to interface membership manager
-        this.incomingQueryChannel = new Defragmenter(new OutputChannelTransform<IPPacket, MembershipQuery>(
+        this.incomingQueryChannel = new PacketAssembler(new OutputChannelTransform<IPPacket, MembershipQuery>(
                                                                                                            this.interfaceManager.getIncomingQueryChannel(),
                                                                                                            queryTransform),
                                                      MAX_REASSEMBLY_CACHE_SIZE,
@@ -426,7 +434,6 @@ class AmtTunnelEndpoint
             }
         }
     }
-
 
     /**
      * @param packet

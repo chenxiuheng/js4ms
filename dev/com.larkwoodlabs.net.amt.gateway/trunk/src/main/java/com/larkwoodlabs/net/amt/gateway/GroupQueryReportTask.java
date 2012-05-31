@@ -26,33 +26,35 @@ import java.util.Timer;
 
 import com.larkwoodlabs.util.task.ReschedulableTask;
 
+final class GroupQueryReportTask
+                extends ReschedulableTask {
 
-public final class GroupQueryReportTask extends ReschedulableTask {
+    private final InterfaceMembershipManager interfaceMembershipManager;
 
-    final InterfaceMembershipManager interfaceMembershipManager;
+    private final InetAddress groupAddress;
 
-    final InetAddress groupAddress;
-    HashSet<InetAddress> querySourceSet;
-  
+    private HashSet<InetAddress> querySourceSet;
+
     /**
      * Constructs a response task for group and source-specific query.
      */
-    public GroupQueryReportTask(final Timer taskTimer,
-                                final InterfaceMembershipManager interfaceMembershipManager,
-                                final InetAddress groupAddress,
-                                final HashSet<InetAddress> querySourceSet) {
+    GroupQueryReportTask(final Timer taskTimer,
+                         final InterfaceMembershipManager interfaceMembershipManager,
+                         final InetAddress groupAddress,
+                         final HashSet<InetAddress> querySourceSet) {
         super(taskTimer);
         this.interfaceMembershipManager = interfaceMembershipManager;
         this.groupAddress = groupAddress;
         this.querySourceSet = new HashSet<InetAddress>(querySourceSet);
     }
-    
-    public void updateQuerySourceSet(final HashSet<InetAddress> sourceSetAdditions) {
+
+    void updateQuerySourceSet(final HashSet<InetAddress> sourceSetAdditions) {
         if (this.querySourceSet == null) {
             this.querySourceSet = new HashSet<InetAddress>(sourceSetAdditions);
         }
         else {
-            // Clear the source list if we receive a group or group-specific query with an empty source list 
+            // Clear the source list if we receive a group or group-specific query with an
+            // empty source list
             if (sourceSetAdditions.isEmpty()) {
                 this.querySourceSet.clear();
             }
