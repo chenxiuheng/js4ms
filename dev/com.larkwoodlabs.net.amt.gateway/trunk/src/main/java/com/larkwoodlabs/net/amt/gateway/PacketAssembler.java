@@ -72,7 +72,7 @@ import com.larkwoodlabs.util.logging.Logging;
  * the total size of the queued packets. The defragmenter will discard packets once the
  * total size of the packets in the queue reaches 64K.
  * 
- * @author Gregory Bumgardner
+ * @author Gregory Bumgardner (gbumgard)
  */
 final class PacketAssembler
                 extends LoggableBase
@@ -80,6 +80,8 @@ final class PacketAssembler
 
     /*-- Inner Classes ------------------------------------------------------*/
 
+    /**
+     */
     final static class ReassemblyBuffer {
 
         /*-- Static Variables ---------------------------------------------------*/
@@ -110,6 +112,10 @@ final class PacketAssembler
 
         private IPPacket fragmentZeroPacket;
 
+        /**
+         * @param identifier
+         * @param maxAge
+         */
         ReassemblyBuffer(final ByteBuffer identifier, final long maxAge) {
             this.identifier = identifier;
             setHole(this.firstHole, 0xFFFF, EOL, EOL);
@@ -117,10 +123,17 @@ final class PacketAssembler
             this.maxAge = maxAge;
         }
 
+        /**
+         * @return
+         */
         ByteBuffer getIdentifier() {
             return identifier;
         }
 
+        /**
+         * @param currentTimeMs
+         * @return
+         */
         boolean isExpired(final long currentTimeMs) {
             if ((currentTimeMs - timestamp) > maxAge) {
                 return true;
@@ -128,10 +141,19 @@ final class PacketAssembler
             return false;
         }
 
+        /**
+         * @param currentTimeMs
+         * @return
+         */
         long getAge(final long currentTimeMs) {
             return currentTimeMs - timestamp;
         }
 
+        /**
+         * @param packet
+         * @return
+         * @throws ParseException
+         */
         boolean addFragment(final IPPacket packet) throws ParseException {
 
             // Already done?
@@ -151,10 +173,16 @@ final class PacketAssembler
             return false;
         }
 
+        /**
+         * @return
+         */
         IPPacket getFragmentZeroPacket() {
             return this.fragmentZeroPacket;
         }
 
+        /**
+         * @return
+         */
         IPPacket getCompletedPacket() {
             if (isComplete()) {
                 return this.fragmentZeroPacket;
@@ -162,10 +190,19 @@ final class PacketAssembler
             return null;
         }
 
+        /**
+         * @return
+         */
         boolean isComplete() {
             return this.firstHole == EOL;
         }
 
+        /**
+         * @param hole
+         * @param holeLast
+         * @param prevHole
+         * @param nextHole
+         */
         void setHole(final int hole,
                      final int holeLast,
                      final int prevHole,
@@ -180,35 +217,67 @@ final class PacketAssembler
             setOffsetValue(byteOffset + 4, nextHole);
         }
 
+        /**
+         * @param byteOffset
+         * @param offset
+         */
         void setOffsetValue(final int byteOffset, final int offset) {
             buffer[byteOffset] = (byte) ((offset >> 8) & 0xFF);
             buffer[byteOffset + 1] = (byte) (offset & 0xFF);
         }
 
+        /**
+         * @param byteOffset
+         * @return
+         */
         int getOffsetValue(final int byteOffset) {
             return ((buffer[byteOffset] & 0xFF) << 8) | (buffer[byteOffset + 1] & 0xFF);
         }
 
+        /**
+         * @param holeFirst
+         * @return
+         */
         int getHoleLast(final int holeFirst) {
             return getOffsetValue(holeFirst * 8);
         }
 
+        /**
+         * @param holeFirst
+         * @param holeLast
+         */
         void setHoleLast(final int holeFirst, final int holeLast) {
             setOffsetValue(holeFirst * 8, holeLast);
         }
 
+        /**
+         * @param holeFirst
+         * @return
+         */
         int getPrevHole(final int holeFirst) {
             return getOffsetValue(holeFirst * 8 + 2);
         }
 
+        /**
+         * @param holeFirst
+         * @param prevHole
+         */
         void setPrevHole(final int holeFirst, final int prevHole) {
             setOffsetValue(holeFirst * 8 + 4, prevHole);
         }
 
+        /**
+         * @param holeFirst
+         * @return
+         */
         int getNextHole(final int holeFirst) {
             return getOffsetValue(holeFirst * 8 + 4);
         }
 
+        /**
+         * @param holeFirst
+         * @param nextHole
+         */
         void setNextHole(final int holeFirst, final int nextHole) {
             setOffsetValue(holeFirst * 8 + 6, nextHole);
         }
@@ -473,7 +542,7 @@ final class PacketAssembler
     /*-- Member Functions ---------------------------------------------------*/
 
     /**
-     * Constructs a defragmenter output channel.
+     * Constructs an output channel that reassembles fragmented IP datagrams.
      * 
      * @param outputChannel
      *            - The output channel that will receive reassembled datagrams. Required.
@@ -486,13 +555,13 @@ final class PacketAssembler
      * @param taskTimer
      *            - Externally constructed Timer used to execute the task used to check
      *            timeouts.
-     *            The defragmenter will construct its own timer if this value is
+     *            The assembler will construct its own timer if this value is
      *            <code>null</code>.
      */
-    public PacketAssembler(final OutputChannel<IPPacket> outputChannel,
-                        final OutputChannel<IPPacket> timeoutChannel,
-                        final int maxCacheSize,
-                        final Timer taskTimer) {
+    PacketAssembler(final OutputChannel<IPPacket> outputChannel,
+                    final OutputChannel<IPPacket> timeoutChannel,
+                    final int maxCacheSize,
+                    final Timer taskTimer) {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId,
@@ -514,18 +583,18 @@ final class PacketAssembler
     }
 
     /**
-     * Constructs a defragmenter output channel that imposes no limit on cache size
+     * Constructs an assembler output channel that imposes no limit on cache size
      * and constructs its own Timer thread.
      * 
      * @param outputChannel
      *            - The output channel that will receive reassembled datagrams. Required.
      */
-    public PacketAssembler(final OutputChannel<IPPacket> outputChannel) {
+    PacketAssembler(final OutputChannel<IPPacket> outputChannel) {
         this(outputChannel, null, 0, null);
     }
 
     /**
-     * Constructs a defragmenter output channel that constructs its own Timer thread.
+     * Constructs an assembler output channel that constructs its own Timer thread.
      * 
      * @param outputChannel
      *            - The output channel that will receive reassembled datagrams. Required.
@@ -533,13 +602,13 @@ final class PacketAssembler
      *            - Maximum number of datagrams that can be reassembled at the same time.
      *            A value of zero is used to indicate that there should be no limit.
      */
-    public PacketAssembler(final OutputChannel<IPPacket> outputChannel,
-                        final int maxCacheSize) {
+    PacketAssembler(final OutputChannel<IPPacket> outputChannel,
+                    final int maxCacheSize) {
         this(outputChannel, null, maxCacheSize, null);
     }
 
     /**
-     * Constructs a defragmenter output channel that constructs its own Timer thread.
+     * Constructs an assembler output channel that constructs its own Timer thread.
      * 
      * @param outputChannel
      *            - The output channel that will receive reassembled datagrams. Required.
@@ -549,17 +618,17 @@ final class PacketAssembler
      * @param taskTimer
      *            - Externally constructed Timer used to execute the task used to check
      *            timeouts.
-     *            The defragmenter will construct its own timer if this value is
+     *            The assembler will construct its own timer if this value is
      *            <code>null</code>.
      */
-    public PacketAssembler(final OutputChannel<IPPacket> outputChannel,
-                        final int maxCacheSize,
-                        final Timer taskTimer) {
+    PacketAssembler(final OutputChannel<IPPacket> outputChannel,
+                    final int maxCacheSize,
+                    final Timer taskTimer) {
         this(outputChannel, null, maxCacheSize, taskTimer);
     }
 
     /**
-     * Constructs a defragmenter output channel that imposes no limit on cache size and
+     * Constructs an assembler output channel that imposes no limit on cache size and
      * constructs its own Timer thread.
      * 
      * @param outputChannel
@@ -568,13 +637,13 @@ final class PacketAssembler
      *            - The optional output channel used to receive timeout notifications.
      *            May be <code>null</code>
      */
-    public PacketAssembler(final OutputChannel<IPPacket> outputChannel,
-                        final OutputChannel<IPPacket> timeoutChannel) {
+    PacketAssembler(final OutputChannel<IPPacket> outputChannel,
+                    final OutputChannel<IPPacket> timeoutChannel) {
         this(outputChannel, timeoutChannel, 0, null);
     }
 
     /**
-     * Constructs a defragmenter output channel that constructs its own Timer thread.
+     * Constructs an assembler output channel that constructs its own Timer thread.
      * 
      * @param outputChannel
      *            - The output channel that will receive reassembled datagrams. Required.
@@ -585,14 +654,14 @@ final class PacketAssembler
      *            - Maximum number of datagrams that can be reassembled at the same time.
      *            A value of zero is used to indicate that there should be no limit.
      */
-    public PacketAssembler(final OutputChannel<IPPacket> outputChannel,
-                        final OutputChannel<IPPacket> timeoutChannel,
-                        final int maxCacheSize) {
+    PacketAssembler(final OutputChannel<IPPacket> outputChannel,
+                    final OutputChannel<IPPacket> timeoutChannel,
+                    final int maxCacheSize) {
         this(outputChannel, timeoutChannel, 0, null);
     }
 
     /**
-     * Constructs a defragmenter output channel that imposes no limit on cache size.
+     * Constructs an assembler output channel that imposes no limit on cache size.
      * 
      * @param outputChannel
      *            - The output channel that will receive reassembled datagrams. Required.
@@ -602,13 +671,13 @@ final class PacketAssembler
      *            The defragmenter will construct its own timer if this value is
      *            <code>null</code>.
      */
-    public PacketAssembler(final OutputChannel<IPPacket> outputChannel,
-                        final Timer taskTimer) {
+    PacketAssembler(final OutputChannel<IPPacket> outputChannel,
+                    final Timer taskTimer) {
         this(outputChannel, null, 0, taskTimer);
     }
 
     /**
-     * Constructs a defragmenter output channel that imposes no limit on cache size.
+     * Constructs an assembler output channel that imposes no limit on cache size.
      * 
      * @param outputChannel
      *            - The output channel that will receive reassembled datagrams. Required.
@@ -621,9 +690,9 @@ final class PacketAssembler
      *            The defragmenter will construct its own timer if this value is
      *            <code>null</code>.
      */
-    public PacketAssembler(final OutputChannel<IPPacket> outputChannel,
-                        final OutputChannel<IPPacket> timeoutChannel,
-                        final Timer taskTimer) {
+    PacketAssembler(final OutputChannel<IPPacket> outputChannel,
+                    final OutputChannel<IPPacket> timeoutChannel,
+                    final Timer taskTimer) {
         this(outputChannel, timeoutChannel, 0, taskTimer);
     }
 
