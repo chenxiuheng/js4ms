@@ -35,31 +35,39 @@ import com.larkwoodlabs.util.buffer.parser.MissingParserException;
 import com.larkwoodlabs.util.logging.Logging;
 
 /**
- * A User Datagram Protocol (UDP) packet.
- * 
+ * Represents a User Datagram Protocol (UDP) packet.
+ * <p>
+ * See <a href="http://www.ietf.org/rfc/rfc768.txt">[RFC-768]</a>
+ * and <a href="http://www.ietf.org/rfc/rfc2460.txt">[RFC-2460]</a>.
+ * <h3>Format</h3>
+ * <blockquote>
  * <pre>
- *   0      7 8     15 16    23 24    31  
- *  +--------+--------+--------+--------+ 
- *  |   Source Port   |Destination Port | 
- *  +--------+--------+--------+--------+ 
- *  |     Length      |    Checksum     | 
- *  +--------+--------+--------+--------+ 
- *  |          Data Octets ...          |           
- *  .                                   .
- *  .                                   .
- *  +-----------------------------------+
+ *   0                   1                   2                   3   
+ *   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 
+ *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *  |          Source Port          |       Destination Port        | 
+ *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *  |            Length             |           Checksum            | 
+ *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *  ~                          Data Octets ...                      ~
+ *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  * </pre>
+ * <dl>
+ * <dt><u>Source Port</u></dt><p><dd>
  * The Source Port is an optional field, when meaningful, it indicates the port
  * of the sending process, and may be assumed to be the port to which a reply
  * should be addressed in the absence of any other information. If not used, a
  * value of zero is inserted.
  * <p>
+ * <dt><u>Destination Port</u></dt><p><dd>
  * The Destination Port has a meaning within the context of a particular
  * internet destination address.
  * <p>
+ * <dt><u>Length</u></dt><p><dd>
  * Length is the length in octets of this user datagram including this header
  * and the data. (This means the minimum value of the length is eight.)
  * <p>
+ * <dt><u>Checksum</u></dt><p><dd>
  * Checksum is the 16-bit one's complement of the one's complement sum of a
  * pseudo header of information from the IP header, the UDP header, and the
  * data, padded with zero octets at the end (if necessary) to make a multiple of
@@ -141,11 +149,11 @@ import com.larkwoodlabs.util.logging.Logging;
  * it must be changed to all ones (0xFFFF). IPv6 receivers must discard
  * UDP packets containing a zero checksum, and should log the error.
  * <p>
+ * </dd>
+ * </dl>
+ * </blockquote>
  * 
- * See <a href="http://www.ietf.org/rfc/rfc768.txt">[RFC-768]</a>
- * and <a href="http://www.ietf.org/rfc/rfc2460.txt">[RFC-2460]</a>
- * 
- * @author Gregory Bumgardner
+ * @author Gregory Bumgardner (gbumgard)
  * 
  */
 public final class UdpPacket extends BufferBackedObject implements IPMessage {
