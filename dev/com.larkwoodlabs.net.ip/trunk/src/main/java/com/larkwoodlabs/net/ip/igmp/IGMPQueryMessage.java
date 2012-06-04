@@ -30,10 +30,11 @@ import com.larkwoodlabs.util.buffer.parser.MissingParserException;
 import com.larkwoodlabs.util.logging.Logging;
 
 /**
- * Base class for v2 and v3 Membership Query message classes.
+ * Base class for IGMPv2 and IGMPv3 Membership Query Message classes.
  * The two versions are differentiated by their length.
- * 
- * @author Gregory Bumgardner
+ * @see IGMPv2QueryMessage
+ * @see IGMPv3QueryMessage
+ * @author Gregory Bumgardner (gbumgard)
  */
 public abstract class IGMPQueryMessage extends IGMPGroupMessage {
 
@@ -43,10 +44,10 @@ public abstract class IGMPQueryMessage extends IGMPGroupMessage {
      * Parser used to construct and parse the appropriate Membership Query messages.
      * 
      * The IGMP version of a Membership Query message is determined as follows:
-     * 
+     * <ul> 
      * <li>IGMPv2 Query: length = 8 octets and Max Resp Code is zero.
      * <li>IGMPv3 Query: length >= 12 octets
-     * 
+     * </ul>
      * Query messages that do not match any of the above conditions MUST be silently ignored.     * 
      */
     public static class Parser implements IGMPMessage.ParserType {
