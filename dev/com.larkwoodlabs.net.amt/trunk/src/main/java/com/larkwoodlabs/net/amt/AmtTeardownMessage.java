@@ -39,43 +39,45 @@ import com.larkwoodlabs.util.logging.Logging;
  * The following description is excerpted from <a
  * href="http://tools.ietf.org/html/draft-ietf-mboned-auto-multicast">Automatic Multicast
  * Tunneling (AMT)</a> specification.
+ * <p>
+ * A gateway sends a Teardown message to a relay to request that it stop sending Multicast
+ * Data messages to a tunnel endpoint created by an earlier Membership Update message. A
+ * gateway sends this message when it detects that a Request message sent to the relay
+ * carries an address that differs from that carried by a previous Request message. The
+ * gateway uses the Gateway IP Address and Gateway Port Number Fields in the Membership
+ * Query message to detect these address changes.
+ * <p>
+ * To provide backwards compatibility with early implementations of the AMT protocol,
+ * support for this message and associated procedures is considered OPTIONAL - gateways
+ * are not required to send this message and relays are not required to act upon it.
+ * <p>
+ * The UDP/IP datagram containing this message MUST carry a valid, non- zero UDP checksum
+ * and carry the following IP address and UDP port values: <blockquote>
+ * <dl>
+ * <dt><u>Source IP Address</u></dt>
+ * <p>
+ * <dd>The IP address of the gateway interface used to send the message. This address may
+ * differ from that used to send earlier messages. Note: The value of this field may be
+ * changed as a result of network address translation before arriving at the relay.</dd>
+ * <p>
+ * <dt><u>Source UDP Port</u></dt>
+ * <p>
+ * <dd>The UDP port number. This port number may differ from that used to send earlier
+ * messages. Note: The value of this field may be changed as a result of network address
+ * translation before arriving at the relay.</dd>
+ * <p>
+ * <dt><u>Destination IP Address</u></dt>
+ * <p>
+ * <dd>The unicast IP address of the relay.</dd>
+ * <p>
+ * <dt><u>Destination UDP Port</u></dt>
+ * <p>
+ * <dd>The IANA-assigned AMT port number.</dd>
+ * </dl>
+ * </blockquote>
+ * <h3>Message Format</h3> <blockquote>
  * 
  * <pre>
- * 5.1.7.  Teardown
- * 
- *    A gateway sends a Teardown message to a relay to request that it stop
- *    sending Multicast Data messages to a tunnel endpoint created by an
- *    earlier Membership Update message.  A gateway sends this message when
- *    it detects that a Request message sent to the relay carries an
- *    address that differs from that carried by a previous Request message.
- *    The gateway uses the Gateway IP Address and Gateway Port Number
- *    Fields in the Membership Query message to detect these address
- *    changes.
- * 
- *    To provide backwards compatibility with early implementations of the
- *    AMT protocol, support for this message and associated procedures is
- *    considered OPTIONAL - gateways are not required to send this message
- *    and relays are not required to act upon it.
- * 
- *    The UDP/IP datagram containing this message MUST carry a valid, non-
- *    zero UDP checksum and carry the following IP address and UDP port
- *    values:
- * 
- *    Source IP Address -  The IP address of the gateway interface used to
- *       send the message.  This address may differ from that used to send
- *       earlier messages.  Note: The value of this field may be changed as
- *       a result of network address translation before arriving at the
- *       relay.
- * 
- *    Source UDP Port -  The UDP port number.  This port number may differ
- *       from that used to send earlier messages.  Note: The value of this
- *       field may be changed as a result of network address translation
- *       before arriving at the relay.
- * 
- *    Destination IP Address -  The unicast IP address of the relay.
- * 
- *    Destination UDP Port -  The IANA-assigned AMT port number.
- * 
  *     0                   1                   2                   3
  *     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
  *    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -95,64 +97,57 @@ import com.larkwoodlabs.util.logging.Logging;
  *    +                               +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  *    |                               |
  *    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- * 
- *                     Membership Teardown Message Format
- * 
- * 5.1.7.1.  Version (V)
- * 
- *    The protocol version number for this message is 0.
- * 
- * 5.1.7.2.  Type
- * 
- *    The type number for this message is 7.
- * 
- * 5.1.7.3.  Reserved
- * 
- *    Reserved bits that MUST be set to zero by the gateway and ignored by
- *    the relay.
- * 
- * 5.1.7.4.  Response MAC
- * 
- *    A 48-bit value copied from the Response MAC field (Section 5.1.4.6)
- *    in the last Membership Query message the relay sent to the gateway
- *    endpoint address of the tunnel to be torn down.  The gateway endpoint
- *    address is provided by the Gateway IP Address and Gateway Port Number
- *    fields carried by the Membership Query message.
- * 
- * 5.1.7.5.  Request Nonce
- * 
- *    A 32-bit value copied from the Request Nonce field (Section 5.1.4.7)
- *    in the last Membership Query message the relay sent to the gateway
- *    endpoint address of the tunnel to be torn down.  The gateway endpoint
- *    address is provided by the Gateway IP Address and Gateway Port Number
- *    fields carried by the Membership Query message.  This value must
- *    match that used by the relay to compute the value stored in the
- *    Response MAC field.
- * 
- * 5.1.7.6.  Gateway Port Number
- * 
- *    A 16-bit UDP port number that, when combined with the value contained
- *    in the Gateway IP Address field, forms the tunnel endpoint address
- *    that the relay will use to identify the tunnel instance to tear down.
- *    The relay provides this value to the gateway using the Gateway Port
- *    Number field (Section 5.1.4.9.1) in a Membership Query message.  This
- *    port number must match that used by the relay to compute the value
- *    stored in the Response MAC field.
- * 
- * 5.1.7.7.  Gateway IP Address
- * 
- *    A 16-byte IP address that, when combined with the value contained in
- *    the Gateway Port Number field, forms the tunnel endpoint address that
- *    the relay will used to identify the tunnel instance to tear down.
- *    The relay provides this value to the gateway using the Gateway IP
- *    Address field (Section 5.1.4.9.2) in a Membership Query message.
- *    This field may contain an IPv6 address or an IPv4 address stored as
- *    an IPv4-compatible IPv6 address, where the IPv4 address is prefixed
- *    with 96 bits set to zero (See [RFC4291]).  This address must match
- *    that used by the relay to compute the value stored in the Response
- *    MAC field.
- * 
  * </pre>
+ * 
+ * <dl>
+ * <dt><u>Version (V)</u></dt>
+ * <p>
+ * <dd>The protocol version number for this message is 0.</dd>
+ * <p>
+ * <dt><u>Type</u></dt>
+ * <p>
+ * <dd>The type number for this message is 7.</dd>
+ * <p>
+ * <dt><u>Reserved</u></dt>
+ * <p>
+ * <dd>Reserved bits that MUST be set to zero by the gateway and ignored by the relay.</dd>
+ * <p>
+ * <dt><u>Response MAC</u></dt>
+ * <p>
+ * <dd>A 48-bit value copied from the Response MAC field (Section 5.1.4.6) in the last
+ * Membership Query message the relay sent to the gateway endpoint address of the tunnel
+ * to be torn down. The gateway endpoint address is provided by the Gateway IP Address and
+ * Gateway Port Number fields carried by the Membership Query message.</dd>
+ * <p>
+ * <dt><u>Request Nonce</u></dt>
+ * <p>
+ * <dd>A 32-bit value copied from the Request Nonce field (Section 5.1.4.7) in the last
+ * Membership Query message the relay sent to the gateway endpoint address of the tunnel
+ * to be torn down. The gateway endpoint address is provided by the Gateway IP Address and
+ * Gateway Port Number fields carried by the Membership Query message. This value must
+ * match that used by the relay to compute the value stored in the Response MAC field.</dd>
+ * <p>
+ * <dt><u>Gateway Port Number</u></dt>
+ * <p>
+ * <dd>A 16-bit UDP port number that, when combined with the value contained in the
+ * Gateway IP Address field, forms the tunnel endpoint address that the relay will use to
+ * identify the tunnel instance to tear down. The relay provides this value to the gateway
+ * using the Gateway Port Number field (Section 5.1.4.9.1) in a Membership Query message.
+ * This port number must match that used by the relay to compute the value stored in the
+ * Response MAC field.</dd>
+ * <p>
+ * <dt><u>Gateway IP Address</u></dt>
+ * <p>
+ * <dd>A 16-byte IP address that, when combined with the value contained in the Gateway
+ * Port Number field, forms the tunnel endpoint address that the relay will used to
+ * identify the tunnel instance to tear down. The relay provides this value to the gateway
+ * using the Gateway IP Address field (Section 5.1.4.9.2) in a Membership Query message.
+ * This field may contain an IPv6 address or an IPv4 address stored as an IPv4-compatible
+ * IPv6 address, where the IPv4 address is prefixed with 96 bits set to zero (See
+ * [RFC4291]). This address must match that used by the relay to compute the value stored
+ * in the Response MAC field.</dd>
+ * </dl>
+ * </blockquote>
  * 
  * @author Greg Bumgardner (gbumgard)
  */

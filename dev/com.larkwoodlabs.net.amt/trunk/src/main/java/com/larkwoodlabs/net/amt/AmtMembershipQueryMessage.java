@@ -45,37 +45,40 @@ import com.larkwoodlabs.util.logging.Logging;
  * The following description is excerpted from the <a
  * href="http://tools.ietf.org/html/draft-ietf-mboned-auto-multicast">Automatic Multicast
  * Tunneling (AMT)</a> specification.
+ * <p>
+ * A relay sends a Membership Query message to a gateway to solicit a Membership Update
+ * response, but only after receiving a Request message from the gateway. The successful
+ * delivery of this message to a gateway marks the start of the second-stage in the
+ * three-way handshake used to create or update tunnel state within a relay. The UDP/IP
+ * datagram containing this message MUST carry a valid, non- zero UDP checksum and carry
+ * the following IP address and UDP port values: <blockquote>
+ * <dl>
+ * <dt><u>Source IP Address</u></dt>
+ * <p>
+ * <dd>The destination IP address carried by the Request message (i.e. the unicast IP
+ * address of the relay).</dd>
+ * <p>
+ * <dt><u>Source UDP Port</u></dt>
+ * <p>
+ * <dd>The destination UDP port carried by the Request message (i.e. the IANA-assigned AMT
+ * port number).</dd>
+ * <p>
+ * <dt><u>Destination IP Address</u></dt>
+ * <p>
+ * <dd>The source IP address carried by the Request message. Note: The value of this field
+ * may be changed as a result of network address translation before arriving at the
+ * gateway.</dd>
+ * <p>
+ * <dt><u>Destination UDP Port</u></dt>
+ * <p>
+ * <dd>The source UDP port carried by the Request message. Note: The value of this field
+ * may be changed as a result of network address translation before arriving at the
+ * gateway.</dd>
+ * </dl>
+ * </blockquote>
+ * <h3>Message Format</h3> <blockquote>
  * 
  * <pre>
- * 5.1.4.  Membership Query
- * 
- *    A relay sends a Membership Query message to a gateway to solicit a
- *    Membership Update response, but only after receiving a Request
- *    message from the gateway.
- * 
- *    The successful delivery of this message to a gateway marks the start
- *    of the second-stage in the three-way handshake used to create or
- *    update tunnel state within a relay.
- * 
- *    The UDP/IP datagram containing this message MUST carry a valid, non-
- *    zero UDP checksum and carry the following IP address and UDP port
- *    values:
- * 
- *    Source IP Address -  The destination IP address carried by the
- *       Request message (i.e. the unicast IP address of the relay).
- * 
- *    Source UDP Port -  The destination UDP port carried by the Request
- *       message (i.e. the IANA-assigned AMT port number).
- * 
- *    Destination IP Address -  The source IP address carried by the
- *       Request message.  Note: The value of this field may be changed as
- *       a result of network address translation before arriving at the
- *       gateway.
- * 
- *    Destination UDP Port -  The source UDP port carried by the Request
- *       message.  Note: The value of this field may be changed as a result
- *       of network address translation before arriving at the gateway.
- * 
  *     0                   1                   2                   3
  *     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
  *    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -101,114 +104,95 @@ import com.larkwoodlabs.util.logging.Logging;
  *    +                               +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  *    |                               |
  *    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- * 
- *                       Membership Query Message Format
- * 
- * 5.1.4.1.  Version (V)
- * 
- *    The protocol version number for this message is 0.
- * 
- * 5.1.4.2.  Type
- * 
- *    The type number for this message is 4.
- * 
- * 5.1.4.3.  Reserved
- * 
- *    Reserved bits that MUST be set to zero by the relay and ignored by
- *    the gateway.
- * 
- * 5.1.4.4.  Limit (L) Flag
- * 
- *    A 1-bit flag set to 1 to indicate that the relay is NOT accepting
- *    Membership Update messages from new gateway tunnel endpoints and that
- *    it will ignore any that are.  A value of 0 has no special
- *    significance - the relay may or may not be accepting Membership
- *    Update messages from new gateway tunnel endpoints.  A gateway checks
- *    this flag before attempting to create new group subscription state on
- *    the relay to determine whether it should restart relay discovery.  A
- *    gateway that has already created group subscriptions on the relay may
- *    ignore this flag.  Support for this flag is RECOMMENDED.
- * 
- * 5.1.4.5.  Gateway Address (G) Flag
- * 
- *    A 1-bit flag set to 0 to indicate that the message does NOT carry the
- *    Gateway Port and Gateway IP Address fields, and 1 to indicate that it
- *    does.  A relay implementation that supports the optional teardown
- *    procedure (See Section 5.3.3.5) SHOULD set this flag and and the
- *    Gateway Address field values.  If a relay sets this flag, it MUST
- *    also include the Gateway Address fields in the message.  A gateway
- *    implementation that does not support the optional teardown procedure
- *    (See Section 5.2.3.7) MAY ignore this flag and the Gateway Address
- *    fields if they are present.
- * 
- * 5.1.4.6.  Response MAC
- * 
- *    A 48-bit source authentication hash generated by the relay as
- *    described in Section 5.3.5.  The gateway echoes this value in
- *    subsequent Membership Update messages to allow the relay to verify
- *    that the sender of a Membership Update message was the intended
- *    receiver of a Membership Query sent by the relay.
- * 
- * 5.1.4.7.  Request Nonce
- * 
- *    A 32-bit value copied from the Request Nonce field (Section 5.1.3.5)
- *    carried by a Request message.  The relay will have included this
- *    value in the Response MAC hash computation.  The gateway echoes this
- *    value in subsequent Membership Update messages.  The gateway also
- *    uses this value to match a Membership Query to a Request message.
- * 
- * 5.1.4.8.  Encapsulated General Query Message
- * 
- *    An IP-encapsulated IGMP or MLD message generated by the relay.  This
- *    field will contain one of the following IP datagrams:
- * 
- *       IPv4:IGMPv3 Membership Query
- * 
- *       IPv6:MLDv2 Listener Query
- * 
- *    The source address carried by the query message should be set as
- *    described in Section 5.3.3.3.
- * 
- *    The Querier's Query Interval Code (QQIC) field in the general query
- *    is used by a relay to specify the time offset a gateway should use to
- *    schedule a new three-way handshake to refresh the group membership
- *    state within the relay (current time + Query Interval).
- * 
- *    The Querier's Robustness Variable (QRV) field in the general query is
- *    used by a relay to specify the number of times a gateway should
- *    retransmit unsolicited membership reports, encapsulated within
- *    Membership Update messages, and optionally, the number of times to
- *    send a Teardown message.
- * 
- * 5.1.4.9.  Gateway Address Fields
- * 
- *    The Gateway Port Number and Gateway Address fields are present in the
- *    Membership Query message if, and only if, the "G" flag is set.
- * 
- *    A gateway need not parse the encapsulated IP datagram to determine
- *    the position of these fields within the UDP datagram containing the
- *    Membership Query message - if the G-flag is set, the gateway may
- *    simply subtract the total length of the fields (18 bytes) from the
- *    total length of the UDP datagram to obtain the offset.
- * 
- * 5.1.4.9.1.  Gateway Port Number
- * 
- *    A 16-bit UDP port containing a UDP port value.
- * 
- *    The Relay sets this field to the value of the UDP source port of the
- *    Request message that triggered the Query message.
- * 
- * 5.1.4.9.2.  Gateway IP Address
- * 
- *    A 16-byte IP address that, when combined with the value contained in
- *    the Gateway Port Number field, forms the gateway endpoint address
- *    that the relay will use to identify the tunnel instance, if any,
- *    created by a subsequent Membership Update message.  This field may
- *    contain an IPv6 address or an IPv4 address stored as an IPv4-
- *    compatible IPv6 address, where the IPv4 address is prefixed with 96
- *    bits set to zero (See [RFC4291]).  This address must match that used
- *    by the relay to compute the value stored in the Response MAC field.
  * </pre>
+ * 
+ * <dl>
+ * <dt><u>Version (V)</u></dt>
+ * <p>
+ * <dd>The protocol version number for this message is 0.</dd>
+ * <p>
+ * <dt><u>Type</u></dt>
+ * <p>
+ * <dd>The type number for this message is 4.</dd>
+ * <p>
+ * <dt><u>Reserved</u></dt>
+ * <p>
+ * <dd>Reserved bits that MUST be set to zero by the relay and ignored by the gateway.</dd>
+ * <p>
+ * <dt><u>Limit (L) Flag</u></dt>
+ * <p>
+ * <dd>A 1-bit flag set to 1 to indicate that the relay is NOT accepting Membership Update
+ * messages from new gateway tunnel endpoints and that it will ignore any that are. A
+ * value of 0 has no special significance - the relay may or may not be accepting
+ * Membership Update messages from new gateway tunnel endpoints. A gateway checks this
+ * flag before attempting to create new group subscription state on the relay to determine
+ * whether it should restart relay discovery. A gateway that has already created group
+ * subscriptions on the relay may ignore this flag. Support for this flag is RECOMMENDED.</dd>
+ * <p>
+ * <dt><u>Gateway Address (G) Flag</u></dt>
+ * <p>
+ * <dd>A 1-bit flag set to 0 to indicate that the message does NOT carry the Gateway Port
+ * and Gateway IP Address fields, and 1 to indicate that it does. A relay implementation
+ * that supports the optional teardown procedure (See Section 5.3.3.5) SHOULD set this
+ * flag and and the Gateway Address field values. If a relay sets this flag, it MUST also
+ * include the Gateway Address fields in the message. A gateway implementation that does
+ * not support the optional teardown procedure (See Section 5.2.3.7) MAY ignore this flag
+ * and the Gateway Address fields if they are present.</dd>
+ * <p>
+ * <dt><u>Response MAC</u></dt>
+ * <p>
+ * <dd>A 48-bit source authentication hash generated by the relay as described in Section
+ * 5.3.5. The gateway echoes this value in subsequent Membership Update messages to allow
+ * the relay to verify that the sender of a Membership Update message was the intended
+ * receiver of a Membership Query sent by the relay.</dd>
+ * <p>
+ * <dt><u>Request Nonce</u></dt>
+ * <p>
+ * <dd>A 32-bit value copied from the Request Nonce field (Section 5.1.3.5) carried by a
+ * Request message. The relay will have included this value in the Response MAC hash
+ * computation. The gateway echoes this value in subsequent Membership Update messages.
+ * The gateway also uses this value to match a Membership Query to a Request message.</dd>
+ * <p>
+ * <dt><u>Encapsulated General Query Message</u></dt>
+ * <p>
+ * <dd>An IP-encapsulated IGMP or MLD message generated by the relay. This field will
+ * contain one of the following IP datagrams: IPv4:IGMPv3 Membership Query IPv6:MLDv2
+ * Listener Query The source address carried by the query message should be set as
+ * described in Section 5.3.3.3. The Querier's Query Interval Code (QQIC) field in the
+ * general query is used by a relay to specify the time offset a gateway should use to
+ * schedule a new three-way handshake to refresh the group membership state within the
+ * relay (current time + Query Interval). The Querier's Robustness Variable (QRV) field in
+ * the general query is used by a relay to specify the number of times a gateway should
+ * retransmit unsolicited membership reports, encapsulated within Membership Update
+ * messages, and optionally, the number of times to send a Teardown message.</dd>
+ * <p>
+ * <dt><u>Gateway Address Fields</u></dt>
+ * <p>
+ * <dd>The Gateway Port Number and Gateway Address fields are present in the Membership
+ * Query message if, and only if, the "G" flag is set. A gateway need not parse the
+ * encapsulated IP datagram to determine the position of these fields within the UDP
+ * datagram containing the Membership Query message - if the G-flag is set, the gateway
+ * may simply subtract the total length of the fields (18 bytes) from the total length of
+ * the UDP datagram to obtain the offset. <blockquote>
+ * <dl>
+ * <dt><u>Gateway Port Number</u></dt>
+ * <p>
+ * <dd>A 16-bit UDP port containing a UDP port value. The Relay sets this field to the
+ * value of the UDP source port of the Request message that triggered the Query message.</dd>
+ * <p>
+ * <dt><u>Gateway IP Address</u></dt>
+ * <p>
+ * <dd>A 16-byte IP address that, when combined with the value contained in the Gateway
+ * Port Number field, forms the gateway endpoint address that the relay will use to
+ * identify the tunnel instance, if any, created by a subsequent Membership Update
+ * message. This field may contain an IPv6 address or an IPv4 address stored as an IPv4-
+ * compatible IPv6 address, where the IPv4 address is prefixed with 96 bits set to zero
+ * (See [RFC4291]). This address must match that used by the relay to compute the value
+ * stored in the Response MAC field.</dd>
+ * </dl>
+ * </blockquote>
+ * </dl>
+ * </blockquote>
  * 
  * @see <a
  *      href="http://tools.ietf.org/html/draft-ietf-mboned-auto-multicast">draft-ietf-auto-multicast</a>

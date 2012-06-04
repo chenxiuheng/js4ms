@@ -35,36 +35,42 @@ import com.larkwoodlabs.util.logging.Logging;
  * The following description is excerpted from the
  * <a href="http://tools.ietf.org/html/draft-ietf-mboned-auto-multicast">Automatic
  * Multicast Tunneling (AMT)</a> specification.
+ * <p>
+ * A relay sends a Multicast Data message to deliver an IP multicast packet to a gateway.
+ * <p>
+ * The checksum field in the UDP header of this message MAY contain a value of zero when
+ * sent over IPv4 but SHOULD, if possible, contain a valid, non-zero value when sent over
+ * IPv6 (See Section 4.2.2.3).
+ * <p>
+ * The UDP/IP datagram containing this message MUST carry the following IP address and UDP
+ * port values: <blockquote>
+ * <dl>
+ * <dt><u>Source IP Address</u></dt>
+ * <p>
+ * <dd>The unicast IP address of the relay.</dd>
+ * <p>
+ * <dt><u>Source UDP Port</u></dt>
+ * <p>
+ * <dd>The IANA-assigned AMT port number.</dd>
+ * <p>
+ * <dt><u>Destination IP Address</u></dt>
+ * <p>
+ * <dd>A tunnel endpoint IP address, i.e. the source IP address carried by the Membership
+ * Update message sent by a gateway to indicate an interest in receiving the multicast
+ * packet. Note: The value of this field may be changed as a result of network address
+ * translation before arriving at the gateway.</dd>
+ * <p>
+ * <dt><u>Destination UDP Port</u></dt>
+ * <p>
+ * <dd>A tunnel endpoint UDP port, i.e. the source UDP port carried by the Membership
+ * Update message sent by a gateway to indicate an interest in receiving the multicast
+ * packet. Note: The value of this field may be changed as a result of network address
+ * translation before arriving at the gateway.</dd>
+ * </dl>
+ * </blockquote>
+ * <h3>Message Format</h3> <blockquote>
  * 
  * <pre>
- * 5.1.6.  Multicast Data
- * 
- *    A relay sends a Multicast Data message to deliver an IP multicast
- *    packet to a gateway.
- * 
- *    The checksum field in the UDP header of this message MAY contain a
- *    value of zero when sent over IPv4 but SHOULD, if possible, contain a
- *    valid, non-zero value when sent over IPv6 (See Section 4.2.2.3).
- * 
- *    The UDP/IP datagram containing this message MUST carry the following
- *    IP address and UDP port values:
- * 
- *    Source IP Address -  The unicast IP address of the relay.
- * 
- *    Source UDP Port -  The IANA-assigned AMT port number.
- * 
- *    Destination IP Address -  A tunnel endpoint IP address, i.e. the
- *       source IP address carried by the Membership Update message sent by
- *       a gateway to indicate an interest in receiving the multicast
- *       packet.  Note: The value of this field may be changed as a result
- *       of network address translation before arriving at the gateway.
- * 
- *    Destination UDP Port -  A tunnel endpoint UDP port, i.e. the source
- *       UDP port carried by the Membership Update message sent by a
- *       gateway to indicate an interest in receiving the multicast packet.
- *       Note: The value of this field may be changed as a result of
- *       network address translation before arriving at the gateway.
- * 
  *     0                   1                   2                   3
  *     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
  *    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -76,27 +82,26 @@ import com.larkwoodlabs.util.logging.Logging;
  *    +                - - - - - - - - - - - - - - - - - - - - - - - -+
  *    |               :               :               :               :
  *    +-+-+-+-+-+-+-+-+- - - - - - - - - - - - - - - - - - - - - - - -
- * 
- *                        Multicast Data Message Format
- * 
- * 5.1.6.1.  Version (V)
- * 
- *    The protocol version number for this message is 0.
- * 
- * 5.1.6.2.  Type
- * 
- *    The type number for this message is 6.
- * 
- * 5.1.6.3.  Reserved
- * 
- *    Bits that MUST be set to zero by the relay and ignored by the
- *    gateway.
- * 
- * 5.1.6.4.  IP Multicast Data
- * 
- *    A complete IPv4 or IPv6 Multicast datagram.
- * 
  * </pre>
+ * 
+ * <dl>
+ * <dt><u>Version (V)</u></dt>
+ * <p>
+ * <dd>The protocol version number for this message is 0.</dd>
+ * <p>
+ * <dt><u>Type</u></dt>
+ * <p>
+ * <dd>The type number for this message is 6.</dd>
+ * <p>
+ * <dt><u>Reserved</u></dt>
+ * <p>
+ * <dd>Bits that MUST be set to zero by the relay and ignored by the gateway.</dd>
+ * <p>
+ * <dt><u>IP Multicast Data</u></dt>
+ * <p>
+ * <dd>A complete IPv4 or IPv6 Multicast datagram.</dd>
+ * </dl>
+ * </blockquote>
  * 
  * @author Gregory Bumgardner (gbumgard)
  */

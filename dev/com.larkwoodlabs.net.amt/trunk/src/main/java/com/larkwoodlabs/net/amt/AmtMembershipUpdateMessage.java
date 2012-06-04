@@ -43,56 +43,58 @@ import com.larkwoodlabs.util.logging.Logging;
  * The following description is excerpted from <a
  * href="http://tools.ietf.org/html/draft-ietf-mboned-auto-multicast">Automatic Multicast
  * Tunneling (AMT)</a> specification.
+ * <p>
+ * A gateway sends a Membership Update message to a relay to report a change in group
+ * membership state, or to report the current group membership state in response to
+ * receiving a Membership Query message. The gateway encapsulates the IGMP or MLD message
+ * as an IP datagram within a Membership Update message and sends it to the relay, where
+ * it may (see below) be decapsulated and processed by the relay to update group
+ * membership and forwarding state.
+ * <p>
+ * A gateway cannot send a Membership Update message until a receives a Membership Query
+ * from a relay because the gateway must copy the Request Nonce and Response MAC values
+ * carried by a Membership Query into any subsequent Membership Update messages it sends
+ * back to that relay. These values are used by the relay to verify that the sender of the
+ * Membership Update message was the recipient of the Membership Query message from which
+ * these values were copied.
+ * <p>
+ * The successful delivery of this message to the relay marks the start of the final stage
+ * in the three-way handshake. This stage concludes when the relay successfully verifies
+ * that sender of the Message Update message was the recipient of a Membership Query
+ * message sent earlier. At this point, the relay may proceed to process the encapsulated
+ * IGMP or MLD message to create or update group membership and forwarding state on behalf
+ * of the gateway.
+ * <p>
+ * The UDP/IP datagram containing this message MUST carry a valid, non- zero UDP checksum
+ * and carry the following IP address and UDP port values: <blockquote>
+ * <dl>
+ * <dt><u>Source IP Address</u></dt>
+ * <p>
+ * <dd>The IP address of the gateway interface on which the gateway will listen for
+ * Multicast Data messages from the relay. The address must be the same address used to
+ * send the initial Request message or the message will be ignored. Note: The value of
+ * this field may be changed as a result of network address translation before arriving at
+ * the relay.</dd>
+ * <p>
+ * <dt><u>Source UDP Port</u></dt>
+ * <p>
+ * <dd>The UDP port number on which the gateway will listen for Multicast Data messages
+ * from the relay. This port must be the same port used to send the initial Request
+ * message or the message will be ignored. Note: The value of this field may be changed as
+ * a result of network address translation before arriving at the relay.</dd>
+ * <p>
+ * <dt><u>Destination IP Address</u></dt>
+ * <p>
+ * <dd>The unicast IP address of the relay.</dd>
+ * <p>
+ * <dt><u>Destination UDP Port</u></dt>
+ * <p>
+ * <dd>The IANA-assigned AMT UDP port number.</dd>
+ * </dl>
+ * </blockquote>
+ * <h3>Message Format</h3> <blockquote>
  * 
  * <pre>
- * 5.1.5.  Membership Update
- * 
- *    A gateway sends a Membership Update message to a relay to report a
- *    change in group membership state, or to report the current group
- *    membership state in response to receiving a Membership Query message.
- *    The gateway encapsulates the IGMP or MLD message as an IP datagram
- *    within a Membership Update message and sends it to the relay, where
- *    it may (see below) be decapsulated and processed by the relay to
- *    update group membership and forwarding state.
- * 
- *    A gateway cannot send a Membership Update message until a receives a
- *    Membership Query from a relay because the gateway must copy the
- *    Request Nonce and Response MAC values carried by a Membership Query
- *    into any subsequent Membership Update messages it sends back to that
- *    relay.  These values are used by the relay to verify that the sender
- *    of the Membership Update message was the recipient of the Membership
- *    Query message from which these values were copied.
- * 
- *    The successful delivery of this message to the relay marks the start
- *    of the final stage in the three-way handshake.  This stage concludes
- *    when the relay successfully verifies that sender of the Message
- *    Update message was the recipient of a Membership Query message sent
- *    earlier.  At this point, the relay may proceed to process the
- *    encapsulated IGMP or MLD message to create or update group membership
- *    and forwarding state on behalf of the gateway.
- * 
- *    The UDP/IP datagram containing this message MUST carry a valid, non-
- *    zero UDP checksum and carry the following IP address and UDP port
- *    values:
- * 
- *    Source IP Address -  The IP address of the gateway interface on which
- *       the gateway will listen for Multicast Data messages from the
- *       relay.  The address must be the same address used to send the
- *       initial Request message or the message will be ignored.  Note: The
- *       value of this field may be changed as a result of network address
- *       translation before arriving at the relay.
- * 
- *    Source UDP Port -  The UDP port number on which the gateway will
- *       listen for Multicast Data messages from the relay.  This port must
- *       be the same port used to send the initial Request message or the
- *       message will be ignored.  Note: The value of this field may be
- *       changed as a result of network address translation before arriving
- *       at the relay.
- * 
- *    Destination IP Address -  The unicast IP address of the relay.
- * 
- *    Destination UDP Port -  The IANA-assigned AMT UDP port number.
- * 
  *     0                   1                   2                   3
  *     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
  *    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -108,55 +110,47 @@ import com.larkwoodlabs.util.logging.Logging;
  *    |            IPv6:MLD(Listener Report|Listener Done)            |
  *    |                                                               |
  *    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- * 
- *                      Membership Update Message Format
- * 
- * 5.1.5.1.  Version (V)
- * 
- *    The protocol version number for this message is 0.
- * 
- * 5.1.5.2.  Type
- * 
- *    The type number for this message is 5.
- * 
- * 5.1.5.3.  Reserved
- * 
- *    Reserved bits that MUST be set to zero by the gateway and ignored by
- *    the relay.
- * 
- * 5.1.5.4.  Response MAC
- * 
- *    A 48-bit value copied from the Response MAC field (Section 5.1.4.6)
- *    in a Membership Query message.  Used by the relay to perform source
- *    authentication.
- * 
- * 5.1.5.5.  Request Nonce
- * 
- *    A 32-bit value copied from the Request Nonce field in a Request or
- *    Membership Query message.  Used by the relay to perform source
- *    authentication.
- * 
- * 5.1.5.6.  Encapsulated Group Membership Update Message
- * 
- *    An IP-encapsulated IGMP or MLD message produced by the host-mode IGMP
- *    or MLD protocol running on a gateway pseudo-interface.  This field
- *    will contain of one of the following IP datagrams:
- * 
- *       IPv4:IGMPv2 Membership Report
- * 
- *       IPv4:IGMPv2 Leave Group
- * 
- *       IPv4:IGMPv3 Membership Report
- * 
- *       IPv6:MLDv1 Multicast Listener Report
- * 
- *       IPv6:MLDv1 Multicast Listener Done
- * 
- *       IPv6:MLDv2 Multicast Listener Report
- * 
- *    The source address carried by the message should be set as described
- *    in Section 5.2.1.
  * </pre>
+ * 
+ * <dl>
+ * <dt><u>Version (V)</u></dt>
+ * <p>
+ * <dd>The protocol version number for this message is 0.</dd>
+ * <p>
+ * <dt><u>Type</u></dt>
+ * <p>
+ * <dd>The type number for this message is 5.</dd>
+ * <p>
+ * <dt><u>Reserved</u></dt>
+ * <p>
+ * <dd>Reserved bits that MUST be set to zero by the gateway and ignored by the relay.</dd>
+ * <p>
+ * <dt><u>Response MAC</u></dt>
+ * <p>
+ * <dd>A 48-bit value copied from the Response MAC field (Section 5.1.4.6) in a Membership
+ * Query message. Used by the relay to perform source authentication.</dd>
+ * <p>
+ * <dt><u>Request Nonce</u></dt>
+ * <p>
+ * <dd>A 32-bit value copied from the Request Nonce field in a Request or Membership Query
+ * message. Used by the relay to perform source authentication.</dd>
+ * <p>
+ * <dt><u>Encapsulated Group Membership Update Message</u></dt>
+ * <p>
+ * <dd>An IP-encapsulated IGMP or MLD message produced by the host-mode IGMP or MLD
+ * protocol running on a gateway pseudo-interface. This field will contain of one of the
+ * following IP datagrams:
+ * <ul>
+ * <li>IPv4:IGMPv2 Membership Report</li>
+ * <li>IPv4:IGMPv2 Leave Group</li>
+ * <li>IPv4:IGMPv3 Membership Report</li>
+ * <li>IPv6:MLDv1 Multicast Listener Report</li>
+ * <li>IPv6:MLDv1 Multicast Listener Done</li>
+ * <li>IPv6:MLDv2 Multicast Listener Report</li>
+ * </ul>
+ * </dd>
+ * </dl>
+ * </blockquote>
  * 
  * @author Greg Bumgardner (gbumgard)
  */
@@ -307,7 +301,8 @@ public final class AmtMembershipUpdateMessage
     /**
      * Logs value of member variables declared or maintained by this class.
      * 
-     * @param logger The logger to use when generating log messages.
+     * @param logger
+     *            The logger to use when generating log messages.
      */
     private void logState(final Logger logger) {
         logger.info(ObjectId + " : response-MAC=" + Logging.mac(getResponseMac()));

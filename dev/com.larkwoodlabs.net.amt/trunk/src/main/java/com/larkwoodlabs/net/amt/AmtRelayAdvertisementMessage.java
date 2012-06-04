@@ -35,36 +35,39 @@ import com.larkwoodlabs.util.logging.Logging;
  * The following description is excerpted from the <a
  * href="http://tools.ietf.org/html/draft-ietf-mboned-auto-multicast">Automatic Multicast
  * Tunneling (AMT)</a> specification.
+ * <p>
+ * The Relay Advertisement message is used to supply a gateway with a unicast IP address
+ * of a relay. A relay sends this message to a gateway when it receives a Relay Discovery
+ * message from that gateway. The UDP/IP datagram containing this message MUST carry a
+ * valid, non- zero UDP checksum and carry the following IP address and UDP port values:
+ * <blockquote>
+ * <dl>
+ * <dt><u>Source IP Address</u></dt>
+ * <p>
+ * <dd>The destination IP address carried by the Relay Discovery message (i.e. the Relay
+ * Discovery Address advertised by the relay).</dd>
+ * <p>
+ * <dt><u>Source UDP Port</u></dt>
+ * <p>
+ * <dd>The destination UDP port carried by the Relay Discovery message (i.e. the
+ * IANA-assigned AMT port number).</dd>
+ * <p>
+ * <dt><u>Destination IP Address</u></dt>
+ * <p>
+ * <dd>The source IP address carried by the Relay Discovery message. Note: The value of
+ * this field may be changed as a result of network address translation before arriving at
+ * the gateway.</dd>
+ * <p>
+ * <dt><u>Destination UDP Port</u></dt>
+ * <p>
+ * <dd>The source UDP port carried by the Relay Discovery message. Note: The value of this
+ * field may be changed as a result of network address translation before arriving at the
+ * gateway.</dd>
+ * </dl>
+ * </blockquote>
+ * <h3>Message Format</h3> <blockquote>
  * 
  * <pre>
- * 5.1.2.  Relay Advertisement
- * 
- *    The Relay Advertisement message is used to supply a gateway with a
- *    unicast IP address of a relay.  A relay sends this message to a
- *    gateway when it receives a Relay Discovery message from that gateway.
- * 
- *    The UDP/IP datagram containing this message MUST carry a valid, non-
- *    zero UDP checksum and carry the following IP address and UDP port
- *    values:
- * 
- *    Source IP Address -  The destination IP address carried by the Relay
- *       Discovery message (i.e. the Relay Discovery Address advertised by
- *       the relay).
- * 
- *    Source UDP Port -  The destination UDP port carried by the Relay
- *       Discovery message (i.e. the IANA-assigned AMT port number).
- * 
- *    Destination IP Address -  The source IP address carried by the Relay
- *       Discovery message.  Note: The value of this field may be changed
- *       as a result of network address translation before arriving at the
- *       gateway.
- * 
- *    Destination UDP Port -  The source UDP port carried by the Relay
- *       Discovery message.  Note: The value of this field may be changed
- *       as a result of network address translation before arriving at the
- *       gateway.
- * 
- * 
  *     0                   1                   2                   3
  *     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
  *    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -76,36 +79,34 @@ import com.larkwoodlabs.util.logging.Logging;
  *    ~                  Relay Address (IPv4 or IPv6)                 ~
  *    |                                                               |
  *    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- * 
- *                     Relay Advertisement Message Format
- * 
- * 5.1.2.1.  Version (V)
- * 
- *    The protocol version number for this message is 0.
- * 
- * 5.1.2.2.  Type
- * 
- *    The type number for this message is 2.
- * 
- * 5.1.2.3.  Reserved
- * 
- *    Reserved bits that MUST be set to zero by the relay and ignored by
- *    the gateway.
- * 
- * 5.1.2.4.  Discovery Nonce
- * 
- *    A 32-bit value copied from the Discovery Nonce field
- *    (Section 5.1.1.4) contained in the Relay Discovery message.  The
- *    gateway uses this value to match a Relay Advertisement to a Relay
- *    Discovery message.
- * 
- * 5.1.2.5.  Relay Address
- * 
- *    The unicast IPv4 or IPv6 address of the relay.  A gateway uses the
- *    length of the UDP datagram containing the Relay Advertisement message
- *    to determine the address family; i.e. length - 8 = 4 (IPv4) or 16
- *    (IPv6).
  * </pre>
+ * 
+ * <dl>
+ * <dt><u>Version (V)</u></dt>
+ * <p>
+ * <dd>The protocol version number for this message is 0.</dd>
+ * <p>
+ * <dt><u>Type</u></dt>
+ * <p>
+ * <dd>The type number for this message is 2.</dd>
+ * <p>
+ * <dt><u>Reserved</u></dt>
+ * <p>
+ * <dd>Reserved bits that MUST be set to zero by the relay and ignored by the gateway.</dd>
+ * <p>
+ * <dt><u>Discovery Nonce</u></dt>
+ * <p>
+ * <dd>A 32-bit value copied from the Discovery Nonce field (Section 5.1.1.4) contained in
+ * the Relay Discovery message. The gateway uses this value to match a Relay Advertisement
+ * to a Relay Discovery message.</dd>
+ * <p>
+ * <dt><u>Relay Address</u></dt>
+ * <p>
+ * <dd>The unicast IPv4 or IPv6 address of the relay. A gateway uses the length of the UDP
+ * datagram containing the Relay Advertisement message to determine the address family;
+ * i.e. length - 8 = 4 (IPv4) or 16 (IPv6).</dd>
+ * </dl>
+ * </blockquote>
  * 
  * @author Greg Bumgardner (gbumgard)
  */
