@@ -1,17 +1,21 @@
 /*
- * Copyright © 2009-2010 Larkwood Labs Software.
- *
- * Licensed under the Larkwood Labs Software Source Code License, Version 1.0.
- * You may not use this file except in compliance with this License.
- *
- * You may view the Source Code License at
- * http://www.larkwoodlabs.com/source-license
- *
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * 
+ * File: UdpDatagramPayloadSource.java (com.larkwoodlabs.net.udp)
+ * 
+ * Copyright © 2009-2012 Cisco Systems, Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- * limitations under the license.
+ * limitations under the License.
  */
 
 package com.larkwoodlabs.net.udp;
@@ -26,24 +30,25 @@ import com.larkwoodlabs.channels.OutputChannel;
 import com.larkwoodlabs.channels.OutputChannelTransform;
 
 /**
- * A {@link MessageSource} that receives UDP packets via a {@link UdpEndpoint} and 
+ * A {@link MessageSource} that receives UDP packets via a {@link UdpEndpoint} and
  * sends the datagram payload to an {@link OutputChannel}.
- *
- * @author Gregory Bumgardner
+ * 
+ * @author Gregory Bumgardner (gbumgard)
  */
-public class UdpDatagramPayloadSource extends MessageSource<ByteBuffer> {
+public class UdpDatagramPayloadSource
+                extends MessageSource<ByteBuffer> {
 
-    
     /*-- Inner Classes -------------------------------------------------------*/
 
     /**
      * Transform used to extract the datagram payload from a {@link UdpDatagram}.
      */
-    final static class Transform implements MessageTransform<UdpDatagram, ByteBuffer> {
+    final static class Transform
+                    implements MessageTransform<UdpDatagram, ByteBuffer> {
 
         public Transform() {
         }
-        
+
         @Override
         public ByteBuffer transform(final UdpDatagram message) throws IOException {
             return message.getPayload();
@@ -64,7 +69,7 @@ public class UdpDatagramPayloadSource extends MessageSource<ByteBuffer> {
      * and send them to an {@link OutputChannel}.
      */
     public UdpDatagramPayloadSource(final UdpEndpoint udpEndpoint,
-                           final OutputChannel<ByteBuffer> outputChannel) throws IOException {
+                                    final OutputChannel<ByteBuffer> outputChannel) throws IOException {
         super(outputChannel);
 
         this.pump = new ChannelPump<UdpDatagram>(new UdpInputChannel(udpEndpoint),

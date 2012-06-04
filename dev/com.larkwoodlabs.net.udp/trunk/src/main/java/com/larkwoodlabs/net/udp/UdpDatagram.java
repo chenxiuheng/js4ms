@@ -1,17 +1,21 @@
 /*
- * Copyright © 2009-2010 Larkwood Labs Software.
- *
- * Licensed under the Larkwood Labs Software Source Code License, Version 1.0.
- * You may not use this file except in compliance with this License.
- *
- * You may view the Source Code License at
- * http://www.larkwoodlabs.com/source-license
- *
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * 
+ * File: UdpDatagram.java (com.larkwoodlabs.net.udp)
+ * 
+ * Copyright © 2009-2012 Cisco Systems, Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- * limitations under the license.
+ * limitations under the License.
  */
 
 package com.larkwoodlabs.net.udp;
@@ -31,31 +35,41 @@ import com.larkwoodlabs.util.logging.Logging;
 
 /**
  * A representation of a UDP datagram.
- *
- * @author Gregory Bumgardner
+ * 
+ * @author Gregory Bumgardner (gbumgard)
  */
-public final class UdpDatagram extends LoggableBase {
+public final class UdpDatagram
+                extends LoggableBase {
 
-    
     /*-- Static Variables ---------------------------------------------------*/
-    
+
     public static final Logger logger = Logger.getLogger(UdpDatagram.class.getName());
 
-    public static final byte[] INADDR_ANY = { 0, 0, 0, 0 };
-    public static final byte[] IN6ADDR_ANY = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    public static final byte[] INADDR_ANY = {
+                    0, 0, 0, 0
+    };
+
+    public static final byte[] IN6ADDR_ANY = {
+                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    };
+
     public static final short ETHEREAL_PORT = 0;
-    
+
     /**
      * Static instance used to interrupt receivers.
      */
     public static final UdpDatagram FINAL = new UdpDatagram();
-    
-    
+
     /*-- Static Functions ---------------------------------------------------*/
 
+    /**
+     * 
+     * @param destinationAddress
+     * @return
+     */
     // TODO move this somewhere else
     public static byte[] getLocalSourceAddress(final byte[] destinationAddress) {
-        //Precondition.checkAddress(destinationAddress);
+        // Precondition.checkAddress(destinationAddress);
         try {
             InetAddress localHostAddress = InetAddress.getLocalHost();
             NetworkInterface networkInterface = NetworkInterface.getByInetAddress(localHostAddress);
@@ -70,22 +84,32 @@ public final class UdpDatagram extends LoggableBase {
                 }
             }
             if (destinationAddress.length == 4) {
-                    return INADDR_ANY;
+                return INADDR_ANY;
             }
             else {
                 return IN6ADDR_ANY;
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new Error(e);
         }
     }
 
+    /**
+     * 
+     * @param object
+     * @throws IllegalArgumentException
+     */
     public static void checkReference(Object object) throws IllegalArgumentException {
         if (object == null) {
             throw new IllegalArgumentException("address parameter must be non-null");
         }
     }
 
+    /**
+     * 
+     * @param address
+     */
     public static void checkAddress(byte[] address) {
         checkReference(address);
         if (address.length != 4 && address.length != 16) {
@@ -93,7 +117,11 @@ public final class UdpDatagram extends LoggableBase {
         }
     }
 
-    public static void checkAddresses(byte[] ... addresses) {
+    /**
+     * 
+     * @param addresses
+     */
+    public static void checkAddresses(byte[]... addresses) {
         int length = 0;
         for (byte[] address : addresses) {
             checkAddress(address);
@@ -109,67 +137,68 @@ public final class UdpDatagram extends LoggableBase {
     /*-- Member Variables ---------------------------------------------------*/
 
     InetSocketAddress sourceSocketAddress = null;
+
     byte[] sourceAddress = null;
+
     InetSocketAddress destinationSocketAddress = null;
+
     byte[] destinationAddress = null;
-    
+
     int sourcePort;
+
     int destinationPort;
-    
+
     ByteBuffer payload;
-    
 
     /*-- Member Functions ---------------------------------------------------*/
 
     /**
-     * \
+     *
      */
     protected UdpDatagram() {
-        
+
     }
-    
+
     /**
-     * 
      * @param destinationSocketAddress
      * @param payload
      */
     public UdpDatagram(final InetSocketAddress destinationSocketAddress, final ByteBuffer payload) {
-        this(destinationSocketAddress == null ? null : destinationSocketAddress.getAddress().getAddress(), destinationSocketAddress.getPort(), payload);
-        
+        this(destinationSocketAddress == null ? null : destinationSocketAddress.getAddress().getAddress(), destinationSocketAddress
+                        .getPort(), payload);
+
         this.destinationSocketAddress = destinationSocketAddress;
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.fine(Logging.entering(ObjectId,
-                                       "UdpDatagram.UdpDatagram",
-                                       Logging.address(destinationSocketAddress),
-                                       payload));
+                                         "UdpDatagram.UdpDatagram",
+                                         Logging.address(destinationSocketAddress),
+                                         payload));
         }
-        
+
     }
 
     /**
-     * 
      * @param destinationAddress
      * @param destinationPort
      * @param payload
      */
     public UdpDatagram(final InetAddress destinationAddress, final int destinationPort, final ByteBuffer payload) {
         this(destinationAddress == null ? null : destinationAddress.getAddress(), destinationPort, payload);
-        
-        this.destinationSocketAddress = new InetSocketAddress(destinationAddress,destinationPort);
-        
+
+        this.destinationSocketAddress = new InetSocketAddress(destinationAddress, destinationPort);
+
         if (logger.isLoggable(Level.FINER)) {
             logger.fine(Logging.entering(ObjectId,
-                                       "UdpDatagram.UdpDatagram",
-                                       Logging.address(destinationAddress),
-                                       destinationPort,
-                                       payload));
+                                         "UdpDatagram.UdpDatagram",
+                                         Logging.address(destinationAddress),
+                                         destinationPort,
+                                         payload));
         }
-        
+
     }
 
     /**
-     * 
      * @param destinationAddress
      * @param destinationPort
      * @param payload
@@ -182,12 +211,12 @@ public final class UdpDatagram extends LoggableBase {
              payload);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.fine(Logging.entering(ObjectId, "UdpDatagram.UdpDatagram", Logging.address(destinationAddress), destinationPort, payload));
+            logger.fine(Logging.entering(ObjectId, "UdpDatagram.UdpDatagram", Logging.address(destinationAddress), destinationPort,
+                                         payload));
         }
     }
 
     /**
-     * 
      * @param sourceSocketAddress
      * @param destinationSocketAddress
      * @param payload
@@ -203,19 +232,18 @@ public final class UdpDatagram extends LoggableBase {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId,
-                                        "UdpDatagram.UdpDatagram",
-                                        Logging.address(sourceSocketAddress),
-                                        Logging.address(destinationSocketAddress),
-                                        payload));
+                                          "UdpDatagram.UdpDatagram",
+                                          Logging.address(sourceSocketAddress),
+                                          Logging.address(destinationSocketAddress),
+                                          payload));
         }
 
         this.destinationSocketAddress = destinationSocketAddress;
         this.sourceSocketAddress = sourceSocketAddress;
-        
+
     }
 
     /**
-     * 
      * @param sourceInetAddress
      * @param sourcePort
      * @param destinationInetAddress
@@ -235,21 +263,20 @@ public final class UdpDatagram extends LoggableBase {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId,
-                                        "UdpDatagram.UdpDatagram",
-                                        Logging.address(sourceAddress),
-                                        sourcePort,
-                                        Logging.address(destinationAddress),
-                                        destinationPort,
-                                        payload));
+                                          "UdpDatagram.UdpDatagram",
+                                          Logging.address(sourceAddress),
+                                          sourcePort,
+                                          Logging.address(destinationAddress),
+                                          destinationPort,
+                                          payload));
         }
 
         this.destinationSocketAddress = new InetSocketAddress(destinationInetAddress, destinationPort);
         this.sourceSocketAddress = new InetSocketAddress(sourceInetAddress, sourcePort);
-        
+
     }
 
     /**
-     * 
      * @param sourceAddress
      * @param sourcePort
      * @param destinationAddress
@@ -297,30 +324,30 @@ public final class UdpDatagram extends LoggableBase {
         super.log(logger);
         logState(logger);
     }
-    
+
     /**
      * Logs value of member variables declared or maintained by this class.
+     * 
      * @param logger
      */
     private void logState(final Logger logger) {
-        logger.info(ObjectId + " : source="+Logging.address(getSourceAddress())+":"+getSourcePort());
-        logger.info(ObjectId + " : destination="+Logging.address(getDestinationAddress())+":"+getDestinationPort());
+        logger.info(ObjectId + " : source=" + Logging.address(getSourceAddress()) + ":" + getSourcePort());
+        logger.info(ObjectId + " : destination=" + Logging.address(getDestinationAddress()) + ":" + getDestinationPort());
         logger.info(ObjectId +
                     " : payload buffer=" + this.payload.array() +
-                    " offset=" + this.payload.arrayOffset() + 
+                    " offset=" + this.payload.arrayOffset() +
                     " limit=" + this.payload.limit());
     }
 
     /**
-     * 
      * @param buffer
      */
     public void writeTo(final ByteBuffer buffer) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "UdpDatagram.writeTo", buffer));
         }
-        
+
         this.payload.rewind();
         buffer.put(this.payload);
         this.payload.rewind();
@@ -338,7 +365,6 @@ public final class UdpDatagram extends LoggableBase {
     }
 
     /**
-     * 
      * @return
      */
     public byte[] getSourceAddress() {
@@ -346,7 +372,6 @@ public final class UdpDatagram extends LoggableBase {
     }
 
     /**
-     * 
      * @return
      */
     public InetAddress getSourceInetAddress() {
@@ -363,7 +388,6 @@ public final class UdpDatagram extends LoggableBase {
     }
 
     /**
-     * 
      * @return
      */
     public InetSocketAddress getSourceSocketAddress() {
@@ -380,36 +404,35 @@ public final class UdpDatagram extends LoggableBase {
     }
 
     /**
-     * 
      * @param sourceInetAddress
      * @param sourcePort
      */
     public void setSourceAddress(final InetAddress sourceInetAddress, final int sourcePort) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "UdpDatagram.setSourceAddress", Logging.address(sourceAddress), sourcePort));
         }
-        
+
         this.sourceSocketAddress = new InetSocketAddress(sourceInetAddress, sourcePort);
         this.sourceAddress = sourceInetAddress.getAddress();
         this.sourcePort = sourcePort;
     }
-    
+
     /**
-     * 
      * @param sourceAddress
      * @param sourcePort
      */
     public void setSourceAddress(final byte[] sourceAddress, final int sourcePort) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "UdpDatagram.setSourceAddress", Logging.address(sourceAddress), sourcePort));
         }
-        
+
         if (this.sourceSocketAddress != null) {
             try {
                 this.sourceSocketAddress = new InetSocketAddress(InetAddress.getByAddress(sourceAddress), sourcePort);
-            } catch (UnknownHostException e) {
+            }
+            catch (UnknownHostException e) {
                 throw new Error(e);
             }
         }
@@ -418,7 +441,6 @@ public final class UdpDatagram extends LoggableBase {
     }
 
     /**
-     * 
      * @return
      */
     public int getSourcePort() {
@@ -426,7 +448,6 @@ public final class UdpDatagram extends LoggableBase {
     }
 
     /**
-     * 
      * @return
      */
     public byte[] getDestinationAddress() {
@@ -434,13 +455,13 @@ public final class UdpDatagram extends LoggableBase {
     }
 
     /**
-     * 
      * @return
      */
     public InetAddress getDestinationInetAddress() {
         if (this.destinationSocketAddress == null) {
             try {
-                this.destinationSocketAddress = new InetSocketAddress(InetAddress.getByAddress(this.destinationAddress), this.destinationPort);
+                this.destinationSocketAddress = new InetSocketAddress(InetAddress.getByAddress(this.destinationAddress),
+                                                                      this.destinationPort);
             }
             catch (UnknownHostException e) {
                 throw new Error(e);
@@ -450,13 +471,13 @@ public final class UdpDatagram extends LoggableBase {
     }
 
     /**
-     * 
      * @return
      */
     public InetSocketAddress getDestinationSocketAddress() {
         if (this.destinationSocketAddress == null) {
             try {
-                this.destinationSocketAddress = new InetSocketAddress(InetAddress.getByAddress(this.destinationAddress), this.destinationPort);
+                this.destinationSocketAddress = new InetSocketAddress(InetAddress.getByAddress(this.destinationAddress),
+                                                                      this.destinationPort);
             }
             catch (UnknownHostException e) {
                 throw new Error(e);
@@ -466,7 +487,6 @@ public final class UdpDatagram extends LoggableBase {
     }
 
     /**
-     * 
      * @param destinationAddress
      * @param destinationPort
      */
@@ -482,14 +502,14 @@ public final class UdpDatagram extends LoggableBase {
     }
 
     /**
-     * 
      * @param destinationInetAddress
      * @param destinationPort
      */
     public void setDestinationAddress(final InetAddress destinationInetAddress, final int destinationPort) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "UdpDatagram.setDestinationAddress", Logging.address(destinationAddress), destinationPort));
+            logger.finer(Logging.entering(ObjectId, "UdpDatagram.setDestinationAddress", Logging.address(destinationAddress),
+                                          destinationPort));
         }
 
         this.destinationSocketAddress = new InetSocketAddress(destinationInetAddress, destinationPort);
@@ -498,20 +518,20 @@ public final class UdpDatagram extends LoggableBase {
     }
 
     /**
-     * 
      * @param destinationAddress
      * @param destinationPort
      */
     public void setDestinationAddress(final byte[] destinationAddress, final int destinationPort) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "UdpDatagram.setDestinationAddress", Logging.address(destinationAddress)));
         }
-        
+
         if (this.destinationSocketAddress != null) {
             try {
-                this.destinationSocketAddress = new InetSocketAddress(InetAddress.getByAddress(destinationAddress),destinationPort);
-            } catch (UnknownHostException e) {
+                this.destinationSocketAddress = new InetSocketAddress(InetAddress.getByAddress(destinationAddress), destinationPort);
+            }
+            catch (UnknownHostException e) {
                 throw new Error(e);
             }
         }
@@ -520,7 +540,6 @@ public final class UdpDatagram extends LoggableBase {
     }
 
     /**
-     * 
      * @return
      */
     public int getDestinationPort() {
@@ -528,23 +547,25 @@ public final class UdpDatagram extends LoggableBase {
     }
 
     /**
-     * 
      * @param sourceAddress
      * @param sourcePort
      * @param destinationAddress
      * @param destinationPort
      */
-    public void setAddresses(final byte[] sourceAddress, final int sourcePort, final byte[] destinationAddress, final int destinationPort) {
-        
+    public void setAddresses(final byte[] sourceAddress,
+                             final int sourcePort,
+                             final byte[] destinationAddress,
+                             final int destinationPort) {
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId,
-                                        "UdpDatagram.setAddresses",
-                                        Logging.address(sourceAddress),
-                                        sourcePort,
-                                        Logging.address(destinationAddress),
-                                        destinationPort));
+                                          "UdpDatagram.setAddresses",
+                                          Logging.address(sourceAddress),
+                                          sourcePort,
+                                          Logging.address(destinationAddress),
+                                          destinationPort));
         }
-        
+
         checkAddresses(sourceAddress, destinationAddress);
         this.sourceAddress = sourceAddress;
         this.destinationAddress = destinationAddress;
@@ -560,7 +581,6 @@ public final class UdpDatagram extends LoggableBase {
     }
 
     /**
-     * 
      * @return
      */
     public ByteBuffer getPayload() {
