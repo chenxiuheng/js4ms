@@ -1,3 +1,23 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * 
+ * File: ConnectionManager.java (com.larkwoodlabs.service)
+ * 
+ * Copyright © 2009-2012 Cisco Systems, Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.larkwoodlabs.service;
 
 import java.io.IOException;
@@ -9,7 +29,7 @@ import com.larkwoodlabs.util.logging.Log;
 
 /**
  * Manages a collection of active {@link Connection} objects.
- *
+ * 
  * @author Greg Bumgardner (gbumgard)
  */
 public class ConnectionManager {
@@ -20,7 +40,6 @@ public class ConnectionManager {
      * The {@link Logger} for {@link ConnectionManager} objects.
      */
     public static final Logger logger = Logger.getLogger(ConnectionManager.class.getName());
-
 
     /*-- Member Variables ----------------------------------------------------*/
 
@@ -37,10 +56,11 @@ public class ConnectionManager {
     /**
      * 
      */
-    private HashMap<String,Connection> connections = new HashMap<String,Connection>();
+    private HashMap<String, Connection> connections = new HashMap<String, Connection>();
 
     /**
-     * Object used to notify a waiting thread that a new connection has been added to the collection.
+     * Object used to notify a waiting thread that a new connection has been added to the
+     * collection.
      */
     Object onNewConnection = new Object();
 
@@ -50,18 +70,17 @@ public class ConnectionManager {
      */
     Object onNoConnections = new Object();
 
-
     /*-- Member Functions ----------------------------------------------------*/
 
     /**
      * 
+     * @param maxConnections
      */
     public ConnectionManager(int maxConnections) {
         this.maxConnections = maxConnections;
     }
 
     /**
-     * 
      * @throws InterruptedException
      */
     public void waitForAvailableConnection() throws InterruptedException {
@@ -79,7 +98,6 @@ public class ConnectionManager {
     }
 
     /**
-     * 
      * @param milliseconds
      * @return
      * @throws InterruptedException
@@ -103,7 +121,6 @@ public class ConnectionManager {
     }
 
     /**
-     * 
      * @param milliseconds
      * @return
      * @throws InterruptedException
@@ -127,13 +144,12 @@ public class ConnectionManager {
     }
 
     /**
-     * 
      * @param connection
      */
     public void addConnection(Connection connection) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(log.entry("addConnection",connection));
+            logger.finer(log.entry("addConnection", connection));
         }
 
         synchronized (this.connections) {
@@ -145,7 +161,6 @@ public class ConnectionManager {
     }
 
     /**
-     * 
      * @param connection
      */
     public void removeConnection(Connection connection) {
@@ -169,7 +184,6 @@ public class ConnectionManager {
     }
 
     /**
-     * 
      * @param oldName
      * @param newName
      */
