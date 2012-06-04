@@ -38,38 +38,41 @@ import com.larkwoodlabs.util.buffer.parser.StreamParserSelector;
 import com.larkwoodlabs.util.logging.Logging;
 
 /**
+ * Base class for the {@link com.larkwoodlabs.net.ip.ipv4.IPv4Packet IPv4Packet} and
+ * {@link com.larkwoodlabs.net.ip.ipv6.IPv6Packet IPv6Packet} classes.
  * 
- * 
- *
- * @author gbumgard
+ * @author Gregory Bumgardner (gbumgard)
  */
-public abstract class IPPacket extends BufferBackedObject {
+public abstract class IPPacket
+                extends BufferBackedObject {
 
     /*-- Inner Classes ------------------------------------------------------*/
-    
+
     /**
      * 
      */
-    public static interface ParserType extends KeyedBufferParser<IPPacket>, KeyedStreamParser<IPPacket> {
+    public static interface ParserType
+                    extends KeyedBufferParser<IPPacket>, KeyedStreamParser<IPPacket> {
 
         public boolean verifyChecksum(ByteBuffer buffer) throws MissingParserException, ParseException;
-        
+
     }
-    
+
     /**
      * 
      */
-    public static class BufferParser extends BufferParserSelector<IPPacket> {
+    public static class BufferParser
+                    extends BufferParserSelector<IPPacket> {
 
         public BufferParser() {
             super(new SelectorField<Byte>(IPPacket.Version));
         }
-        
+
         public boolean verifyChecksum(final ByteBuffer buffer) throws MissingParserException, ParseException {
-            ParserType parser = (ParserType)get(getKeyField(buffer));
+            ParserType parser = (ParserType) get(getKeyField(buffer));
             if (parser == null) {
                 // Check for default parser (null key)
-                parser = (ParserType)get(null);
+                parser = (ParserType) get(null);
                 if (parser == null) {
                     throw new MissingParserException();
                 }
@@ -81,7 +84,8 @@ public abstract class IPPacket extends BufferBackedObject {
     /**
      * 
      */
-    public static class StreamParser extends StreamParserSelector<IPPacket> {
+    public static class StreamParser
+                    extends StreamParserSelector<IPPacket> {
 
         public StreamParser() {
             super(new SelectorField<Byte>(IPPacket.Version));
@@ -95,37 +99,33 @@ public abstract class IPPacket extends BufferBackedObject {
     public static final Logger logger = Logger.getLogger(IPPacket.class.getName());
 
     /** */
-    public static final ByteBitField Version = new ByteBitField(0,4,4); 
-
+    public static final ByteBitField Version = new ByteBitField(0, 4, 4);
 
     /*-- Member Variables ---------------------------------------------------*/
 
     /** */
     private IPMessage firstProtocolHeader = null;
-    
 
     /*-- Member Functions ---------------------------------------------------*/
 
     /**
-     * 
      * @param size
      */
     protected IPPacket(final int size) {
         super(size);
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entry(this,size,firstProtocolHeader));
+            logger.finer(Logging.entry(this, size, firstProtocolHeader));
             logState(logger);
         }
     }
 
     /**
-     * 
      * @param buffer
      */
     protected IPPacket(final ByteBuffer buffer) {
         super(buffer);
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entry(this,buffer));
+            logger.finer(Logging.entry(this, buffer));
             logState(logger);
         }
     }
@@ -140,30 +140,35 @@ public abstract class IPPacket extends BufferBackedObject {
         super.log(logger);
         logState(logger);
     }
-    
+
     /**
      * Logs value of member variables declared or maintained by this class.
+     * 
      * @param logger
      */
     private void logState(final Logger logger) {
-        logger.info(ObjectId + " : version="+getVersion());
+        logger.info(ObjectId + " : version=" + getVersion());
     }
 
     /**
      * Updates the checksum of a IP packet contained in the byte buffer.
      * Only applies to IPv4 but required for consistency with other message types.
-     * @param buffer - a ByteBuffer containing a packet image.
+     * 
+     * @param buffer
+     *            - a ByteBuffer containing a packet image.
      */
     public abstract void writeChecksum(final ByteBuffer buffer);
 
     /**
      * Gets the current header version field value.
+     * 
      * <pre>
      *   0               1               2               3 
      *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      *  |Version|       |               |                               |
      *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      * </pre>
+     * 
      * @return
      */
     public final byte getVersion() {
@@ -171,39 +176,35 @@ public abstract class IPPacket extends BufferBackedObject {
     }
 
     /**
-     * 
      * @param version
      */
     protected final void setVersion(final byte version) {
-        Version.set(getBufferInternal(),version);
+        Version.set(getBufferInternal(), version);
     }
 
     /**
-     * 
      * @return
      */
     public abstract byte[] getSourceAddress();
 
     /**
-     * 
      * @return
      */
     public abstract InetAddress getSourceInetAddress();
 
     /**
-     * 
      * @return
      */
     public abstract byte[] getDestinationAddress();
 
     /**
-     * 
      * @return
      */
     public abstract InetAddress getDestinationInetAddress();
 
     /**
      * Indicates that the packet carries a datagram fragment and not a complete datagram.
+     * 
      * @return
      */
     public final boolean isFragmented() {
@@ -211,45 +212,55 @@ public abstract class IPPacket extends BufferBackedObject {
     }
 
     /**
-     * Indicates whether this packet carries the first, or left-most fragment in a datagram.
-     * Only applies to packets that carry datagram fragments, but will return <code>true</code>
-     * if the packet carries a complete datagram.
+     * Indicates whether this packet carries the first, or left-most fragment in a
+     * datagram.
+     * Only applies to packets that carry datagram fragments, but will return
+     * <code>true</code> if the packet carries a complete datagram.
+     * 
      * @return
-     * @see  {@link #isFragmented()}
+     * @see {@link #isFragmented()}
      */
     public final boolean isFirstFragment() {
         return getFragmentOffset() == 0 && isMoreFragments();
     }
 
     /**
-     * Indicates whether this packet carries the last, or right-most fragment in a datagram.
-     * Only applies to packets that carry datagram fragments, but will return <code>false</code>
-     * if the packet carries a complete datagram.
+     * Indicates whether this packet carries the last, or right-most fragment in a
+     * datagram.
+     * Only applies to packets that carry datagram fragments, but will return
+     * <code>false</code> if the packet carries a complete datagram.
+     * 
      * @return
-     * @see  {@link #isFragmented()}
+     * @see {@link #isFragmented()}
      */
     public final boolean isLastFragment() {
         return getFragmentOffset() != 0 && !isMoreFragments();
     }
 
     /**
-     * Indicates whether additional packets are required to reconstruct a complete datagram.
-     * Returns <code>false</code> if this packet carries the last, or right-most fragment of a datagram
+     * Indicates whether additional packets are required to reconstruct a complete
+     * datagram.
+     * Returns <code>false</code> if this packet carries the last, or right-most fragment
+     * of a datagram
      * or if the packet carries a complete datagram.
+     * 
      * @return
-     * @see  {@link #isFragmented()}
+     * @see {@link #isFragmented()}
      */
     public abstract boolean isMoreFragments();
 
     /**
-     * Returns the temporally unique identifier assigned to all fragments that comprise a single datagram.
+     * Returns the temporally unique identifier assigned to all fragments that comprise a
+     * single datagram.
+     * 
      * @return
      */
     public abstract int getFragmentIdentifier();
- 
+
     /**
      * Returns the fragment location within the original datagram.
      * The fragment offset is expressed in 8-byte units.
+     * 
      * @return
      */
     public abstract int getFragmentOffset();
@@ -258,37 +269,33 @@ public abstract class IPPacket extends BufferBackedObject {
      * Returns the datagram fragment carried by this packet.
      * If the packet carries a complete datagram, this method will return
      * the unparsed portion of the packet payload.
+     * 
      * @return
      */
     public abstract ByteBuffer getFragment();
 
     /**
-     * 
      * @return
      */
     public abstract ByteBuffer getUnparsedPayload();
 
     /**
-     * 
      * @param reassembledPayload
      * @throws ParseException
      */
     public abstract void setReassembledPayload(ByteBuffer reassembledPayload) throws ParseException;
 
     /**
-     * 
      * @return
      */
     public abstract int getHeaderLength();
 
     /**
-     * 
      * @return
      */
     public abstract int getPayloadLength();
 
     /**
-     * 
      * @return
      */
     public int getTotalLength() {
@@ -296,25 +303,21 @@ public abstract class IPPacket extends BufferBackedObject {
     }
 
     /**
-     * 
      * @param length
      */
     protected abstract void setPayloadLength(int length);
 
     /**
-     * 
      * @return
      */
     public abstract byte getNextProtocolNumber();
 
     /**
-     * 
      * @param protocolNumber
      */
     protected abstract void setNextProtocolNumber(byte protocolNumber);
 
     /**
-     * 
      * @return
      */
     public final byte getLastProtocolNumber() {
@@ -328,15 +331,13 @@ public abstract class IPPacket extends BufferBackedObject {
     }
 
     /**
-     * 
      * @return
      */
     public final IPMessage getFirstProtocolMessage() {
         return this.firstProtocolHeader;
     }
- 
+
     /**
-     * 
      * @param message
      */
     protected final void setFirstProtocolMessage(final IPMessage message) {
@@ -356,7 +357,6 @@ public abstract class IPPacket extends BufferBackedObject {
     }
 
     /**
-     * 
      * @param message
      */
     public final void addProtocolMessage(final IPMessage message) {
@@ -383,7 +383,6 @@ public abstract class IPPacket extends BufferBackedObject {
     }
 
     /**
-     * 
      * @param protocolNumber
      * @return
      */
@@ -404,19 +403,20 @@ public abstract class IPPacket extends BufferBackedObject {
      * Calculates upper-layer message checksum for protocols that include
      * an IP pseudo header in the checksum calculation.
      * This function is typically called from concrete implementations of the
-     * {@link IPMessage#calculateChecksum(byte[], int, byte[], byte[]) IPMessage.calculateChecksum()} method.
+     * {@link IPMessage#calculateChecksum(byte[], int, byte[], byte[])
+     * IPMessage.calculateChecksum()} method.
      * <p>
-     * The Checksum is the 16-bit one's complement of the one's complement
-     * sum of the whole upper layer packet and a pseudo header consisting of values
-     * from the IP header.  While computing the checksum, the Checksum field
-     * will be set to zero. When receiving packets, the checksum MUST be verified
-     * before processing a packet.
+     * The Checksum is the 16-bit one's complement of the one's complement sum of the
+     * whole upper layer packet and a pseudo header consisting of values from the IP
+     * header. While computing the checksum, the Checksum field will be set to zero. When
+     * receiving packets, the checksum MUST be verified before processing a packet.
      * <p>
-     * The pseudo header conceptually prefixed to the message header contains the
-     * source address, the destination address, the protocol number, and the total
-     * message length including header.
+     * The pseudo header conceptually prefixed to the message header contains the source
+     * address, the destination address, the protocol number, and the total message length
+     * including header.
      * <p>
      * The IPv4 pseudo header has the following format:
+     * 
      * <pre>
      *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      *  |                        Source Address                         |
@@ -426,7 +426,9 @@ public abstract class IPPacket extends BufferBackedObject {
      *  |      Zero     |    Protocol   |   Upper-Layer Packet Length   |
      *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      * </pre>
+     * 
      * The IPv6 pseudo header has a similar format:
+     * 
      * <pre>
      *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      *  |                                                               |
@@ -450,53 +452,56 @@ public abstract class IPPacket extends BufferBackedObject {
      *  |                      zero                     |  Next Header  |
      *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      * </pre>
-     * If the IPv6 packet contains a Routing header, the Destination
-     * Address used in the pseudo-header is that of the final
-     * destination.  At the originating node, that address will be in
-     * the last element of the Routing header; at the recipient(s),
-     * that address will be in the Destination Address field of the
-     * IPv6 header.
+     * 
+     * If the IPv6 packet contains a Routing header, the Destination Address used in the
+     * pseudo-header is that of the final destination. At the originating node, that
+     * address will be in the last element of the Routing header; at the recipient(s),
+     * that address will be in the Destination Address field of the IPv6 header.
      * <p>
-     * The Next Header value in the pseudo-header identifies the
-     * upper-layer protocol (e.g., 6 for TCP, or 17 for UDP).  It will
-     * differ from the Next Header value in the IPv6 header if there
-     * are extension headers between the IPv6 header and the upper-
+     * The Next Header value in the pseudo-header identifies the upper-layer protocol
+     * (e.g., 6 for TCP, or 17 for UDP). It will differ from the Next Header value in the
+     * IPv6 header if there are extension headers between the IPv6 header and the upper-
      * layer header.
      * <p>
-     * The Upper-Layer Packet Length in the pseudo-header is the
-     * length of the upper-layer header and data (e.g., UDP header
-     * plus UDP data).  Some upper-layer protocols carry their own
-     * length information (e.g., the Length field in the UDP header);
-     * for such protocols, that is the length used in the pseudo-
-     * header.  Other protocols (such as TCP) do not carry their own
-     * length information, in which case the length used in the
-     * pseudo-header is the Payload Length from the IPv6 header, minus
-     * the length of any extension headers present between the IPv6
-     * header and the upper-layer header.
-     * <p> 
+     * The Upper-Layer Packet Length in the pseudo-header is the length of the upper-layer
+     * header and data (e.g., UDP header plus UDP data). Some upper-layer protocols carry
+     * their own length information (e.g., the Length field in the UDP header); for such
+     * protocols, that is the length used in the pseudo- header. Other protocols (such as
+     * TCP) do not carry their own length information, in which case the length used in
+     * the pseudo-header is the Payload Length from the IPv6 header, minus the length of
+     * any extension headers present between the IPv6 header and the upper-layer header.
+     * <p>
      * If the computed checksum is zero, it is transmitted as all ones (0xFFFF).
      * <p>
-     * In IPv4, the checksum is optional. A zero transmitted checksum value
-     * means that the transmitter generated no checksum (for debugging or
-     * for higher level protocols that don't care).
+     * In IPv4, the checksum is optional. A zero transmitted checksum value means that the
+     * transmitter generated no checksum (for debugging or for higher level protocols that
+     * don't care).
      * <p>
-     * In IPv6, the UDP checksum is not optional. An IPv6 node transmitting
-     * UDP packets must compute a UDP checksum over the packet and the 
-     * pseudo-header, and, if that computation yields a result of zero,
-     * it must be changed to all ones (0xFFFF). IPv6 receivers must discard
-     * UDP packets containing a zero checksum, and should log the error.
+     * In IPv6, the UDP checksum is not optional. An IPv6 node transmitting UDP packets
+     * must compute a UDP checksum over the packet and the pseudo-header, and, if that
+     * computation yields a result of zero, it must be changed to all ones (0xFFFF). IPv6
+     * receivers must discard UDP packets containing a zero checksum, and should log the
+     * error.
      * <p>
-     * See <a href="http://www.ietf.org/rfc/rfc768.txt">[RFC-768]</a>
-     * and <a href="http://www.ietf.org/rfc/rfc2460.txt">[RFC-2460]</a>
+     * See <a href="http://www.ietf.org/rfc/rfc768.txt">[RFC-768]</a> and <a
+     * href="http://www.ietf.org/rfc/rfc2460.txt">[RFC-2460]</a>
      * <p>
-     * @see IPMessage#calculateChecksum(byte[], int, byte[], byte[])
      * 
-     * @param buffer - the ByteBuffer containing the upper-layer message.
-     * @param checksumField - A Field object that is used to extract and clear the checksum value.
-     * @param sourceAddress An IPv4 (4-byte) or IPv6 (16-byte) address. Size must match that of the destination address.
-     * @param destinationAddress An IPv4 (4-byte) or IPv6 (16-byte) address. Size must match that of the destination address.
-     * @param protocolNumber - the IP protocol number of the upper-layer protocol.
-     * @param packetLength - the total length of the upper-layer message.
+     * @see IPMessage#calculateChecksum(byte[], int, byte[], byte[])
+     * @param buffer
+     *            - the ByteBuffer containing the upper-layer message.
+     * @param checksumField
+     *            - A Field object that is used to extract and clear the checksum value.
+     * @param sourceAddress
+     *            An IPv4 (4-byte) or IPv6 (16-byte) address. Size must match that of the
+     *            destination address.
+     * @param destinationAddress
+     *            An IPv4 (4-byte) or IPv6 (16-byte) address. Size must match that of the
+     *            destination address.
+     * @param protocolNumber
+     *            - the IP protocol number of the upper-layer protocol.
+     * @param packetLength
+     *            - the total length of the upper-layer message.
      * @return
      */
     public final static short calculateChecksum(final ByteBuffer buffer,
@@ -516,15 +521,14 @@ public abstract class IPPacket extends BufferBackedObject {
                                           protocolNumber,
                                           packetLength));
         }
-        
 
         // Clear checksum field
         short originalChecksum = checksumField.get(buffer);
-        checksumField.set(buffer, (short)0);
-        
+        checksumField.set(buffer, (short) 0);
+
         byte[] bytes = buffer.array();
         int offset = buffer.arrayOffset();
-        
+
         int total = 0;
 
         for (int i = 0; i < sourceAddress.length;) {
@@ -536,9 +540,9 @@ public abstract class IPPacket extends BufferBackedObject {
         }
 
         total += protocolNumber;
-        
+
         total += (((packetLength >> 16) & 0xFFFF) | (packetLength & 0xFFFF));
-        
+
         if ((packetLength & 0x1) == 0) {
             // The packet length is even (ends on a 16-bit boundary)
             int end = offset + packetLength;
@@ -568,24 +572,32 @@ public abstract class IPPacket extends BufferBackedObject {
         // Restore original checksum
         checksumField.set(buffer, originalChecksum);
 
-        return (short)total;
+        return (short) total;
     }
 
     /**
      * Calculates upper-layer message checksum.
      * This function is typically called from concrete implementations of the
-     * {@link IPMessage#calculateChecksum(byte[], int, byte[], byte[]) IPMessage.calculateChecksum()} method.
+     * {@link IPMessage#calculateChecksum(byte[], int, byte[], byte[])
+     * IPMessage.calculateChecksum()} method.
      * <p>
-     * The Checksum is the 16-bit one's complement of the one's complement
-     * sum of the whole upper layer packet.  While computing the checksum,
-     * the Checksum field will be set to zero. When receiving packets,
-     * the checksum MUST be verified before processing a packet.
+     * The Checksum is the 16-bit one's complement of the one's complement sum of the
+     * whole upper layer packet. While computing the checksum, the Checksum field will be
+     * set to zero. When receiving packets, the checksum MUST be verified before
+     * processing a packet.
      * 
-     * @param buffer - the ByteBuffer containing the upper-layer message.
-     * @param checksumField - A Field object that is used to extract and clear the checksum value.
-     * @param sourceAddress An IPv4 (4-byte) or IPv6 (16-byte) address. Size must match that of the destination address.
-     * @param destinationAddress An IPv4 (4-byte) or IPv6 (16-byte) address. Size must match that of the destination address.
-     * @param packetLength - the total length of the upper-layer message.
+     * @param buffer
+     *            - the ByteBuffer containing the upper-layer message.
+     * @param checksumField
+     *            - A Field object that is used to extract and clear the checksum value.
+     * @param sourceAddress
+     *            An IPv4 (4-byte) or IPv6 (16-byte) address. Size must match that of the
+     *            destination address.
+     * @param destinationAddress
+     *            An IPv4 (4-byte) or IPv6 (16-byte) address. Size must match that of the
+     *            destination address.
+     * @param packetLength
+     *            - the total length of the upper-layer message.
      * @return
      */
     public final static short calculateChecksum(final ByteBuffer buffer,
@@ -602,11 +614,11 @@ public abstract class IPPacket extends BufferBackedObject {
 
         // Clear checksum field
         short originalChecksum = checksumField.get(buffer);
-        checksumField.set(buffer, (short)0);
-        
+        checksumField.set(buffer, (short) 0);
+
         byte[] bytes = buffer.array();
         int offset = buffer.arrayOffset();
-        
+
         int total = 0;
 
         if ((packetLength & 0x1) == 0) {
@@ -624,7 +636,7 @@ public abstract class IPPacket extends BufferBackedObject {
                 total += (((bytes[offset++] & 0xFF) << 8) | (bytes[offset++] & 0xFF));
             }
             // Add the last byte (effectively adding a zero pad byte)
-            total += (short)((bytes[offset] & 0xFF) << 8);
+            total += (short) ((bytes[offset] & 0xFF) << 8);
         }
 
         // Fold to 16 bits
@@ -638,7 +650,7 @@ public abstract class IPPacket extends BufferBackedObject {
         // Restore original checksum
         checksumField.set(buffer, originalChecksum);
 
-        return (short)total;
+        return (short) total;
     }
 
 }

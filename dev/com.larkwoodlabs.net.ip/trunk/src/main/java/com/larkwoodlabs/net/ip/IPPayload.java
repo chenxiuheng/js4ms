@@ -30,10 +30,10 @@ import com.larkwoodlabs.util.buffer.parser.MissingParserException;
 import com.larkwoodlabs.util.logging.Logging;
 
 /**
- * 
+ * Represents an opaque IP message.
  * 
  *
- * @author gbumgard
+ * @author Gregory Bumgardner (gbumgard)
  */
 public class IPPayload extends BufferBackedObject implements IPMessage {
 

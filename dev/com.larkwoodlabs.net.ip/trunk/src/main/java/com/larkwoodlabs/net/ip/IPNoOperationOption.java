@@ -26,11 +26,9 @@ import java.util.logging.Level;
 import com.larkwoodlabs.common.exceptions.ParseException;
 import com.larkwoodlabs.util.logging.Logging;
 
-
 /**
- * IP No Operation Option (Option 1).
- * Used to adjust alignment of subsequent options.
- * 
+ * Represents an IP No-Operation Option (Option 1).
+ * Typically used to adjust alignment of subsequent options.
  * The Type field has the following value:
  * Copy=1|0, Class=0, Option=1
  * 
@@ -40,16 +38,18 @@ import com.larkwoodlabs.util.logging.Logging;
  * +-+-+-+-+-+-+-+-+
  * </pre>
  * 
- * @author Gregory Bumgardner
+ * @author Gregory Bumgardner (gbumgard)
  */
-public final class IPNoOperationOption extends IPSingleByteHeaderOption {
+public final class IPNoOperationOption
+                extends IPSingleByteHeaderOption {
 
     /*-- Inner Classes ------------------------------------------------------*/
 
     /**
      * 
      */
-    public static class Parser implements IPHeaderOption.ParserType {
+    public static class Parser
+                    implements IPHeaderOption.ParserType {
 
         @Override
         public IPHeaderOption parse(final ByteBuffer buffer) throws ParseException {
@@ -66,11 +66,12 @@ public final class IPNoOperationOption extends IPSingleByteHeaderOption {
 
     /** */
     public static final int OPTION_CLASS = 0;
+
     /** */
     public static final int OPTION_NUMBER = 1;
+
     /** */
     public static final byte OPTION_CODE = OPTION_CLASS | OPTION_NUMBER;
-
 
     /*-- Member Functions ---------------------------------------------------*/
 
@@ -79,26 +80,24 @@ public final class IPNoOperationOption extends IPSingleByteHeaderOption {
      */
     public IPNoOperationOption() {
         super(OPTION_CODE);
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPNoOperationOption.IPNoOperationOption"));
         }
     }
 
     /**
-     * 
      * @param copyFlag
      */
     public IPNoOperationOption(final boolean copyFlag) {
-        super(copyFlag,OPTION_CLASS,OPTION_NUMBER);
-        
+        super(copyFlag, OPTION_CLASS, OPTION_NUMBER);
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPNoOperationOption.IPNoOperationOption", copyFlag));
         }
     }
 
     /**
-     * 
      * @param buffer
      */
     public IPNoOperationOption(final ByteBuffer buffer) {

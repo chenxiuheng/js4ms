@@ -30,6 +30,12 @@ import com.larkwoodlabs.net.Precondition;
 import com.larkwoodlabs.util.logging.LoggableBase;
 import com.larkwoodlabs.util.logging.Logging;
 
+/**
+ * Represents an IP datagram containing a single IP message.
+ * 
+ *
+ * @author Greg Bumgardner (gbumgard)
+ */
 public final class IPDatagram extends LoggableBase {
 
     /*-- Static Variables ---------------------------------------------------*/

@@ -27,22 +27,24 @@ import java.util.logging.Level;
 
 import com.larkwoodlabs.util.logging.Logging;
 
-
 /**
- * A simple IP Header Option that consists of a single byte.
- * @author Gregory Bumgardner
+ * Represents a simple IP Header Option that consists of a single byte.
+ * 
+ * @author Gregory Bumgardner (gbumgard)
  */
-public class IPSingleByteHeaderOption extends IPHeaderOption {
+public class IPSingleByteHeaderOption
+                extends IPHeaderOption {
 
     /*-- Static Variables ---------------------------------------------------*/
 
+    /**
+     * 
+     */
     public static final byte OPTION_LENGTH = 1;
-
 
     /*-- Member Functions ---------------------------------------------------*/
 
     /**
-     * 
      * @param option
      */
     public IPSingleByteHeaderOption(byte option) {
@@ -51,11 +53,10 @@ public class IPSingleByteHeaderOption extends IPHeaderOption {
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPSingleByteHeaderOption.IPSingleByteHeaderOption", option));
         }
-        
+
     }
 
     /**
-     * 
      * @param copyFlag
      * @param optionClass
      * @param optionNumber
@@ -63,12 +64,12 @@ public class IPSingleByteHeaderOption extends IPHeaderOption {
     public IPSingleByteHeaderOption(final boolean copyFlag, final int optionClass, final int optionNumber) {
         super(OPTION_LENGTH, copyFlag, optionClass, optionNumber);
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPSingleByteHeaderOption.IPSingleByteHeaderOption", copyFlag, optionClass, optionNumber));
+            logger.finer(Logging.entering(ObjectId, "IPSingleByteHeaderOption.IPSingleByteHeaderOption", copyFlag, optionClass,
+                                          optionNumber));
         }
     }
 
     /**
-     * 
      * @param buffer
      */
     public IPSingleByteHeaderOption(final ByteBuffer buffer) {
@@ -79,9 +80,8 @@ public class IPSingleByteHeaderOption extends IPHeaderOption {
     }
 
     /**
-     * 
      * @param buffer
-     * @throws IOException 
+     * @throws IOException
      */
     public IPSingleByteHeaderOption(final InputStream is) throws IOException {
         super(consume(is, OPTION_LENGTH));
@@ -89,7 +89,6 @@ public class IPSingleByteHeaderOption extends IPHeaderOption {
             logger.finer(Logging.entering(ObjectId, "IPSingleByteHeaderOption.IPSingleByteHeaderOption", is));
         }
     }
-
 
     @Override
     public final int getOptionLength() {

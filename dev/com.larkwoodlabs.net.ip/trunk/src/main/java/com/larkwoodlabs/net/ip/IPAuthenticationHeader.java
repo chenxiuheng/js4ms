@@ -137,7 +137,7 @@ import com.larkwoodlabs.util.logging.Logging;
  * </dl>
  * </blockquote>
  * 
- * @author Gregory Bumgardner
+ * @author Gregory Bumgardner (gbumgard)
  */
 public final class IPAuthenticationHeader
                 extends IPExtensionHeader {

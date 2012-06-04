@@ -29,12 +29,20 @@ import com.larkwoodlabs.util.buffer.parser.MissingParserException;
 import com.larkwoodlabs.util.logging.LoggableBase;
 import com.larkwoodlabs.util.logging.Logging;
 
-public class IPinIPHeader extends LoggableBase implements IPMessage {
+/**
+ * Represents and IP-in-IP payload.
+ * 
+ * @author Greg Bumgardner (gbumgard)
+ */
+public class IPinIPHeader
+                extends LoggableBase
+                implements IPMessage {
 
     /**
      * 
      */
-    public static class Parser implements IPMessage.ParserType {
+    public static class Parser
+                    implements IPMessage.ParserType {
 
         IPPacket.BufferParser ipParser = null;
 
@@ -46,7 +54,6 @@ public class IPinIPHeader extends LoggableBase implements IPMessage {
         }
 
         /**
-         * 
          * @param ipParser
          */
         public Parser(final IPPacket.BufferParser ipParser) {
@@ -54,16 +61,14 @@ public class IPinIPHeader extends LoggableBase implements IPMessage {
         }
 
         /**
-         * 
          * @param ipParser
          */
         public void setIPHeaderParser(final IPPacket.BufferParser ipParser) {
-            //Precondition.checkReference(ipParser);
+            // Precondition.checkReference(ipParser);
             this.ipParser = ipParser;
         }
 
         /**
-         * 
          * @return
          */
         public IPPacket.BufferParser getIPHeaderParser() {
@@ -99,15 +104,14 @@ public class IPinIPHeader extends LoggableBase implements IPMessage {
 
     /** */
     private IPPacket encapsulatedHeader;
-    
+
     /**
-     * 
      * @param encapsulatedHeader
      */
     public IPinIPHeader(final IPPacket encapsulatedHeader) {
-        //Precondition.checkReference(encapsulatedHeader);
+        // Precondition.checkReference(encapsulatedHeader);
         this.encapsulatedHeader = encapsulatedHeader;
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPinIPHeader.IPinIPHeader", encapsulatedHeader));
             logState(logger);
@@ -126,11 +130,10 @@ public class IPinIPHeader extends LoggableBase implements IPMessage {
     }
 
     /**
-     * 
      * @param logger
      */
     private void logState(final Logger logger) {
-        logger.info(ObjectId + " : protocol="+getProtocolNumber());
+        logger.info(ObjectId + " : protocol=" + getProtocolNumber());
         if (this.encapsulatedHeader != null) {
             logger.info(ObjectId + " ----> start encapsulated header");
             this.encapsulatedHeader.log(logger);
@@ -164,7 +167,7 @@ public class IPinIPHeader extends LoggableBase implements IPMessage {
     public IPMessage getNextMessage() {
         return null;
     }
-    
+
     @Override
     public void setNextMessage(final IPMessage header) {
         throw new UnsupportedOperationException();
@@ -191,12 +194,11 @@ public class IPinIPHeader extends LoggableBase implements IPMessage {
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPinIPHeader.writeTo", buffer));
         }
-        
+
         this.encapsulatedHeader.writeTo(buffer);
     }
 
     /**
-     * 
      * @return
      */
     public IPPacket getEncapsulatedHeader() {

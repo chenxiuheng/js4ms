@@ -28,28 +28,30 @@ import com.larkwoodlabs.common.exceptions.ParseException;
 import com.larkwoodlabs.util.buffer.fields.ByteField;
 import com.larkwoodlabs.util.logging.Logging;
 
-
 /**
- * A multibyte IP Header Option.
+ * Base class for multibyte IP Header Options.
  * The option is comprised of an option type, length, and data bytes.
  * 
  * <pre>
- *  00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 
- * +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+~
- * |          Type         |         Length        |         Data ...      |~
- * +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+~
+ *   0                   1                   2                   3   
+ *   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 
+ *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+ *  |     Type      |     Length    |          Data...              
+ *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
  * </pre>
- *
- * @author Gregory Bumgardner
+ * 
+ * @author Gregory Bumgardner (gbumgard)
  */
-public class IPMultiByteHeaderOption extends IPHeaderOption {
+public class IPMultiByteHeaderOption
+                extends IPHeaderOption {
 
     /*-- Inner Classes ------------------------------------------------------*/
 
     /**
      * 
      */
-    public static class Parser implements IPHeaderOption.ParserType {
+    public static class Parser
+                    implements IPHeaderOption.ParserType {
 
         @Override
         public IPHeaderOption parse(final ByteBuffer buffer) throws ParseException {
@@ -62,22 +64,19 @@ public class IPMultiByteHeaderOption extends IPHeaderOption {
         }
     }
 
-
     /*-- Static Variables ---------------------------------------------------*/
 
     /** */
-    public static final ByteField OptionLength = new ByteField(1); 
-
+    public static final ByteField OptionLength = new ByteField(1);
 
     /*-- Member Functions ---------------------------------------------------*/
 
     /**
-     * 
      * @param option
      * @param optionLength
      */
     protected IPMultiByteHeaderOption(final byte option, final int optionLength) {
-        super(optionLength,option);
+        super(optionLength, option);
         setOptionLength(optionLength);
 
         if (logger.isLoggable(Level.FINER)) {
@@ -87,14 +86,13 @@ public class IPMultiByteHeaderOption extends IPHeaderOption {
     }
 
     /**
-     * 
      * @param buffer
      */
     public IPMultiByteHeaderOption(final ByteBuffer buffer) {
-        super(consume(buffer,OptionLength.get(buffer)));
-        
+        super(consume(buffer, OptionLength.get(buffer)));
+
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId,"IPMultiByteHeaderOption.IPMultiByteHeaderOption", buffer));
+            logger.finer(Logging.entering(ObjectId, "IPMultiByteHeaderOption.IPMultiByteHeaderOption", buffer));
             logState(logger);
         }
     }
@@ -104,17 +102,17 @@ public class IPMultiByteHeaderOption extends IPHeaderOption {
         super.log(logger);
         logState(logger);
     }
-    
+
     /**
      * Logs value of member variables declared or maintained by this class.
+     * 
      * @param logger
      */
     private void logState(final Logger logger) {
-        logger.info(ObjectId + " : length="+getOptionLength());
+        logger.info(ObjectId + " : length=" + getOptionLength());
     }
 
     /**
-     * 
      * @return
      */
     public final int getOptionLength() {
@@ -122,7 +120,6 @@ public class IPMultiByteHeaderOption extends IPHeaderOption {
     }
 
     /**
-     * 
      * @param length
      */
     public final void setOptionLength(final int length) {
@@ -130,8 +127,8 @@ public class IPMultiByteHeaderOption extends IPHeaderOption {
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPMultiByteHeaderOption.setOptionLength", length));
         }
-        
-        OptionLength.set(getBufferInternal(), (byte)length);
+
+        OptionLength.set(getBufferInternal(), (byte) length);
     }
 
 }

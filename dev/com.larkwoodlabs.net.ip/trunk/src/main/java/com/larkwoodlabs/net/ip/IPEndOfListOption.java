@@ -27,7 +27,7 @@ import com.larkwoodlabs.common.exceptions.ParseException;
 import com.larkwoodlabs.util.logging.Logging;
 
 /**
- * IP End of Options list Option (Option 0).
+ * Represents an IP End of Options list Option (Option 0).
  * Used to indicate that no more options follow.
  * 
  * The Type field has the following value:
@@ -39,7 +39,7 @@ import com.larkwoodlabs.util.logging.Logging;
  * +-+-+-+-+-+-+-+-+
  * </pre>
  * 
- * @author Gregory Bumgardner
+ * @author Gregory Bumgardner (gbumgard)
  */
 public class IPEndOfListOption extends IPSingleByteHeaderOption {
 

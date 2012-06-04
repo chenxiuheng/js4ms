@@ -31,41 +31,48 @@ import com.larkwoodlabs.util.buffer.parser.MissingParserException;
 import com.larkwoodlabs.util.logging.Logging;
 
 /**
- * An IP extension header. Used as a base class for classes that represent
- * specific header types, or used to represent a generic, unparsed header.
+ * Represents an IP extension header. Used as a base class for classes that represent
+ * specific header types, or used to represent a generic, unparsed header. <h3>Header
+ * Format</h3> <blockquote>
+ * 
  * <pre>
- *  0               1               2               3
- * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- * |  Next Header  |  Hdr Ext Len  |                               |
- * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               +
- * |                                                               |
- * .                                                               .
- * .                                                               .
- * .                                                               .
- * |                                                               |
- * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *   0               1               2               3
+ *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *  |  Next Header  |  Hdr Ext Len  |                               |
+ *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               +
+ *  |                                                               |
+ *  .                                                               .
+ *  .                                                               .
+ *  .                                                               .
+ *  |                                                               |
+ *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  * </pre>
- * <h2>Next Header Type: 8-bit</h2>
+ * <dl>
+ * <dt><u>Next Header Type</u></dt>
+ * <p>
+ * <dd>Identifies the type of header immediately following the extension header. Uses the
+ * same values as the IPv4 Protocol field [RFC-1700].</dd>
+ * <p>
+ * <dt><u>Header Length</u></dt>
+ * <p>
+ * <dd>Length of the Hop-by-Hop Options header in 8-octet units, not including the first 8
+ * octets.</dd>
+ * </dl>
+ * </blockquote>
  * 
- *      Identifies the type of header immediately following the 
- *      extension header.  Uses the same values as the IPv4
- *      Protocol field [RFC-1700].
- *
- * <h2>Header Length: 8-bit</h2>
- *      Length of the Hop-by-Hop Options header in 8-octet units,
- *      not including the first 8 octets.
- * 
- * @author Gregory Bumgardner
- * 
+ * @author Gregory Bumgardner (gbumgard)
  */
-public class IPExtensionHeader extends BufferBackedObject implements IPMessage {
+public class IPExtensionHeader
+                extends BufferBackedObject
+                implements IPMessage {
 
     /*-- Inner Classes ------------------------------------------------------*/
 
     /**
      * 
      */
-    public static class Parser implements IPMessage.ParserType {
+    public static class Parser
+                    implements IPMessage.ParserType {
 
         @Override
         public IPExtensionHeader parse(final ByteBuffer buffer) throws ParseException {
@@ -91,11 +98,13 @@ public class IPExtensionHeader extends BufferBackedObject implements IPMessage {
 
     /** */
     public static final ByteField NextHeader = new ByteField(0);
+
     /** */
-    public static final ByteField HeaderLength = new ByteField(1); 
+    public static final ByteField HeaderLength = new ByteField(1);
 
     /** */
     protected static final int BASE_HEADER_LENGTH = 2;
+
     /** */
     protected static final int MIN_HEADER_LENGTH = 8;
 
@@ -105,17 +114,15 @@ public class IPExtensionHeader extends BufferBackedObject implements IPMessage {
 
     private IPMessage nextProtocolHeader = null;
 
-
     /*-- Member Functions ---------------------------------------------------*/
 
     /**
-     * 
      * @param protocolNumber
      */
     protected IPExtensionHeader(final byte protocolNumber) {
         super(MIN_HEADER_LENGTH);
         this.protocolNumber = protocolNumber;
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPExtensionHeader.IPv6ExtensionHeader", protocolNumber));
             logState(logger);
@@ -123,29 +130,28 @@ public class IPExtensionHeader extends BufferBackedObject implements IPMessage {
     }
 
     /**
-     * 
      * @param size
      * @param protocolNumber
      */
     protected IPExtensionHeader(final int size, final byte protocolNumber) {
         super(size);
         this.protocolNumber = protocolNumber;
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPExtensionHeader.IPv6ExtensionHeader", size, protocolNumber));
             logState(logger);
         }
     }
 
-
     /**
      * Constructs an extension header object.
+     * 
      * @param buffer
      * @throws ParseException
      */
     public IPExtensionHeader(final ByteBuffer buffer) throws ParseException {
-        this(consume(buffer, HeaderLength.get(buffer)*8+8), (byte)0);
-        
+        this(consume(buffer, HeaderLength.get(buffer) * 8 + 8), (byte) 0);
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPExtensionHeader.IPv6ExtensionHeader", buffer));
             logState(logger);
@@ -154,13 +160,14 @@ public class IPExtensionHeader extends BufferBackedObject implements IPMessage {
 
     /**
      * Used by derived classes to construct an extension header object.
+     * 
      * @param buffer
      * @param protocolNumber
      */
     protected IPExtensionHeader(final ByteBuffer buffer, final byte protocolNumber) {
         super(buffer);
         this.protocolNumber = protocolNumber;
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPExtensionHeader.IPv6ExtensionHeader", buffer));
             logState(logger);
@@ -177,23 +184,23 @@ public class IPExtensionHeader extends BufferBackedObject implements IPMessage {
         super.log(logger);
         logState(logger);
     }
-    
+
     /**
      * Logs value of member variables declared or maintained by this class.
+     * 
      * @param logger
      */
     private void logState(final Logger logger) {
-        logger.info(ObjectId + " : protocol="+getProtocolNumber());
-        logger.info(ObjectId + " : next-header="+getNextProtocolNumber());
-        logger.info(ObjectId + " : header-length="+getHeaderLength());
+        logger.info(ObjectId + " : protocol=" + getProtocolNumber());
+        logger.info(ObjectId + " : next-header=" + getNextProtocolNumber());
+        logger.info(ObjectId + " : header-length=" + getHeaderLength());
     }
-
 
     @Override
     public final void writeChecksum(final ByteBuffer buffer,
                                     final byte[] sourceAddress,
                                     final byte[] destinationAddress) {
- 
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId,
                                           "IPExtensionHeader.writeChecksum",
@@ -211,11 +218,11 @@ public class IPExtensionHeader extends BufferBackedObject implements IPMessage {
 
     @Override
     public void setProtocolNumber(final byte protocolNumber) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPExtensionHeader.setProtocolNumber", protocolNumber));
         }
-        
+
         this.protocolNumber = protocolNumber;
     }
 
@@ -225,40 +232,42 @@ public class IPExtensionHeader extends BufferBackedObject implements IPMessage {
     }
 
     /**
-     * 
      * @param protocolNumber
      */
     protected final void setNextProtocolNumber(final byte protocolNumber) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPExtensionHeader.setNextProtocolNumber", protocolNumber));
         }
-        
+
         NextHeader.set(getBufferInternal(), protocolNumber);
     }
 
     /**
      * Gets the total length of this header in bytes.
      * Some extension headers override this method to return a fixed value.
+     * 
      * @return
      */
     @Override
     public int getHeaderLength() {
-        return HeaderLength.get(getBufferInternal())*8 + 8;
+        return HeaderLength.get(getBufferInternal()) * 8 + 8;
     }
-    
+
     /**
      * Sets the total length of this header in bytes.
-     * Must be multiple of 8 and greater than 8 since minimum extension header size is 8 octets.
+     * Must be multiple of 8 and greater than 8 since minimum extension header size is 8
+     * octets.
+     * 
      * @param length
      */
     protected final void setHeaderLength(final int length) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPExtensionHeader.setHeaderLength", length));
         }
-        
-        HeaderLength.set(getBufferInternal(), (byte)Math.min((length / 8) - 1,0));
+
+        HeaderLength.set(getBufferInternal(), (byte) Math.min((length / 8) - 1, 0));
     }
 
     @Override
@@ -273,11 +282,11 @@ public class IPExtensionHeader extends BufferBackedObject implements IPMessage {
 
     @Override
     public final void setNextMessage(final IPMessage nextProtocolHeader) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPExtensionHeader.setNextMessage", nextProtocolHeader));
         }
-        
+
         // Null value is allowed
         this.nextProtocolHeader = nextProtocolHeader;
         if (this.nextProtocolHeader != null) {
@@ -290,11 +299,11 @@ public class IPExtensionHeader extends BufferBackedObject implements IPMessage {
 
     @Override
     public final void removeNextMessage() {
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPExtensionHeader.removeNextMessage"));
         }
-        
+
         IPMessage nextMessage = getNextMessage();
         if (nextMessage != null) {
             setNextMessage(nextMessage.getNextMessage());
