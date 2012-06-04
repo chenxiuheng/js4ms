@@ -39,87 +39,117 @@ import com.larkwoodlabs.util.buffer.fields.ByteBitField;
 import com.larkwoodlabs.util.buffer.fields.ByteField;
 import com.larkwoodlabs.util.buffer.fields.FixedBufferField;
 import com.larkwoodlabs.util.buffer.fields.IntegerBitField;
+import com.larkwoodlabs.util.buffer.fields.ShortBitField;
 import com.larkwoodlabs.util.buffer.fields.ShortField;
 import com.larkwoodlabs.util.buffer.parser.MissingParserException;
 import com.larkwoodlabs.util.logging.Logging;
 
 /**
- * An IPv6 datagram header. See [RFC-1883].
+ * Represents an IPv6 datagram header. See [<a
+ * href="http://tools.ietf.org/html/rfc2460">RFC-2460</a>].
+ * <h3>Header Format</h3>
+ * <blockquote>
+ * 
  * <pre>
- *  0               1               2               3
- * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- * |Version| Prio. |                   Flow Label                  |
- * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- * |         Payload Length        |  Next Header  |   Hop Limit   |
- * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- * |                                                               |
- * +                                                               +
- * |                                                               |
- * +                         Source Address                        +
- * |                                                               |
- * +                                                               +
- * |                                                               |
- * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- * |                                                               |
- * +                                                               +
- * |                                                               |
- * +                      Destination Address                      +
- * |                                                               |
- * +                                                               +
- * |                                                               |
- * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *   0                   1                   2                   3   
+ *   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 
+ *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *  |Version| Traffic Class |           Flow Label                  |
+ *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *  |         Payload Length        |  Next Header  |   Hop Limit   |
+ *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *  |                                                               |
+ *  +                                                               +
+ *  |                                                               |
+ *  +                         Source Address                        +
+ *  |                                                               |
+ *  +                                                               +
+ *  |                                                               |
+ *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *  |                                                               |
+ *  +                                                               +
+ *  |                                                               |
+ *  +                      Destination Address                      +
+ *  |                                                               |
+ *  +                                                               +
+ *  |                                                               |
+ *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  * </pre>
- * 
- * <h2>Version</h2>
- *
- *      4-bit Internet Protocol version number = 6.
- * 
- * <h2>Priority</h2>
- * 
- *      4-bit priority value. See section 7.
- * 
- * <h2>Flow Label</h2>
- * 
- *      24-bit flow label. See section 6.
- * 
- * <h2>Payload Length</h2>
- * 
- *      16-bit unsigned integer. Length of payload, i.e., the rest of
- *      the packet following the IPv6 header, in octets. If zero, indicates that the
- *      payload length is carried in a Jumbo Payload hop-by-hop option.
- * 
- * <h2>Next Header</h2>
- * 
- *      8-bit selector. Identifies the type of header immediately
- *      following the IPv6 header. Uses the same values as the IPv4 Protocol field
- *      [RFC-1700 et seq.].
- * 
- * <h2>Hop Limit</h2>
- * 
- *      8-bit unsigned integer. Decremented by 1 by each node that forwards
- *      the packet. The packet is discarded if Hop Limit is decremented to zero.
- * 
- * <h2>Source Address</h2>
- *
- *      128-bit address of the originator of the packet. See [RFC-1884].
- * 
- * <h2>Destination Address</h2>
- * 
- *      128-bit address of the intended recipient of the packet
- *      (possibly not the ultimate recipient, if a Routing header is present).
- *      See [RFC-1884] and section 4.4.
+ * <dl>
+ * <dt><u>Version</u></dt></p>
+ * <dd>4-bit Internet Protocol version number = 6.
  * <p>
- * @author Gregory Bumgardner
+ * See {@link #getVersion()}.
+ * </dd>
+ * <p>
+ * <dt><u>Traffic Class</u></dt>
+ * </p>
+ * <dd>8-bit traffic class field. See section 7 in [RFC2460].
+ * <p>
+ * See {@link #getTrafficClass()}, {@link #setTrafficClass(byte)}.
+ * </dd>
+ * <p>
+ * <dt><u>Flow Label</u></dt>
+ * </p>
+ * <dd>20-bit flow label. See section 6 in [RFC2460].
+ * <p>
+ * See {@link #getFlowLabel()}, {@link #setFlowLabel(int)}.
+ * </dd>
+ * <p>
+ * <dt><u>Payload Length</u></dt>
+ * </p>
+ * <dd>16-bit unsigned integer. Length of the IPv6 payload, i.e., the rest of the packet
+ * following this IPv6 header, in octets. (Note that any extension headers [section 4]
+ * present are considered part of the payload, i.e., included in the length count.)
+ * <p>
+ * See {@link #getPayloadLength()}.
+ * </dd>
+ * <p>
+ * <dt><u>Next Header</u></dt>
+ * </p>
+ * <dd>8-bit selector. Identifies the type of header immediately following the IPv6
+ * header. Uses the same values as the IPv4 Protocol field [RFC-1700 et seq.].
+ * <p>
+ * See {@link #getNextHeader()}, {@link #getNextProtocolNumber()}, {@link #addProtocolMessage(IPMessage)}.
+ * </dd>
+ * <p>
+ * <dt><u>Hop Limit</u></dt>
+ * </p>
+ * <dd>8-bit unsigned integer. Decremented by 1 by each node that forwards the packet. The
+ * packet is discarded if Hop Limit is decremented to zero.
+ * <p>
+ * See {@link #getHopLimit()}, {@link #setHopLimit(byte)}.
+ * </dd>
+ * <p>
+ * <dt><u>Source Address</u></dt>
+ * </p>
+ * <dd>128-bit address of the originator of the packet.
+ * <p>
+ * See {@link #getSourceAddress()}, {@link #setSourceAddress(byte[])}.
+ * </dd>
+ * <p>
+ * <dt><u>Destination Address</u></dt>
+ * </p>
+ * <dd>128-bit address of the intended recipient of the packet (possibly not the ultimate
+ * recipient, if a Routing header is present). See section 4.4 in [RFC2460].
+ * <p>
+ * See {@link #getDestinationAddress()}, {@link #setDestinationAddress(byte[])}.
+ * </dd>
+ * </dl>
+ * </blockquote>
  * 
+ * @author Gregory Bumgardner
  */
-public final class IPv6Packet extends IPPacket {
+public final class IPv6Packet
+                extends IPPacket {
 
     /*-- Inner Classes ------------------------------------------------------*/
-    
+
     /**
      * 
      */
-    public static class Parser implements IPPacket.ParserType {
+    public static class Parser
+                    implements IPPacket.ParserType {
 
         /** */
         IPMessage.Parser protocolParser;
@@ -132,7 +162,6 @@ public final class IPv6Packet extends IPPacket {
         }
 
         /**
-         * 
          * @param parser
          */
         public Parser(final IPMessage.Parser parser) {
@@ -140,7 +169,6 @@ public final class IPv6Packet extends IPPacket {
         }
 
         /**
-         * 
          * @param parser
          */
         public void setProtocolParser(final IPMessage.Parser parser) {
@@ -153,7 +181,6 @@ public final class IPv6Packet extends IPPacket {
         }
 
         /**
-         * 
          * @return
          */
         public IPMessage.Parser getProtocolParser() {
@@ -193,7 +220,6 @@ public final class IPv6Packet extends IPPacket {
         }
     }
 
-
     /*-- Static Variables ---------------------------------------------------*/
 
     /** Logger used to generate IPv6Packet log entries. */
@@ -208,61 +234,71 @@ public final class IPv6Packet extends IPPacket {
     private static final int BASE_HEADER_LENGTH = 40;
 
     /** */
-    public static final FixedBufferField    BaseHeader = new FixedBufferField(0,BASE_HEADER_LENGTH);
-    /** */
-    public static final ByteBitField        Version = new ByteBitField(0,4,4); 
-    /** */
-    public static final ByteBitField        Priority = new ByteBitField(0,4,0); 
-    /** */
-    public static final IntegerBitField     FlowLabel = new IntegerBitField(0,24,0); 
-    /** */
-    public static final ShortField          PayloadLength = new ShortField(4); 
-    /** */
-    public static final ByteField           NextHeader = new ByteField(6); 
-    /** */
-    public static final ByteField           HopLimit = new ByteField(7); 
-    /** */
-    public static final ByteArrayField      SourceAddress = new ByteArrayField(8,16);
-    /** */
-    public static final ByteArrayField      DestinationAddress = new ByteArrayField(24,16);
+    public static final FixedBufferField BaseHeader = new FixedBufferField(0, BASE_HEADER_LENGTH);
 
+    /** */
+    public static final ByteBitField Version = new ByteBitField(0, 4, 4);
+
+    /** */
+    public static final ShortBitField TrafficClass = new ShortBitField(0, 4, 8);
+
+    /** */
+    public static final IntegerBitField FlowLabel = new IntegerBitField(0, 24, 0);
+
+    /** */
+    public static final ShortField PayloadLength = new ShortField(4);
+
+    /** */
+    public static final ByteField NextHeader = new ByteField(6);
+
+    /** */
+    public static final ByteField HopLimit = new ByteField(7);
+
+    /** */
+    public static final ByteArrayField SourceAddress = new ByteArrayField(8, 16);
+
+    /** */
+    public static final ByteArrayField DestinationAddress = new ByteArrayField(24, 16);
 
     /*-- Static Functions ---------------------------------------------------*/
 
     /**
-     * 
      * @return
      */
     public static IPv6Packet.Parser getIPv6MessageParser() {
         IPMessage.Parser ipMessageParser = new IPMessage.Parser();
-        ipMessageParser.add(new IPv6HopByHopOptionsHeader.Parser()); // TODO add standard options
+        ipMessageParser.add(new IPv6HopByHopOptionsHeader.Parser()); // TODO add standard
+                                                                     // options
         ipMessageParser.add(new IPv6DestinationOptionsHeader.Parser());
-        IPv6RoutingHeader.Parser routingParser = new IPv6RoutingHeader.Parser(); // TODO Add to Type0 class
+        IPv6RoutingHeader.Parser routingParser = new IPv6RoutingHeader.Parser(); // TODO
+                                                                                 // Add to
+                                                                                 // Type0
+                                                                                 // class
         routingParser.add(new IPv6RoutingHeader.Parser());
         ipMessageParser.add(routingParser);
         ipMessageParser.add(new IPv6FragmentHeader.Parser());
-        ipMessageParser.add(51, new IPExtensionHeader.Parser()); // Authentication 
-        ipMessageParser.add(50, new IPExtensionHeader.Parser()); // Encapsulating Security Payload
+        ipMessageParser.add(51, new IPExtensionHeader.Parser()); // Authentication
+        ipMessageParser.add(50, new IPExtensionHeader.Parser()); // Encapsulating Security
+                                                                 // Payload
         IPv6Packet.Parser ipv6Parser = new IPv6Packet.Parser();
         ipv6Parser.setProtocolParser(ipMessageParser);
         return ipv6Parser;
     }
 
-
     /*-- Member Variables ---------------------------------------------------*/
 
     /** */
     private int parsedPayloadLength = 0;
+
     /** */
     private ByteBuffer unparsedPayload = null;
+
     /** */
     private IPv6FragmentHeader fragmentHeader = null;
-
 
     /*-- Member Functions ---------------------------------------------------*/
 
     /**
-     * 
      * @param priority
      * @param flowLabel
      * @param hopLimit
@@ -270,7 +306,7 @@ public final class IPv6Packet extends IPPacket {
      * @param destinationAddress
      * @param firstProtocolHeader
      */
-    public IPv6Packet(final byte priority,
+    public IPv6Packet(final byte trafficClass,
                       final int flowLabel,
                       final byte hopLimit,
                       final byte[] sourceAddress,
@@ -279,16 +315,16 @@ public final class IPv6Packet extends IPPacket {
         super(BASE_HEADER_LENGTH);
         if (logger.isLoggable(Level.FINE)) {
             logger.fine(Logging.entering(ObjectId,
-                                       "IPv6Packet.IPv6Packet",
-                                       priority,
-                                       flowLabel,
-                                       hopLimit,
-                                       Logging.address(sourceAddress),
-                                       Logging.address(destinationAddress),
-                                       firstProtocolHeader));
+                                         "IPv6Packet.IPv6Packet",
+                                         trafficClass,
+                                         flowLabel,
+                                         hopLimit,
+                                         Logging.address(sourceAddress),
+                                         Logging.address(destinationAddress),
+                                         firstProtocolHeader));
         }
         setVersion(INTERNET_PROTOCOL_VERSION);
-        setPriority(priority);
+        setTrafficClass(trafficClass);
         setFlowLabel(flowLabel);
         setHopLimit(hopLimit);
         setSourceAddress(sourceAddress);
@@ -300,23 +336,24 @@ public final class IPv6Packet extends IPPacket {
     }
 
     /**
-     * Constructs an IPv6 packet representation from the contents of the 
+     * Constructs an IPv6 packet representation from the contents of the
      * specified ByteBuffer.
+     * 
      * @param buffer
      * @throws ParseException
      */
     public IPv6Packet(final ByteBuffer buffer) throws ParseException {
-        super(consume(buffer,BASE_HEADER_LENGTH));
-        
+        super(consume(buffer, BASE_HEADER_LENGTH));
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPv6Packet.IPv6Packet", buffer));
         }
-        
+
         ByteBuffer payload = consume(buffer, getPayloadLength());
 
         // Iterate through extension headers (if any) to look for fragment header
         parseExtensionHeaders(NextHeader.get(getBufferInternal()), payload);
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logState(logger);
         }
@@ -324,17 +361,18 @@ public final class IPv6Packet extends IPPacket {
 
     /**
      * Constructs an IPv6 packet representation from the specified byte stream..
+     * 
      * @param is
      * @throws ParseException
-     * @throws IOException 
+     * @throws IOException
      */
     public IPv6Packet(final InputStream is) throws ParseException, IOException {
-        super(consume(is,BASE_HEADER_LENGTH));
-        
+        super(consume(is, BASE_HEADER_LENGTH));
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPv6Packet.IPv6Packet", is));
         }
-        
+
         ByteBuffer payload = consume(is, getPayloadLength());
 
         // Iterate through extension headers (if any) to look for fragment header
@@ -355,20 +393,19 @@ public final class IPv6Packet extends IPPacket {
         super.log(logger);
         logState(logger);
     }
-    
+
     /**
-     * 
      * @param logger
      */
     private void logState(final Logger logger) {
-        logger.info(ObjectId + " : length="+getTotalLength());
-        logger.info(ObjectId + " : version="+getVersion());
-        logger.info(ObjectId + " : priority="+getPriority());
-        logger.info(ObjectId + " : flow-label="+getFlowLabel());
-        logger.info(ObjectId + " : hop-limit="+getHopLimit());
-        logger.info(ObjectId + " : payload-length="+getPayloadLength());
-        logger.fine(ObjectId + " : source-address="+Logging.address(getSourceAddress()));
-        logger.fine(ObjectId + " : destination-address="+Logging.address(getDestinationAddress()));
+        logger.info(ObjectId + " : length=" + getTotalLength());
+        logger.info(ObjectId + " : version=" + getVersion());
+        logger.info(ObjectId + " : priority=" + getTrafficClass());
+        logger.info(ObjectId + " : flow-label=" + getFlowLabel());
+        logger.info(ObjectId + " : hop-limit=" + getHopLimit());
+        logger.info(ObjectId + " : payload-length=" + getPayloadLength());
+        logger.fine(ObjectId + " : source-address=" + Logging.address(getSourceAddress()));
+        logger.fine(ObjectId + " : destination-address=" + Logging.address(getDestinationAddress()));
         logger.info(ObjectId + " ----> protocol messages");
         if (getFirstProtocolMessage() != null) {
             getFirstProtocolMessage().log(logger);
@@ -376,13 +413,13 @@ public final class IPv6Packet extends IPPacket {
         logger.info(ObjectId + " <---- protocol messages");
     }
 
-@Override
+    @Override
     public void writeChecksum(final ByteBuffer buffer) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv6Packet.writeChecksum", buffer)+" *** EMPTY");
+            logger.finer(Logging.entering(ObjectId, "IPv6Packet.writeChecksum", buffer) + " *** EMPTY");
         }
-        
+
     }
 
     @Override
@@ -392,11 +429,11 @@ public final class IPv6Packet extends IPPacket {
 
     @Override
     protected void setNextProtocolNumber(final byte protocolNumber) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPv6Packet.setNextProtocolNumber", protocolNumber));
         }
-        
+
         setNextHeader(protocolNumber);
     }
 
@@ -406,46 +443,52 @@ public final class IPv6Packet extends IPPacket {
     }
 
     /**
-     * Gets the current priority field value.
+     * Gets the current traffic class field value.
+     * 
      * <pre>
      *   0               1               2               3 
      *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-     *  |       | Prio. |                                               |
+     *  |       | Traffic Class |                                       |
      *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      * </pre>
+     * 
      * @return
      */
-    public byte getPriority() {
-        return Priority.get(getBufferInternal());
+    public byte getTrafficClass() {
+        return (byte) TrafficClass.get(getBufferInternal()).shortValue();
     }
 
     /**
-     * Sets the current priority field value.
+     * Sets the current traffic class field value.
+     * 
      * <pre>
      *   0               1               2               3 
      *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-     *  |       | Prio. |                                               |
+     *  |       | Traffic Class |                                       |
      *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      * </pre>
-     * @param priority
+     * 
+     * @param trafficClass
      */
-    public void setPriority(final byte priority) {
-        
+    public void setTrafficClass(final byte trafficClass) {
+
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv6Packet.setPriority", priority));
+            logger.finer(Logging.entering(ObjectId, "IPv6Packet.setTrafficClass", trafficClass));
         }
-        
-        Priority.set(getBufferInternal(),priority);
+
+        TrafficClass.set(getBufferInternal(), (short) trafficClass);
     }
 
     /**
      * Gets the current flow label field value.
+     * 
      * <pre>
      *  0               1               2               3
      * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      * |       |       |                   Flow Label                  |
      * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      * </pre>
+     * 
      * @return
      */
     public int getFlowLabel() {
@@ -454,66 +497,74 @@ public final class IPv6Packet extends IPPacket {
 
     /**
      * Sets the current flow label field value.
+     * 
      * <pre>
      *  0               1               2               3
      * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      * |       |       |                   Flow Label                  |
      * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      * </pre>
+     * 
      * @param flowLabel
      */
     public void setFlowLabel(final int flowLabel) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPv6Packet.setFlowLabel", flowLabel));
         }
-        
+
         FlowLabel.set(getBufferInternal(), flowLabel);
     }
 
     /**
      * Gets the current payload length field value.
+     * 
      * <pre>
      *  4               5               6               7
      * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      * |         Payload Length        |               |               |
      * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      * </pre>
+     * 
      * @return
      */
     @Override
     public int getPayloadLength() {
-        return (int)PayloadLength.get(getBufferInternal());
+        return (int) PayloadLength.get(getBufferInternal());
     }
 
     /**
      * Sets the payload length field value.
+     * 
      * <pre>
      *  4               5               6               7
      * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      * |         Payload Length        |               |               |
      * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      * </pre>
+     * 
      * @param length
      */
     @Override
     protected void setPayloadLength(final int length) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPv6Packet.setPayloadLength", length));
         }
-        
-        PayloadLength.set(getBufferInternal(), (short)length);
+
+        PayloadLength.set(getBufferInternal(), (short) length);
     }
 
     /**
      * Gets the current next header type field value.
+     * 
      * <pre>
      *  4               5               6               7
      * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      * |                               |  Next Header  |               |
      * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      * </pre>
+     * 
      * @return
      */
     public byte getNextHeader() {
@@ -522,31 +573,35 @@ public final class IPv6Packet extends IPPacket {
 
     /**
      * Sets the next header type field value.
+     * 
      * <pre>
      *  4               5               6               7
      * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      * |                               |  Next Header  |               |
      * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      * </pre>
+     * 
      * @param protocolNumber
      */
     protected void setNextHeader(final byte protocolNumber) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPv6Packet.setNextHeader", protocolNumber));
         }
-        
+
         NextHeader.set(getBufferInternal(), protocolNumber);
     }
 
     /**
      * Gets the current hop limit field value.
+     * 
      * <pre>
      *  4               5               6               7
      * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      * |                               |               |   Hop Limit   |
      * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      * </pre>
+     * 
      * @return
      */
     public byte getHopLimit() {
@@ -555,20 +610,22 @@ public final class IPv6Packet extends IPPacket {
 
     /**
      * Sets the current hop limit field value.
+     * 
      * <pre>
      *  4               5               6               7
      * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      * |                               |               |   Hop Limit   |
      * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      * </pre>
+     * 
      * @param hopLimit
      */
     public void setHopLimit(final byte hopLimit) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPv6Packet.setHopLimit", hopLimit));
         }
-        
+
         HopLimit.set(getBufferInternal(), hopLimit);
     }
 
@@ -576,6 +633,7 @@ public final class IPv6Packet extends IPPacket {
      * Gets the current source address field value.
      * This field contains the 128-bit address of the originator of the packet.
      * See [RFC-1884].
+     * 
      * <pre>
      *  8               9               10              11
      * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -588,6 +646,7 @@ public final class IPv6Packet extends IPPacket {
      * |                                                               |
      * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      * </pre>
+     * 
      * @return An <code>Inet6Address</code> object cast as an <code>InetAddress</code> .
      */
     @Override
@@ -599,6 +658,7 @@ public final class IPv6Packet extends IPPacket {
      * Gets the current source address field value as an Inet6Address.
      * This field contains the 128-bit address of the originator of the packet.
      * See [RFC-1884].
+     * 
      * <pre>
      *  8               9               10              11
      * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -611,55 +671,58 @@ public final class IPv6Packet extends IPPacket {
      * |                                                               |
      * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      * </pre>
+     * 
      * @return An <code>Inet6Address</code> object cast as an <code>InetAddress</code> .
      */
     @Override
     public InetAddress getSourceInetAddress() {
         try {
-            return (Inet6Address)InetAddress.getByAddress(SourceAddress.get(getBufferInternal()));
-        } catch (UnknownHostException e) {
+            return (Inet6Address) InetAddress.getByAddress(SourceAddress.get(getBufferInternal()));
+        }
+        catch (UnknownHostException e) {
             e.printStackTrace();
             throw new Error(e.toString());
         }
     }
 
     /**
-     * Sets the Source Address field value. 
+     * Sets the Source Address field value.
      * See {@link #getSourceAddress()}.
      * 
      * @param sourceAddress
      *            - an IPv6 address.
      */
     public void setSourceAddress(final InetAddress sourceAddress) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPv6Packet.setSourceAddress", sourceAddress));
         }
-        
-        //Precondition.checkReference(sourceAddress);
+
+        // Precondition.checkReference(sourceAddress);
         byte[] address = sourceAddress.getAddress();
         setSourceAddress(address);
     }
 
     /**
-     * Sets the Source Address field value. 
+     * Sets the Source Address field value.
      * See {@link #getSourceAddress()}.
      * 
      * @param sourceAddress
      *            - an IPv6 address.
      */
     public void setSourceAddress(final byte[] address) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPv6Packet.setSourceAddress", Logging.address(address)));
         }
-        
-        //Precondition.checkIPv6Address(address);
+
+        // Precondition.checkIPv6Address(address);
         SourceAddress.set(getBufferInternal(), address);
     }
 
     /**
      * Gets the current destination address field value.
+     * 
      * <pre>
      *  24              25              26              27
      * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -672,6 +735,7 @@ public final class IPv6Packet extends IPPacket {
      * |                                                               |
      * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      * </pre>
+     * 
      * @return An <code>Inet6Address</code> object cast as an <code>InetAddress</code> .
      */
     @Override
@@ -681,6 +745,7 @@ public final class IPv6Packet extends IPPacket {
 
     /**
      * Gets the current destination address field value as an InetAddress.
+     * 
      * <pre>
      *  24              25              26              27
      * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -693,49 +758,51 @@ public final class IPv6Packet extends IPPacket {
      * |                                                               |
      * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      * </pre>
+     * 
      * @return An <code>Inet6Address</code> object cast as an <code>InetAddress</code> .
      */
     @Override
     public InetAddress getDestinationInetAddress() {
         try {
-            return (Inet6Address)InetAddress.getByAddress(DestinationAddress.get(getBufferInternal()));
-        } catch (UnknownHostException e) {
+            return (Inet6Address) InetAddress.getByAddress(DestinationAddress.get(getBufferInternal()));
+        }
+        catch (UnknownHostException e) {
             throw new Error(e);
         }
     }
 
     /**
-     * Sets the Destination Address field value. 
+     * Sets the Destination Address field value.
      * See {@link #getDestinationAddress()}.
      * 
      * @param sourceAddress
      *            - an IPv6 address.
      */
     public void setDestinationAddress(final InetAddress destinationAddress) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPv6Packet.setDestinationAddress", destinationAddress));
         }
-        
-        //Precondition.checkReference(destinationAddress);
+
+        // Precondition.checkReference(destinationAddress);
         byte[] address = destinationAddress.getAddress();
         setDestinationAddress(address);
     }
 
     /**
-     * Sets the Destination Address field value. 
+     * Sets the Destination Address field value.
      * See {@link #getDestinationAddress()}.
      * 
      * @param sourceAddress
      *            - an IPv6 address.
      */
     public void setDestinationAddress(final byte[] address) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPv6Packet.setDestinationAddress", Logging.address(address)));
         }
-        
-        //Precondition.checkIPv6Address(address);
+
+        // Precondition.checkIPv6Address(address);
         DestinationAddress.set(getBufferInternal(), address);
     }
 
@@ -762,7 +829,7 @@ public final class IPv6Packet extends IPPacket {
         }
         return 0;
     }
-    
+
     @Override
     public ByteBuffer getFragment() {
         if (this.fragmentHeader != null) {
@@ -772,8 +839,8 @@ public final class IPv6Packet extends IPPacket {
     }
 
     /**
-     * Returns unparsed portion of packet payload or <code>null</code>
-     * if the packet is a datagram fragment.
+     * Returns unparsed portion of packet payload or <code>null</code> if the packet is a
+     * datagram fragment.
      * 
      * @return
      */
@@ -785,8 +852,9 @@ public final class IPv6Packet extends IPPacket {
      * Sets unparsed portion of packet payload, updates the total packet length
      * and changes packet state to indicate that the packet is unfragmented.
      * Used in datagram reassembly process.
+     * 
      * @param reassembledPayload
-     * @throws ParseException 
+     * @throws ParseException
      */
     public void setReassembledPayload(final ByteBuffer reassembledPayload) throws ParseException {
         this.unparsedPayload = reassembledPayload.slice();
@@ -796,17 +864,16 @@ public final class IPv6Packet extends IPPacket {
     }
 
     /**
-     * 
      * @param protocolParser
      * @throws ParseException
      * @throws MissingParserException
      */
     public void parsePayload(final IPMessage.Parser protocolParser) throws ParseException, MissingParserException {
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPv6Packet.parsePayload", protocolParser));
         }
-        
+
         // Parse IP protocol headers
         byte lastProtocolNumber = getLastProtocolNumber();
         // Check checksum before we consume the payload
@@ -816,24 +883,24 @@ public final class IPv6Packet extends IPPacket {
             }
             throw new ParseException("invalid checksum detected in IP protocol packet");
         }
-        IPMessage nextHeader = protocolParser.parse(this.unparsedPayload,lastProtocolNumber);
+        IPMessage nextHeader = protocolParser.parse(this.unparsedPayload, lastProtocolNumber);
         addProtocolMessage(nextHeader);
         while (nextHeader.getNextProtocolNumber() != IPMessage.NO_NEXT_HEADER) {
             lastProtocolNumber = nextHeader.getNextProtocolNumber();
-            if (!protocolParser.verifyChecksum(this.unparsedPayload, lastProtocolNumber, getSourceAddress(), getDestinationAddress())) {
+            if (!protocolParser.verifyChecksum(this.unparsedPayload, lastProtocolNumber, getSourceAddress(),
+                                               getDestinationAddress())) {
                 if (logger.isLoggable(Level.INFO)) {
                     logger.info(ObjectId + " invalid checksum detected in IP payload");
                 }
                 throw new ParseException("invalid checksum detected in IP payload");
             }
-            nextHeader = protocolParser.parse(this.unparsedPayload,lastProtocolNumber);
+            nextHeader = protocolParser.parse(this.unparsedPayload, lastProtocolNumber);
             addProtocolMessage(nextHeader);
         }
-        
+
     }
 
     /**
-     * 
      * @param nextHeader
      * @param payload
      * @throws ParseException
@@ -846,14 +913,15 @@ public final class IPv6Packet extends IPPacket {
                 this.parsedPayloadLength += header.getTotalLength();
                 nextHeader = header.getNextProtocolNumber();
             }
-            else if (nextHeader == IPv6RoutingHeader.IP_PROTOCOL_NUMBER ) {
+            else if (nextHeader == IPv6RoutingHeader.IP_PROTOCOL_NUMBER) {
                 IPv6RoutingHeader header = new IPv6RoutingHeader(payload);
                 this.addProtocolMessage(header);
                 this.parsedPayloadLength += header.getTotalLength();
                 nextHeader = header.getNextProtocolNumber();
             }
             else if (nextHeader == IPv6FragmentHeader.IP_PROTOCOL_NUMBER) {
-                // Construct the fragment header - it will track what remains of the payload
+                // Construct the fragment header - it will track what remains of the
+                // payload
                 this.fragmentHeader = new IPv6FragmentHeader(payload);
                 this.unparsedPayload = null;
                 nextHeader = this.fragmentHeader.getNextProtocolNumber();

@@ -34,63 +34,81 @@ import com.larkwoodlabs.util.buffer.parser.MissingParserException;
 import com.larkwoodlabs.util.logging.Logging;
 
 /**
- * The Fragment header is used by an IPv6 source to send packets larger
- * than would fit in the path MTU. The Fragment
+ * Represents an IPv6 fragment header.
+ * A fragment header is used by an IPv6 source to send packets larger
+ * than would fit in the path MTU. A Fragment
  * header is identified by a Next Header value of 44 in the
- * immediately preceding header, and has the following format:
+ * immediately preceding header. <h3>Header Format</h3> <blockquote>
+ * 
  * <pre>
- *  0               1               2               3          
- * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- * |  Next Header  |   Reserved    |      Fragment Offset    |Res|M|
- * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- * |                         Identification                        |
- * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- * </pre> 
+ *   0               1               2               3          
+ *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *  |  Next Header  |   Reserved    |      Fragment Offset    |Res|M|
+ *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *  |                         Identification                        |
+ *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ * </pre>
  * <dl>
- * <dt>Next Header: 8-bits<dd>
- *  
- *      Identifies the initial header type of the Fragmentable Part
- *      of the original packet (defined below).  Uses the same values
- *      as the IPv4 Protocol field [RFC-1700 et seq.].<p>
+ * <dt><u>Next Header</u></dt>
+ * <p>
+ * <dd>Identifies the initial header type of the Fragmentable Part of the original packet
+ * (defined below). Uses the same values as the IPv4 Protocol field [RFC-1700 et seq.].
+ * <p>
+ * See {@link #getNextProtocolNumber()}, {@link #getNextMessage()}, {@link #setNextMessage(IPMessage)}.
+ * </dd>
+ * <p>
+ * <dt><u>Reserved</u></dt>
+ * <p>
+ * <dd>Reserved field. Initialized to zero for transmission; ignored on reception.</dd>
+ * <p>
+ * <dt><u>Fragment Offset</u></dt>
+ * <p>
+ * <dd>The offset, in 8-octet units, of the data following this header, relative to the
+ * start of the Fragmentable Part of the original packet.
+ * <p>
+ * See {@link #getFragmentOffset()}, {@link #setFragmentOffset(short)}.
+ * </dd>
+ * <p>
+ * <dt><u>Reserved (Res)</u></dt>
+ * <p>
+ * <dd>Reserved field. Initialized to zero for transmission; ignored on reception.</dd>
+ * <p>
+ * <dt><u>More Fragments (M) Flag</u></dt>
+ * <p>
+ * <dd>
  * 
- * <dt>Reserved: 8-bits<d>
- *
- *      Reserved field.  Initialized to zero for distribution; ignored on reception.<p>
- * 
- * <dt>Fragment Offset: 13-bits<dd>
- *
- *      The offset, in 8-octet units, of the data following this header,
- *      relative to the start of the Fragmentable Part of the original packet.<p>
- * 
- * <dt>Res: 2-bits<dd>
- * 
- *      Reserved field.  Initialized to zero for distribution; ignored on reception.<p>
- * 
- * <dt>More Fragments flag: 1 bit<dd>
- *
- *      1 = more fragments; 0 = last fragment.<p>
- * 
- * <dt>Identification: 32 bits<dd>
- * 
- *      For every packet that is to be fragmented, the source node generates
- *      an Identification value. The Identification must be different than
- *      that of any other fragmented packet sent recently* with the same
- *      Source Address and Destination Address.  If a Routing header is
- *      present, the Destination Address of concern is that of the final
- *      destination.<p>
+ * <pre>
+ *   1 = more fragments;
+ *   0 = last fragment.
+ * </pre>
+ * <p>
+ * See {@link #getMoreFragments()}, {@link #setMoreFragments(boolean)}.
+ * </dd>
+ * <p>
+ * <dt><u>Identification</u></dt>
+ * <p>
+ * <dd>For every packet that is to be fragmented, the source node generates an
+ * Identification value. The Identification must be different than that of any other
+ * fragmented packet sent recently* with the same Source Address and Destination Address.
+ * If a Routing header is present, the Destination Address of concern is that of the final
+ * destination.
+ * <p>
+ * See {@link #getIdentification()}, {@link #setIdentification(int)}.
+ * </dd>
  * </dl>
  * 
- * @author Gregory Bumgardner
- * 
+ * @author Gregory Bumgardner (gbumgard)
  */
-public final class IPv6FragmentHeader extends IPExtensionHeader {
+public final class IPv6FragmentHeader
+                extends IPExtensionHeader {
 
     /*-- Inner Classes ---------------------------------------------------*/
 
     /**
      * 
      */
-    public static class Parser implements IPMessage.ParserType {
+    public static class Parser
+                    implements IPMessage.ParserType {
 
         @Override
         public IPMessage parse(final ByteBuffer buffer) throws ParseException {
@@ -111,22 +129,23 @@ public final class IPv6FragmentHeader extends IPExtensionHeader {
 
     }
 
-
     /*-- Static Variables ---------------------------------------------------*/
 
     /** Protocol number for IPv6 Fragment Headers */
     public static final byte IP_PROTOCOL_NUMBER = 44;
 
     /** */
-    public static final ShortBitField   FragmentOffset = new ShortBitField(2,3,13);
+    public static final ShortBitField FragmentOffset = new ShortBitField(2, 3, 13);
+
     /** */
-    public static final BooleanField    MoreFragments = new BooleanField(3,0);
+    public static final BooleanField MoreFragments = new BooleanField(3, 0);
+
     /** */
-    public static final IntegerField    Identification = new IntegerField(4);
+    public static final IntegerField Identification = new IntegerField(4);
 
     /** */
     public static final int BASE_HEADER_LENGTH = 8;
-    
+
     /*-- Member Variables ---------------------------------------------------*/
 
     /** */
@@ -135,7 +154,6 @@ public final class IPv6FragmentHeader extends IPExtensionHeader {
     /*-- Member Functions ---------------------------------------------------*/
 
     /**
-     * 
      * @param fragmentOffset
      * @param moreFragments
      * @param identification
@@ -146,30 +164,30 @@ public final class IPv6FragmentHeader extends IPExtensionHeader {
         super(IP_PROTOCOL_NUMBER);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv6FragmentHeader.IPv6FragmentHeader", fragmentOffset, moreFragments, identification));
+            logger.finer(Logging.entering(ObjectId, "IPv6FragmentHeader.IPv6FragmentHeader", fragmentOffset, moreFragments,
+                                          identification));
         }
-        
+
         setFragmentOffset(fragmentOffset);
         setMoreFragments(moreFragments);
         setIdentification(identification);
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logState(logger);
         }
     }
 
     /**
-     * 
      * @param buffer
      * @throws ParseException
      */
     public IPv6FragmentHeader(final ByteBuffer buffer) throws ParseException {
-        super(consume(buffer,BASE_HEADER_LENGTH), IP_PROTOCOL_NUMBER);
+        super(consume(buffer, BASE_HEADER_LENGTH), IP_PROTOCOL_NUMBER);
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPv6FragmentHeader.IPv6FragmentHeader", buffer));
         }
-        
+
         this.fragment = consume(buffer, buffer.remaining());
 
         if (logger.isLoggable(Level.FINER)) {
@@ -182,18 +200,19 @@ public final class IPv6FragmentHeader extends IPExtensionHeader {
         super.log(logger);
         logState(logger);
     }
-    
+
     /**
      * Logs value of member variables declared or maintained by this class.
+     * 
      * @param logger
      */
     private void logState(final Logger logger) {
-        logger.fine(ObjectId + " : more-fragments="+getMoreFragments());
-        logger.fine(ObjectId + " : fragment-offset="+getFragmentOffset());
-        logger.fine(ObjectId + " : identification="+getIdentification());
+        logger.fine(ObjectId + " : more-fragments=" + getMoreFragments());
+        logger.fine(ObjectId + " : fragment-offset=" + getFragmentOffset());
+        logger.fine(ObjectId + " : identification=" + getIdentification());
         logger.fine(ObjectId + " : fragment array=" + this.fragment.array() +
-                               " offset=" + this.fragment.arrayOffset() +
-                               " limit=" + this.fragment.limit());
+                    " offset=" + this.fragment.arrayOffset() +
+                    " limit=" + this.fragment.limit());
     }
 
     /**
@@ -206,7 +225,6 @@ public final class IPv6FragmentHeader extends IPExtensionHeader {
     }
 
     /**
-     * 
      * @return
      */
     public ByteBuffer getFragment() {
@@ -214,19 +232,17 @@ public final class IPv6FragmentHeader extends IPExtensionHeader {
     }
 
     /**
-     * 
      * @return
      */
     public short getFragmentOffset() {
         return FragmentOffset.get(getBufferInternal());
     }
-    
+
     /**
-     * 
      * @param offset
      */
     public void setFragmentOffset(final short offset) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPv6FragmentHeader.setFragmentOffset", offset));
         }
@@ -235,7 +251,6 @@ public final class IPv6FragmentHeader extends IPExtensionHeader {
     }
 
     /**
-     * 
      * @return
      */
     public boolean getMoreFragments() {
@@ -243,36 +258,33 @@ public final class IPv6FragmentHeader extends IPExtensionHeader {
     }
 
     /**
-     * 
      * @param moreFragments
      */
     public void setMoreFragments(final boolean moreFragments) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPv6FragmentHeader.setMoreFragments", moreFragments));
         }
-        
+
         MoreFragments.set(getBufferInternal(), moreFragments);
     }
 
     /**
-     * 
      * @return
      */
     public int getIdentification() {
         return Identification.get(getBufferInternal());
     }
-    
+
     /**
-     * 
      * @param identification
      */
     public void setIdentification(final int identification) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPv6FragmentHeader.setIdentification", identification));
         }
-        
+
         Identification.set(getBufferInternal(), identification);
     }
 }

@@ -28,10 +28,10 @@ import com.larkwoodlabs.util.buffer.parser.MissingParserException;
 import com.larkwoodlabs.util.logging.Logging;
 
 /**
- * 
+ * Represents an IPv6 Destination Options header.
  * 
  *
- * @author gbumgard
+ * @author Gregory Bumgardner (gbumgard)
  */
 public final class IPv6DestinationOptionsHeader extends IPv6OptionsHeader {
 

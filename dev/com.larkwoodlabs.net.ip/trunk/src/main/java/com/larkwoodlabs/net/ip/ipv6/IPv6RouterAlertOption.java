@@ -32,27 +32,48 @@ import com.larkwoodlabs.util.logging.Logging;
 
 
 /**
- * IPv6 Router Alert Option (Option 20) The router alert option is 4 bytes
- * comprised of an option type, length, and alert value.
- * 
+ * Represents an IPv6 Router Alert Option (Option 5).
+ * The router alert option is 4 bytes comprised of an option type, length, and alert value.
+ * <h3>Option Format</h3>
+ * <blockquote>
  * <pre>
- *  00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
- * +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
- * |          Type         |         Length        |              Router Alert Value               |
- * +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+ *   0                   1                   2                   3   
+ *   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 
+ *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *  |      Type     |    Length     |      Router Alert Value       |
+ *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  * </pre>
- * 
- * The Type field has the following fixed value: Copy=1, Class=0, Option=20
+ * <dl>
+ * <dt><u>Type</u></dt>
+ * <p>
+ * <dd>The Type field has a fixed value of 0x05:
  * 
  * <pre>
  * +-+-+-+-+-+-+-+-+
- * |0|0 0|0 0 1 0 1| 0x05
+ * |0 0 0|0 0 1 0 1| 0x05
  * +-+-+-+-+-+-+-+-+
  * </pre>
+ * <p>
+ * See {@link #getOption()}.
+ * </dd>
+ * <p>
+ * <dt><u>Length</u></dt>
+ * <p>
+ * <dd>Length field is always 2.</dd>
+ * <p>
+ * <dt><u>Router Alert Value</u></dt>
+ * <p>
+ * <dd>Describes action router should take.
  * 
- * Length field is 4. Router Alert Value describes action router should take.
- * Router shall examine packet. 1-65535 Reserved.
- * MLD uses a value of zero.
+ * <pre>
+ *   0        Router shall examine packet (used in MLD).
+ *   1-65535  Reserved.
+ * </pre>
+ * <p>
+ * See {@link #getRouterAlertValue()}, {@link #setRouterAlertValue(short)}.
+ * </dd>
+ * </dl>
+ * </blockquote>
  * 
  * @author Gregory Bumgardner
  */

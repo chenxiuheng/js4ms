@@ -35,10 +35,10 @@ import com.larkwoodlabs.util.buffer.parser.MissingParserException;
 import com.larkwoodlabs.util.logging.Logging;
 
 /**
- * 
+ * Base class for IPv6 options headers.
  * 
  *
- * @author gbumgard
+ * @author Gregory Bumgardner (gbumgard)
  */
 public abstract class IPv6OptionsHeader extends IPExtensionHeader {
 

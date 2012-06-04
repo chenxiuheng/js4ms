@@ -36,84 +36,92 @@ import com.larkwoodlabs.util.buffer.parser.MissingParserException;
 import com.larkwoodlabs.util.logging.Logging;
 
 /**
+ * Represents an IPv6 Routing header.
+ * <p>
+ * The Routing header is used by an IPv6 source to list one or more intermediate nodes to
+ * be &quot;visited&quot; on the way to a packet's destination. This function is very
+ * similar to IPv4's Loose Source and Record Route option. The Routing header is
+ * identified by a Next Header value of 43 in the immediately preceding header. See <a
+ * href="http://www.rfc-editor.org/rfc/rfc2460.txt">[RFC-2460]</a>.
+ * <h3>Header Format</h3> <blockquote>
+ * 
  * <pre>
- * <h1>4.4  Routing Header</h1>
- * 
- *    The Routing header is used by an IPv6 source to list one or more
- *    intermediate nodes to be &quot;visited&quot; on the way to a packet's
- *    destination.  This function is very similar to IPv4's Loose Source
- *    and Record Route option.  The Routing header is identified by a Next
- *    Header value of 43 in the immediately preceding header, and has the
- *    following format:
- * 
- *     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- *     |  Next Header  |  Hdr Ext Len  |  Routing Type | Segments Left |
- *     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- *     |                                                               |
- *     .                                                               .
- *     .                       type-specific data                      .
- *     .                                                               .
- *     |                                                               |
- *     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- * 
- *    <h2>Next Header (8-bits)</h2>
- *    Identifies the type of header immediately following the Routing
- *    header.  Uses the same values as the IPv4 Protocol field [RFC-1700].
- * 
- *    <h2>Hdr Ext Len (8-bits)</h2>
- *    An unsigned integer. Length of the Routing header in 8-octet units,
- *    not including the first 8 octets.
- * 
- *    <h2>Routing Type (8-bits)</h2>
- *    Identifies the particular Routing header variant.
- * 
- *    <h2>Segments Left (8-bits)</h2>
- *    An unsigned integer.  Number of route segments remaining, i.e.,
- *    the number of explicitly listed intermediate nodes still to be
- *    visited before reaching the final destination.
- * 
- *    <h2>type-specific data (variable length)</h2>
- *    Variable-length field, of format determined by the Routing Type,
- *    and of length such that the complete Routing header is an integer
- *    multiple of 8 octets long.
- * 
- *    If, while processing a received packet, a node encounters a Routing
- *    header with an unrecognized Routing Type value, the required behavior
- *    of the node depends on the value of the Segments Left field, as
- *    follows:
- * 
- *       If Segments Left is zero, the node must ignore the Routing header
- *       and proceed to process the next header in the packet, whose type
- *       is identified by the Next Header field in the Routing header.
- * 
- *       If Segments Left is non-zero, the node must discard the packet and
- *       send an ICMP Parameter Problem, Code 0, message to the packet's
- *       Source Address, pointing to the unrecognized Routing Type.
- * 
- *    If, after processing a Routing header of a received packet, an
- *    intermediate node determines that the packet is to be forwarded onto
- *    a link whose link MTU is less than the size of the packet, the node
- *    must discard the packet and send an ICMP Packet Too Big message to
- *    the packet's Source Address.
+ *   0                   1                   2                   3   
+ *   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 
+ *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *  |  Next Header  |  Hdr Ext Len  |  Routing Type | Segments Left |
+ *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *  |                                                               |
+ *  .                                                               .
+ *  .                       type-specific data                      .
+ *  .                                                               .
+ *  |                                                               |
+ *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  * </pre>
- * @see <a href="http://www.rfc-editor.org/rfc/rfc2460.txt">[RFC-2460]</a>
  * 
- * @author Gregory Bumgardner
+ * <dl>
+ * <dt><u>Next Header</u></dt>
+ * <p>
+ * <dd>Identifies the type of header immediately following the Routing header. Uses the
+ * same values as the IPv4 Protocol field [RFC-1700].</dd>
+ * <p>
+ * <dt><u>Hdr Ext Len</u></dt>
+ * <p>
+ * <dd>An unsigned integer. Length of the Routing header in 8-octet units, not including
+ * the first 8 octets.</dd>
+ * <p>
+ * <dt><u>Routing Type</u></dt>
+ * <p>
+ * <dd>Identifies the particular Routing header variant.</dd>
+ * <p>
+ * <dt><u>Segments Left</u></dt>
+ * <p>
+ * <dd>An unsigned integer. Number of route segments remaining, i.e., the number of
+ * explicitly listed intermediate nodes still to be visited before reaching the final
+ * destination.</dd>
+ * <p>
+ * <dt><u>Type-specific Data</u></dt>
+ * <p>
+ * <dd>Variable-length field, of format determined by the Routing Type, and of length such
+ * that the complete Routing header is an integer multiple of 8 octets long.
+ * <p>
+ * If, while processing a received packet, a node encounters a Routing header with an
+ * unrecognized Routing Type value, the required behavior of the node depends on the value
+ * of the Segments Left field, as follows:
+ * <ul>
+ * <li>If Segments Left is zero, the node must ignore the Routing header and proceed to
+ * process the next header in the packet, whose type is identified by the Next Header
+ * field in the Routing header.</li> <li>If Segments Left is non-zero, the node must
+ * discard the packet and send an ICMP Parameter Problem, Code 0, message to the packet's
+ * Source Address, pointing to the unrecognized Routing Type.</li></ul>
+ * If, after processing a Routing header of a received packet, an intermediate node
+ * determines that the packet is to be forwarded onto a link whose link MTU is less than
+ * the size of the packet, the node must discard the packet and send an ICMP Packet Too
+ * Big message to the packet's Source Address.</li>
+ * </ul>
+ * </dd>
+ * </dl>
+ * </blockquote>
  * 
+ * @author Gregory Bumgardner (gbumgard)
  */
-public class IPv6RoutingHeader extends IPExtensionHeader {
+public class IPv6RoutingHeader
+                extends IPExtensionHeader {
 
     /**
      * 
      */
-    public static interface ParserType extends KeyedBufferParser<IPv6RoutingHeader> {
-        
+    public static interface ParserType
+                    extends KeyedBufferParser<IPv6RoutingHeader> {
+
     }
 
     /**
      * 
      */
-    public static class Parser extends BufferParserSelector<IPMessage> implements IPMessage.ParserType {
+    public static class Parser
+                    extends BufferParserSelector<IPMessage>
+                    implements IPMessage.ParserType {
 
         /**
          * 
@@ -140,15 +148,15 @@ public class IPv6RoutingHeader extends IPExtensionHeader {
     public static final byte IP_PROTOCOL_NUMBER = 43;
 
     /** */
-    public static final ByteField    RoutingType = new ByteField(2);
+    public static final ByteField RoutingType = new ByteField(2);
+
     /** */
-    public static final ByteField    SegmentsLeft = new ByteField(3);
+    public static final ByteField SegmentsLeft = new ByteField(3);
+
     /** */
     public static final IntegerField Reserved = new IntegerField(4);
 
-
     /**
-     * 
      * @param routingType
      * @param segmentsLeft
      */
@@ -158,17 +166,16 @@ public class IPv6RoutingHeader extends IPExtensionHeader {
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPv6RoutingHeader.IPv6RoutingHeader", routingType, segmentsLeft));
         }
-        
+
         setRoutingType(routingType);
         setSegmentsLeft(segmentsLeft);
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logState(logger);
         }
     }
 
     /**
-     * 
      * @param buffer
      * @throws ParseException
      */
@@ -186,18 +193,18 @@ public class IPv6RoutingHeader extends IPExtensionHeader {
         super.log(logger);
         logState(logger);
     }
-    
+
     /**
      * Logs value of member variables declared or maintained by this class.
+     * 
      * @param logger
      */
     private void logState(final Logger logger) {
-        logger.info(ObjectId + " : routing-type="+getRoutingType());
-        logger.info(ObjectId + " : segments-left="+getSegmentsLeft());
+        logger.info(ObjectId + " : routing-type=" + getRoutingType());
+        logger.info(ObjectId + " : segments-left=" + getSegmentsLeft());
     }
 
     /**
-     * 
      * @return
      */
     public final byte getRoutingType() {
@@ -205,20 +212,18 @@ public class IPv6RoutingHeader extends IPExtensionHeader {
     }
 
     /**
-     * 
      * @param routingType
      */
     public final void setRoutingType(final byte routingType) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPv6RoutingHeader.setRoutingType", routingType));
         }
-        
-        RoutingType.set(getBufferInternal(),routingType);
+
+        RoutingType.set(getBufferInternal(), routingType);
     }
 
     /**
-     * 
      * @return
      */
     public final byte getSegmentsLeft() {
@@ -226,15 +231,14 @@ public class IPv6RoutingHeader extends IPExtensionHeader {
     }
 
     /**
-     * 
      * @param segmentsLeft
      */
     public final void setSegmentsLeft(final byte segmentsLeft) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPv6RoutingHeader.setSegmentsLeft", segmentsLeft));
         }
-        
-        SegmentsLeft.set(getBufferInternal(),segmentsLeft);
+
+        SegmentsLeft.set(getBufferInternal(), segmentsLeft);
     }
 }

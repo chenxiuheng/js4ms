@@ -33,9 +33,9 @@ import com.larkwoodlabs.net.Precondition;
 import com.larkwoodlabs.util.logging.Logging;
 
 /**
- * 
+ * Represents an IPv6 Routing Header with routing type equal to zero.
  *
- * @author Gregory Bumgardner
+ * @author Gregory Bumgardner (gbumgard)
  */
 public final class IPv6RoutingType0Header extends IPv6RoutingHeader {
 
