@@ -33,22 +33,17 @@ import com.larkwoodlabs.util.logging.Logging;
 /**
  * A Multicast Listener Report Message as described in
  * [<a href="http://tools.ietf.org/html/rfc2710">RFC-2710</a>].
- *
- * <h2>3.0 MLD Message Format</h2>
+ * <p>
+ * MLD is a sub-protocol of ICMPv6, that is, MLD message types are a subset of the set of
+ * ICMPv6 messages, and MLD messages are identified in IPv6 packets by a preceding Next
+ * Header value of 58. All MLD messages described in this document are sent with a
+ * link-local IPv6 Source Address, an IPv6 Hop Limit of 1, and an IPv6 Router Alert option
+ * [RTR-ALERT] in a Hop-by-Hop Options header. (The Router Alert option is necessary to
+ * cause routers to examine MLD messages sent to multicast addresses in which the routers
+ * themselves have no interest.)
+ * <h3>Message Format</h3> <blockquote>
  * 
- *    MLD is a sub-protocol of ICMPv6, that is, MLD message types are a
- *    subset of the set of ICMPv6 messages, and MLD messages are identified
- *    in IPv6 packets by a preceding Next Header value of 58.  All MLD
- *    messages described in this document are sent with a link-local IPv6
- *    Source Address, an IPv6 Hop Limit of 1, and an IPv6 Router Alert
- *    option [RTR-ALERT] in a Hop-by-Hop Options header.  (The Router Alert
- *    option is necessary to cause routers to examine MLD messages sent to
- *    multicast addresses in which the routers themselves have no
- *    interest.)
- * 
- *    MLD messages have the following format:
  * <pre>
- *     0               1               2               3
  *    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  *    |  Type = 131   |     Code      |          Checksum             |
  *    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -62,57 +57,67 @@ import com.larkwoodlabs.util.logging.Logging;
  *    +                                                               +
  *    |                                                               |
  *    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- * </pre> 
- * <h2>3.1. Type (8-bits)</h2>
- * A Multicast Listener Report has a type value of decimal 131.
- * See {@link #getType()}.
+ * </pre>
  * 
- * <h2>3.2. Code (8-bits)</h2>
- *    Initialized to zero by the sender; ignored by receivers.
+ * <dl>
+ * <dt><u>Type</u></dt>
+ * <p>
+ * <dd>A Multicast Listener Report has a type value of decimal 131. See {@link #getType()}
+ * .</dd>
+ * <p>
+ * <dt><u>Code</u></dt>
+ * <p>
+ * <dd>Initialized to zero by the sender; ignored by receivers.</dd>
+ * <p>
+ * <dt><u>Checksum</u></dt>
+ * <p>
+ * <dd>The standard ICMPv6 checksum, covering the entire MLD message plus a
+ * &quot;pseudo-header&quot; of IPv6 header fields [ICMPv6,IPv6].
+ * <p>
+ * See {@link #getChecksum()}, {@link #setChecksum(short)},
+ * {@link #calculateChecksum(ByteBuffer, int, byte[], byte[])} and
+ * {@link #verifyChecksum(byte[], byte[], int)}.</dd>
+ * <p>
+ * <dt><u>Maximum Response Delay</u></dt>
+ * <p>
+ * <dd>The Maximum Response Delay field is meaningful only in Query messages.</dd>
+ * <p>
+ * <dt><u>Reserved</u></dt>
+ * <p>
+ * <dd>Initialized to zero by the sender; ignored by receivers.</dd>
+ * <p>
+ * <dt><u>Multicast Address</u></dt>
+ * <p>
+ * <dd>The specific IPv6 multicast address to which the message sender is listening. See
+ * {@link #getGroupAddress()}, {@link #setGroupAddress(byte[])} and
+ * {@link #setGroupAddress(java.net.InetAddress)}.</dd>
+ * <p>
+ * <dt><u>Other fields</u></dt>
+ * <p>
+ * <dd>The length of a received MLD message is computed by taking the IPv6 Payload Length
+ * value and subtracting the length of any IPv6 extension headers present between the IPv6
+ * header and the MLD message. If that length is greater than 24 octets, that indicates
+ * that there are other fields present beyond the fields described above, perhaps
+ * belonging to a future backwards-compatible version of MLD. An implementation of the
+ * version of MLD specified in this document MUST NOT send an MLD message longer than 24
+ * octets and MUST ignore anything past the first 24 octets of a received MLD message. In
+ * all cases, the MLD checksum MUST be computed over the entire MLD message, not just the
+ * first 24 octets.</dd>
+ * </dl>
+ * </blockquote>
  * 
- * <h2>3.3. Checksum (16-bits)</h2>
- *    The standard ICMPv6 checksum, covering the entire MLD message plus a
- *    &quot;pseudo-header&quot; of IPv6 header fields [ICMPv6,IPv6].<p>
- *    See {@link #getChecksum()}, {@link #setChecksum(short)},
- *    {@link #calculateChecksum(ByteBuffer, int, byte[], byte[])}
- *    and {@link #verifyChecksum(byte[], byte[], int)}.
- *    
- * 
- * <h2>3.4. Maximum Response Delay (16-bits)</h2>
- *    The Maximum Response Delay field is meaningful only in Query messages.
- * 
- * <h2>3.5. Reserved (16-bits)</h2>
- *    Initialized to zero by the sender; ignored by receivers.
- * 
- * <h2>3.6. Multicast Address (16-bytes)</h2>
- *    The specific IPv6 multicast address to which the message sender is
- *    listening.
- *    See {@link #getGroupAddress()}, {@link #setGroupAddress(byte[])}
- *    and {@link #setGroupAddress(java.net.InetAddress)}.
- * 
- * <h2>3.7. Other fields</h2>
- *    The length of a received MLD message is computed by taking the IPv6
- *    Payload Length value and subtracting the length of any IPv6 extension
- *    headers present between the IPv6 header and the MLD message.  If that
- *    length is greater than 24 octets, that indicates that there are other
- *    fields present beyond the fields described above, perhaps belonging
- *    to a future backwards-compatible version of MLD.  An implementation
- *    of the version of MLD specified in this document MUST NOT send an MLD
- *    message longer than 24 octets and MUST ignore anything past the first
- *    24 octets of a received MLD message.  In all cases, the MLD checksum
- *    MUST be computed over the entire MLD message, not just the first 24
- *    octets.<p>
- *
  * @author Gregory Bumgardner (gbumgard)
  */
-public final class MLDv1ReportMessage extends MLDGroupMessage {
+public final class MLDv1ReportMessage
+                extends MLDGroupMessage {
 
     /*-- Inner Classes ---------------------------------------------------*/
 
     /**
      * 
      */
-    public static class Parser implements MLDMessage.ParserType {
+    public static class Parser
+                    implements MLDMessage.ParserType {
 
         @Override
         public MLDMessage parse(final ByteBuffer buffer) throws ParseException {
@@ -133,19 +138,17 @@ public final class MLDv1ReportMessage extends MLDGroupMessage {
 
     }
 
-
     /*-- Static Variables ---------------------------------------------------*/
-    
+
     /** */
-    public static final byte MESSAGE_TYPE = (byte)131;
+    public static final byte MESSAGE_TYPE = (byte) 131;
+
     /** */
     public static final int BASE_MESSAGE_LENGTH = 24;
-
 
     /*-- Static Functions ---------------------------------------------------*/
 
     /**
-     * 
      * @return
      */
     public static MLDMessage.Parser getMLDMessageParser() {
@@ -153,7 +156,6 @@ public final class MLDv1ReportMessage extends MLDGroupMessage {
     }
 
     /**
-     * 
      * @return
      */
     public static IPMessage.Parser getIPMessageParser() {
@@ -161,7 +163,6 @@ public final class MLDv1ReportMessage extends MLDGroupMessage {
     }
 
     /**
-     * 
      * @return
      */
     public static IPv6Packet.Parser getIPv6PacketParser() {
@@ -169,7 +170,6 @@ public final class MLDv1ReportMessage extends MLDGroupMessage {
     }
 
     /**
-     * 
      * @return
      */
     public static IPPacket.BufferParser getIPPacketParser() {
@@ -177,10 +177,15 @@ public final class MLDv1ReportMessage extends MLDGroupMessage {
     }
 
     /**
-     * Verifies the MLD message checksum. Called by the parser prior to constructing the packet.
-     * @param buffer - the buffer containing the MLD message.
-     * @param sourceAddress An IPv6 (16-byte) address..
-     * @param destinationAddress An IPv6 (16-byte) address.
+     * Verifies the MLD message checksum. Called by the parser prior to constructing the
+     * packet.
+     * 
+     * @param buffer
+     *            - the buffer containing the MLD message.
+     * @param sourceAddress
+     *            An IPv6 (16-byte) address..
+     * @param destinationAddress
+     *            An IPv6 (16-byte) address.
      * @return
      */
     public static boolean verifyChecksum(final ByteBuffer buffer,
@@ -191,10 +196,15 @@ public final class MLDv1ReportMessage extends MLDGroupMessage {
 
     /**
      * Writes the MLD message checksum into a buffer containing an MLD message.
-     * @param buffer - a byte array.
-     * @param offset - the offset within the array at which to write the message.
-     * @param sourceAddress An IPv6 (16-byte) address..
-     * @param destinationAddress An IPv6 (16-byte) address.
+     * 
+     * @param buffer
+     *            - a byte array.
+     * @param offset
+     *            - the offset within the array at which to write the message.
+     * @param sourceAddress
+     *            An IPv6 (16-byte) address..
+     * @param destinationAddress
+     *            An IPv6 (16-byte) address.
      */
     public static void setChecksum(final ByteBuffer buffer,
                                    final byte[] sourceAddress,
@@ -202,29 +212,26 @@ public final class MLDv1ReportMessage extends MLDGroupMessage {
         Checksum.set(buffer, MLDMessage.calculateChecksum(buffer, BASE_MESSAGE_LENGTH, sourceAddress, destinationAddress));
     }
 
-
     /*-- Member Functions ---------------------------------------------------*/
 
     /**
-     * 
      * @param groupAddress
      */
     public MLDv1ReportMessage(final byte[] groupAddress) {
-        super(BASE_MESSAGE_LENGTH,(byte)0,groupAddress);
-        
+        super(BASE_MESSAGE_LENGTH, (byte) 0, groupAddress);
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "MLDv1ReportMessage.MLDv1ReportMessage", Logging.address(groupAddress)));
         }
     }
 
     /**
-     * 
      * @param buffer
      * @throws ParseException
      */
     public MLDv1ReportMessage(final ByteBuffer buffer) throws ParseException {
         super(consume(buffer, BASE_MESSAGE_LENGTH));
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "MLDv1ReportMessage.MLDv1ReportMessage", buffer));
         }
@@ -234,7 +241,7 @@ public final class MLDv1ReportMessage extends MLDGroupMessage {
     public void writeChecksum(final ByteBuffer buffer,
                               final byte[] sourceAddress,
                               final byte[] destinationAddress) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId,
                                           "MLDv1ReportMessage.writeChecksum",
@@ -242,10 +249,10 @@ public final class MLDv1ReportMessage extends MLDGroupMessage {
                                           Logging.address(sourceAddress),
                                           Logging.address(destinationAddress)));
         }
-        
+
         MLDv1ReportMessage.setChecksum(buffer, sourceAddress, destinationAddress);
     }
-    
+
     @Override
     public int getMessageLength() {
         return BASE_MESSAGE_LENGTH;
