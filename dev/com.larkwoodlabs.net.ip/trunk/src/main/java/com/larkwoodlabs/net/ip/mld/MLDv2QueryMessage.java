@@ -227,7 +227,7 @@ import com.larkwoodlabs.util.logging.Logging;
  *    an MLDv2 implementation MUST NOT include additional octets beyond the
  *    fields described above.<p>
  * 
- * @author Gregory Bumgardner
+ * @author Gregory Bumgardner (gbumgard)
  * 
  */
 public final class MLDv2QueryMessage extends MLDQueryMessage {

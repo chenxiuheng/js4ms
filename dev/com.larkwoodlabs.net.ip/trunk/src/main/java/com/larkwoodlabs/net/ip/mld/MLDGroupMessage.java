@@ -32,7 +32,7 @@ import com.larkwoodlabs.util.logging.Logging;
  * Base class for Mulicast Listener Discovery Message classes
  * that use the multicast group address field.
  *
- * @author Gregory Bumgardner
+ * @author Gregory Bumgardner (gbumgard)
  */
 public abstract class MLDGroupMessage extends MLDMessage {
 

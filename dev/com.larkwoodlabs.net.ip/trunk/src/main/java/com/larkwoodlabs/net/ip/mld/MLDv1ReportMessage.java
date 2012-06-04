@@ -103,7 +103,7 @@ import com.larkwoodlabs.util.logging.Logging;
  *    MUST be computed over the entire MLD message, not just the first 24
  *    octets.<p>
  *
- * @author Gregory Bumgardner
+ * @author Gregory Bumgardner (gbumgard)
  */
 public final class MLDv1ReportMessage extends MLDGroupMessage {
 

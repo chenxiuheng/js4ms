@@ -152,7 +152,7 @@ import com.larkwoodlabs.util.logging.Logging;
  * on which the Report arrives. This might be useful, e.g., for debugging
  * purposes.<p>
  * 
- * @author Gregory Bumgardner
+ * @author Gregory Bumgardner (gbumgard)
  */
 public final class MLDv2ReportMessage extends MLDMessage {
 

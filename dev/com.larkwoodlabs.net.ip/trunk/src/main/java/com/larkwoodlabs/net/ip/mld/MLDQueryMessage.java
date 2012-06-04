@@ -31,7 +31,7 @@ import com.larkwoodlabs.util.logging.Logging;
  * Base class for v1 and v2 Multicast Listener Query classes.
  * The two versions are differentiated by their length.
  * 
- * @author Gregory Bumgardner
+ * @author Gregory Bumgardner (gbumgard)
  * 
  */
 public abstract class MLDQueryMessage extends MLDGroupMessage {

@@ -211,7 +211,7 @@ import com.larkwoodlabs.util.logging.Logging;
  * </ul>
  * <p>
  * 
- * @author Gregory Bumgardner
+ * @author Gregory Bumgardner (gbumgard)
  */
 public final class MLDGroupRecord extends BufferBackedObject {
 
