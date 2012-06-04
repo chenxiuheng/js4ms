@@ -63,22 +63,34 @@ import com.larkwoodlabs.util.logging.Logging;
  * <dt><u>Next Header</u></dt>
  * <p>
  * <dd>Identifies the type of header immediately following the Routing header. Uses the
- * same values as the IPv4 Protocol field [RFC-1700].</dd>
+ * same values as the IPv4 Protocol field [RFC-1700].
+ * <p>
+ * See {@link #getNextProtocolNumber()}, {@link #getNextMessage()}, {@link #setNextMessage(IPMessage)}.
+ * </dd>
  * <p>
  * <dt><u>Hdr Ext Len</u></dt>
  * <p>
  * <dd>An unsigned integer. Length of the Routing header in 8-octet units, not including
- * the first 8 octets.</dd>
+ * the first 8 octets.
+ * <p>
+ * See {@link #getHeaderLength()}, {@link #getTotalLength()}.
+ * </dd>
  * <p>
  * <dt><u>Routing Type</u></dt>
  * <p>
- * <dd>Identifies the particular Routing header variant.</dd>
+ * <dd>Identifies the particular Routing header variant.
+ * <p>
+ * See {@link #getRoutingType()}, {@link #setRoutingType(byte)}.
+ * </dd>
  * <p>
  * <dt><u>Segments Left</u></dt>
  * <p>
  * <dd>An unsigned integer. Number of route segments remaining, i.e., the number of
  * explicitly listed intermediate nodes still to be visited before reaching the final
- * destination.</dd>
+ * destination.
+ * <p>
+ * See {@link #getSegmentsLeft()}, {@link #setSegmentsLeft(byte)}.
+ * </dd>
  * <p>
  * <dt><u>Type-specific Data</u></dt>
  * <p>
