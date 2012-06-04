@@ -51,7 +51,8 @@ import com.larkwoodlabs.util.logging.Logging;
  * |1|0 0|1 0 1 0 0| 0x94
  * +-+-+-+-+-+-+-+-+
  * </pre>
- * 
+ * <p>
+ * See {@link #getCopyFlag()}, {@link #getOptionClass()}, {@link #getOptionNumber()}.
  * </dd>
  * <p>
  * <dt><u>Length</u></dt>
@@ -66,7 +67,8 @@ import com.larkwoodlabs.util.logging.Logging;
  *   0        Router shall examine packet.
  *   1-65535  Reserved.
  * </pre>
- * 
+ * <p>
+ * See {@link #getRouterAlertValue()}, {@link #setRouterAlertValue(short)}.
  * </dd>
  * </dl>
  * </blockquote>
