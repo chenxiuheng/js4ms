@@ -30,19 +30,21 @@ import com.larkwoodlabs.net.ip.IPMultiByteHeaderOption;
 import com.larkwoodlabs.util.buffer.fields.ShortField;
 import com.larkwoodlabs.util.logging.Logging;
 
-
 /**
- * IPv4 Router Alert Option (Option 20). The router alert option is 4 bytes
- * comprised of an option type, length, and alert value.
+ * Represents an IPv4 Router Alert Option.
+ * <h3>Option Format</h3>
+ * <blockquote>
  * 
  * <pre>
- *  00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
- * +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
- * |          Type         |         Length        |              Router Alert Value               |
- * +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+ *   00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+ *  +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+ *  |          Type         |         Length        |              Router Alert Value               |
+ *  +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
  * </pre>
- * 
- * The Type field has the following fixed value: Copy=1, Class=0, Option=20
+ * <dl>
+ * <dt><u>Type</u></dt>
+ * <p>
+ * <dd>The Type field has the following fixed value: Copy=1, Class=0, Option=20:
  * 
  * <pre>
  * +-+-+-+-+-+-+-+-+
@@ -50,19 +52,37 @@ import com.larkwoodlabs.util.logging.Logging;
  * +-+-+-+-+-+-+-+-+
  * </pre>
  * 
- * Length field is 4. Router Alert Value describes action router should take. 0
- * Router shall examine packet. 1-65535 Reserved.
+ * </dd>
+ * <p>
+ * <dt><u>Length</u></dt>
+ * <p>
+ * <dd>Length field is always 4.</dd>
+ * <p>
+ * <dt><u>Router Alert Value</u></dt>
+ * <p>
+ * <dd>Describes action router should take.
+ * 
+ * <pre>
+ *   0        Router shall examine packet.
+ *   1-65535  Reserved.
+ * </pre>
+ * 
+ * </dd>
+ * </dl>
+ * </blockquote>
  * 
  * @author Gregory Bumgardner
  */
-public final class IPv4RouterAlertOption extends IPMultiByteHeaderOption {
+public final class IPv4RouterAlertOption
+                extends IPMultiByteHeaderOption {
 
     /*-- Inner Classes ---------------------------------------------------*/
 
     /**
      * 
      */
-    public static class Parser implements IPHeaderOption.ParserType {
+    public static class Parser
+                    implements IPHeaderOption.ParserType {
 
         @Override
         public IPHeaderOption parse(final ByteBuffer buffer) throws ParseException {
@@ -76,11 +96,10 @@ public final class IPv4RouterAlertOption extends IPMultiByteHeaderOption {
 
     }
 
-
     /*-- Static Variables ---------------------------------------------------*/
 
     /** */
-    public static final ShortField RouterAlertValue = new ShortField(2); 
+    public static final ShortField RouterAlertValue = new ShortField(2);
 
     /**
      * The router alert option field has the following fixed value: Copy=1,
@@ -92,12 +111,13 @@ public final class IPv4RouterAlertOption extends IPMultiByteHeaderOption {
      * +-+-+-+-+-+-+-+-+
      * </pre>
      */
-    public static final byte OPTION_VALUE = (byte)0x94;
+    public static final byte OPTION_VALUE = (byte) 0x94;
+
     /** */
-    public static final byte OPTION_CODE = (byte)0x14;
+    public static final byte OPTION_CODE = (byte) 0x14;
+
     /** */
     public static final byte OPTION_LENGTH = 4;
-
 
     /*-- Member Functions ---------------------------------------------------*/
 
@@ -105,20 +125,19 @@ public final class IPv4RouterAlertOption extends IPMultiByteHeaderOption {
      * 
      */
     public IPv4RouterAlertOption() {
-        this((short)0);
-        
+        this((short) 0);
+
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId,"IPv4RouterAlertOption.IPv4RouterAlertOption"));
+            logger.finer(Logging.entering(ObjectId, "IPv4RouterAlertOption.IPv4RouterAlertOption"));
         }
     }
 
     /**
-     * 
      * @param routerAlertValue
      */
     public IPv4RouterAlertOption(final short routerAlertValue) {
-        super(OPTION_VALUE,OPTION_LENGTH);
-        
+        super(OPTION_VALUE, OPTION_LENGTH);
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPv4RouterAlertOption.IPv4RouterAlertOption", routerAlertValue));
         }
@@ -131,12 +150,11 @@ public final class IPv4RouterAlertOption extends IPMultiByteHeaderOption {
     }
 
     /**
-     * 
      * @param buffer
      */
     public IPv4RouterAlertOption(final ByteBuffer buffer) {
         super(buffer);
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPv4RouterAlertOption.IPv4RouterAlertOption", buffer));
             logState(logger);
@@ -148,17 +166,15 @@ public final class IPv4RouterAlertOption extends IPMultiByteHeaderOption {
         super.log(logger);
         logState(logger);
     }
-    
+
     /**
-     * 
      * @param logger
      */
     private void logState(final Logger logger) {
-        logger.info(ObjectId + " : router-alert-value="+getRouterAlertValue());
+        logger.info(ObjectId + " : router-alert-value=" + getRouterAlertValue());
     }
 
     /**
-     * 
      * @return
      */
     public short getRouterAlertValue() {
@@ -166,11 +182,10 @@ public final class IPv4RouterAlertOption extends IPMultiByteHeaderOption {
     }
 
     /**
-     * 
      * @param routerAlertValue
      */
     public void setRouterAlertValue(final short routerAlertValue) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPv4RouterAlertOption.setRouterAlertValue", routerAlertValue));
         }
