@@ -12,7 +12,7 @@ import com.larkwoodlabs.service.protocol.text.headers.SimpleMessageHeader;
  * to construct {@link MessageHeader} objects from a raw message header record or
  * a specified name and value.
  *
- * @author gbumgard@cisco.com
+ * @author Greg Bumgardner (gbumgard)
  */
 public class MessageHeaderParser {
 

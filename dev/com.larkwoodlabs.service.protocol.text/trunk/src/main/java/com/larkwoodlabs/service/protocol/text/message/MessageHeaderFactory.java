@@ -5,7 +5,7 @@ package com.larkwoodlabs.service.protocol.text.message;
  * Interface exposed by objects that construct
  * {@link MessageHeader} objects given a name and value.
  *
- * @author gbumgard@cisco.com
+ * @author Greg Bumgardner (gbumgard)
  */
 public interface MessageHeaderFactory {
 
