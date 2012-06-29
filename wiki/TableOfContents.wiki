@@ -11,5 +11,7 @@ Add your content here.
 
 Add your content here.  Format your content with:
   * Text in *bold* or _italic_
+    * More Text
+    * Less Text
   * Headings, paragraphs, and lists
   * Automatic links to other wiki pages
