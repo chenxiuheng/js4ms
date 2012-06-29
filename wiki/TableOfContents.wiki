@@ -1,4 +1,5 @@
 #summary Table Of Contents
 
-* [GettingStarted Getting Started]
-* [FAQ]
+ * [GettingStarted Getting Started]
+ * [FAQ]
+ * [ProjectArtifacts Project Artifacts]
