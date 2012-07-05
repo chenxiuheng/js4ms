@@ -1,17 +1,21 @@
 /*
- * Copyright © 2009-2010 Larkwood Labs Software.
- *
- * Licensed under the Larkwood Labs Software Source Code License, Version 1.0.
- * You may not use this file except in compliance with this License.
- *
- * You may view the Source Code License at
- * http://www.larkwoodlabs.com/source-license
- *
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * 
+ * File: Logging.java (com.larkwoodlabs.util.logging)
+ * 
+ * Copyright © 2009-2012 Cisco Systems, Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- * limitations under the license.
+ * limitations under the License.
  */
 
 package com.larkwoodlabs.util.logging;
@@ -39,9 +43,8 @@ import java.util.logging.Handler;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
-
 public final class Logging {
-    
+
     public static final String LOGGING_PROPERTIES_URL_PROPERTY = "com.larkwoodlabs.logging.properties.url";
 
     public static final int methodStackTraceLevel = determineStackTraceLevel();
@@ -50,7 +53,7 @@ public final class Logging {
         StackTraceElement[] elements = Thread.currentThread().getStackTrace();
         for (int i = 0; i < elements.length; i++) {
             if (elements[i].getMethodName().equals("determineStackTraceLevel")) {
-                return i+1;
+                return i + 1;
             }
         }
         return 0;
@@ -60,7 +63,7 @@ public final class Logging {
         return objectId + " entering " + methodName + "()";
     }
 
-    public static String entering(final String objectId, final String methodName, final Object ...args) {
+    public static String entering(final String objectId, final String methodName, final Object... args) {
         return objectId + " entering " + methodName + Logging.args(args);
     }
 
@@ -83,20 +86,22 @@ public final class Logging {
     }
 
     public static String exit(final Object object, final Object result) {
-        return identify(object)+" "+Thread.currentThread().getStackTrace()[methodStackTraceLevel].getMethodName()+"->"+result;
+        return identify(object) + " " + Thread.currentThread().getStackTrace()[methodStackTraceLevel].getMethodName() + "->"
+               + result;
     }
 
     public static String identify(final Object object) {
-        String id = "00000000"+Integer.toHexString(object.hashCode());
-        return "["+id.substring(id.length()-8)+"]";
+        String id = "00000000" + Integer.toHexString(object.hashCode());
+        return "[" + id.substring(id.length() - 8) + "]";
     }
 
     public static String method() {
         return Thread.currentThread().getStackTrace()[methodStackTraceLevel].getMethodName();
     }
-    
+
     public static String address(final SocketAddress address) {
-        return Logging.address(((InetSocketAddress)address).getAddress().getAddress()) + ":" + ((InetSocketAddress)address).getPort();
+        return Logging.address(((InetSocketAddress) address).getAddress().getAddress()) + ":"
+               + ((InetSocketAddress) address).getPort();
     }
 
     public static String address(final InetSocketAddress address) {
@@ -136,11 +141,11 @@ public final class Logging {
         }
         return result;
     }
-    
-    public static Object[] argArray(Object ... objects) {
+
+    public static Object[] argArray(Object... objects) {
         return objects;
     }
-    
+
     public static String arg(final Object object) {
         if (object == null) return "null";
         Class<?> objectClass = object.getClass();
@@ -149,15 +154,15 @@ public final class Logging {
         }
         else {
             String name = object.getClass().getSimpleName();
-            if (name.length()==0) {
-                name = ((Class<?>)object.getClass().getSuperclass()).getSimpleName();
+            if (name.length() == 0) {
+                name = ((Class<?>) object.getClass().getSuperclass()).getSimpleName();
             }
-            
-            return name+Logging.identify(object);
+
+            return name + Logging.identify(object);
         }
     }
 
-    public static String args(final Object ... objects) {
+    public static String args(final Object... objects) {
         int length = objects.length;
         String result = "(";
         if (length > 0) {
@@ -170,8 +175,7 @@ public final class Logging {
     }
 
     /**
-     * @throws IOException 
-     * 
+     * @throws IOException
      */
     public static void configureLogging() throws IOException {
 
@@ -182,14 +186,13 @@ public final class Logging {
                 configureLogging(new URI(loggingPropertiesUrl));
             }
             catch (URISyntaxException e) {
-               System.out.println("the value assigned to the '"+LOGGING_PROPERTIES_URL_PROPERTY+"' is not a valid URL.");
+                System.out.println("the value assigned to the '" + LOGGING_PROPERTIES_URL_PROPERTY + "' is not a valid URL.");
             }
         }
     }
 
     /**
-     * @throws IOException 
-     * 
+     * @throws IOException
      */
     public static void configureLogging(final URI uri) throws IOException {
 
@@ -201,7 +204,7 @@ public final class Logging {
 
                 try {
 
-                    HttpURLConnection urlConnection = ((HttpURLConnection)uri.toURL().openConnection());
+                    HttpURLConnection urlConnection = ((HttpURLConnection) uri.toURL().openConnection());
 
                     if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
 
@@ -222,8 +225,8 @@ public final class Logging {
                     }
                     else {
                         System.out.println("cannot fetch logging configuration from '" + uri.toString() + "' - server returned " +
-                                           urlConnection.getResponseCode() + " " + 
-                                           urlConnection.getResponseMessage() );
+                                           urlConnection.getResponseCode() + " " +
+                                           urlConnection.getResponseMessage());
                     }
                 }
                 catch (ConnectException e) {
@@ -238,7 +241,7 @@ public final class Logging {
             else if (uri.getScheme().equals("file")) {
 
                 try {
-                    InputStream inputStream = new FileInputStream(URLDecoder.decode(uri.getSchemeSpecificPart(),"UTF8"));
+                    InputStream inputStream = new FileInputStream(URLDecoder.decode(uri.getSchemeSpecificPart(), "UTF8"));
 
                     Properties properties = new Properties();
                     properties.load(inputStream);
@@ -260,43 +263,49 @@ public final class Logging {
 
     public static void configureLogging(Properties loggingProperties) {
 
-        Set<Map.Entry<Object,Object>> entries = loggingProperties.entrySet();
+        Set<Map.Entry<Object, Object>> entries = loggingProperties.entrySet();
 
-        /* This no longer seems to be necessary.
-        // Iterate over configuration properties to locate logger entries and attempt
-        // to use the logger name to load a class to force static logger initialization.
-        // We must do this before loading the configuration into the LogManager so that loggers will
-        // be registered before the LogManager applies any level settings contained in the configuration.
-
-
-        for (Map.Entry<Object,Object> entry : entries) {
-            String key = (String)entry.getKey();
-            if (key.endsWith(".level") && !key.startsWith("java.util.logging")) {
-
-                // Remove the .level part
-                String loggerName = key.substring(0,key.length()-6);
-
-                if (loggerName.length() == 0) {
-                    // Must be the root logger - skip to next
-                    continue;
-                }
-
-                try {
-                    // Try to load class to force static logger instantiation
-                    Class.forName(loggerName, true, Thread.currentThread().getContextClassLoader());
-                }
-                catch (ClassNotFoundException e) {
-                    //System.out.println("cannot initialize logger '"+loggerName+"' - class not found");
-                    continue;
-                }
-            }
-        }
-        */
+        /*
+         * This no longer seems to be necessary.
+         * // Iterate over configuration properties to locate logger entries and attempt
+         * // to use the logger name to load a class to force static logger
+         * initialization.
+         * // We must do this before loading the configuration into the LogManager so that
+         * loggers will
+         * // be registered before the LogManager applies any level settings contained in
+         * the configuration.
+         * 
+         * 
+         * for (Map.Entry<Object,Object> entry : entries) {
+         * String key = (String)entry.getKey();
+         * if (key.endsWith(".level") && !key.startsWith("java.util.logging")) {
+         * 
+         * // Remove the .level part
+         * String loggerName = key.substring(0,key.length()-6);
+         * 
+         * if (loggerName.length() == 0) {
+         * // Must be the root logger - skip to next
+         * continue;
+         * }
+         * 
+         * try {
+         * // Try to load class to force static logger instantiation
+         * Class.forName(loggerName, true,
+         * Thread.currentThread().getContextClassLoader());
+         * }
+         * catch (ClassNotFoundException e) {
+         * //System.out.println("cannot initialize logger '"+loggerName+"' - class not found"
+         * );
+         * continue;
+         * }
+         * }
+         * }
+         */
 
         // Write the properties into a string so they can be loaded by the log manager
         try {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
-            loggingProperties.store(os,"Logging Properties");
+            loggingProperties.store(os, "Logging Properties");
             ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
             LogManager.getLogManager().readConfiguration(is);
         }
@@ -306,41 +315,45 @@ public final class Logging {
         }
 
         // Workaround for class loader issue for custom handlers/formatters
-        // Java logging framework only uses system class loader to load handlers, formatters etc.
-        // Custom handlers/formatters packaged in an application/applet jar will not be loaded.
-        // We can't doing anything about handlers specified in a logging configuration but we
-        // can instantiate formatters and attach them to handlers as specified in the configuration properties.
+        // Java logging framework only uses system class loader to load handlers,
+        // formatters etc.
+        // Custom handlers/formatters packaged in an application/applet jar will not be
+        // loaded.
+        // We can't doing anything about handlers specified in a logging configuration but
+        // we
+        // can instantiate formatters and attach them to handlers as specified in the
+        // configuration properties.
 
         // Create and set formatters that LogManager failed to load.
-        for (Map.Entry<Object,Object> entry : entries) {
-            String key = (String)entry.getKey();
+        for (Map.Entry<Object, Object> entry : entries) {
+            String key = (String) entry.getKey();
             if (key.endsWith(".formatter")) {
 
-                String formatterClassName = (String)entry.getValue();
+                String formatterClassName = (String) entry.getValue();
 
                 Formatter formatter = null;
                 try {
                     Class<?> cls = Class.forName(formatterClassName, true, Thread.currentThread().getContextClassLoader());
                     try {
-                        formatter = (Formatter)cls.newInstance();
+                        formatter = (Formatter) cls.newInstance();
                     }
                     catch (Exception e) {
-                        System.out.println("cannot instantiate formatter class '"+formatterClassName+"': "+e.getMessage());
+                        System.out.println("cannot instantiate formatter class '" + formatterClassName + "': " + e.getMessage());
                         break;
                     }
                 }
                 catch (ClassNotFoundException e) {
-                    System.out.println("formatter class '"+formatterClassName+"' not found");
+                    System.out.println("formatter class '" + formatterClassName + "' not found");
                     continue;
                 }
 
-                String handlerClassName = key.substring(0,key.lastIndexOf('.'));
+                String handlerClassName = key.substring(0, key.lastIndexOf('.'));
 
                 Enumeration<String> iter = LogManager.getLogManager().getLoggerNames();
                 while (iter.hasMoreElements()) {
                     String loggerName = iter.nextElement();
                     Handler[] handlers = Logger.getLogger(loggerName).getHandlers();
-                    for (int index = 0; index < handlers.length; index++ ) {
+                    for (int index = 0; index < handlers.length; index++) {
                         Handler handler = handlers[index];
                         if (handlerClassName.equals(handler.getClass().getName())) {
                             Formatter currentFormatter = handler.getFormatter();
@@ -357,5 +370,5 @@ public final class Logging {
         }
 
     }
-    
+
 }
