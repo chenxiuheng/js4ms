@@ -1,12 +1,12 @@
 /*
  * Copyright © 2009-2010 Larkwood Labs Software.
- *
+ * 
  * Licensed under the Larkwood Labs Software Source Code License, Version 1.0.
  * You may not use this file except in compliance with this License.
- *
+ * 
  * You may view the Source Code License at
  * http://www.larkwoodlabs.com/source-license
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,46 +24,44 @@ import java.util.logging.Logger;
 import com.larkwoodlabs.util.logging.LoggableBase;
 
 /**
- * 
- *
  * @author Gregory Bumgardner
  */
-public abstract class BufferBackedObject extends LoggableBase {
+public abstract class BufferBackedObject
+                extends LoggableBase {
 
     final ByteBuffer buffer;
 
     /**
-     * Creates a slice of the remaining bytes within the buffer, sets the 
-     * limit in the slice to the value specified for the size argument, 
+     * Creates a slice of the remaining bytes within the buffer, sets the
+     * limit in the slice to the value specified for the size argument,
      * and advances the input buffer position by the same amount.
      */
     public static ByteBuffer consume(final ByteBuffer buffer, final int size) {
         ByteBuffer slice = buffer.slice();
-        buffer.position(buffer.position()+size);
+        buffer.position(buffer.position() + size);
         slice.limit(size);
         return slice;
     }
 
     /**
      * Creates a buffer containing bytes read from an InputStream.
-     * @throws IOException 
+     * 
+     * @throws IOException
      */
     public static ByteBuffer consume(final InputStream is, final int size) throws IOException {
         ByteBuffer buffer = ByteBuffer.allocate(size);
-        is.read(buffer.array(),0,size);
+        is.read(buffer.array(), 0, size);
         return buffer;
     }
 
     /**
-     * 
      * @param size
      */
-    public BufferBackedObject(final int size) { 
+    public BufferBackedObject(final int size) {
         this.buffer = ByteBuffer.allocate(size);
     }
-    
+
     /**
-     * 
      * @param buffer
      */
     public BufferBackedObject(final ByteBuffer buffer) {
@@ -71,7 +69,6 @@ public abstract class BufferBackedObject extends LoggableBase {
     }
 
     /**
-     * 
      * @param buffer
      * @param size
      */
@@ -80,10 +77,9 @@ public abstract class BufferBackedObject extends LoggableBase {
     }
 
     /**
-     * 
      * @param buffer
      * @param size
-     * @throws IOException 
+     * @throws IOException
      */
     public BufferBackedObject(final InputStream is, final int size) throws IOException {
         this.buffer = consume(is, size);
@@ -91,6 +87,7 @@ public abstract class BufferBackedObject extends LoggableBase {
 
     /**
      * Returns a duplicate of the ByteBuffer instance referenced by this object.
+     * 
      * @return
      */
     public final ByteBuffer getBuffer() {
@@ -99,6 +96,7 @@ public abstract class BufferBackedObject extends LoggableBase {
 
     /**
      * Returns the actual ByteBuffer instance referenced by this object.
+     * 
      * @return
      */
     protected final ByteBuffer getBufferInternal() {
@@ -106,7 +104,6 @@ public abstract class BufferBackedObject extends LoggableBase {
     }
 
     /**
-     * 
      * @param buffer
      */
     public void writeTo(final ByteBuffer buffer) {
@@ -114,7 +111,7 @@ public abstract class BufferBackedObject extends LoggableBase {
         buffer.put(this.buffer);
         this.buffer.rewind();
     }
-    
+
     @Override
     public void log(final Logger logger) {
         super.log(logger);
@@ -123,15 +120,14 @@ public abstract class BufferBackedObject extends LoggableBase {
 
     /**
      * Logs member variables declared or maintained by this class.
+     * 
      * @param logger
      */
     private void logState(final Logger logger) {
-        logger.info(ObjectId +
-                    " : buffer array-offset=" + this.buffer.arrayOffset() +
-                    ", position=" + this.buffer.position() +
-                    ", remaining=" + this.buffer.remaining() +
-                    ", limit=" + this.buffer.limit() +
-                    ", capacity=" + this.buffer.capacity());
+        logger.info(this.log.msg(": buffer array-offset=" + this.buffer.arrayOffset() +
+                                 ", position=" + this.buffer.position() +
+                                 ", remaining=" + this.buffer.remaining() +
+                                 ", limit=" + this.buffer.limit() +
+                                 ", capacity=" + this.buffer.capacity()));
     }
-    
 }
