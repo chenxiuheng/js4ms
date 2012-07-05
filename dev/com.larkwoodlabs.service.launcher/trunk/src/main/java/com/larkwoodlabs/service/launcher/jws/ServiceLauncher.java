@@ -25,7 +25,8 @@ import com.larkwoodlabs.util.logging.Log;
  */
 public class ServiceLauncher {
 
-    public interface DisconnectListener {
+    public interface Listener {
+        void onConnect();
         void onDisconnect();
     }
 
@@ -64,7 +65,7 @@ public class ServiceLauncher {
     private int retryCount;
     private int retryInterval;
 
-    private final DisconnectListener listener;
+    private final Listener listener;
 
     private Socket socket;
 
@@ -89,7 +90,7 @@ public class ServiceLauncher {
                            final boolean useKeepAlive,
                            final int retryCount,
                            final int retryInterval,
-                           final DisconnectListener listener,
+                           final Listener listener,
                            final Properties serviceProperties) {
 
         this.serviceProperties = serviceProperties;
@@ -221,6 +222,7 @@ public class ServiceLauncher {
                 logger.fine(log.msg("connected to running service instance"));
                 this.isConnected = true;
                 if (this.listener != null) {
+                    this.listener.onConnect();
                     Thread thread = new Thread() {
                         @Override
                         public void run() {
