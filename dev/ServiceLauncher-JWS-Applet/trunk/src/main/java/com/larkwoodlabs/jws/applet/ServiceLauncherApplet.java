@@ -52,6 +52,7 @@ public class ServiceLauncherApplet extends Applet {
     private static final String SERVICE_PROPERTIES_PARAM = "ServiceProperties";
     private static final String LOGGING_PROPERTIES_URI_PARAM = "LoggingPropertiesUri";
     private static final String ON_ERROR_URL_PARAM = "OnErrorUrl";
+    private static final String ON_CONNECT_URL_PARAM = "OnConnectUrl";
     private static final String ON_DISCONNECT_URL_PARAM = "OnDisconnectUrl";
 
     private static final String SERVICE_PORT_PROPERTY = "com.larkwoodlabs.service.socket.port";
@@ -119,26 +120,49 @@ public class ServiceLauncherApplet extends Applet {
 
         logger.finer(log.entry("init"));
 
-        ServiceLauncher.DisconnectListener listener = null;
+        ServiceLauncher.Listener listener = null;
 
+        String onConnectUrl = getParameter(ON_CONNECT_URL_PARAM);
         String onDisconnectUrl = getParameter(ON_DISCONNECT_URL_PARAM);
-        if (onDisconnectUrl != null) {
+        if (onConnectUrl != null || onDisconnectUrl != null) {
+            URL connectUrl = null;
             try {
-                final URL url = new URL(onDisconnectUrl);
-                listener = new ServiceLauncher.DisconnectListener() {
-
-                    @Override
-                    public void onDisconnect() {
-                        getAppletContext().showDocument(url);
-                    }
-                };
-
+                connectUrl = onConnectUrl != null ? new URL(onConnectUrl) : null;
+            }
+            catch (MalformedURLException e) {
+                String message = "applet parameter '" + ON_CONNECT_URL_PARAM + "' is not a valid URL";
+                logger.warning(log.msg(message));
+                throw new IllegalArgumentException(message, e);
+            }
+            URL disconnectUrl = null;
+            try {
+                disconnectUrl = onDisconnectUrl != null ? new URL(onDisconnectUrl) : null;
             }
             catch (MalformedURLException e) {
                 String message = "applet parameter '" + ON_DISCONNECT_URL_PARAM + "' is not a valid URL";
                 logger.warning(log.msg(message));
                 throw new IllegalArgumentException(message, e);
             }
+            final URL onConnect = connectUrl;
+            final URL onDisconnect = disconnectUrl;
+            listener = new ServiceLauncher.Listener() {
+
+                @Override
+                public void onConnect() {
+                    if (onConnect != null) {
+                        getAppletContext().showDocument(onConnect);
+                    }
+                }
+
+                @Override
+                public void onDisconnect() {
+                    if (onDisconnect != null) {
+                        getAppletContext().showDocument(onDisconnect);
+                    }
+                }
+
+            };
+
         }
 
         this.launcher = new ServiceLauncher(getServiceJnlpUrl(),
