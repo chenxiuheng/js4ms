@@ -1,17 +1,21 @@
 /*
- * Copyright © 2009-2010 Larkwood Labs Software.
- *
- * Licensed under the Larkwood Labs Software Source Code License, Version 1.0.
- * You may not use this file except in compliance with this License.
- *
- * You may view the Source Code License at
- * http://www.larkwoodlabs.com/source-license
- *
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * 
+ * File: TimedObjectPool.java (com.larkwoodlabs.util.pool)
+ * 
+ * Copyright © 2009-2012 Cisco Systems, Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- * limitations under the license.
+ * limitations under the License.
  */
 
 package com.larkwoodlabs.util.pool;
@@ -25,13 +29,12 @@ import com.larkwoodlabs.util.logging.Logging;
 import com.larkwoodlabs.util.task.TimerService;
 
 /**
- * 
- *
  * @param <T>
- *
  * @author Gregory Bumgardner
  */
-public class TimedObjectPool<T> extends TimerTask implements ObjectPool<T> {
+public class TimedObjectPool<T>
+                extends TimerTask
+                implements ObjectPool<T> {
 
     /*-- Static Variables ---------------------------------------------------*/
 
@@ -39,12 +42,17 @@ public class TimedObjectPool<T> extends TimerTask implements ObjectPool<T> {
 
     /*-- Inner Classes ---------------------------------------------------*/
 
-    public static class Factory<ObjectType> implements ObjectPoolFactory<ObjectType> {
+    public static class Factory<ObjectType>
+                    implements ObjectPoolFactory<ObjectType> {
 
         private TimerService timerService;
+
         private int minInactive;
+
         private int maxInactive;
+
         private int maxActive;
+
         private long maxAge;
 
         public Factory(TimerService timerService, long maxAge) {
@@ -61,16 +69,21 @@ public class TimedObjectPool<T> extends TimerTask implements ObjectPool<T> {
 
         @Override
         public ObjectPool<ObjectType> makePool(PooledObjectFactory<ObjectType> objectFactory) {
-            TimedObjectPool<ObjectType> pool = new TimedObjectPool<ObjectType>(objectFactory, this.minInactive, this.maxInactive, this.maxActive, this.maxAge);
+            TimedObjectPool<ObjectType> pool = new TimedObjectPool<ObjectType>(objectFactory,
+                                                                               this.minInactive,
+                                                                               this.maxInactive,
+                                                                               this.maxActive,
+                                                                               this.maxAge);
             this.timerService.add(pool);
             return pool;
         }
-        
+
     }
 
     static class Holder<T> {
 
         private T object;
+
         private long deactivationTimeNanos;
 
         Holder(T object) {
@@ -91,36 +104,38 @@ public class TimedObjectPool<T> extends TimerTask implements ObjectPool<T> {
         }
 
         boolean isExpired(long maxAge) {
-            return this.object == null || getAge() > maxAge; 
+            return this.object == null || getAge() > maxAge;
         }
-        
+
         long getAge() {
             return (System.nanoTime() - this.deactivationTimeNanos) / 100000;
         }
     }
-    
-    public static class HolderFactory<T> extends PooledObjectFactory<Holder<T>> {
+
+    public static class HolderFactory<T>
+                    extends PooledObjectFactory<Holder<T>> {
 
         public static final Logger logger = Logger.getLogger(HolderFactory.class.getName());
 
         private PooledObjectFactory<T> factory;
-        private HashMap<T,Holder<T>> holders = new HashMap<T,Holder<T>>();
-        
+
+        private HashMap<T, Holder<T>> holders = new HashMap<T, Holder<T>>();
+
         public HolderFactory(PooledObjectFactory<T> factory) {
             this.factory = factory;
         }
 
         @Override
         public void activate(Holder<T> holder) throws Exception {
-            if (logger.isLoggable(Level.FINE)) logger.fine(Logging.entry(this,holder));
+            if (logger.isLoggable(Level.FINE)) logger.fine(Logging.entry(this, holder));
             this.factory.activate(holder.getObject());
         }
 
         public synchronized Holder<T> create(T object) {
-            if (logger.isLoggable(Level.FINE)) logger.fine(Logging.entry(this,object));
+            if (logger.isLoggable(Level.FINE)) logger.fine(Logging.entry(this, object));
             Holder<T> holder = new Holder<T>(object);
             this.holders.put(holder.getObject(), holder);
-            if (logger.isLoggable(Level.FINE)) logger.fine(Logging.exit(this,holder));
+            if (logger.isLoggable(Level.FINE)) logger.fine(Logging.exit(this, holder));
             return holder;
         }
 
@@ -129,20 +144,20 @@ public class TimedObjectPool<T> extends TimerTask implements ObjectPool<T> {
             if (logger.isLoggable(Level.FINE)) logger.fine(Logging.entry(this));
             Holder<T> holder = new Holder<T>(this.factory.create());
             this.holders.put(holder.getObject(), holder);
-            if (logger.isLoggable(Level.FINE)) logger.fine(Logging.exit(this,holder));
+            if (logger.isLoggable(Level.FINE)) logger.fine(Logging.exit(this, holder));
             return holder;
         }
 
         @Override
         public void deactivate(Holder<T> holder) throws Exception {
-            if (logger.isLoggable(Level.FINE)) logger.fine(Logging.entry(this,holder));
+            if (logger.isLoggable(Level.FINE)) logger.fine(Logging.entry(this, holder));
             this.factory.deactivate(holder.getObject());
             holder.deactivate();
         }
 
         @Override
         public synchronized void destroy(Holder<T> holder) throws Exception {
-            if (logger.isLoggable(Level.FINE)) logger.fine(Logging.entry(this,holder));
+            if (logger.isLoggable(Level.FINE)) logger.fine(Logging.entry(this, holder));
             this.holders.remove(holder.getObject());
             this.factory.destroy(holder.getObject());
             holder.destroy();
@@ -150,10 +165,10 @@ public class TimedObjectPool<T> extends TimerTask implements ObjectPool<T> {
 
         @Override
         public void validate(Holder<T> holder) throws Exception {
-            if (logger.isLoggable(Level.FINE)) logger.fine(Logging.entry(this,holder));
+            if (logger.isLoggable(Level.FINE)) logger.fine(Logging.entry(this, holder));
             this.factory.validate(holder.getObject());
         }
-        
+
         public Holder<T> find(T object) {
             return this.holders.get(object);
         }
@@ -163,7 +178,8 @@ public class TimedObjectPool<T> extends TimerTask implements ObjectPool<T> {
         }
     }
 
-    static class ExpirationTest<T> implements Condition<Holder<T>> {
+    static class ExpirationTest<T>
+                    implements Condition<Holder<T>> {
 
         private long maxAge;
 
@@ -183,9 +199,8 @@ public class TimedObjectPool<T> extends TimerTask implements ObjectPool<T> {
         public boolean test(Holder<T> object) {
             return object.isExpired(this.maxAge);
         }
-        
-    }
 
+    }
 
     /*-- Member Variables ---------------------------------------------------*/
 
@@ -195,34 +210,48 @@ public class TimedObjectPool<T> extends TimerTask implements ObjectPool<T> {
 
     private ExpirationTest<T> expirationTest;
 
-
     /*-- Member Functions ---------------------------------------------------*/
 
     /**
      * Constructs an object pool that reaps "expired" inactive objects.
      * The pool uses the <code>factory</code> to construct objects.
      * The pool retains a minimum of zero inactive objects.
-     * @param factory - an object factory
-     * @param maxAge - age at which inactive objects will be reaped from the object pool
+     * 
+     * @param factory
+     *            - an object factory
+     * @param maxAge
+     *            - age at which inactive objects will be reaped from the object pool
      */
     public TimedObjectPool(PooledObjectFactory<T> factory, long maxAge) {
         this(factory, 0, Integer.MAX_VALUE, Integer.MAX_VALUE, maxAge);
     }
 
     /**
-     * Constructs an object pool with that limits the number of active objects and number and age of inactive objects.
-     * The pool uses the <code>factory</code> to construct up to <code>maxActive</code> objects.
-     * The pool retains up to <code>maxInactive</code> objects and a minimum of <code>minInactive</code> inactive objects.
-     * The acquire method blocks until an object is released if there are already <code>maxActive</code> number of active objects.
-     * The release method destroys an object if there are already a <code>maxInactive</code> number of inactive objects.
-     * @param factory - an object factory
-     * @param minInactive - minimum number of inactive objects that will be retained by the pool by the {@link #reap(Condition)} method.
-     * @param maxInactive - maximum number of inactive objects that will be retained by the pool.
-     * @param maxActive - maximum number of active objects that may be acquired from the pool.
-     * @param maxAge - age at which inactive objects will be reaped from the object pool
+     * Constructs an object pool with that limits the number of active objects and number
+     * and age of inactive objects.
+     * The pool uses the <code>factory</code> to construct up to <code>maxActive</code>
+     * objects.
+     * The pool retains up to <code>maxInactive</code> objects and a minimum of
+     * <code>minInactive</code> inactive objects.
+     * The acquire method blocks until an object is released if there are already
+     * <code>maxActive</code> number of active objects.
+     * The release method destroys an object if there are already a
+     * <code>maxInactive</code> number of inactive objects.
+     * 
+     * @param factory
+     *            - an object factory
+     * @param minInactive
+     *            - minimum number of inactive objects that will be retained by the pool
+     *            by the {@link #reap(Condition)} method.
+     * @param maxInactive
+     *            - maximum number of inactive objects that will be retained by the pool.
+     * @param maxActive
+     *            - maximum number of active objects that may be acquired from the pool.
+     * @param maxAge
+     *            - age at which inactive objects will be reaped from the object pool
      */
     public TimedObjectPool(PooledObjectFactory<T> factory, int minInactive, int maxInactive, int maxActive, long maxAge) {
-        if (logger.isLoggable(Level.FINE)) logger.fine(Logging.entry(this,factory,minInactive,maxInactive,maxActive,maxAge));
+        if (logger.isLoggable(Level.FINE)) logger.fine(Logging.entry(this, factory, minInactive, maxInactive, maxActive, maxAge));
         this.factory = new HolderFactory<T>(factory);
         this.pool = new GenericObjectPool<Holder<T>>(this.factory, minInactive, maxInactive, maxActive);
         this.expirationTest = new ExpirationTest<T>(maxAge);
@@ -324,7 +353,7 @@ public class TimedObjectPool<T> extends TimerTask implements ObjectPool<T> {
     public int getActiveCount() {
         return this.pool.getActiveCount();
     }
-    
+
     public int getActiveCapacity() {
         return this.pool.getActiveCapacity();
     }
@@ -339,7 +368,8 @@ public class TimedObjectPool<T> extends TimerTask implements ObjectPool<T> {
         if (logger.isLoggable(Level.FINE)) logger.fine(Logging.entry(this));
         try {
             reap();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
