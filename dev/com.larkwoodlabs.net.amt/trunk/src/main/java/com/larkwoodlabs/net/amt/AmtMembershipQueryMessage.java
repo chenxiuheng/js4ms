@@ -330,11 +330,11 @@ public final class AmtMembershipQueryMessage
         super(BASE_MESSAGE_LENGTH, MESSAGE_TYPE, queryPacket);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId,
-                                          "AmtMembershipQueryMessage.AmtMembershipQueryMessage",
-                                          Logging.mac(responseMac),
-                                          requestNonce,
-                                          queryPacket));
+            logger.finer(this.log.entry(
+                                        "AmtMembershipQueryMessage.AmtMembershipQueryMessage",
+                                        Logging.mac(responseMac),
+                                        requestNonce,
+                                        queryPacket));
         }
 
         GatewayAddressFlag.set(getBufferInternal(), gatewayAddress != null);
@@ -360,7 +360,7 @@ public final class AmtMembershipQueryMessage
         super(buffer, BASE_MESSAGE_LENGTH);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtMembershipQueryMessage.AmtMembershipQueryMessage", buffer));
+            logger.finer(this.log.entry("AmtMembershipQueryMessage.AmtMembershipQueryMessage", buffer));
             logState(logger);
         }
     }
@@ -378,15 +378,15 @@ public final class AmtMembershipQueryMessage
      *            The logger that will be used to generate the log messages.
      */
     private void logState(final Logger logger) {
-        logger.info(ObjectId + " : response-MAC=" + Logging.mac(getResponseMac()));
-        logger.info(ObjectId + " : request-nonce=" + getRequestNonce());
+        logger.info(this.log.msg(": response-MAC=" + Logging.mac(getResponseMac())));
+        logger.info(this.log.msg(": request-nonce=" + getRequestNonce()));
     }
 
     @Override
     public final void writeTo(final ByteBuffer buffer) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtMembershipQueryMessage.writeTo", buffer));
+            logger.finer(this.log.entry("AmtMembershipQueryMessage.writeTo", buffer));
         }
         super.writeTo(buffer);
         if (this.unparsedPacket == null && this.gatewayAddress != null) {
@@ -456,7 +456,7 @@ public final class AmtMembershipQueryMessage
     protected void setGatewayAddressFlag(final boolean hasGatewayAddress) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtMembershipQueryMessage.setGatewayAddressFlag", hasGatewayAddress));
+            logger.finer(this.log.entry("AmtMembershipQueryMessage.setGatewayAddressFlag", hasGatewayAddress));
         }
 
         GatewayAddressFlag.set(getBufferInternal(), hasGatewayAddress);
@@ -480,7 +480,7 @@ public final class AmtMembershipQueryMessage
     public void setResponseMac(final byte[] responseMac) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtMembershipQueryMessage.setResponseMac", Logging.mac(responseMac)));
+            logger.finer(this.log.entry("AmtMembershipQueryMessage.setResponseMac", Logging.mac(responseMac)));
         }
 
         ResponseMac.set(getBufferInternal(), responseMac);
@@ -505,7 +505,7 @@ public final class AmtMembershipQueryMessage
     public void setRequestNonce(final int requestNonce) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtMembershipQueryMessage.setRequestNonce", requestNonce));
+            logger.finer(this.log.entry("AmtMembershipQueryMessage.setRequestNonce", requestNonce));
         }
 
         RequestNonce.set(getBufferInternal(), requestNonce);

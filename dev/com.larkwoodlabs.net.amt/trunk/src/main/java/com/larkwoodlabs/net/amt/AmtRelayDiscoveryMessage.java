@@ -26,7 +26,6 @@ import java.util.logging.Logger;
 
 import com.larkwoodlabs.common.exceptions.ParseException;
 import com.larkwoodlabs.util.buffer.fields.IntegerField;
-import com.larkwoodlabs.util.logging.Logging;
 
 /**
  * Represents an AMT Relay Discovery message.
@@ -157,7 +156,7 @@ public final class AmtRelayDiscoveryMessage
         this(createNonce());
 
         if (logger.isLoggable(Level.FINE)) {
-            logger.fine(Logging.entering(ObjectId, "AmtRelayDiscoveryMessage.AmtRelayDiscoveryMessage"));
+            logger.fine(this.log.entry("AmtRelayDiscoveryMessage.AmtRelayDiscoveryMessage"));
         }
     }
 
@@ -171,7 +170,7 @@ public final class AmtRelayDiscoveryMessage
         super(BASE_MESSAGE_LENGTH, MESSAGE_TYPE);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtRelayDiscoveryMessage.AmtRelayDiscoveryMessage", discoveryNonce));
+            logger.finer(this.log.entry("AmtRelayDiscoveryMessage.AmtRelayDiscoveryMessage", discoveryNonce));
         }
 
         setDiscoveryNonce(discoveryNonce);
@@ -194,7 +193,7 @@ public final class AmtRelayDiscoveryMessage
         super(consume(buffer, BASE_MESSAGE_LENGTH));
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtRelayDiscoveryMessage.AmtRelayDiscoveryMessage", buffer));
+            logger.finer(this.log.entry("AmtRelayDiscoveryMessage.AmtRelayDiscoveryMessage", buffer));
             logState(logger);
         }
     }
@@ -209,7 +208,7 @@ public final class AmtRelayDiscoveryMessage
      * @param logger
      */
     private void logState(Logger logger) {
-        logger.info(ObjectId + " : discovery-nonce=" + getDiscoveryNonce());
+        logger.info(this.log.msg(": discovery-nonce=" + getDiscoveryNonce()));
     }
 
     @Override
@@ -240,7 +239,7 @@ public final class AmtRelayDiscoveryMessage
     public void setDiscoveryNonce(int discoveryNonce) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtRelayDiscoveryMessage.setDiscoveryNonce", discoveryNonce));
+            logger.finer(this.log.entry("AmtRelayDiscoveryMessage.setDiscoveryNonce", discoveryNonce));
         }
 
         RequestNonce.set(getBufferInternal(), discoveryNonce);

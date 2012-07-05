@@ -222,11 +222,11 @@ public final class AmtTeardownMessage
         super(MESSAGE_LENGTH, MESSAGE_TYPE);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId,
-                                          "AmtTeardownMessage.AmtTeardownMessage",
-                                          Logging.mac(responseMac),
-                                          requestNonce,
-                                          Logging.address(gatewayAddress)));
+            logger.finer(this.log.entry(
+                                        "AmtTeardownMessage.AmtTeardownMessage",
+                                        Logging.mac(responseMac),
+                                        requestNonce,
+                                        Logging.address(gatewayAddress)));
         }
 
         setResponseMac(responseMac);
@@ -251,7 +251,7 @@ public final class AmtTeardownMessage
         super(consume(buffer, MESSAGE_LENGTH));
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtTeardownMessage.AmtTeardownMessage", buffer));
+            logger.finer(this.log.entry("AmtTeardownMessage.AmtTeardownMessage", buffer));
             logState(logger);
         }
     }
@@ -269,9 +269,9 @@ public final class AmtTeardownMessage
      *            The logger that will be used to generate the log messages.
      */
     private void logState(final Logger logger) {
-        logger.info(ObjectId + " : response-MAC=" + Logging.mac(getResponseMac()));
-        logger.info(ObjectId + " : request-nonce=" + getRequestNonce());
-        logger.info(ObjectId + " : gateway-address=" + Logging.address(getGatewayAddress()));
+        logger.info(this.log.msg(": response-MAC=" + Logging.mac(getResponseMac())));
+        logger.info(this.log.msg(": request-nonce=" + getRequestNonce()));
+        logger.info(this.log.msg(": gateway-address=" + Logging.address(getGatewayAddress())));
     }
 
     @Override
@@ -297,7 +297,7 @@ public final class AmtTeardownMessage
     public void setResponseMac(final byte[] responseMac) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtTeardownMessage.setResponseMac", Logging.mac(responseMac)));
+            logger.finer(this.log.entry("AmtTeardownMessage.setResponseMac", Logging.mac(responseMac)));
         }
 
         ResponseMac.set(getBufferInternal(), responseMac);
@@ -323,7 +323,7 @@ public final class AmtTeardownMessage
     public void setRequestNonce(final int requestNonce) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtTeardownMessage.setRequestNonce", requestNonce));
+            logger.finer(this.log.entry("AmtTeardownMessage.setRequestNonce", requestNonce));
         }
 
         RequestNonce.set(getBufferInternal(), requestNonce);
@@ -356,7 +356,7 @@ public final class AmtTeardownMessage
     public void setGatewayAddress(final InetSocketAddress gatewayAddress) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtTeardownMessage.setGatewayAddress", gatewayAddress));
+            logger.finer(this.log.entry("AmtTeardownMessage.setGatewayAddress", gatewayAddress));
         }
 
         short port = (short) gatewayAddress.getPort();

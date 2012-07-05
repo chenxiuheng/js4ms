@@ -28,7 +28,6 @@ import com.larkwoodlabs.net.KeyedApplicationMessage;
 import com.larkwoodlabs.util.buffer.BufferBackedObject;
 import com.larkwoodlabs.util.buffer.fields.ByteField;
 import com.larkwoodlabs.util.buffer.fields.SelectorField;
-import com.larkwoodlabs.util.logging.Logging;
 
 /**
  * Base class for all AMT message classes.
@@ -76,8 +75,9 @@ public abstract class AmtMessage
     /*-- Static Functions ---------------------------------------------------*/
 
     /**
-     * @return A parser that constructs an AMT messages object from the contents of a ByteBuffer.
-     * Used to parse messages sent from a relay to a gateway.
+     * @return A parser that constructs an AMT messages object from the contents of a
+     *         ByteBuffer.
+     *         Used to parse messages sent from a relay to a gateway.
      */
     public final static AmtMessage.Parser constructAmtGatewayParser() {
         AmtMessage.Parser parser = new AmtMessage.Parser();
@@ -88,8 +88,9 @@ public abstract class AmtMessage
     }
 
     /**
-     * @return A parser that constructs an AMT message object from the contents of a ByteBuffer.
-     * Used to parse messages sent from a gateway to a relay.
+     * @return A parser that constructs an AMT message object from the contents of a
+     *         ByteBuffer.
+     *         Used to parse messages sent from a gateway to a relay.
      */
     public final static AmtMessage.Parser constructAmtRelayParser() {
         AmtMessage.Parser parser = new AmtMessage.Parser();
@@ -99,7 +100,8 @@ public abstract class AmtMessage
     }
 
     /**
-     * @return A parser that constructs an AMT message object from the contents of a ByteBuffer.
+     * @return A parser that constructs an AMT message object from the contents of a
+     *         ByteBuffer.
      */
     public final static AmtMessage.Parser constructAmtMessageParser() {
         AmtMessage.Parser parser = new AmtMessage.Parser();
@@ -115,14 +117,17 @@ public abstract class AmtMessage
 
     /**
      * Constructs an instance with the specified message size and type.
-     * @param size The number of bytes that representing the fixed portion of the message.
-     * @param type The message type.
+     * 
+     * @param size
+     *            The number of bytes that representing the fixed portion of the message.
+     * @param type
+     *            The message type.
      */
     protected AmtMessage(final int size, final byte type) {
         super(size);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtMessage.AmtMessage", size, type));
+            logger.finer(this.log.entry("AmtMessage.AmtMessage", size, type));
         }
 
         setType(type);
@@ -138,7 +143,7 @@ public abstract class AmtMessage
     protected AmtMessage(final ByteBuffer buffer) {
         super(buffer);
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtMessage.AmtMessage", buffer));
+            logger.finer(this.log.entry("AmtMessage.AmtMessage", buffer));
             logState(logger);
         }
     }
@@ -160,8 +165,8 @@ public abstract class AmtMessage
      * @param logger
      */
     private void logState(final Logger logger) {
-        logger.info(ObjectId + " : message-length=" + getTotalLength());
-        logger.info(ObjectId + " : type=" + getType());
+        logger.info(this.log.msg(": message-length=" + getTotalLength()));
+        logger.info(this.log.msg(": type=" + getType()));
     }
 
     @Override
@@ -175,7 +180,7 @@ public abstract class AmtMessage
     protected final void setType(final byte type) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.fine(Logging.entering(ObjectId, "AmtMessage.setType", type));
+            logger.fine(this.log.entry("AmtMessage.setType", type));
         }
 
         MessageType.set(getBufferInternal(), type);

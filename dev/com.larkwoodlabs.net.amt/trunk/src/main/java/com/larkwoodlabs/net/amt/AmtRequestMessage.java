@@ -27,7 +27,6 @@ import java.util.logging.Logger;
 import com.larkwoodlabs.common.exceptions.ParseException;
 import com.larkwoodlabs.util.buffer.fields.BooleanField;
 import com.larkwoodlabs.util.buffer.fields.IntegerField;
-import com.larkwoodlabs.util.logging.Logging;
 
 /**
  * Represents an AMT Request message.
@@ -169,7 +168,7 @@ public final class AmtRequestMessage
         this(getNextRequestNonce(), requestMLD);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtRequestMessage.AmtRequestMessage"));
+            logger.finer(this.log.entry("AmtRequestMessage.AmtRequestMessage"));
         }
     }
 
@@ -183,7 +182,7 @@ public final class AmtRequestMessage
         super(MESSAGE_LENGTH, MESSAGE_TYPE);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtRequestMessage.AmtRequestMessage", requestNonce));
+            logger.finer(this.log.entry("AmtRequestMessage.AmtRequestMessage", requestNonce));
         }
 
         setRequestNonce(requestNonce);
@@ -205,7 +204,7 @@ public final class AmtRequestMessage
         super(consume(buffer, MESSAGE_LENGTH));
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtRequestMessage.AmtRequestMessage", buffer));
+            logger.finer(this.log.entry("AmtRequestMessage.AmtRequestMessage", buffer));
             logState(logger);
         }
     }
@@ -223,7 +222,7 @@ public final class AmtRequestMessage
      *            The logger to use when generating log messages.
      */
     private void logState(Logger logger) {
-        logger.info(ObjectId + " : request-nonce=" + getRequestNonce());
+        logger.info(this.log.msg("request-nonce=" + getRequestNonce()));
     }
 
     @Override
@@ -275,7 +274,7 @@ public final class AmtRequestMessage
     public void setRequestNonce(int requestNonce) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtRequestMessage.setRequestNonce", requestNonce));
+            logger.finer(this.log.entry("AmtRequestMessage.setRequestNonce", requestNonce));
         }
 
         RequestNonce.set(getBufferInternal(), requestNonce);

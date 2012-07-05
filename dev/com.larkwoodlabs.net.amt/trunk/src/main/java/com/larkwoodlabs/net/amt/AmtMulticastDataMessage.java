@@ -28,7 +28,6 @@ import com.larkwoodlabs.net.ip.IPPacket;
 import com.larkwoodlabs.net.ip.ipv4.IPv4Packet;
 import com.larkwoodlabs.net.ip.ipv6.IPv6Packet;
 import com.larkwoodlabs.util.buffer.fields.ByteField;
-import com.larkwoodlabs.util.logging.Logging;
 
 /**
  * Represents an AMT Multicast Data message.
@@ -201,7 +200,7 @@ public final class AmtMulticastDataMessage
         super(BASE_MESSAGE_LENGTH, MESSAGE_TYPE, dataPacket);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtMulticastDataMessage.AmtMulticastDataMessage", dataPacket));
+            logger.finer(this.log.entry("AmtMulticastDataMessage.AmtMulticastDataMessage", dataPacket));
         }
     }
 
@@ -218,7 +217,7 @@ public final class AmtMulticastDataMessage
         super(buffer, BASE_MESSAGE_LENGTH);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtMulticastDataMessage.AmtMulticastDataMessage", buffer));
+            logger.finer(this.log.entry("AmtMulticastDataMessage.AmtMulticastDataMessage", buffer));
         }
     }
 

@@ -173,10 +173,9 @@ public final class AmtRelayAdvertisementMessage
         super(BASE_MESSAGE_LENGTH + relayAddress.length, MESSAGE_TYPE);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId,
-                                          "AmtRelayAdvertisementMessage.AmtRelayAdvertisementMessage",
-                                          discoveryNonce,
-                                          Logging.address(relayAddress)));
+            logger.finer(this.log.entry("AmtRelayAdvertisementMessage.AmtRelayAdvertisementMessage",
+                                        discoveryNonce,
+                                        Logging.address(relayAddress)));
         }
 
         setDiscoveryNonce(discoveryNonce);
@@ -201,7 +200,7 @@ public final class AmtRelayAdvertisementMessage
         super(consume(buffer, buffer.limit() > MIN_MESSAGE_LENGTH ? MAX_MESSAGE_LENGTH : MIN_MESSAGE_LENGTH));
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtRelayAdvertisementMessage.AmtRelayAdvertisementMessage", buffer));
+            logger.finer(this.log.entry("AmtRelayAdvertisementMessage.AmtRelayAdvertisementMessage", buffer));
             logState(logger);
         }
     }
@@ -218,8 +217,8 @@ public final class AmtRelayAdvertisementMessage
      * @param logger
      */
     private void logState(Logger logger) {
-        logger.info(ObjectId + " : discovery-nonce=" + getDiscoveryNonce());
-        logger.info(ObjectId + " : relay-address=" + Logging.address(getRelayAddress()));
+        logger.info(this.log.msg(": discovery-nonce=" + getDiscoveryNonce()));
+        logger.info(this.log.msg(": relay-address=" + Logging.address(getRelayAddress())));
     }
 
     @Override
@@ -251,7 +250,7 @@ public final class AmtRelayAdvertisementMessage
     public void setDiscoveryNonce(int discoveryNonce) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtRelayAdvertisementMessage.setDiscoveryNonce", discoveryNonce));
+            logger.finer(this.log.entry("AmtRelayAdvertisementMessage.setDiscoveryNonce", discoveryNonce));
         }
 
         DiscoveryNonce.set(getBufferInternal(), discoveryNonce);
@@ -292,7 +291,7 @@ public final class AmtRelayAdvertisementMessage
     public void setRelayAddress(byte[] relayAddress) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtRelayAdvertisementMessage.setRelayAddress", Logging.address(relayAddress)));
+            logger.finer(this.log.entry("AmtRelayAdvertisementMessage.setRelayAddress", Logging.address(relayAddress)));
         }
 
         // Precondition.checkAddress(relayAddress);

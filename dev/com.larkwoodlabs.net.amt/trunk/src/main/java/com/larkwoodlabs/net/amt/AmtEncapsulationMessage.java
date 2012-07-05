@@ -111,7 +111,7 @@ abstract class AmtEncapsulationMessage
         super(size, type);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtEncapsulationMessage.AmtEncapsulationMessage", size, type, packet));
+            logger.finer(this.log.entry("AmtEncapsulationMessage.AmtEncapsulationMessage", size, type, packet));
         }
 
         setType(type);
@@ -131,7 +131,7 @@ abstract class AmtEncapsulationMessage
         super(consume(buffer, baseMessageLength));
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtEncapsulationMessage.AmtEncapsulationMessage", buffer, baseMessageLength));
+            logger.finer(this.log.entry("AmtEncapsulationMessage.AmtEncapsulationMessage", buffer, baseMessageLength));
         }
         this.unparsedPacket = consume(buffer, buffer.remaining());
 
@@ -153,18 +153,18 @@ abstract class AmtEncapsulationMessage
      *            The logger that will be used to generate the log messages.
      */
     private void logState(final Logger logger) {
-        logger.info(ObjectId + " ----> start encapsulated IP packet");
+        logger.info(this.log.msg("----> start encapsulated IP packet"));
         if (this.packet != null) {
             this.packet.log(logger);
         }
-        logger.info(ObjectId + " <---- end encapsulated IP packet");
+        logger.info(this.log.msg("<---- end encapsulated IP packet"));
     }
 
     @Override
     public void writeTo(final ByteBuffer buffer) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtEncapsulationMessage.writeTo", buffer));
+            logger.finer(this.log.entry("AmtEncapsulationMessage.writeTo", buffer));
         }
         super.writeTo(buffer);
         if (this.packet != null) {
@@ -196,7 +196,7 @@ abstract class AmtEncapsulationMessage
     public final void setPacket(final IPPacket packet) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtEncapsulationMessage.setPacket", packet));
+            logger.finer(this.log.entry("AmtEncapsulationMessage.setPacket", packet));
         }
 
         this.packet = packet;
@@ -210,7 +210,7 @@ abstract class AmtEncapsulationMessage
     public final void verifyPacketChecksum(final IPPacket.BufferParser parser) throws MissingParserException, ParseException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtEncapsulationMessage.verifyPacketChecksum", parser));
+            logger.finer(this.log.entry("AmtEncapsulationMessage.verifyPacketChecksum", parser));
         }
 
         if (this.unparsedPacket != null) {
@@ -228,7 +228,7 @@ abstract class AmtEncapsulationMessage
     public final IPPacket parsePacket(final IPPacket.BufferParser parser) throws ParseException, MissingParserException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtEncapsulationMessage.parsePacket", parser));
+            logger.finer(this.log.entry("AmtEncapsulationMessage.parsePacket", parser));
         }
 
         IPPacket packet = null;

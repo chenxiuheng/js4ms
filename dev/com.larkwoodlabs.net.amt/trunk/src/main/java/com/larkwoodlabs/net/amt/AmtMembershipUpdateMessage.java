@@ -259,11 +259,11 @@ public final class AmtMembershipUpdateMessage
         super(BASE_MESSAGE_LENGTH, MESSAGE_TYPE, updatePacket);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId,
-                                          "AmtMembershipUpdateMessage.AmtMembershipUpdateMessage",
-                                          Logging.mac(responseMac),
-                                          requestNonce,
-                                          updatePacket));
+            logger.finer(this.log.entry(
+                                        "AmtMembershipUpdateMessage.AmtMembershipUpdateMessage",
+                                        Logging.mac(responseMac),
+                                        requestNonce,
+                                        updatePacket));
         }
 
         setResponseMac(responseMac);
@@ -287,7 +287,7 @@ public final class AmtMembershipUpdateMessage
         super(buffer, BASE_MESSAGE_LENGTH);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtMembershipUpdateMessage.AmtMembershipUpdateMessage", buffer));
+            logger.finer(this.log.entry("AmtMembershipUpdateMessage.AmtMembershipUpdateMessage", buffer));
             logState(logger);
         }
     }
@@ -305,8 +305,8 @@ public final class AmtMembershipUpdateMessage
      *            The logger to use when generating log messages.
      */
     private void logState(final Logger logger) {
-        logger.info(ObjectId + " : response-MAC=" + Logging.mac(getResponseMac()));
-        logger.info(ObjectId + " : request-nonce=" + getRequestNonce());
+        logger.info(this.log.msg(": response-MAC=" + Logging.mac(getResponseMac())));
+        logger.info(this.log.msg(": request-nonce=" + getRequestNonce()));
     }
 
     @Override
@@ -332,7 +332,7 @@ public final class AmtMembershipUpdateMessage
     public void setResponseMac(final byte[] responseMac) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtMembershipUpdateMessage.setResponseMac", Logging.mac(responseMac)));
+            logger.finer(this.log.entry("AmtMembershipUpdateMessage.setResponseMac", Logging.mac(responseMac)));
         }
 
         ResponseMac.set(getBufferInternal(), responseMac);
@@ -357,7 +357,7 @@ public final class AmtMembershipUpdateMessage
     public void setRequestNonce(final int requestNonce) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtMembershipUpdateMessage.setRequestNonce", requestNonce));
+            logger.finer(this.log.entry("AmtMembershipUpdateMessage.setRequestNonce", requestNonce));
         }
 
         RequestNonce.set(getBufferInternal(), requestNonce);
