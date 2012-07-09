@@ -79,7 +79,7 @@ public class AmtDatagramSource
         super(outputChannel);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(log.entry("AmtDatagramSource", destinationPort, sourceFilter, outputChannel));
+            logger.finer(this.log.entry("AmtDatagramSource", destinationPort, sourceFilter, outputChannel));
         }
 
         this.sourceFilter = sourceFilter;
@@ -110,7 +110,7 @@ public class AmtDatagramSource
         super(outputChannel);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(log.entry("<ctor>", destinationPort, sourceFilter, relayDiscoveryAddress, outputChannel));
+            logger.finer(this.log.entry("<ctor>", destinationPort, sourceFilter, relayDiscoveryAddress, outputChannel));
         }
 
         this.sourceFilter = sourceFilter;
@@ -127,7 +127,7 @@ public class AmtDatagramSource
     protected void doStart() throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(log.entry("doStart"));
+            logger.finer(this.log.entry("doStart"));
         }
 
         InetAddress groupAddress = this.sourceFilter.getGroupAddress();
@@ -154,7 +154,7 @@ public class AmtDatagramSource
     protected void doStop() throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(log.entry("doStop"));
+            logger.finer(this.log.entry("doStop"));
         }
 
         this.amtEndpoint.leave();
@@ -172,7 +172,7 @@ public class AmtDatagramSource
     protected void doClose() throws IOException, InterruptedException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(log.entry("doClose"));
+            logger.finer(this.log.entry("doClose"));
         }
 
         this.amtEndpoint.close();

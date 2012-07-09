@@ -34,6 +34,7 @@ import com.larkwoodlabs.common.exceptions.BoundException;
 import com.larkwoodlabs.common.exceptions.MultiIOException;
 import com.larkwoodlabs.net.Precondition;
 import com.larkwoodlabs.net.udp.UdpDatagram;
+import com.larkwoodlabs.util.logging.Log;
 import com.larkwoodlabs.util.logging.LoggableBase;
 import com.larkwoodlabs.util.logging.Logging;
 
@@ -49,7 +50,9 @@ final class ChannelMembershipManager
 
     /*-- Member Variables ---------------------------------------------------*/
 
-    private final InterfaceMembershipManager interfaceManager;
+    private final Log log = new Log(this);
+
+    private final AmtIPInterface ipInterface;
 
     private final MessageKeyExtractor<UdpDatagram> groupExtractor;
 
@@ -97,15 +100,15 @@ final class ChannelMembershipManager
     /*-- Member Functions ---------------------------------------------------*/
 
     /**
-     * @param interfaceManager
+     * @param ipInterface
      */
-    ChannelMembershipManager(final InterfaceMembershipManager interfaceManager) {
+    ChannelMembershipManager(final AmtIPInterface ipInterface) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "ChannelMembershipManager.ChannelMembershipManager", interfaceManager));
+            logger.finer(this.log.entry("ChannelMembershipManager.ChannelMembershipManager", ipInterface));
         }
 
-        this.interfaceManager = interfaceManager;
+        this.ipInterface = ipInterface;
 
         this.groupExtractor = new MessageKeyExtractor<UdpDatagram>() {
 
@@ -172,8 +175,8 @@ final class ChannelMembershipManager
               final int port) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "ChannelMembershipManager.join", pushChannel, Logging.address(groupAddress),
-                                          port));
+            logger.finer(this.log.entry("ChannelMembershipManager.join", pushChannel, Logging.address(groupAddress),
+                                        port));
         }
 
         Precondition.checkASMMulticastAddress(groupAddress);
@@ -186,7 +189,7 @@ final class ChannelMembershipManager
                 OutputChannelTee<UdpDatagram> tee = new OutputChannelTee<UdpDatagram>();
                 portMap.put(port, tee);
                 tee.add(pushChannel);
-                this.interfaceManager.join(groupAddress);
+                this.ipInterface.join(groupAddress);
             }
             else {
                 OutputChannelTee<UdpDatagram> tee = (OutputChannelTee<UdpDatagram>) portMap.get(port);
@@ -212,12 +215,11 @@ final class ChannelMembershipManager
               final int port) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId,
-                                          "ChannelMembershipManager.join",
-                                          pushChannel,
-                                          Logging.address(groupAddress),
-                                          Logging.address(sourceAddress),
-                                          port));
+            logger.finer(this.log.entry("ChannelMembershipManager.join",
+                                        pushChannel,
+                                        Logging.address(groupAddress),
+                                        Logging.address(sourceAddress),
+                                        port));
         }
 
         Precondition.checkMulticastAddress(groupAddress);
@@ -233,7 +235,7 @@ final class ChannelMembershipManager
                 OutputChannelTee<UdpDatagram> tee = new OutputChannelTee<UdpDatagram>();
                 tee.add(pushChannel);
                 portMap.put(port, tee);
-                this.interfaceManager.join(groupAddress, sourceAddress);
+                this.ipInterface.join(groupAddress, sourceAddress);
             }
             else {
                 OutputChannelMap<UdpDatagram> portMap = (OutputChannelMap<UdpDatagram>) sourceMap.get(sourceAddress);
@@ -265,7 +267,7 @@ final class ChannelMembershipManager
                final InetAddress groupAddress) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "ChannelMembershipManager.leave", pushChannel, Logging.address(groupAddress)));
+            logger.finer(this.log.entry("ChannelMembershipManager.leave", pushChannel, Logging.address(groupAddress)));
         }
 
         Precondition.checkMulticastAddress(groupAddress);
@@ -306,7 +308,7 @@ final class ChannelMembershipManager
                                         }
                                         // No channels are left in this source group -
                                         // update the interface reception state
-                                        this.interfaceManager.leave(groupAddress, sourceAddress);
+                                        this.ipInterface.leave(groupAddress, sourceAddress);
                                     }
                                 }
                             }
@@ -328,7 +330,7 @@ final class ChannelMembershipManager
                                 this.groupMap.remove(groupAddress);
                                 // No channels are left in this group - update the
                                 // interface reception state
-                                this.interfaceManager.leave(groupAddress);
+                                this.ipInterface.leave(groupAddress);
                             }
                         }
                     }
@@ -348,8 +350,8 @@ final class ChannelMembershipManager
                final int port) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "ChannelMembershipManager.leave", pushChannel, Logging.address(groupAddress),
-                                          port));
+            logger.finer(this.log.entry("ChannelMembershipManager.leave", pushChannel, Logging.address(groupAddress),
+                                        port));
         }
 
         Precondition.checkMulticastAddress(groupAddress);
@@ -386,7 +388,7 @@ final class ChannelMembershipManager
                                     }
                                     // No channels are left in this source group - update
                                     // the interface reception state
-                                    this.interfaceManager.leave(groupAddress, sourceAddress);
+                                    this.ipInterface.leave(groupAddress, sourceAddress);
                                 }
                             }
                         }
@@ -406,7 +408,7 @@ final class ChannelMembershipManager
                                 this.groupMap.remove(groupAddress);
                                 // No channels are left in this group - update the
                                 // interface reception state
-                                this.interfaceManager.leave(groupAddress);
+                                this.ipInterface.leave(groupAddress);
                             }
                         }
                         // The entry map was a port map not a source map
@@ -429,8 +431,8 @@ final class ChannelMembershipManager
                final InetAddress sourceAddress) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "ChannelMembershipManager.leave", channel, Logging.address(groupAddress),
-                                          Logging.address(sourceAddress)));
+            logger.finer(this.log.entry("ChannelMembershipManager.leave", channel, Logging.address(groupAddress),
+                                        Logging.address(sourceAddress)));
         }
 
         Precondition.checkMulticastAddress(groupAddress);
@@ -466,7 +468,7 @@ final class ChannelMembershipManager
                                 }
                                 // No channels are left in this source group - update the
                                 // interface reception state
-                                this.interfaceManager.leave(groupAddress, sourceAddress);
+                                this.ipInterface.leave(groupAddress, sourceAddress);
                             }
                         }
                     }
@@ -488,11 +490,10 @@ final class ChannelMembershipManager
                final int port) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId,
-                                          "ChannelMembershipManager.leave",
-                                          Logging.address(groupAddress),
-                                          Logging.address(sourceAddress),
-                                          port));
+            logger.finer(this.log.entry("ChannelMembershipManager.leave",
+                                        Logging.address(groupAddress),
+                                        Logging.address(sourceAddress),
+                                        port));
         }
 
         Precondition.checkMulticastAddress(groupAddress);
@@ -524,7 +525,7 @@ final class ChannelMembershipManager
                             }
                             // No channels are left in this source group - update the
                             // interface reception state
-                            this.interfaceManager.leave(groupAddress, sourceAddress);
+                            this.ipInterface.leave(groupAddress, sourceAddress);
                         }
                     }
                 }
@@ -539,7 +540,7 @@ final class ChannelMembershipManager
     void leave(final OutputChannel<UdpDatagram> pushChannel) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "ChannelMembershipManager.leave", pushChannel));
+            logger.finer(this.log.entry("ChannelMembershipManager.leave", pushChannel));
         }
 
         synchronized (this.groupMap) {
@@ -583,7 +584,7 @@ final class ChannelMembershipManager
                                             }
                                             // No channels are left in this source group -
                                             // update the interface reception state
-                                            this.interfaceManager.leave(groupAddress, sourceAddress);
+                                            this.ipInterface.leave(groupAddress, sourceAddress);
                                         }
                                     }
                                 }
@@ -605,7 +606,7 @@ final class ChannelMembershipManager
                                     groupIter.remove();
                                     // No channels are left in this group - update the
                                     // interface reception state
-                                    this.interfaceManager.leave(groupAddress);
+                                    this.ipInterface.leave(groupAddress);
                                 }
                             }
                         }
@@ -621,18 +622,16 @@ final class ChannelMembershipManager
     void shutdown() throws InterruptedException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "ChannelMembershipManager.shutdown"));
+            logger.finer(this.log.entry("ChannelMembershipManager.shutdown"));
         }
 
         synchronized (this.groupMap) {
-            this.interfaceManager.shutdown();
             try {
                 this.groupMap.close();
             }
             catch (IOException e) {
-                logger.fine(ObjectId +
-                            " attempt to close channel group map failed failed with exception - " +
-                            e.getClass().getName() + ":" + e.getMessage());
+                logger.fine(this.log.msg("attempt to close channel group map failed failed with exception - " +
+                                         e.getClass().getName() + ":" + e.getMessage()));
                 e.printStackTrace();
             }
         }
@@ -662,9 +661,8 @@ final class ChannelMembershipManager
                             if (o instanceof OutputChannel<?>) {
                                 if (logger.isLoggable(Level.FINE)) {
                                     Throwable te = be.getThrowable();
-                                    logger.fine(ObjectId +
-                                                " removing channel " + Logging.identify(o) + " due to exception - " +
-                                                te.getClass().getName() + ": " + te.getMessage());
+                                    logger.fine(this.log.msg("removing channel " + Logging.identify(o) + " due to exception - " +
+                                                             te.getClass().getName() + ": " + te.getMessage()));
                                 }
                                 OutputChannel<UdpDatagram> channel = (OutputChannel<UdpDatagram>) o;
                                 leave(channel);
@@ -674,9 +672,8 @@ final class ChannelMembershipManager
                     }
                 }
                 if (logger.isLoggable(Level.INFO)) {
-                    logger.info(ObjectId +
-                                " closing all multicast channels due to unhandled exception - " +
-                                e.getClass().getName() + ": " + e.getMessage());
+                    logger.info(this.log.msg("closing all multicast channels due to unhandled exception - " +
+                                e.getClass().getName() + ": " + e.getMessage()));
                 }
                 shutdown();
             }

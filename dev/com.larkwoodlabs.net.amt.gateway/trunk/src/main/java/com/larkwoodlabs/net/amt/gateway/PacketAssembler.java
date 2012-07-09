@@ -38,6 +38,7 @@ import com.larkwoodlabs.net.Precondition;
 import com.larkwoodlabs.net.ip.IPPacket;
 import com.larkwoodlabs.net.ip.ipv4.IPv4Packet;
 import com.larkwoodlabs.net.ip.ipv6.IPv6Packet;
+import com.larkwoodlabs.util.logging.Log;
 import com.larkwoodlabs.util.logging.LoggableBase;
 import com.larkwoodlabs.util.logging.Logging;
 
@@ -95,7 +96,7 @@ final class PacketAssembler
 
         /*-- Member Variables ---------------------------------------------------*/
 
-        private final String ObjectId = Logging.identify(this);
+        private final Log log = new Log(this);
 
         private ByteBuffer identifier;
 
@@ -208,8 +209,8 @@ final class PacketAssembler
                      final int prevHole,
                      final int nextHole) {
             if (logger.isLoggable(Level.FINER)) {
-                logger.finer(ObjectId + " new hole.first=" + hole + " hole.last=" + holeLast + " hole.prev=" + prevHole
-                             + " hole.next=" + nextHole);
+                logger.finer(this.log.msg("new hole.first=" + hole + " hole.last=" + holeLast + " hole.prev=" + prevHole
+                                          + " hole.next=" + nextHole));
             }
             int byteOffset = hole * 8;
             setOffsetValue(byteOffset, holeLast);
@@ -361,14 +362,14 @@ final class PacketAssembler
 
                 if (fragmentFirst > hole) {
                     if (logger.isLoggable(Level.FINER)) {
-                        logger.finer(ObjectId + " hole.first=" + hole + " hole.last=" + holeLast + " frag.first=" + fragmentFirst
-                                     + " frag.last=" + fragmentLast + " <-- fragment overlaps end of hole");
+                        logger.finer(this.log.msg("hole.first=" + hole + " hole.last=" + holeLast + " frag.first=" + fragmentFirst
+                                                  + " frag.last=" + fragmentLast + " <-- fragment overlaps end of hole"));
                     }
                     setHoleLast(hole, fragmentLast - 1);
                 }
                 else if (fragmentLast < holeLast && isMoreFragments) {
-                    logger.finer(ObjectId + " hole.first=" + hole + " hole.last=" + holeLast + " frag.first=" + fragmentFirst
-                                 + " frag.last=" + fragmentLast + " <-- fragment overlaps start of hole");
+                    logger.finer(this.log.msg("hole.first=" + hole + " hole.last=" + holeLast + " frag.first=" + fragmentFirst
+                                              + " frag.last=" + fragmentLast + " <-- fragment overlaps start of hole"));
                     int newHole = fragmentLast + 1;
                     if (prevHole == EOL) {
                         this.firstHole = newHole;
@@ -382,8 +383,8 @@ final class PacketAssembler
                     setHole(fragmentLast + 1, holeLast, prevHole, nextHole);
                 }
                 else {
-                    logger.finer(ObjectId + " hole.first=" + hole + " hole.last=" + holeLast + " frag.first=" + fragmentFirst
-                                 + " frag.last=" + fragmentLast + " <-- fragment overlaps entire hole - delete hole");
+                    logger.finer(this.log.msg("hole.first=" + hole + " hole.last=" + holeLast + " frag.first=" + fragmentFirst
+                                              + " frag.last=" + fragmentLast + " <-- fragment overlaps entire hole - delete hole"));
                     if (prevHole == EOL) {
                         this.firstHole = nextHole;
                     }
@@ -516,6 +517,8 @@ final class PacketAssembler
 
     private final Object lock = new Object();
 
+    private final Log log = new Log(this);
+
     private final OutputChannel<IPPacket> outputChannel;
 
     private final OutputChannel<IPPacket> timeoutChannel;
@@ -564,12 +567,12 @@ final class PacketAssembler
                     final Timer taskTimer) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId,
-                                          "PacketAssembler.Defragmenter",
-                                          outputChannel,
-                                          timeoutChannel,
-                                          maxCacheSize,
-                                          taskTimer));
+            logger.finer(this.log.entry(
+                                        "PacketAssembler.Defragmenter",
+                                        outputChannel,
+                                        timeoutChannel,
+                                        maxCacheSize,
+                                        taskTimer));
         }
 
         if (outputChannel == null) {
@@ -705,14 +708,14 @@ final class PacketAssembler
     public void send(final IPPacket packet, final int milliseconds) throws IOException, InterruptedIOException, InterruptedException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "PacketAssembler.send", packet, milliseconds));
+            logger.finer(this.log.entry("PacketAssembler.send", packet, milliseconds));
         }
 
         // Send it on if not fragmented
         if (!packet.isFragmented()) {
 
             if (logger.isLoggable(Level.FINER)) {
-                logger.finer(ObjectId + " forwarding unfragmented packet");
+                logger.finer(this.log.msg("forwarding unfragmented packet"));
             }
 
             this.outputChannel.send(packet, milliseconds);
@@ -736,7 +739,7 @@ final class PacketAssembler
                 }
 
                 if (logger.isLoggable(Level.FINER)) {
-                    logger.finer(ObjectId + " queueing packet for future reassembly");
+                    logger.finer(this.log.msg("queueing packet for future reassembly"));
                 }
 
                 this.cummulativePendingPacketSize += packetSize;
@@ -805,12 +808,11 @@ final class PacketAssembler
         }
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(ObjectId +
-                         " searching reassembly buffer for source=" + Logging.address(packet.getSourceAddress()) +
-                         " destination=" + Logging.address(packet.getDestinationAddress()) +
-                         " identification=" + packet.getFragmentIdentifier() +
-                         " fragment-offset=" + packet.getFragmentOffset() +
-                         " identifier-hashCode=" + identifier.hashCode());
+            logger.finer(this.log.msg("searching reassembly buffer for source=" + Logging.address(packet.getSourceAddress()) +
+                                      " destination=" + Logging.address(packet.getDestinationAddress()) +
+                                      " identification=" + packet.getFragmentIdentifier() +
+                                      " fragment-offset=" + packet.getFragmentOffset() +
+                                      " identifier-hashCode=" + identifier.hashCode()));
         }
 
         ReassemblyBuffer reassemblyBuffer = this.cache.get(identifier);
@@ -818,15 +820,15 @@ final class PacketAssembler
 
             if (this.maxCacheSize != 0 && this.cache.size() >= this.maxCacheSize) {
                 if (logger.isLoggable(Level.FINER)) {
-                    logger.finer(ObjectId + " reassembly cache is full cache-size=" + this.cache.size() + " queue-size="
-                                 + this.pendingQueue.size());
+                    logger.finer(this.log.msg("reassembly cache is full cache-size=" + this.cache.size() + " queue-size="
+                                              + this.pendingQueue.size()));
                 }
                 // Indicate that the packet can't be processed yet
                 return result;
             }
 
             if (logger.isLoggable(Level.FINER)) {
-                logger.finer(ObjectId + " creating new reassembly buffer");
+                logger.finer(this.log.msg("creating new reassembly buffer"));
             }
             reassemblyBuffer = new ReassemblyBuffer(identifier, REASSEMBLY_TIMEOUT);
             this.cache.put(identifier, reassemblyBuffer);
@@ -841,9 +843,8 @@ final class PacketAssembler
                         }
                         catch (Exception e) {
                             if (logger.isLoggable(Level.FINER)) {
-                                logger.info(ObjectId +
-                                            " exception thrown in packet reassembly timer task - " +
-                                            e.getClass().getName() + ":" + e.getMessage());
+                                logger.info(PacketAssembler.this.log.msg("exception thrown in packet reassembly timer task - " +
+                                                                         e.getClass().getName() + ":" + e.getMessage()));
                             }
                         }
                     }
@@ -854,14 +855,14 @@ final class PacketAssembler
         }
         else {
             if (logger.isLoggable(Level.FINER)) {
-                logger.finer(ObjectId + " found existing reassembly buffer");
+                logger.finer(this.log.msg("found existing reassembly buffer"));
             }
         }
 
         try {
             if (reassemblyBuffer.addFragment(packet)) {
                 if (logger.isLoggable(Level.FINER)) {
-                    logger.finer(ObjectId + " reassembly complete");
+                    logger.finer(this.log.msg("reassembly complete"));
                 }
                 this.outputChannel.send(reassemblyBuffer.getCompletedPacket(), milliseconds);
                 this.cache.remove(reassemblyBuffer.getIdentifier());
@@ -876,7 +877,7 @@ final class PacketAssembler
         }
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(ObjectId + " reassembly cache-size=" + this.cache.size() + " queue-size=" + this.pendingQueue.size());
+            logger.finer(this.log.msg("reassembly cache-size=" + this.cache.size() + " queue-size=" + this.pendingQueue.size()));
         }
 
         // Indicate the end result
@@ -920,11 +921,10 @@ final class PacketAssembler
                     if (buffer != null && buffer.isExpired(currentTimeMillis)) {
 
                         if (logger.isLoggable(Level.FINER)) {
-                            logger.finer(ObjectId +
-                                         " reassembly timeout exceeded buffer-identifier="
-                                         + Logging.identify(buffer.getIdentifier()) +
-                                         " identifier-hashCode=" + buffer.getIdentifier().hashCode() +
-                                         " age=" + buffer.getAge(currentTimeMillis) + "ms");
+                            logger.finer(this.log.msg("reassembly timeout exceeded buffer-identifier="
+                                                      + Logging.identify(buffer.getIdentifier()) +
+                                                      " identifier-hashCode=" + buffer.getIdentifier().hashCode() +
+                                                      " age=" + buffer.getAge(currentTimeMillis) + "ms"));
                         }
 
                         if (this.timeoutChannel != null) {

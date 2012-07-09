@@ -34,6 +34,7 @@ import com.larkwoodlabs.net.amt.GroupMembershipRecord;
 import com.larkwoodlabs.net.amt.MembershipQuery;
 import com.larkwoodlabs.net.amt.MembershipReport;
 import com.larkwoodlabs.net.amt.SourceFilter;
+import com.larkwoodlabs.util.logging.Log;
 import com.larkwoodlabs.util.logging.LoggableBase;
 import com.larkwoodlabs.util.logging.Logging;
 
@@ -45,6 +46,8 @@ final class InterfaceMembershipManager
     public static final Logger logger = Logger.getLogger(InterfaceMembershipManager.class.getName());
 
     /*-- Member Variables ---------------------------------------------------*/
+
+    private final Log log = new Log(this);
 
     /**
      * Contents describe the current multicast reception state of this interface.
@@ -58,8 +61,6 @@ final class InterfaceMembershipManager
     private final HashMap<InetAddress, GroupQueryReportTask> pendingGroupQueryReports = new HashMap<InetAddress, GroupQueryReportTask>();
 
     private GeneralQueryReportTimer pendingGeneralQueryReport = null;
-
-    private AmtTunnelEndpoint endpoint;
 
     private OutputChannel<MembershipQuery> incomingQueryChannel;
 
@@ -78,14 +79,13 @@ final class InterfaceMembershipManager
     /**
      * @param taskTimer
      */
-    InterfaceMembershipManager(final Timer taskTimer, final AmtTunnelEndpoint endpoint) {
+    InterfaceMembershipManager(final Timer taskTimer) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "InterfaceMembershipManager.InterfaceMembershipManager", taskTimer, endpoint));
+            logger.finer(this.log.entry("InterfaceMembershipManager.InterfaceMembershipManager", taskTimer));
         }
 
         this.taskTimer = taskTimer;
-        this.endpoint = endpoint;
 
         this.pendingGeneralQueryReport = new GeneralQueryReportTimer(taskTimer, this);
 
@@ -129,9 +129,8 @@ final class InterfaceMembershipManager
     void join(final InetAddress groupAddress) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId,
-                                          "InterfaceMembershipManager.join",
-                                          Logging.address(groupAddress)));
+            logger.finer(this.log.entry("InterfaceMembershipManager.join",
+                                        Logging.address(groupAddress)));
         }
 
         synchronized (this.interfaceReceptionState) {
@@ -159,13 +158,12 @@ final class InterfaceMembershipManager
      * @throws InterruptedException
      */
     void join(final InetAddress groupAddress,
-                     final InetAddress sourceAddress) throws IOException {
+              final InetAddress sourceAddress) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId,
-                                          "InterfaceMembershipManager.join",
-                                          Logging.address(groupAddress),
-                                          Logging.address(sourceAddress)));
+            logger.finer(this.log.entry("InterfaceMembershipManager.join",
+                                        Logging.address(groupAddress),
+                                        Logging.address(sourceAddress)));
         }
 
         synchronized (this.interfaceReceptionState) {
@@ -193,9 +191,8 @@ final class InterfaceMembershipManager
     void leave(final InetAddress groupAddress) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId,
-                                          "InterfaceMembershipManager.leave",
-                                          Logging.address(groupAddress)));
+            logger.finer(this.log.entry("InterfaceMembershipManager.leave",
+                                        Logging.address(groupAddress)));
         }
 
         synchronized (this.interfaceReceptionState) {
@@ -219,13 +216,12 @@ final class InterfaceMembershipManager
      * @throws IOException
      */
     void leave(final InetAddress groupAddress,
-                      final InetAddress sourceAddress) throws IOException {
+               final InetAddress sourceAddress) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId,
-                                          "InterfaceMembershipManager.leave",
-                                          Logging.address(groupAddress),
-                                          Logging.address(sourceAddress)));
+            logger.finer(this.log.entry("InterfaceMembershipManager.leave",
+                                        Logging.address(groupAddress),
+                                        Logging.address(sourceAddress)));
         }
 
         synchronized (this.interfaceReceptionState) {
@@ -244,12 +240,30 @@ final class InterfaceMembershipManager
     }
 
     /**
+     * @throws IOException
+     */
+    final void leave() throws IOException {
+
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer(this.log.entry("InterfaceMembershipManager.leave"));
+        }
+
+        synchronized (this.interfaceReceptionState) {
+
+            HashSet<InetAddress> groupSet = new HashSet<InetAddress>(this.interfaceReceptionState.keySet());
+            for (InetAddress groupAddress : groupSet) {
+                leave(groupAddress);
+            }
+        }
+    }
+
+    /**
      * 
      */
     final void shutdown() {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "InterfaceMembershipManager.shutdown"));
+            logger.finer(this.log.entry("InterfaceMembershipManager.shutdown"));
         }
 
         HashSet<InetAddress> groupSet = new HashSet<InetAddress>(this.interfaceReceptionState.keySet());
@@ -258,11 +272,10 @@ final class InterfaceMembershipManager
                 leave(groupAddress);
             }
             catch (IOException e) {
-                logger.fine(ObjectId +
-                            " attempt to leave group=" +
-                            Logging.address(groupAddress) +
-                            " failed with exception - " +
-                            e.getClass().getName() + ":" + e.getMessage());
+                logger.fine(this.log.msg("attempt to leave group=" +
+                                         Logging.address(groupAddress) +
+                                         " failed with exception - " +
+                                         e.getClass().getName() + ":" + e.getMessage()));
 
                 e.printStackTrace();
                 // Continue on and try to leave the rest
@@ -330,11 +343,10 @@ final class InterfaceMembershipManager
                                            final SourceFilter filter) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId,
-                                          "InterfaceMembershipManager.updateInterfaceGroupState",
-                                          oldFilterMode,
-                                          oldSourceSet,
-                                          filter));
+            logger.finer(this.log.entry("InterfaceMembershipManager.updateInterfaceGroupState",
+                                        oldFilterMode,
+                                        oldSourceSet,
+                                        filter));
         }
 
         // Block threads calling other methods from changing the interface reception state
@@ -376,17 +388,17 @@ final class InterfaceMembershipManager
                     }
                     else {
                         if (logger.isLoggable(Level.FINE)) {
-                            logger.fine(ObjectId + " generating groups state change report");
-                            logger.fine(ObjectId + " ----> Old Source Set for " + Logging.address(groupAddress));
+                            logger.fine(this.log.msg("generating groups state change report"));
+                            logger.fine(this.log.msg("----> Old Source Set for " + Logging.address(groupAddress)));
                             for (InetAddress address : oldSourceSet) {
-                                logger.fine(ObjectId + "  " + Logging.address(address));
+                                logger.fine(this.log.msg(" " + Logging.address(address)));
                             }
-                            logger.fine(ObjectId + " <----");
-                            logger.fine(ObjectId + " ----> New Source Set for " + Logging.address(groupAddress));
+                            logger.fine(this.log.msg("<----"));
+                            logger.fine(this.log.msg("----> New Source Set for " + Logging.address(groupAddress)));
                             for (InetAddress address : newSourceSet) {
-                                logger.fine(ObjectId + "  " + Logging.address(address));
+                                logger.fine(this.log.msg(" " + Logging.address(address)));
                             }
-                            logger.fine(ObjectId + " <----");
+                            logger.fine(this.log.msg("<----"));
                         }
 
                         // Generate source set change report
@@ -497,7 +509,7 @@ final class InterfaceMembershipManager
     void handle(final MembershipQuery queryMessage) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "InterfaceMembershipManager.handle", queryMessage));
+            logger.finer(this.log.entry("InterfaceMembershipManager.handle", queryMessage));
         }
 
         this.unsolicitedReportIntervalMs = queryMessage.getQueryInterval();
@@ -524,7 +536,7 @@ final class InterfaceMembershipManager
                 // General Query
 
                 if (logger.isLoggable(Level.FINER)) {
-                    logger.finer(ObjectId + " rescheduling general query report delay=" + taskDelay + "ms");
+                    logger.finer(this.log.msg("rescheduling general query report delay=" + taskDelay + "ms"));
                 }
 
                 this.pendingGeneralQueryReport.schedule(taskDelay);
@@ -580,11 +592,10 @@ final class InterfaceMembershipManager
                                    final HashSet<InetAddress> sourceSet) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId,
-                                          "InterfaceMembershipManager.sendGroupMembershipReport",
-                                          Logging.address(groupAddress),
-                                          type,
-                                          sourceSet));
+            logger.finer(this.log.entry("InterfaceMembershipManager.sendGroupMembershipReport",
+                                        Logging.address(groupAddress),
+                                        type,
+                                        sourceSet));
         }
 
         MembershipReport report = new MembershipReport();
@@ -616,16 +627,15 @@ final class InterfaceMembershipManager
                                          final int transmissionsRemaining) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId,
-                                          "InterfaceMembershipManager.sendGroupFilterModeChangeReport",
-                                          Logging.address(groupAddress),
-                                          mode,
-                                          sourceSet,
-                                          transmissionsRemaining));
+            logger.finer(this.log.entry("InterfaceMembershipManager.sendGroupFilterModeChangeReport",
+                                        Logging.address(groupAddress),
+                                        mode,
+                                        sourceSet,
+                                        transmissionsRemaining));
         }
 
         if (logger.isLoggable(Level.FINE)) {
-            logger.fine(ObjectId + " sending membership report for group filter mode change");
+            logger.fine(this.log.msg("sending membership report for group filter mode change"));
         }
 
         GroupMembershipRecord.Type type = (mode == SourceFilter.Mode.INCLUDE ?
@@ -653,12 +663,11 @@ final class InterfaceMembershipManager
                                         final int transmissionsRemaining) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId,
-                                          "InterfaceMembershipManager.sendGroupStateChangeReport",
-                                          Logging.address(groupAddress),
-                                          allowNewSources,
-                                          blockOldSources,
-                                          transmissionsRemaining));
+            logger.finer(this.log.entry("InterfaceMembershipManager.sendGroupStateChangeReport",
+                                        Logging.address(groupAddress),
+                                        allowNewSources,
+                                        blockOldSources,
+                                        transmissionsRemaining));
         }
 
         if (!allowNewSources.isEmpty() || !blockOldSources.isEmpty()) {
@@ -678,7 +687,7 @@ final class InterfaceMembershipManager
             }
 
             if (logger.isLoggable(Level.FINE)) {
-                logger.fine(ObjectId + " sending membership report for group source set change");
+                logger.fine(this.log.msg("sending membership report for group source set change"));
             }
 
             try {
@@ -708,7 +717,7 @@ final class InterfaceMembershipManager
     void sendGeneralQueryResponse() {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "InterfaceMembershipManager.sendGeneralQueryResponse"));
+            logger.finer(this.log.entry("InterfaceMembershipManager.sendGeneralQueryResponse"));
         }
 
         MembershipReport report = new MembershipReport();
@@ -720,15 +729,16 @@ final class InterfaceMembershipManager
                             GroupMembershipRecord.Type.MODE_IS_EXCLUDE);
 
             if (logger.isLoggable(Level.FINER)) {
-                logger.finer(ObjectId + " adding record type=" + type.name() + " group="
-                             + Logging.address(filter.getGroupAddress()) + " source-count=" + filter.getSourceSet().size());
+                logger.finer(this.log.msg("adding record type=" + type.name() + " group="
+                                          + Logging.address(filter.getGroupAddress()) + " source-count="
+                                          + filter.getSourceSet().size()));
             }
 
             report.addRecord(new GroupMembershipRecord(filter.getGroupAddress(), type, filter.getSourceSet()));
         }
 
         if (logger.isLoggable(Level.FINE)) {
-            logger.fine(ObjectId + " sending membership report for general query");
+            logger.fine(this.log.msg("sending membership report for general query"));
         }
 
         try {
@@ -742,10 +752,6 @@ final class InterfaceMembershipManager
             throw new Error(e);
         }
         catch (InterruptedException e) {
-        }
-
-        if (!report.getRecords().isEmpty()) {
-            this.endpoint.startPeriodicRequestTask(this.unsolicitedReportIntervalMs);
         }
 
     }
@@ -779,10 +785,9 @@ final class InterfaceMembershipManager
                                 final HashSet<InetAddress> querySourceSet) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId,
-                                          "InterfaceMembershipManager.sendGroupMembershipReport",
-                                          Logging.address(groupAddress),
-                                          querySourceSet));
+            logger.finer(this.log.entry("InterfaceMembershipManager.sendGroupMembershipReport",
+                                        Logging.address(groupAddress),
+                                        querySourceSet));
         }
 
         HashSet<InetAddress> responseSourceSet;
@@ -821,7 +826,7 @@ final class InterfaceMembershipManager
                     if (!responseSourceSet.isEmpty()) {
 
                         if (logger.isLoggable(Level.FINE)) {
-                            logger.fine(ObjectId + " sending membership report in response to group-specific query");
+                            logger.fine(this.log.msg("sending membership report in response to group-specific query"));
                         }
 
                         // Source query responses are sent with MODE_IS_INCLUDE

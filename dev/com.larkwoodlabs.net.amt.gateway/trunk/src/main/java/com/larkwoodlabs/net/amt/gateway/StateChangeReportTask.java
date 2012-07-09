@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.larkwoodlabs.net.amt.SourceFilter;
+import com.larkwoodlabs.util.logging.Log;
 import com.larkwoodlabs.util.logging.Logging;
 import com.larkwoodlabs.util.task.ReschedulableTask;
 
@@ -138,20 +139,20 @@ final class StateChangeReportTask
         }
 
         Logger logger = InterfaceMembershipManager.logger;
-        String ObjectId = this.interfaceMembershipManager.ObjectId;
+        Log log = new Log(this.interfaceMembershipManager);
 
         if (logger.isLoggable(Level.FINE)) {
-            logger.fine(ObjectId + " generating groups state change report for filter mode=" + this.mode.toString());
-            logger.fine(ObjectId + " ----> ALLOW_NEW_SOURCES");
+            logger.fine(log.msg("generating groups state change report for filter mode=" + this.mode.toString()));
+            logger.fine(log.msg(" ----> ALLOW_NEW_SOURCES"));
             for (InetAddress address : this.allowNewSources) {
-                logger.fine(ObjectId + "  " + Logging.address(address));
+                logger.fine(log.msg("  " + Logging.address(address)));
             }
-            logger.fine(ObjectId + " <---- ALLOW_NEW_SOURCES");
-            logger.fine(ObjectId + " ----> BLOCK_OLD_SOURCES");
+            logger.fine(log.msg(" <---- ALLOW_NEW_SOURCES"));
+            logger.fine(log.msg(" ----> BLOCK_OLD_SOURCES"));
             for (InetAddress address : this.blockOldSources) {
-                logger.fine(ObjectId + "  " + Logging.address(address));
+                logger.fine(log.msg("  " + Logging.address(address)));
             }
-            logger.fine(ObjectId + " <---- BLOCK_OLD_SOURCES");
+            logger.fine(log.msg(" <---- BLOCK_OLD_SOURCES"));
         }
 
         this.sourceChangeTransmissionsRemaining = this.retransmissionCount;

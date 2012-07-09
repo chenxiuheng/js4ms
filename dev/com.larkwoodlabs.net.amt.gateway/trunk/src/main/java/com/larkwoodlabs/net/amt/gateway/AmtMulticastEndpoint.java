@@ -31,6 +31,7 @@ import com.larkwoodlabs.channels.OutputChannel;
 import com.larkwoodlabs.channels.OutputChannelPipe;
 import com.larkwoodlabs.net.udp.MulticastEndpoint;
 import com.larkwoodlabs.net.udp.UdpDatagram;
+import com.larkwoodlabs.util.logging.Log;
 import com.larkwoodlabs.util.logging.Logging;
 
 /**
@@ -59,12 +60,12 @@ public final class AmtMulticastEndpoint
 
     /*-- Member Variables ---------------------------------------------------*/
 
-    private final String ObjectId = Logging.identify(this);
+    private final Log log = new Log(this);
 
     /**
-     * AMT interface used to handle joins on IPv4 group addresses.
+     * AMT interface used to handle joins on group addresses.
      */
-    private AmtInterface amtInterface = null;
+    private AmtUDPInterface udpInterface = null;
 
     private final int port;
 
@@ -102,7 +103,7 @@ public final class AmtMulticastEndpoint
      */
     public AmtMulticastEndpoint(final int port,
                                 final int bufferCapacity) {
-        this(port, AmtInterfaceManager.getDefaultRelayDiscoveryAddress(), bufferCapacity);
+        this(port, AmtUDPInterfaceManager.getDefaultRelayDiscoveryAddress(), bufferCapacity);
     }
 
     /**
@@ -116,7 +117,7 @@ public final class AmtMulticastEndpoint
      */
     public AmtMulticastEndpoint(final int port,
                                 final OutputChannel<UdpDatagram> pushChannel) {
-        this(port, AmtInterfaceManager.getDefaultRelayDiscoveryAddress(), pushChannel);
+        this(port, AmtUDPInterfaceManager.getDefaultRelayDiscoveryAddress(), pushChannel);
     }
 
     /**
@@ -171,10 +172,9 @@ public final class AmtMulticastEndpoint
                                    final InetAddress relayDiscoveryAddress) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId,
-                                          "AmtMulticastEndpoint.AmtMulticastEndpoint",
-                                          port,
-                                          Logging.address(relayDiscoveryAddress)));
+            logger.finer(this.log.entry("AmtMulticastEndpoint.AmtMulticastEndpoint",
+                                        port,
+                                        Logging.address(relayDiscoveryAddress)));
         }
 
         this.port = port;
@@ -193,12 +193,12 @@ public final class AmtMulticastEndpoint
     public final void close() throws IOException, InterruptedException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtMulticastEndpoint.onClose"));
+            logger.finer(this.log.entry("AmtMulticastEndpoint.close"));
         }
 
-        if (this.amtInterface != null) {
-            this.amtInterface.leave(this.pushChannel);
-            this.amtInterface.release();
+        if (this.udpInterface != null) {
+            this.udpInterface.leave(this.pushChannel);
+            this.udpInterface.release();
         }
     }
 
@@ -224,7 +224,7 @@ public final class AmtMulticastEndpoint
     public final void join(final InetAddress groupAddress) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtMulticastEndpoint.join", Logging.address(groupAddress)));
+            logger.finer(this.log.entry("AmtMulticastEndpoint.join", Logging.address(groupAddress)));
         }
 
         join(groupAddress, this.port);
@@ -235,21 +235,21 @@ public final class AmtMulticastEndpoint
     public final void join(final InetAddress groupAddress, final int port) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtMulticastEndpoint.join", Logging.address(groupAddress), port));
+            logger.finer(this.log.entry("AmtMulticastEndpoint.join", Logging.address(groupAddress), port));
         }
 
-        if (this.amtInterface == null) {
-            this.amtInterface = AmtInterfaceManager.getInstance().getInterface(this.relayDiscoveryAddress);
+        if (this.udpInterface == null) {
+            this.udpInterface = AmtUDPInterfaceManager.getInstance().getInterface(this.relayDiscoveryAddress);
         }
-        this.amtInterface.join(this.pushChannel, groupAddress, port);
+        this.udpInterface.join(this.pushChannel, groupAddress, port);
     }
 
     @Override
     public final void join(final InetAddress groupAddress, final InetAddress sourceAddress) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtMulticastEndpoint.join", Logging.address(groupAddress),
-                                          Logging.address(sourceAddress)));
+            logger.finer(this.log.entry("AmtMulticastEndpoint.join", Logging.address(groupAddress),
+                                        Logging.address(sourceAddress)));
         }
 
         join(groupAddress, sourceAddress, this.port);
@@ -259,25 +259,25 @@ public final class AmtMulticastEndpoint
     public final void join(final InetAddress groupAddress, final InetAddress sourceAddress, final int port) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtMulticastEndpoint.join", Logging.address(groupAddress),
-                                          Logging.address(sourceAddress), port));
+            logger.finer(this.log.entry("AmtMulticastEndpoint.join", Logging.address(groupAddress),
+                                        Logging.address(sourceAddress), port));
         }
 
-        if (this.amtInterface == null) {
-            this.amtInterface = AmtInterfaceManager.getInstance().getInterface(this.relayDiscoveryAddress);
+        if (this.udpInterface == null) {
+            this.udpInterface = AmtUDPInterfaceManager.getInstance().getInterface(this.relayDiscoveryAddress);
         }
-        this.amtInterface.join(this.pushChannel, groupAddress, sourceAddress, port);
+        this.udpInterface.join(this.pushChannel, groupAddress, sourceAddress, port);
     }
 
     @Override
     public final void leave(final InetAddress groupAddress) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtMulticastEndpoint.leave", Logging.address(groupAddress)));
+            logger.finer(this.log.entry("AmtMulticastEndpoint.leave", Logging.address(groupAddress)));
         }
 
-        if (this.amtInterface != null) {
-            this.amtInterface.leave(this.pushChannel, groupAddress);
+        if (this.udpInterface != null) {
+            this.udpInterface.leave(this.pushChannel, groupAddress);
         }
     }
 
@@ -285,8 +285,8 @@ public final class AmtMulticastEndpoint
     public final void leave(final InetAddress groupAddress, final InetAddress sourceAddress) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtMulticastEndpoint.leave", Logging.address(groupAddress),
-                                          Logging.address(sourceAddress)));
+            logger.finer(this.log.entry("AmtMulticastEndpoint.leave", Logging.address(groupAddress),
+                                        Logging.address(sourceAddress)));
         }
 
         leave(groupAddress, sourceAddress, this.port);
@@ -296,11 +296,11 @@ public final class AmtMulticastEndpoint
     public final void leave(final InetAddress groupAddress, final int port) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtMulticastEndpoint.leave", Logging.address(groupAddress), port));
+            logger.finer(this.log.entry("AmtMulticastEndpoint.leave", Logging.address(groupAddress), port));
         }
 
-        if (this.amtInterface != null) {
-            this.amtInterface.leave(this.pushChannel, groupAddress, port);
+        if (this.udpInterface != null) {
+            this.udpInterface.leave(this.pushChannel, groupAddress, port);
         }
     }
 
@@ -308,12 +308,12 @@ public final class AmtMulticastEndpoint
     public final void leave(final InetAddress groupAddress, final InetAddress sourceAddress, final int port) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtMulticastEndpoint.join", Logging.address(groupAddress),
-                                          Logging.address(sourceAddress), port));
+            logger.finer(this.log.entry("AmtMulticastEndpoint.join", Logging.address(groupAddress),
+                                        Logging.address(sourceAddress), port));
         }
 
-        if (this.amtInterface != null) {
-            this.amtInterface.leave(this.pushChannel, groupAddress, sourceAddress, port);
+        if (this.udpInterface != null) {
+            this.udpInterface.leave(this.pushChannel, groupAddress, sourceAddress, port);
         }
     }
 
@@ -321,11 +321,11 @@ public final class AmtMulticastEndpoint
     public final void leave() throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtMulticastEndpoint.leave"));
+            logger.finer(this.log.entry("AmtMulticastEndpoint.leave"));
         }
 
-        if (this.amtInterface != null) {
-            this.amtInterface.leave(this.pushChannel);
+        if (this.udpInterface != null) {
+            this.udpInterface.leave(this.pushChannel);
         }
     }
 

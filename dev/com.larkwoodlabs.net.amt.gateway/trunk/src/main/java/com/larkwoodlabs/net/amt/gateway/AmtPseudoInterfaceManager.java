@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: AmtInterfaceManager.java (com.larkwoodlabs.net.amt.gateway)
+ * File: AmtPseudoInterfaceManager.java (com.larkwoodlabs.net.amt.gateway)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -27,33 +27,34 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.larkwoodlabs.util.logging.Log;
 import com.larkwoodlabs.util.logging.Logging;
 
 /**
- * Constructs and manages a collection of {@link AmtInterface} objects.
+ * Constructs and manages a collection of {@link AmtPseudoInterface} objects.
  * The interface manager creates a new interface for each unique relay discovery address.
  * Objects wishing to acquire an AMT interface must use the {@link #getInstance()} method
  * to first retrieve the singleton interface manager and then call
  * {@link #getInterface(InetAddress)} to obtain an interface.
- * The AmtInterfaceManager and AmtInterface classes are not normally accessed directly -
+ * The AmtPseudoInterfaceManager and AmtPseudoInterface classes are not normally accessed directly -
  * applications should use the {@link AmtMulticastEndpoint)} class when AMT functionality
  * is required.
  * 
  * @author Gregory Bumgardner (gbumgard)
  */
-public final class AmtInterfaceManager {
+public final class AmtPseudoInterfaceManager {
 
     /*-- Static Variables ---------------------------------------------------*/
 
     /**
      * 
      */
-    public static final Logger logger = Logger.getLogger(AmtInterfaceManager.class.getName());
+    public static final Logger logger = Logger.getLogger(AmtPseudoInterfaceManager.class.getName());
 
     /**
      * The singleton AmtTunnelTransport instance.
      */
-    private static final AmtInterfaceManager instance = new AmtInterfaceManager();
+    private static final AmtPseudoInterfaceManager instance = new AmtPseudoInterfaceManager();
 
     /**
      * The any-cast IP address used to locate an AMT relay.
@@ -67,8 +68,8 @@ public final class AmtInterfaceManager {
     /**
      * @return
      */
-    public static AmtInterfaceManager getInstance() {
-        return AmtInterfaceManager.instance;
+    public static AmtPseudoInterfaceManager getInstance() {
+        return AmtPseudoInterfaceManager.instance;
     }
 
     /**
@@ -85,13 +86,13 @@ public final class AmtInterfaceManager {
 
     /*-- Member Variables ---------------------------------------------------*/
 
-    private final String ObjectId = Logging.identify(this);
+    private final Log log = new Log(this);
 
     /**
      * Map containing AMT IPv4 and IPv6 endpoints referenced by the
      * relay discovery address used to construct each instance.
      */
-    private HashMap<InetAddress, AmtInterface> interfaces;
+    private HashMap<InetAddress, AmtPseudoInterface> interfaces;
 
     /*-- Member Functions ---------------------------------------------------*/
 
@@ -99,8 +100,8 @@ public final class AmtInterfaceManager {
      * Private constructor used to construct singleton instance.
      * Use {@link #getInstance()} to retrieve the singleton instance.
      */
-    private AmtInterfaceManager() {
-        this.interfaces = new HashMap<InetAddress, AmtInterface>();
+    private AmtPseudoInterfaceManager() {
+        this.interfaces = new HashMap<InetAddress, AmtPseudoInterface>();
     }
 
     /**
@@ -108,25 +109,26 @@ public final class AmtInterfaceManager {
      * @return
      * @throws IOException
      */
-    public synchronized AmtInterface getInterface(final InetAddress relayDiscoveryAddress) throws IOException {
+    public synchronized AmtPseudoInterface getInterface(final InetAddress relayDiscoveryAddress) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtInterfaceManager.getInterface", Logging.address(relayDiscoveryAddress)));
+            logger.finer(log.entry("AmtPseudoInterfaceManager.getInterface", Logging.address(relayDiscoveryAddress)));
         }
 
-        AmtInterface endpoint = this.interfaces.get(relayDiscoveryAddress);
+        AmtPseudoInterface endpoint = this.interfaces.get(relayDiscoveryAddress);
 
         if (endpoint == null) {
 
             if (logger.isLoggable(Level.FINE)) {
-                logger.fine(ObjectId + " constructing new AmtInterface");
+                logger.fine(log.msg("constructing new AmtPseudoInterface"));
             }
 
-            endpoint = new AmtInterface(this, relayDiscoveryAddress);
+            endpoint = new AmtPseudoInterface(this, relayDiscoveryAddress);
             this.interfaces.put(relayDiscoveryAddress, endpoint);
         }
 
         endpoint.acquire();
+
         return endpoint;
     }
 
@@ -135,10 +137,10 @@ public final class AmtInterfaceManager {
      * @throws InterruptedException
      * @throws IOException
      */
-    synchronized void closeInterface(final AmtInterface amtInterface) throws InterruptedException, IOException {
+    synchronized void closeInterface(final AmtPseudoInterface amtInterface) throws InterruptedException, IOException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "AmtInterfaceManager.closeInterface", amtInterface));
+            logger.finer(log.entry("AmtPseudoInterfaceManager.closeInterface", amtInterface));
         }
 
         amtInterface.close();
