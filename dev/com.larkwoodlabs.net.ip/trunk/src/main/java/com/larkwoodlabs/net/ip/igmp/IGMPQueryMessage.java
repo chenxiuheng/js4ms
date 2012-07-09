@@ -32,28 +32,32 @@ import com.larkwoodlabs.util.logging.Logging;
 /**
  * Base class for IGMPv2 and IGMPv3 Membership Query Message classes.
  * The two versions are differentiated by their length.
+ * 
  * @see IGMPv2QueryMessage
  * @see IGMPv3QueryMessage
  * @author Gregory Bumgardner (gbumgard)
  */
-public abstract class IGMPQueryMessage extends IGMPGroupMessage {
+public abstract class IGMPQueryMessage
+                extends IGMPGroupMessage {
 
     /*-- Inner Classes ------------------------------------------------------*/
-    
+
     /**
      * Parser used to construct and parse the appropriate Membership Query messages.
-     * 
      * The IGMP version of a Membership Query message is determined as follows:
-     * <ul> 
+     * <ul>
      * <li>IGMPv2 Query: length = 8 octets and Max Resp Code is zero.
      * <li>IGMPv3 Query: length >= 12 octets
      * </ul>
-     * Query messages that do not match any of the above conditions MUST be silently ignored.     * 
+     * Query messages that do not match any of the above conditions MUST be silently
+     * ignored. *
      */
-    public static class Parser implements IGMPMessage.ParserType {
+    public static class Parser
+                    implements IGMPMessage.ParserType {
 
         /** */
         final IGMPv2QueryMessage.Parser v2Parser = new IGMPv2QueryMessage.Parser();
+
         /** */
         final IGMPv3QueryMessage.Parser v3Parser = new IGMPv3QueryMessage.Parser();
 
@@ -94,7 +98,7 @@ public abstract class IGMPQueryMessage extends IGMPGroupMessage {
             return MESSAGE_TYPE;
         }
 
-   }
+    }
 
     /*-- Static Variables ---------------------------------------------------*/
 
@@ -114,7 +118,7 @@ public abstract class IGMPQueryMessage extends IGMPGroupMessage {
 
     static {
         byte[] address = new byte[4];
-        address[0] = (byte)224;
+        address[0] = (byte) 224;
         address[1] = 0;
         address[2] = 0;
         address[3] = 1;
@@ -125,20 +129,20 @@ public abstract class IGMPQueryMessage extends IGMPGroupMessage {
 
     /**
      * Constructs a general query message
+     * 
      * @param size
      * @param maximumResponseTime
      */
     protected IGMPQueryMessage(final int size, final short maximumResponseTime) {
         super(size, MESSAGE_TYPE, maximumResponseTime, GENERAL_QUERY_GROUP);
-        
+
         if (logger.isLoggable(Level.FINE)) {
-            logger.fine(Logging.entering(ObjectId, "IGMPQueryMessage.IGMPQueryMessage", size, maximumResponseTime));
+            logger.fine(this.log.entry("IGMPQueryMessage.IGMPQueryMessage", size, maximumResponseTime));
             logState(logger);
         }
     }
 
     /**
-     * 
      * @param size
      * @param maximumResponseTime
      * @param groupAddress
@@ -147,15 +151,15 @@ public abstract class IGMPQueryMessage extends IGMPGroupMessage {
                                final short maximumResponseTime,
                                final byte[] groupAddress) {
         super(size, MESSAGE_TYPE, maximumResponseTime, groupAddress);
-        
+
         if (logger.isLoggable(Level.FINE)) {
-            logger.fine(Logging.entering(ObjectId, "IGMPQueryMessage.IGMPQueryMessage", size, maximumResponseTime, Logging.address(groupAddress)));
+            logger.fine(this.log.entry("IGMPQueryMessage.IGMPQueryMessage", size, maximumResponseTime,
+                                       Logging.address(groupAddress)));
             logState(logger);
         }
     }
 
     /**
-     * 
      * @param buffer
      * @throws ParseException
      */
@@ -163,7 +167,7 @@ public abstract class IGMPQueryMessage extends IGMPGroupMessage {
         super(buffer);
 
         if (logger.isLoggable(Level.FINE)) {
-            logger.fine(Logging.entering(ObjectId, "IGMPQueryMessage.IGMPQueryMessage", buffer));
+            logger.fine(this.log.entry("IGMPQueryMessage.IGMPQueryMessage", buffer));
             logState(logger);
         }
     }
@@ -173,13 +177,13 @@ public abstract class IGMPQueryMessage extends IGMPGroupMessage {
         super.log(logger);
         logState(logger);
     }
-    
+
     /**
-     * 
      * @param logger
      */
     private void logState(final Logger logger) {
-        logger.info(ObjectId + " : max-resp-code="+String.format("%02X",getMaxRespCode())+" max-response-time="+getMaximumResponseTime()+"ms");
+        logger.info(this.log.msg(" : max-resp-code=" + String.format("%02X", getMaxRespCode()) + " max-response-time="
+                                 + getMaximumResponseTime() + "ms"));
     }
 
     @Override
@@ -190,6 +194,7 @@ public abstract class IGMPQueryMessage extends IGMPGroupMessage {
     /**
      * Returns the value of the message {@linkplain #MaxRespCode Max Resp Code} field.
      * The specifies the maximum time allowed for an IGMP response.
+     * 
      * @return
      */
     public byte getMaxRespCode() {
@@ -198,25 +203,24 @@ public abstract class IGMPQueryMessage extends IGMPGroupMessage {
 
     /**
      * Sets the value of the message {@linkplain #MaxRespCode Max Resp Code} field.
+     * 
      * @param maxRespCode
      */
     public void setMaxRespCode(final byte maxRespCode) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IGMPQueryMessage.setMaxRespCode", maxRespCode));
+            logger.finer(this.log.entry("IGMPQueryMessage.setMaxRespCode", maxRespCode));
         }
-        
+
         MaxRespCode.set(getBufferInternal(), maxRespCode);
     }
 
     /**
-     * 
      * @return
      */
     public abstract int getMaximumResponseTime();
 
     /**
-     * 
      * @param milliseconds
      */
     public abstract void setMaximumResponseTime(int milliseconds);

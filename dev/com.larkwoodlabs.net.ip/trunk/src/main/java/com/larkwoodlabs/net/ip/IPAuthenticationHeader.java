@@ -26,7 +26,6 @@ import java.util.logging.Logger;
 
 import com.larkwoodlabs.common.exceptions.ParseException;
 import com.larkwoodlabs.util.buffer.parser.MissingParserException;
-import com.larkwoodlabs.util.logging.Logging;
 
 /**
  * An IP authentication header.
@@ -186,7 +185,7 @@ public final class IPAuthenticationHeader
         super(consume(buffer, ((HeaderLength.get(buffer) + 2) * 4)), IP_PROTOCOL_NUMBER);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPAuthenticationHeader.IPAuthenticationHeader", buffer));
+            logger.finer(this.log.entry("IPAuthenticationHeader.IPAuthenticationHeader", buffer));
             logState(logger);
         }
     }

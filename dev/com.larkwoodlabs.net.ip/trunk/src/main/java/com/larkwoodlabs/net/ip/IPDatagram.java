@@ -33,10 +33,10 @@ import com.larkwoodlabs.util.logging.Logging;
 /**
  * Represents an IP datagram containing a single IP message.
  * 
- *
  * @author Greg Bumgardner (gbumgard)
  */
-public final class IPDatagram extends LoggableBase {
+public final class IPDatagram
+                extends LoggableBase {
 
     /*-- Static Variables ---------------------------------------------------*/
 
@@ -48,7 +48,6 @@ public final class IPDatagram extends LoggableBase {
      */
     public static final IPDatagram FINAL = new IPDatagram();
 
-
     /*-- Member Variables ---------------------------------------------------*/
 
     /** */
@@ -56,10 +55,9 @@ public final class IPDatagram extends LoggableBase {
 
     /** */
     InetAddress destinationInetAddress;
-    
+
     /** */
     IPMessage payload;
-
 
     /*-- Member Functions ---------------------------------------------------*/
 
@@ -67,11 +65,10 @@ public final class IPDatagram extends LoggableBase {
      * 
      */
     private IPDatagram() {
-        
+
     }
 
     /**
-     * 
      * @param sourceInetAddress
      * @param destinationInetAddress
      * @param payload
@@ -81,8 +78,7 @@ public final class IPDatagram extends LoggableBase {
                       final IPMessage payload) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId,
-                                        "IPDatagram.IPDatagram",
+            logger.finer(this.log.entry("IPDatagram.IPDatagram",
                                         Logging.address(sourceInetAddress),
                                         Logging.address(destinationInetAddress),
                                         payload));
@@ -92,14 +88,13 @@ public final class IPDatagram extends LoggableBase {
 
         this.sourceInetAddress = sourceInetAddress;
         this.destinationInetAddress = destinationInetAddress;
-        
+
         if (logger.isLoggable(Level.FINER)) {
             logState(logger);
         }
     }
 
     /**
-     * 
      * @param sourceAddress
      * @param destinationAddress
      * @param payload
@@ -109,11 +104,10 @@ public final class IPDatagram extends LoggableBase {
                       final IPMessage payload) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId,
-                                          "IPDatagram.IPDatagram",
-                                          Logging.address(sourceAddress),
-                                          Logging.address(destinationAddress),
-                                          payload));
+            logger.finer(this.log.entry("IPDatagram.IPDatagram",
+                                        Logging.address(sourceAddress),
+                                        Logging.address(destinationAddress),
+                                        payload));
         }
 
         Precondition.checkAddresses(sourceAddress, destinationAddress);
@@ -143,21 +137,21 @@ public final class IPDatagram extends LoggableBase {
         super.log(logger);
         logState(logger);
     }
-    
+
     /**
      * Logs state variables declared or maintained by this class.
+     * 
      * @param logger
      */
     private void logState(final Logger logger) {
-        logger.info(ObjectId + " : source="+Logging.address(getSourceAddress()));
-        logger.info(ObjectId + " : destination="+Logging.address(getDestinationAddress()));
-        logger.info(ObjectId + " ----> payload");
+        logger.info(this.log.msg(": source=" + Logging.address(getSourceAddress())));
+        logger.info(this.log.msg(": destination=" + Logging.address(getDestinationAddress())));
+        logger.info(this.log.msg("----> payload"));
         this.payload.log(logger);
-        logger.info(ObjectId + " <---- payload");
+        logger.info(this.log.msg("<---- payload"));
     }
 
     /**
-     * 
      * @param buffer
      */
     public void writeTo(final ByteBuffer buffer) {
@@ -165,7 +159,6 @@ public final class IPDatagram extends LoggableBase {
     }
 
     /**
-     * 
      * @return
      */
     public InetAddress getSourceInetAddress() {
@@ -173,7 +166,6 @@ public final class IPDatagram extends LoggableBase {
     }
 
     /**
-     * 
      * @return
      */
     public byte[] getSourceAddress() {
@@ -181,7 +173,6 @@ public final class IPDatagram extends LoggableBase {
     }
 
     /**
-     * 
      * @return
      */
     public InetAddress getDestinationInetAddress() {
@@ -189,7 +180,6 @@ public final class IPDatagram extends LoggableBase {
     }
 
     /**
-     * 
      * @return
      */
     public byte[] getDestinationAddress() {
@@ -197,7 +187,6 @@ public final class IPDatagram extends LoggableBase {
     }
 
     /**
-     * 
      * @param sourceInetAddress
      * @param destinationInetAddress
      */
@@ -209,7 +198,6 @@ public final class IPDatagram extends LoggableBase {
     }
 
     /**
-     * 
      * @param sourceAddress
      * @param destinationAddress
      */
@@ -217,7 +205,8 @@ public final class IPDatagram extends LoggableBase {
                              final byte[] destinationAddress) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPDatagram.setAddresses", Logging.address(sourceAddress), Logging.address(destinationAddress)));
+            logger.finer(this.log.entry("IPDatagram.setAddresses", Logging.address(sourceAddress),
+                                        Logging.address(destinationAddress)));
         }
 
         Precondition.checkAddresses(sourceAddress, destinationAddress);
@@ -230,9 +219,8 @@ public final class IPDatagram extends LoggableBase {
             throw new Error(e);
         }
     }
-    
+
     /**
-     * 
      * @return
      */
     public IPMessage getPayload() {
@@ -240,13 +228,12 @@ public final class IPDatagram extends LoggableBase {
     }
 
     /**
-     * 
      * @param payload
      */
     public void setPayload(final IPMessage payload) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPDatagram.setPayload", payload));
+            logger.finer(this.log.entry("IPDatagram.setPayload", payload));
         }
 
         this.payload = payload;

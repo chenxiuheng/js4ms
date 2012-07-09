@@ -347,7 +347,7 @@ public final class MLDv2QueryMessage
         super(BASE_MESSAGE_LENGTH);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "MLDv2QueryMessage.MLDv2QueryMessage"));
+            logger.finer(this.log.entry("MLDv2QueryMessage.MLDv2QueryMessage"));
         }
 
         Reserved.set(getBufferInternal(), (byte) 0);
@@ -367,7 +367,7 @@ public final class MLDv2QueryMessage
         super(BASE_MESSAGE_LENGTH, groupAddress);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "MLDv2QueryMessage.MLDv2QueryMessage", Logging.address(groupAddress)));
+            logger.finer(this.log.entry("MLDv2QueryMessage.MLDv2QueryMessage", Logging.address(groupAddress)));
         }
 
         Reserved.set(getBufferInternal(), (byte) 0);
@@ -388,7 +388,7 @@ public final class MLDv2QueryMessage
         super(consume(buffer, BASE_MESSAGE_LENGTH));
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "MLDv2QueryMessage.MLDv2QueryMessage", buffer));
+            logger.finer(this.log.entry("MLDv2QueryMessage.MLDv2QueryMessage", buffer));
         }
 
         int numberOfSources = getNumberOfSources();
@@ -415,16 +415,16 @@ public final class MLDv2QueryMessage
      * @param logger
      */
     private void logState(final Logger logger) {
-        logger.info(ObjectId + " : suppress-router-side-processing=" + getSuppressRouterSideProcessing());
-        logger.info(ObjectId + " : querier-robustness-variable=" + getQuerierRobustnessVariable());
-        logger.info(ObjectId + " : querier-query-interval-code=" + getQuerierQueryIntervalCode() + " " + getQueryIntervalTime()
-                    + "ms");
-        logger.info(ObjectId + " : number-of-sources=" + getNumberOfSources());
-        logger.info(ObjectId + " ----> start sources");
+        logger.info(this.log.msg(": suppress-router-side-processing=" + getSuppressRouterSideProcessing()));
+        logger.info(this.log.msg(": querier-robustness-variable=" + getQuerierRobustnessVariable()));
+        logger.info(this.log.msg(": querier-query-interval-code=" + getQuerierQueryIntervalCode() + " " + getQueryIntervalTime()
+                                 + "ms"));
+        logger.info(this.log.msg(": number-of-sources=" + getNumberOfSources()));
+        logger.info(this.log.msg("----> start sources"));
         for (int i = 0; i < getNumberOfSources(); i++) {
-            logger.info(ObjectId + " : source[" + i + "]=" + Logging.address(getSource(i)));
+            logger.info(this.log.msg(": source[" + i + "]=" + Logging.address(getSource(i))));
         }
-        logger.info(ObjectId + " <---- end sources");
+        logger.info(this.log.msg("<---- end sources"));
     }
 
     /**
@@ -437,7 +437,7 @@ public final class MLDv2QueryMessage
     public void writeTo(final ByteBuffer buffer) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "MLDv2QueryMessage.writeTo", buffer));
+            logger.finer(this.log.entry("MLDv2QueryMessage.writeTo", buffer));
         }
 
         super.writeTo(buffer);
@@ -453,11 +453,10 @@ public final class MLDv2QueryMessage
                               final byte[] destinationAddress) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId,
-                                          "MLDv2QueryMessage.writeChecksum",
-                                          buffer,
-                                          Logging.address(sourceAddress),
-                                          Logging.address(destinationAddress)));
+            logger.finer(this.log.entry("MLDv2QueryMessage.writeChecksum",
+                                        buffer,
+                                        Logging.address(sourceAddress),
+                                        Logging.address(destinationAddress)));
         }
 
         MLDv2QueryMessage.setChecksum(buffer, sourceAddress, destinationAddress);
@@ -537,7 +536,7 @@ public final class MLDv2QueryMessage
     public void setMaximumResponseDelay(final short milliseconds) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "MLDv2QueryMessage.setMaximumResponseDelay", milliseconds));
+            logger.finer(this.log.entry("MLDv2QueryMessage.setMaximumResponseDelay", milliseconds));
         }
 
         if (milliseconds < 32768) {
@@ -589,8 +588,8 @@ public final class MLDv2QueryMessage
     public void setSuppressRouterSideProcessing(final boolean suppressRouterSideProcessing) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "MLDv2QueryMessage.setSuppressRouterSideProcessing",
-                                          suppressRouterSideProcessing));
+            logger.finer(this.log.entry("MLDv2QueryMessage.setSuppressRouterSideProcessing",
+                                        suppressRouterSideProcessing));
         }
 
         SuppressRouterSideProcessing.set(getBufferInternal(), suppressRouterSideProcessing);
@@ -633,7 +632,7 @@ public final class MLDv2QueryMessage
     public void setQuerierRobustnessVariable(final byte querierRobustnessVariable) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "MLDv2QueryMessage.setQuerierRobustnessVariable", querierRobustnessVariable));
+            logger.finer(this.log.entry("MLDv2QueryMessage.setQuerierRobustnessVariable", querierRobustnessVariable));
         }
 
         QuerierRobustnessVariable.set(getBufferInternal(), querierRobustnessVariable);
@@ -686,7 +685,7 @@ public final class MLDv2QueryMessage
     public void setQuerierQueryIntervalCode(final byte querierQueryIntervalCode) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "MLDv2QueryMessage.setQuerierQueryIntervalCode", querierQueryIntervalCode));
+            logger.finer(this.log.entry("MLDv2QueryMessage.setQuerierQueryIntervalCode", querierQueryIntervalCode));
         }
 
         QuerierQueryIntervalCode.set(getBufferInternal(), querierQueryIntervalCode);
@@ -720,7 +719,7 @@ public final class MLDv2QueryMessage
     public void setQueryIntervalTime(final int seconds) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "MLDv2QueryMessage.setQueryIntervalTime", seconds));
+            logger.finer(this.log.entry("MLDv2QueryMessage.setQueryIntervalTime", seconds));
         }
 
         if (seconds < 128) {
@@ -745,7 +744,7 @@ public final class MLDv2QueryMessage
     protected void setNumberOfSources(final int numberOfSources) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "MLDv2QueryMessage.setNumberOfSources", numberOfSources));
+            logger.finer(this.log.entry("MLDv2QueryMessage.setNumberOfSources", numberOfSources));
         }
 
         NumberOfSources.set(getBufferInternal(), (short) numberOfSources);
@@ -758,7 +757,7 @@ public final class MLDv2QueryMessage
     public void addSource(final InetAddress sourceAddress) throws UnknownHostException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "MLDv2QueryMessage.addSource", sourceAddress));
+            logger.finer(this.log.entry("MLDv2QueryMessage.addSource", sourceAddress));
         }
 
         addSource(sourceAddress.getAddress());
@@ -770,7 +769,7 @@ public final class MLDv2QueryMessage
     public void addSource(final byte[] sourceAddress) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "MLDv2QueryMessage.addSource", Logging.address(sourceAddress)));
+            logger.finer(this.log.entry("MLDv2QueryMessage.addSource", Logging.address(sourceAddress)));
         }
 
         this.sources.add(sourceAddress.clone());

@@ -124,7 +124,7 @@ public class IPExtensionHeader
         this.protocolNumber = protocolNumber;
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPExtensionHeader.IPv6ExtensionHeader", protocolNumber));
+            logger.finer(this.log.entry("IPExtensionHeader.IPv6ExtensionHeader", protocolNumber));
             logState(logger);
         }
     }
@@ -138,7 +138,7 @@ public class IPExtensionHeader
         this.protocolNumber = protocolNumber;
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPExtensionHeader.IPv6ExtensionHeader", size, protocolNumber));
+            logger.finer(this.log.entry("IPExtensionHeader.IPv6ExtensionHeader", size, protocolNumber));
             logState(logger);
         }
     }
@@ -153,7 +153,7 @@ public class IPExtensionHeader
         this(consume(buffer, HeaderLength.get(buffer) * 8 + 8), (byte) 0);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPExtensionHeader.IPv6ExtensionHeader", buffer));
+            logger.finer(this.log.entry("IPExtensionHeader.IPv6ExtensionHeader", buffer));
             logState(logger);
         }
     }
@@ -169,7 +169,7 @@ public class IPExtensionHeader
         this.protocolNumber = protocolNumber;
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPExtensionHeader.IPv6ExtensionHeader", buffer));
+            logger.finer(this.log.entry("IPExtensionHeader.IPv6ExtensionHeader", buffer));
             logState(logger);
         }
     }
@@ -191,9 +191,9 @@ public class IPExtensionHeader
      * @param logger
      */
     private void logState(final Logger logger) {
-        logger.info(ObjectId + " : protocol=" + getProtocolNumber());
-        logger.info(ObjectId + " : next-header=" + getNextProtocolNumber());
-        logger.info(ObjectId + " : header-length=" + getHeaderLength());
+        logger.info(this.log.msg(": protocol=" + getProtocolNumber()));
+        logger.info(this.log.msg(": next-header=" + getNextProtocolNumber()));
+        logger.info(this.log.msg(": header-length=" + getHeaderLength()));
     }
 
     @Override
@@ -202,11 +202,10 @@ public class IPExtensionHeader
                                     final byte[] destinationAddress) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId,
-                                          "IPExtensionHeader.writeChecksum",
-                                          buffer,
-                                          Logging.address(sourceAddress),
-                                          Logging.address(destinationAddress)));
+            logger.finer(this.log.entry("IPExtensionHeader.writeChecksum",
+                                        buffer,
+                                        Logging.address(sourceAddress),
+                                        Logging.address(destinationAddress)));
         }
         // Does nothing - extension headers do not carry checksums
     }
@@ -220,7 +219,7 @@ public class IPExtensionHeader
     public void setProtocolNumber(final byte protocolNumber) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPExtensionHeader.setProtocolNumber", protocolNumber));
+            logger.finer(this.log.entry("IPExtensionHeader.setProtocolNumber", protocolNumber));
         }
 
         this.protocolNumber = protocolNumber;
@@ -237,7 +236,7 @@ public class IPExtensionHeader
     protected final void setNextProtocolNumber(final byte protocolNumber) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPExtensionHeader.setNextProtocolNumber", protocolNumber));
+            logger.finer(this.log.entry("IPExtensionHeader.setNextProtocolNumber", protocolNumber));
         }
 
         NextHeader.set(getBufferInternal(), protocolNumber);
@@ -264,7 +263,7 @@ public class IPExtensionHeader
     protected final void setHeaderLength(final int length) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPExtensionHeader.setHeaderLength", length));
+            logger.finer(this.log.entry("IPExtensionHeader.setHeaderLength", length));
         }
 
         HeaderLength.set(getBufferInternal(), (byte) Math.min((length / 8) - 1, 0));
@@ -284,7 +283,7 @@ public class IPExtensionHeader
     public final void setNextMessage(final IPMessage nextProtocolHeader) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPExtensionHeader.setNextMessage", nextProtocolHeader));
+            logger.finer(this.log.entry("IPExtensionHeader.setNextMessage", nextProtocolHeader));
         }
 
         // Null value is allowed
@@ -301,7 +300,7 @@ public class IPExtensionHeader
     public final void removeNextMessage() {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPExtensionHeader.removeNextMessage"));
+            logger.finer(this.log.entry("IPExtensionHeader.removeNextMessage"));
         }
 
         IPMessage nextMessage = getNextMessage();

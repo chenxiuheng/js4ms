@@ -517,21 +517,20 @@ public final class IPv4Packet
                       final IPMessage firstProtocolHeader) {
         super(BASE_HEADER_LENGTH);
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId,
-                                          "IPv4Packet.IPv4Packet",
-                                          precedence,
-                                          minimizeDelay,
-                                          maximizeThroughput,
-                                          maximizeReliability,
-                                          minimizeMonetaryCost,
-                                          identification,
-                                          doNotFragment,
-                                          moreFragments,
-                                          fragmentOffset,
-                                          ttl,
-                                          sourceAddress,
-                                          destinationAddress,
-                                          firstProtocolHeader));
+            logger.finer(this.log.entry("IPv4Packet.IPv4Packet",
+                                        precedence,
+                                        minimizeDelay,
+                                        maximizeThroughput,
+                                        maximizeReliability,
+                                        minimizeMonetaryCost,
+                                        identification,
+                                        doNotFragment,
+                                        moreFragments,
+                                        fragmentOffset,
+                                        ttl,
+                                        sourceAddress,
+                                        destinationAddress,
+                                        firstProtocolHeader));
         }
         setVersion(INTERNET_PROTOCOL_VERSION);
         setHeaderLength(BASE_HEADER_LENGTH);
@@ -575,17 +574,16 @@ public final class IPv4Packet
                       final IPMessage firstProtocolHeader) {
         super(BASE_HEADER_LENGTH);
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId,
-                                          "IPv4Packet.IPv4Packet",
-                                          tos,
-                                          identification,
-                                          doNotFragment,
-                                          moreFragments,
-                                          fragmentOffset,
-                                          ttl,
-                                          sourceAddress,
-                                          destinationAddress,
-                                          firstProtocolHeader));
+            logger.finer(this.log.entry("IPv4Packet.IPv4Packet",
+                                        tos,
+                                        identification,
+                                        doNotFragment,
+                                        moreFragments,
+                                        fragmentOffset,
+                                        ttl,
+                                        sourceAddress,
+                                        destinationAddress,
+                                        firstProtocolHeader));
         }
         setVersion(INTERNET_PROTOCOL_VERSION);
         setTypeOfService(tos);
@@ -614,7 +612,7 @@ public final class IPv4Packet
         super(consume(buffer, BASE_HEADER_LENGTH));
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv4Packet.IPv4Packet", buffer));
+            logger.finer(this.log.entry("IPv4Packet.IPv4Packet", buffer));
         }
 
         this.unparsedOptions = consume(buffer, getHeaderLength() - BASE_HEADER_LENGTH);
@@ -636,7 +634,7 @@ public final class IPv4Packet
         super(consume(is, BASE_HEADER_LENGTH));
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv4Packet.IPv4Packet", is));
+            logger.finer(this.log.entry("IPv4Packet.IPv4Packet", is));
         }
 
         this.unparsedOptions = consume(is, getHeaderLength() - BASE_HEADER_LENGTH);
@@ -663,55 +661,55 @@ public final class IPv4Packet
      */
     private void logState(final Logger logger) {
         if (getFragmentOffset() != 0 || getMoreFragments()) {
-            logger.info(ObjectId + " : *** Fragmented Packet ***");
+            logger.info(this.log.msg(": *** Fragmented Packet ***"));
         }
-        logger.info(ObjectId + " : total-length=" + getTotalLength());
-        logger.info(ObjectId + " : header-length=" + getHeaderLength());
-        logger.info(ObjectId + " : payload-length=" + getPayloadLength());
-        logger.info(ObjectId + " : precedence=" + getPrecedence());
-        logger.info(ObjectId + " : minimize-delay=" + getMinimizeDelay());
-        logger.info(ObjectId + " : maximize-throughput=" + getMaximizeThroughput());
-        logger.info(ObjectId + " : maximize-reliability=" + getMaximizeReliability());
-        logger.info(ObjectId + " : minimize-cost=" + getMinimizeMonetaryCost());
-        logger.info(ObjectId + " : identification=" + getIdentification());
-        logger.info(ObjectId + " : don't-fragment=" + getDoNotFragment());
-        logger.info(ObjectId + " : more-fragments=" + getMoreFragments());
-        logger.info(ObjectId + " : fragment-offset=" + getFragmentOffset());
-        logger.info(ObjectId + " : TTL=" + getTTL());
-        logger.info(ObjectId + " : protocol=" + getProtocol());
-        logger.info(ObjectId + " : checksum=" + getHeaderChecksum());
-        logger.info(ObjectId + " : source-address=" + Logging.address(getSourceAddress()));
-        logger.info(ObjectId + " : destination-address=" + Logging.address(getDestinationAddress()));
+        logger.info(this.log.msg(": total-length=" + getTotalLength()));
+        logger.info(this.log.msg(": header-length=" + getHeaderLength()));
+        logger.info(this.log.msg(": payload-length=" + getPayloadLength()));
+        logger.info(this.log.msg(": precedence=" + getPrecedence()));
+        logger.info(this.log.msg(": minimize-delay=" + getMinimizeDelay()));
+        logger.info(this.log.msg(": maximize-throughput=" + getMaximizeThroughput()));
+        logger.info(this.log.msg(": maximize-reliability=" + getMaximizeReliability()));
+        logger.info(this.log.msg(": minimize-cost=" + getMinimizeMonetaryCost()));
+        logger.info(this.log.msg(": identification=" + getIdentification()));
+        logger.info(this.log.msg(": don't-fragment=" + getDoNotFragment()));
+        logger.info(this.log.msg(": more-fragments=" + getMoreFragments()));
+        logger.info(this.log.msg(": fragment-offset=" + getFragmentOffset()));
+        logger.info(this.log.msg(": TTL=" + getTTL()));
+        logger.info(this.log.msg(": protocol=" + getProtocol()));
+        logger.info(this.log.msg(": checksum=" + getHeaderChecksum()));
+        logger.info(this.log.msg(": source-address=" + Logging.address(getSourceAddress())));
+        logger.info(this.log.msg(": destination-address=" + Logging.address(getDestinationAddress())));
         if (this.unparsedOptions != null) {
-            logger.info(ObjectId + " : unparsed options offset=" + this.unparsedOptions.arrayOffset() + " limit="
-                        + this.unparsedOptions.limit());
+            logger.info(this.log.msg(": unparsed options offset=" + this.unparsedOptions.arrayOffset() + " limit="
+                                     + this.unparsedOptions.limit()));
         }
         if (this.options != null && this.options.size() > 0) {
-            logger.info(ObjectId + " ----> header options");
+            logger.info(this.log.msg("----> header options"));
             Iterator<IPHeaderOption> iter = this.options.iterator();
             while (iter.hasNext()) {
                 iter.next().log(logger);
             }
-            logger.info(ObjectId + " <---- header options");
+            logger.info(this.log.msg("<---- header options"));
         }
         if (this.unparsedPayload != null) {
-            logger.info(ObjectId + " : unparsed payload offset=" + this.unparsedPayload.arrayOffset() + " limit="
-                        + this.unparsedPayload.limit());
+            logger.info(this.log.msg(": unparsed payload offset=" + this.unparsedPayload.arrayOffset() + " limit="
+                                     + this.unparsedPayload.limit()));
         }
-        logger.info(ObjectId + " ----> protocol messages");
+        logger.info(this.log.msg("----> protocol messages"));
         IPMessage nextMessage = getFirstProtocolMessage();
         while (nextMessage != null) {
             nextMessage.log(logger);
             nextMessage = nextMessage.getNextMessage();
         }
-        logger.info(ObjectId + " <---- protocol messages");
+        logger.info(this.log.msg("<---- protocol messages"));
     }
 
     @Override
     public void writeTo(final ByteBuffer buffer) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv4Packet.writeTo", buffer));
+            logger.finer(this.log.entry("IPv4Packet.writeTo", buffer));
         }
 
         // Create a separate view of the underlying bytes to use for writing the checksum
@@ -757,7 +755,7 @@ public final class IPv4Packet
     public void writeChecksum(final ByteBuffer buffer) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv4Packet.writeChecksum", buffer));
+            logger.finer(this.log.entry("IPv4Packet.writeChecksum", buffer));
         }
 
         // Precondition.checkReference(buffer);
@@ -773,7 +771,7 @@ public final class IPv4Packet
     protected void setNextProtocolNumber(final byte protocolNumber) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv4Packet.setNextProtocolNumber", protocolNumber));
+            logger.finer(this.log.entry("IPv4Packet.setNextProtocolNumber", protocolNumber));
         }
 
         setProtocol(protocolNumber);
@@ -812,7 +810,7 @@ public final class IPv4Packet
     private void setHeaderLength(final int length) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv4Packet.setHeaderLength", length));
+            logger.finer(this.log.entry("IPv4Packet.setHeaderLength", length));
         }
 
         HeaderLength.set(getBufferInternal(), (byte) (length / 4));
@@ -825,7 +823,7 @@ public final class IPv4Packet
     private void updateHeaderLength() {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv4Packet.updateHeaderLength"));
+            logger.finer(this.log.entry("IPv4Packet.updateHeaderLength"));
         }
 
         int headerLength = getHeaderLength();
@@ -865,7 +863,7 @@ public final class IPv4Packet
     public void setTypeOfService(final byte tos) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv4Packet.setTypeOfService", tos));
+            logger.finer(this.log.entry("IPv4Packet.setTypeOfService", tos));
         }
 
         TypeOfService.set(getBufferInternal(), tos);
@@ -929,7 +927,7 @@ public final class IPv4Packet
     public void setPrecedence(final byte precedence) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv4Packet.setPrecedence", precedence));
+            logger.finer(this.log.entry("IPv4Packet.setPrecedence", precedence));
         }
 
         Precedence.set(getBufferInternal(), precedence);
@@ -964,7 +962,7 @@ public final class IPv4Packet
     public void setMinimizeDelay(final boolean minimizeDelay) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv4Packet.setMinimizeDelay", minimizeDelay));
+            logger.finer(this.log.entry("IPv4Packet.setMinimizeDelay", minimizeDelay));
         }
 
         MinimizeDelay.set(getBufferInternal(), minimizeDelay);
@@ -1000,7 +998,7 @@ public final class IPv4Packet
     public void setMaximizeThroughput(final boolean maximizeThroughput) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv4Packet.setMaximizeThroughput", maximizeThroughput));
+            logger.finer(this.log.entry("IPv4Packet.setMaximizeThroughput", maximizeThroughput));
         }
 
         MaximizeThroughput.set(getBufferInternal(), maximizeThroughput);
@@ -1035,7 +1033,7 @@ public final class IPv4Packet
     public void setMaximizeReliability(final boolean maximizeReliability) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv4Packet.setMaximizeReliability", maximizeReliability));
+            logger.finer(this.log.entry("IPv4Packet.setMaximizeReliability", maximizeReliability));
         }
 
         MaximizeReliability.set(getBufferInternal(), maximizeReliability);
@@ -1071,7 +1069,7 @@ public final class IPv4Packet
     public void setMinimizeMonetaryCost(final boolean minimizeMonetaryCost) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "setMinimizeMonetaryCost", minimizeMonetaryCost));
+            logger.finer(this.log.entry("setMinimizeMonetaryCost", minimizeMonetaryCost));
         }
 
         MinimizeMonetaryCost.set(getBufferInternal(), minimizeMonetaryCost);
@@ -1102,7 +1100,7 @@ public final class IPv4Packet
     protected void setTotalLength(final short totalLength) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv4Packet.setTotalLength", totalLength));
+            logger.finer(this.log.entry("IPv4Packet.setTotalLength", totalLength));
         }
 
         TotalLength.set(getBufferInternal(), totalLength);
@@ -1117,7 +1115,7 @@ public final class IPv4Packet
     protected void setPayloadLength(final int length) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv4Packet.setPayloadLength", length));
+            logger.finer(this.log.entry("IPv4Packet.setPayloadLength", length));
         }
 
         setTotalLength((short) (getHeaderLength() + length));
@@ -1148,7 +1146,7 @@ public final class IPv4Packet
     public void setIdentification(final short identification) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv4Packet.setIdentification", identification));
+            logger.finer(this.log.entry("IPv4Packet.setIdentification", identification));
         }
 
         Identification.set(getBufferInternal(), identification);
@@ -1184,7 +1182,7 @@ public final class IPv4Packet
     public void setDoNotFragment(final boolean doNotFragment) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv4Packet.setDoNotFragment", doNotFragment));
+            logger.finer(this.log.entry("IPv4Packet.setDoNotFragment", doNotFragment));
         }
 
         DontFragment.set(getBufferInternal(), doNotFragment);
@@ -1221,7 +1219,7 @@ public final class IPv4Packet
     public void setMoreFragments(final boolean moreFragments) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv4Packet.setMoreFragments", moreFragments));
+            logger.finer(this.log.entry("IPv4Packet.setMoreFragments", moreFragments));
         }
 
         MoreFragments.set(getBufferInternal(), moreFragments);
@@ -1265,7 +1263,7 @@ public final class IPv4Packet
     public void setFragmentOffset(final short fragmentOffset) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv4Packet.setFragmentOffset", fragmentOffset));
+            logger.finer(this.log.entry("IPv4Packet.setFragmentOffset", fragmentOffset));
         }
 
         FragmentOffset.set(getBufferInternal(), fragmentOffset);
@@ -1305,7 +1303,7 @@ public final class IPv4Packet
     public void setTTL(final byte ttl) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv4Packet.setTTL", ttl));
+            logger.finer(this.log.entry("IPv4Packet.setTTL", ttl));
         }
 
         TTL.set(getBufferInternal(), ttl);
@@ -1340,7 +1338,7 @@ public final class IPv4Packet
     protected void setProtocol(final byte protocol) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv4Packet.setProtocol", protocol));
+            logger.finer(this.log.entry("IPv4Packet.setProtocol", protocol));
         }
 
         Protocol.set(getBufferInternal(), protocol);
@@ -1371,7 +1369,7 @@ public final class IPv4Packet
     public void setHeaderChecksum(final short checksum) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv4Packet.setHeaderChecksum", checksum));
+            logger.finer(this.log.entry("IPv4Packet.setHeaderChecksum", checksum));
         }
 
         HeaderChecksum.set(getBufferInternal(), checksum);
@@ -1426,7 +1424,7 @@ public final class IPv4Packet
     public void setSourceAddress(final Inet4Address sourceAddress) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv4Packet.setSourceAddress", sourceAddress));
+            logger.finer(this.log.entry("IPv4Packet.setSourceAddress", sourceAddress));
         }
 
         // Precondition.checkReference(sourceAddress);
@@ -1444,7 +1442,7 @@ public final class IPv4Packet
     public void setSourceAddress(final byte[] address) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv4Packet.setSourceAddress", Logging.address(address)));
+            logger.finer(this.log.entry("IPv4Packet.setSourceAddress", Logging.address(address)));
         }
 
         // Precondition.checkIPv4Address(address);
@@ -1500,7 +1498,7 @@ public final class IPv4Packet
     public void setDestinationAddress(final Inet4Address destinationAddress) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv4Packet.setDestinationAddress", destinationAddress));
+            logger.finer(this.log.entry("IPv4Packet.setDestinationAddress", destinationAddress));
         }
 
         // Precondition.checkReference(destinationAddress);
@@ -1518,7 +1516,7 @@ public final class IPv4Packet
     public void setDestinationAddress(final byte[] address) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv4Packet.setDestinationAddress", Logging.address(address)));
+            logger.finer(this.log.entry("IPv4Packet.setDestinationAddress", Logging.address(address)));
         }
 
         // Precondition.checkIPv4Address(address);
@@ -1531,7 +1529,7 @@ public final class IPv4Packet
     public void addOption(final IPHeaderOption option) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv4Packet.addOption", option));
+            logger.finer(this.log.entry("IPv4Packet.addOption", option));
         }
 
         // Precondition.checkReference(option);
@@ -1546,7 +1544,7 @@ public final class IPv4Packet
     public void removeOption(final IPHeaderOption option) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv4Packet.removeOption", option));
+            logger.finer(this.log.entry("IPv4Packet.removeOption", option));
         }
 
         if (this.options != null) {
@@ -1594,7 +1592,7 @@ public final class IPv4Packet
     public void parseOptions(final IPHeaderOption.Parser optionParser) throws ParseException, MissingParserException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv4Packet.parseOptions", optionParser));
+            logger.finer(this.log.entry("IPv4Packet.parseOptions", optionParser));
         }
 
         if (this.unparsedOptions != null) {
@@ -1668,7 +1666,7 @@ public final class IPv4Packet
     public void parsePayload(final IPMessage.Parser protocolParser) throws ParseException, MissingParserException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv4Packet.parsePayload", protocolParser));
+            logger.finer(this.log.entry("IPv4Packet.parsePayload", protocolParser));
         }
 
         this.unparsedPayload.rewind();
@@ -1682,7 +1680,7 @@ public final class IPv4Packet
             if (!protocolParser.verifyChecksum(this.unparsedPayload, lastProtocolNumber, getSourceAddress(),
                                                getDestinationAddress())) {
                 if (logger.isLoggable(Level.INFO)) {
-                    logger.info(ObjectId + " invalid checksum detected in IP protocol packet");
+                    logger.info(this.log.msg("invalid checksum detected in IP protocol packet"));
                 }
                 throw new ParseException("invalid checksum detected in IP protocol packet");
             }
@@ -1698,7 +1696,7 @@ public final class IPv4Packet
                     if (!protocolParser.verifyChecksum(this.unparsedPayload, lastProtocolNumber, getSourceAddress(),
                                                        getDestinationAddress())) {
                         if (logger.isLoggable(Level.INFO)) {
-                            logger.info(ObjectId + " invalid checksum detected in IP protocol packet");
+                            logger.info(this.log.msg("invalid checksum detected in IP protocol packet"));
                         }
                         throw new ParseException("invalid checksum detected in IP protocol packet");
                     }

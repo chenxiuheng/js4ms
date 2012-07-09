@@ -28,12 +28,9 @@ import com.larkwoodlabs.common.exceptions.ParseException;
 import com.larkwoodlabs.net.ip.IPHeaderOption;
 import com.larkwoodlabs.net.ip.IPMultiByteHeaderOption;
 import com.larkwoodlabs.util.buffer.fields.ShortField;
-import com.larkwoodlabs.util.logging.Logging;
 
 /**
- * Represents an IPv4 Router Alert Option.
- * <h3>Option Format</h3>
- * <blockquote>
+ * Represents an IPv4 Router Alert Option. <h3>Option Format</h3> <blockquote>
  * 
  * <pre>
  *   0                   1                   2                   3   
@@ -52,9 +49,9 @@ import com.larkwoodlabs.util.logging.Logging;
  * |1|0 0|1 0 1 0 0| 0x94
  * +-+-+-+-+-+-+-+-+
  * </pre>
+ * 
  * <p>
- * See {@link #getCopyFlag()}, {@link #getOptionClass()}, {@link #getOptionNumber()}.
- * </dd>
+ * See {@link #getCopyFlag()}, {@link #getOptionClass()}, {@link #getOptionNumber()}.</dd>
  * <p>
  * <dt><u>Length</u></dt>
  * <p>
@@ -68,9 +65,9 @@ import com.larkwoodlabs.util.logging.Logging;
  *   0        Router shall examine packet.
  *   1-65535  Reserved.
  * </pre>
+ * 
  * <p>
- * See {@link #getRouterAlertValue()}, {@link #setRouterAlertValue(short)}.
- * </dd>
+ * See {@link #getRouterAlertValue()}, {@link #setRouterAlertValue(short)}.</dd>
  * </dl>
  * </blockquote>
  * 
@@ -131,7 +128,7 @@ public final class IPv4RouterAlertOption
         this((short) 0);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv4RouterAlertOption.IPv4RouterAlertOption"));
+            logger.finer(this.log.entry("IPv4RouterAlertOption.IPv4RouterAlertOption"));
         }
     }
 
@@ -142,7 +139,7 @@ public final class IPv4RouterAlertOption
         super(OPTION_VALUE, OPTION_LENGTH);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv4RouterAlertOption.IPv4RouterAlertOption", routerAlertValue));
+            logger.finer(this.log.entry("IPv4RouterAlertOption.IPv4RouterAlertOption", routerAlertValue));
         }
 
         setRouterAlertValue(routerAlertValue);
@@ -159,7 +156,7 @@ public final class IPv4RouterAlertOption
         super(buffer);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv4RouterAlertOption.IPv4RouterAlertOption", buffer));
+            logger.finer(this.log.entry("IPv4RouterAlertOption.IPv4RouterAlertOption", buffer));
             logState(logger);
         }
     }
@@ -174,7 +171,7 @@ public final class IPv4RouterAlertOption
      * @param logger
      */
     private void logState(final Logger logger) {
-        logger.info(ObjectId + " : router-alert-value=" + getRouterAlertValue());
+        logger.info(this.log.msg(": router-alert-value=" + getRouterAlertValue()));
     }
 
     /**
@@ -190,7 +187,7 @@ public final class IPv4RouterAlertOption
     public void setRouterAlertValue(final short routerAlertValue) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv4RouterAlertOption.setRouterAlertValue", routerAlertValue));
+            logger.finer(this.log.entry("IPv4RouterAlertOption.setRouterAlertValue", routerAlertValue));
         }
 
         RouterAlertValue.set(getBufferInternal(), routerAlertValue);

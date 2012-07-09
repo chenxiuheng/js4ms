@@ -147,7 +147,7 @@ public abstract class IPPacket
      * @param logger
      */
     private void logState(final Logger logger) {
-        logger.info(ObjectId + " : version=" + getVersion());
+        logger.info(this.log.msg(": version=" + getVersion()));
     }
 
     /**
@@ -342,7 +342,7 @@ public abstract class IPPacket
      */
     protected final void setFirstProtocolMessage(final IPMessage message) {
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPPacket.setFirstProtocolMessage", message));
+            logger.finer(this.log.entry("IPPacket.setFirstProtocolMessage", message));
         }
 
         this.firstProtocolHeader = message;
@@ -362,7 +362,7 @@ public abstract class IPPacket
     public final void addProtocolMessage(final IPMessage message) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPPacket.addProtocolMessage", message));
+            logger.finer(this.log.entry("IPPacket.addProtocolMessage", message));
         }
 
         IPMessage nextMessage = getFirstProtocolMessage();

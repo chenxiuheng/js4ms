@@ -36,14 +36,12 @@ import com.larkwoodlabs.util.buffer.fields.ShortField;
 import com.larkwoodlabs.util.buffer.parser.BufferParserSelector;
 import com.larkwoodlabs.util.buffer.parser.KeyedBufferParser;
 import com.larkwoodlabs.util.buffer.parser.MissingParserException;
-import com.larkwoodlabs.util.logging.Logging;
 
 /**
  * Base class for IGMP Messages as described in
  * [<a href="http://www.ietf.org/rfc/rfc1112.txt">RFC-1112</a>],
  * [<a href="http://www.ietf.org/rfc/rfc2236.txt">RFC-2236</a>] and
- * [<a href="http://www.ietf.org/rfc/rfc3376.txt">RFC-3376</a>].
- * <h3>Message Format</h3>
+ * [<a href="http://www.ietf.org/rfc/rfc3376.txt">RFC-3376</a>]. <h3>Message Format</h3>
  * <blockquote>
  * 
  * <pre>
@@ -337,7 +335,7 @@ public abstract class IGMPMessage
         super(size);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IGMPMessage.IGMPMessage", size, type, maximumResponseTime));
+            logger.finer(this.log.entry("IGMPMessage.IGMPMessage", size, type, maximumResponseTime));
         }
 
         Reserved.set(getBufferInternal(), (byte) 0);
@@ -356,7 +354,7 @@ public abstract class IGMPMessage
         super(buffer);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IGMPMessage.IGMPMessage", buffer));
+            logger.finer(this.log.entry("IGMPMessage.IGMPMessage", buffer));
             logState(logger);
         }
     }
@@ -378,9 +376,9 @@ public abstract class IGMPMessage
      * @param logger
      */
     private void logState(final Logger logger) {
-        logger.info(ObjectId + " : message-length=" + getTotalLength());
-        logger.info(ObjectId + " : type=" + getType());
-        logger.info(ObjectId + " : checksum=" + getChecksum());
+        logger.info(this.log.msg(" : message-length=" + getTotalLength()));
+        logger.info(this.log.msg(" : type=" + getType()));
+        logger.info(this.log.msg(" : checksum=" + getChecksum()));
     }
 
     @Override
@@ -407,7 +405,7 @@ public abstract class IGMPMessage
     public final void setNextMessage(final IPMessage nextHeader) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IGMPMessage.setNextMessage", nextHeader));
+            logger.finer(this.log.entry("IGMPMessage.setNextMessage", nextHeader));
         }
 
         throw new UnsupportedOperationException();
@@ -434,7 +432,7 @@ public abstract class IGMPMessage
     public void writeTo(final ByteBuffer buffer) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IGMPMessage.writeTo", buffer));
+            logger.finer(this.log.entry("IGMPMessage.writeTo", buffer));
         }
 
         super.writeTo(buffer);
@@ -457,7 +455,7 @@ public abstract class IGMPMessage
     protected final void setType(final byte type) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IGMPMessage.setType", type));
+            logger.finer(this.log.entry("IGMPMessage.setType", type));
         }
 
         MessageType.set(getBufferInternal(), type);
@@ -478,7 +476,7 @@ public abstract class IGMPMessage
     public final void setChecksum(final short checksum) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IGMPMessage.setChecksum", checksum));
+            logger.finer(this.log.entry("IGMPMessage.setChecksum", checksum));
         }
 
         Checksum.set(getBufferInternal(), checksum);

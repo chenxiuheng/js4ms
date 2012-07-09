@@ -42,8 +42,7 @@ import com.larkwoodlabs.util.logging.Logging;
  * [See <a href="http://www.ietf.org/rfc/rfc2236.txt">RFC-2236</a> and <a
  * href="http://www.ietf.org/rfc/rfc3376.txt">RFC-3376</a>].
  * <p>
- * <h3>Record Format</h3>
- * <blockquote>
+ * <h3>Record Format</h3> <blockquote>
  * 
  * <pre>
  *   0                   1                   2                   3
@@ -291,8 +290,8 @@ public final class IGMPGroupRecord
         this(type, groupAddress, null);
 
         if (IGMPMessage.logger.isLoggable(Level.FINER)) {
-            IGMPMessage.logger.finer(Logging.entering(ObjectId, "IGMPv3GroupRecord.IGMPv3GroupRecord", type,
-                                                      Logging.address(groupAddress)));
+            IGMPMessage.logger.finer(this.log.entry("IGMPv3GroupRecord.IGMPv3GroupRecord", type,
+                                                    Logging.address(groupAddress)));
         }
     }
 
@@ -307,8 +306,8 @@ public final class IGMPGroupRecord
         super(BASE_RECORD_LENGTH);
 
         if (IGMPMessage.logger.isLoggable(Level.FINER)) {
-            IGMPMessage.logger.finer(Logging.entering(ObjectId, "IGMPv3GroupRecord.IGMPv3GroupRecord", type,
-                                                      Logging.address(groupAddress), auxData));
+            IGMPMessage.logger.finer(this.log.entry("IGMPv3GroupRecord.IGMPv3GroupRecord", type,
+                                                    Logging.address(groupAddress), auxData));
         }
 
         setType(type);
@@ -328,7 +327,7 @@ public final class IGMPGroupRecord
         super(consume(buffer, BASE_RECORD_LENGTH));
 
         if (IGMPMessage.logger.isLoggable(Level.FINER)) {
-            IGMPMessage.logger.finer(Logging.entering(ObjectId, "IGMPv3GroupRecord.IGMPv3GroupRecord", buffer));
+            IGMPMessage.logger.finer(this.log.entry("IGMPv3GroupRecord.IGMPv3GroupRecord", buffer));
         }
 
         int count = getNumberOfSources();
@@ -362,24 +361,24 @@ public final class IGMPGroupRecord
      * @param logger
      */
     private void logState(final Logger logger) {
-        logger.info(ObjectId + " : record-length=" + getRecordLength());
-        logger.info(ObjectId + " : record-type=" + getType() + " " + getTypeName(getType()));
-        logger.info(ObjectId + " : aux-data-length=" + getAuxDataLength());
-        logger.info(ObjectId + " : number-of-sources=" + getNumberOfSources());
-        logger.info(ObjectId + " : group-address=" + Logging.address(getGroupAddress()));
-        logger.info(ObjectId + " ----> sources");
+        logger.info(this.log.msg(": record-length=" + getRecordLength()));
+        logger.info(this.log.msg(": record-type=" + getType() + " " + getTypeName(getType())));
+        logger.info(this.log.msg(": aux-data-length=" + getAuxDataLength()));
+        logger.info(this.log.msg(": number-of-sources=" + getNumberOfSources()));
+        logger.info(this.log.msg(": group-address=" + Logging.address(getGroupAddress())));
+        logger.info(this.log.msg("----> sources"));
         for (int i = 0; i < getNumberOfSources(); i++) {
-            logger.info(ObjectId + " : source[" + i + "]=" + Logging.address(getSource(i)));
+            logger.info(this.log.msg(": source[" + i + "]=" + Logging.address(getSource(i))));
         }
-        logger.info(ObjectId + " <---- end sources");
-        logger.info(ObjectId + " : aux-data=" + getAuxData());
+        logger.info(this.log.msg("<---- end sources"));
+        logger.info(this.log.msg(": aux-data=" + getAuxData()));
     }
 
     @Override
     public void writeTo(final ByteBuffer buffer) {
 
         if (IGMPMessage.logger.isLoggable(Level.FINER)) {
-            IGMPMessage.logger.finer(Logging.entering(ObjectId, "IGMPv3GroupRecord.writeTo", buffer));
+            IGMPMessage.logger.finer(this.log.entry("IGMPv3GroupRecord.writeTo", buffer));
         }
 
         // Precondition.checkReference(buffer);
@@ -420,7 +419,7 @@ public final class IGMPGroupRecord
     public void setType(final byte type) {
 
         if (IGMPMessage.logger.isLoggable(Level.FINER)) {
-            IGMPMessage.logger.finer(Logging.entering(ObjectId, "IGMPv3GroupRecord.setType", type));
+            IGMPMessage.logger.finer(this.log.entry("IGMPv3GroupRecord.setType", type));
         }
 
         if (type == MODE_IS_INCLUDE || type == MODE_IS_EXCLUDE || type == CHANGE_TO_INCLUDE_MODE
@@ -429,7 +428,7 @@ public final class IGMPGroupRecord
         }
         else {
             if (IGMPMessage.logger.isLoggable(Level.FINE)) {
-                IGMPMessage.logger.fine(ObjectId + "invalid group record type specified");
+                IGMPMessage.logger.fine(this.log.msg("invalid group record type specified"));
             }
             throw new IllegalArgumentException("invalid group record type specified");
         }
@@ -448,7 +447,7 @@ public final class IGMPGroupRecord
     protected void setNumberOfSources(final short numberOfSources) {
 
         if (IGMPMessage.logger.isLoggable(Level.FINER)) {
-            IGMPMessage.logger.finer(Logging.entering(ObjectId, "IGMPv3GroupRecord.setNumberOfSources", numberOfSources));
+            IGMPMessage.logger.finer(this.log.entry("IGMPv3GroupRecord.setNumberOfSources", numberOfSources));
         }
 
         NumberOfSources.set(getBufferInternal(), numberOfSources);
@@ -472,7 +471,7 @@ public final class IGMPGroupRecord
     protected void setAuxDataLength(final int length) {
 
         if (IGMPMessage.logger.isLoggable(Level.FINER)) {
-            IGMPMessage.logger.finer(Logging.entering(ObjectId, "IGMPv3GroupRecord.setAuxDataLength", length));
+            IGMPMessage.logger.finer(this.log.entry("IGMPv3GroupRecord.setAuxDataLength", length));
         }
 
         AuxDataLen.set(getBufferInternal(), (byte) length);
@@ -492,7 +491,7 @@ public final class IGMPGroupRecord
 
         if (IGMPMessage.logger.isLoggable(Level.FINER)) {
             IGMPMessage.logger
-                            .finer(Logging.entering(ObjectId, "IGMPv3GroupRecord.setGroupAddress", Logging.address(groupAddress)));
+                            .finer(this.log.entry("IGMPv3GroupRecord.setGroupAddress", Logging.address(groupAddress)));
         }
 
         // Precondition.checkReference(groupAddress);
@@ -506,12 +505,12 @@ public final class IGMPGroupRecord
 
         if (IGMPMessage.logger.isLoggable(Level.FINER)) {
             IGMPMessage.logger
-                            .finer(Logging.entering(ObjectId, "IGMPv3GroupRecord.setGroupAddress", Logging.address(groupAddress)));
+                            .finer(this.log.entry("IGMPv3GroupRecord.setGroupAddress", Logging.address(groupAddress)));
         }
 
         if (groupAddress.length != 4) {
             if (IGMPMessage.logger.isLoggable(Level.FINE)) {
-                IGMPMessage.logger.fine(ObjectId + "invalid group address - IGMPv3 messages only allow use of IPv4 addresses");
+                IGMPMessage.logger.fine(this.log.msg("invalid group address - IGMPv3 messages only allow use of IPv4 addresses"));
             }
             throw new IllegalArgumentException("invalid group address - IGMPv3 messages only allow use of IPv4 addresses");
         }
@@ -524,7 +523,7 @@ public final class IGMPGroupRecord
     public void addSource(final InetAddress sourceAddress) {
 
         if (IGMPMessage.logger.isLoggable(Level.FINER)) {
-            IGMPMessage.logger.finer(Logging.entering(ObjectId, "IGMPv3GroupRecord.addSource", Logging.address(sourceAddress)));
+            IGMPMessage.logger.finer(this.log.entry("IGMPv3GroupRecord.addSource", Logging.address(sourceAddress)));
         }
 
         // Precondition.checkReference(sourceAddress);
@@ -538,7 +537,7 @@ public final class IGMPGroupRecord
     public int addSource(final byte[] sourceAddress) {
 
         if (IGMPMessage.logger.isLoggable(Level.FINER)) {
-            IGMPMessage.logger.finer(Logging.entering(ObjectId, "IGMPv3GroupRecord.addSource", Logging.address(sourceAddress)));
+            IGMPMessage.logger.finer(this.log.entry("IGMPv3GroupRecord.addSource", Logging.address(sourceAddress)));
         }
 
         // Precondition.checkIPv4Address(sourceAddress);
@@ -562,7 +561,7 @@ public final class IGMPGroupRecord
     public void removeSource(final int index) {
 
         if (IGMPMessage.logger.isLoggable(Level.FINER)) {
-            IGMPMessage.logger.finer(Logging.entering(ObjectId, "IGMPv3GroupRecord.removeSource", index));
+            IGMPMessage.logger.finer(this.log.entry("IGMPv3GroupRecord.removeSource", index));
         }
 
         this.sources.remove(index);
@@ -581,7 +580,7 @@ public final class IGMPGroupRecord
     public void setAuxData(final ByteBuffer auxData) {
 
         if (IGMPMessage.logger.isLoggable(Level.FINER)) {
-            IGMPMessage.logger.finer(Logging.entering(ObjectId, "IGMPv3GroupRecord.setAuxData", auxData));
+            IGMPMessage.logger.finer(this.log.entry("IGMPv3GroupRecord.setAuxData", auxData));
         }
 
         this.auxData = auxData == null ? null : auxData.slice();

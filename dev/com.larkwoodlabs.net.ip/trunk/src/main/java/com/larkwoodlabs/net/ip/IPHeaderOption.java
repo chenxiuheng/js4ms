@@ -32,7 +32,6 @@ import com.larkwoodlabs.util.buffer.fields.ByteField;
 import com.larkwoodlabs.util.buffer.fields.SelectorField;
 import com.larkwoodlabs.util.buffer.parser.BufferParserSelector;
 import com.larkwoodlabs.util.buffer.parser.KeyedBufferParser;
-import com.larkwoodlabs.util.logging.Logging;
 
 /**
  * Base class for IP header option classes.
@@ -162,7 +161,7 @@ public abstract class IPHeaderOption
     public IPHeaderOption(final byte option) {
         this(BASE_OPTION_LENGTH, option);
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPHeaderOption.IPHeaderOption", option));
+            logger.finer(this.log.entry("IPHeaderOption.IPHeaderOption", option));
         }
     }
 
@@ -174,7 +173,7 @@ public abstract class IPHeaderOption
         super(size);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPHeaderOption.IPHeaderOption", size, option));
+            logger.finer(this.log.entry("IPHeaderOption.IPHeaderOption", size, option));
         }
 
         setOption(option);
@@ -194,7 +193,7 @@ public abstract class IPHeaderOption
         this(BASE_OPTION_LENGTH, copyFlag, optionClass, optionNumber);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPHeaderOption.IPHeaderOption", copyFlag, optionClass, optionNumber));
+            logger.finer(this.log.entry("IPHeaderOption.IPHeaderOption", copyFlag, optionClass, optionNumber));
         }
     }
 
@@ -211,7 +210,7 @@ public abstract class IPHeaderOption
         super(size);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPHeaderOption.IPHeaderOption", size, copyFlag, optionClass, optionNumber));
+            logger.finer(this.log.entry("IPHeaderOption.IPHeaderOption", size, copyFlag, optionClass, optionNumber));
         }
 
         setCopyFlag(copyFlag);
@@ -229,7 +228,7 @@ public abstract class IPHeaderOption
         super(buffer);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPHeaderOption.IPHeaderOption", buffer));
+            logger.finer(this.log.entry("IPHeaderOption.IPHeaderOption", buffer));
             logState(logger);
         }
     }
@@ -251,9 +250,8 @@ public abstract class IPHeaderOption
      * @param logger
      */
     private void logState(final Logger logger) {
-        logger.info(ObjectId + " : copy-flag=" + getCopyFlag());
-        logger.info(ObjectId + " : option-class=" + getOptionClass());
-        logger.info(ObjectId + " : option-number=" + getOptionNumber());
+        logger.info(this.log.msg(": copy-flag=" + getCopyFlag()));
+        logger.info(this.log.msg(": option-class=" + getOptionClass()));
     }
 
     /**
@@ -269,7 +267,7 @@ public abstract class IPHeaderOption
     public final void setCopyFlag(final boolean copyFlag) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPHeaderOption.setCopyFlag", copyFlag));
+            logger.finer(this.log.entry("IPHeaderOption.setCopyFlag", copyFlag));
         }
 
         CopyFlag.set(getBufferInternal(), copyFlag);
@@ -288,7 +286,7 @@ public abstract class IPHeaderOption
     public final void setOptionClass(final int optionClass) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPHeaderOption.setOptionClass", optionClass));
+            logger.finer(this.log.entry("IPHeaderOption.setOptionClass", optionClass));
         }
 
         OptionClass.set(getBufferInternal(), (byte) optionClass);
@@ -307,7 +305,7 @@ public abstract class IPHeaderOption
     public final void setOptionCode(final int optionCode) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPHeaderOption.setOptionCode", optionCode));
+            logger.finer(this.log.entry("IPHeaderOption.setOptionCode", optionCode));
         }
 
         OptionCode.set(getBufferInternal(), (byte) optionCode);
@@ -326,7 +324,7 @@ public abstract class IPHeaderOption
     public final void setOptionNumber(final int option) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPHeaderOption.setOptionNumber", option));
+            logger.finer(this.log.entry("IPHeaderOption.setOptionNumber", option));
         }
 
         OptionNumber.set(getBufferInternal(), (byte) option);
@@ -345,7 +343,7 @@ public abstract class IPHeaderOption
     public final void setOption(final byte option) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPHeaderOption.setOption", option));
+            logger.finer(this.log.entry("IPHeaderOption.setOption", option));
         }
 
         Option.set(getBufferInternal(), option);

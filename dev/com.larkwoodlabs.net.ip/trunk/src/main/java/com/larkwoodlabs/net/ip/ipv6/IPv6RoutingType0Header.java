@@ -80,7 +80,7 @@ public final class IPv6RoutingType0Header extends IPv6RoutingHeader {
         super(buffer);
         
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv6RoutingType0Header.IPv6RoutingType0Header", buffer));
+            logger.finer(this.log.entry("IPv6RoutingType0Header.IPv6RoutingType0Header", buffer));
         }
         
         int count = getNumberOfAddresses();
@@ -113,7 +113,7 @@ public final class IPv6RoutingType0Header extends IPv6RoutingHeader {
     public void writeTo(final ByteBuffer buffer) {
         
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv6RoutingType0Header.writeTo", buffer));
+            logger.finer(this.log.entry("IPv6RoutingType0Header.writeTo", buffer));
         }
         
         //Precondition.checkReference(buffer);
@@ -141,7 +141,7 @@ public final class IPv6RoutingType0Header extends IPv6RoutingHeader {
     public void addAddress(final InetAddress address) throws UnknownHostException {
         
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv6RoutingType0Header.addAddress", Logging.address(address)));
+            logger.finer(this.log.entry("IPv6RoutingType0Header.addAddress", Logging.address(address)));
         }
         
         Precondition.checkReference(address);
@@ -156,7 +156,7 @@ public final class IPv6RoutingType0Header extends IPv6RoutingHeader {
     public int addAddress(final byte[] address) {
         
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv6RoutingType0Header.addAddress", Logging.address(address)));
+            logger.finer(this.log.entry("IPv6RoutingType0Header.addAddress", Logging.address(address)));
         }
         
         //Precondition.checkIPv6Address(address);
@@ -182,7 +182,7 @@ public final class IPv6RoutingType0Header extends IPv6RoutingHeader {
     public void removeAddress(final int index) {
         
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv6RoutingType0Header.removeAddress", index));
+            logger.finer(this.log.entry("IPv6RoutingType0Header.removeAddress", index));
         }
         
         this.addresses.remove(index);
@@ -203,7 +203,7 @@ public final class IPv6RoutingType0Header extends IPv6RoutingHeader {
     public void setLastAddress(final byte[] address) {
         
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv6RoutingType0Header.setLastAddress", Logging.address(address)));
+            logger.finer(this.log.entry("IPv6RoutingType0Header.setLastAddress", Logging.address(address)));
         }
         
         //Precondition.checkIPv6Address(address);

@@ -37,10 +37,10 @@ import com.larkwoodlabs.util.logging.Logging;
 /**
  * Represents a User Datagram Protocol (UDP) packet.
  * <p>
- * See <a href="http://www.ietf.org/rfc/rfc768.txt">[RFC-768]</a>
- * and <a href="http://www.ietf.org/rfc/rfc2460.txt">[RFC-2460]</a>.
- * <h3>Format</h3>
- * <blockquote>
+ * See <a href="http://www.ietf.org/rfc/rfc768.txt">[RFC-768]</a> and <a
+ * href="http://www.ietf.org/rfc/rfc2460.txt">[RFC-2460]</a>.
+ * <h3>Format</h3> <blockquote>
+ * 
  * <pre>
  *   0                   1                   2                   3   
  *   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 
@@ -52,34 +52,38 @@ import com.larkwoodlabs.util.logging.Logging;
  *  ~                          Data Octets ...                      ~
  *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  * </pre>
+ * 
  * <dl>
- * <dt><u>Source Port</u></dt><p><dd>
- * The Source Port is an optional field, when meaningful, it indicates the port
- * of the sending process, and may be assumed to be the port to which a reply
- * should be addressed in the absence of any other information. If not used, a
- * value of zero is inserted.
+ * <dt><u>Source Port</u></dt>
  * <p>
- * <dt><u>Destination Port</u></dt><p><dd>
- * The Destination Port has a meaning within the context of a particular
- * internet destination address.
+ * <dd>The Source Port is an optional field, when meaningful, it indicates the port of the
+ * sending process, and may be assumed to be the port to which a reply should be addressed
+ * in the absence of any other information. If not used, a value of zero is inserted.
  * <p>
- * <dt><u>Length</u></dt><p><dd>
- * Length is the length in octets of this user datagram including this header
- * and the data. (This means the minimum value of the length is eight.)
+ * <dt><u>Destination Port</u></dt>
  * <p>
- * <dt><u>Checksum</u></dt><p><dd>
- * Checksum is the 16-bit one's complement of the one's complement sum of a
- * pseudo header of information from the IP header, the UDP header, and the
- * data, padded with zero octets at the end (if necessary) to make a multiple of
- * two octets. See
+ * <dd>The Destination Port has a meaning within the context of a particular internet
+ * destination address.
  * <p>
- * The pseudo header conceptually prefixed to the UDP header contains the source
- * address, the destination address, the protocol, and the UDP length. This
- * information gives protection against mis-routed datagrams. This checksum
- * procedure is the same as is used in TCP.
- * <p> 
+ * <dt><u>Length</u></dt>
+ * <p>
+ * <dd>Length is the length in octets of this user datagram including this header and the
+ * data. (This means the minimum value of the length is eight.)
+ * <p>
+ * <dt><u>Checksum</u></dt>
+ * <p>
+ * <dd>Checksum is the 16-bit one's complement of the one's complement sum of a pseudo
+ * header of information from the IP header, the UDP header, and the data, padded with
+ * zero octets at the end (if necessary) to make a multiple of two octets. See
+ * <p>
+ * The pseudo header conceptually prefixed to the UDP header contains the source address,
+ * the destination address, the protocol, and the UDP length. This information gives
+ * protection against mis-routed datagrams. This checksum procedure is the same as is used
+ * in TCP.
+ * <p>
  * <p>
  * The IPv4 pseudo header has the following format:
+ * 
  * <pre>
  *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  *  |                        Source Address                         |
@@ -89,7 +93,9 @@ import com.larkwoodlabs.util.logging.Logging;
  *  |      Zero     |    Protocol   |   Upper-Layer Packet Length   |
  *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  * </pre>
+ * 
  * The IPv6 pseudo header has a similar format:
+ * 
  * <pre>
  *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  *  |                                                               |
@@ -113,58 +119,52 @@ import com.larkwoodlabs.util.logging.Logging;
  *  |                      zero                     |  Next Header  |
  *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  * </pre>
- * If the IPv6 packet contains a Routing header, the Destination
- * Address used in the pseudo-header is that of the final
- * destination.  At the originating node, that address will be in
- * the last element of the Routing header; at the recipient(s),
- * that address will be in the Destination Address field of the
- * IPv6 header.
+ * 
+ * If the IPv6 packet contains a Routing header, the Destination Address used in the
+ * pseudo-header is that of the final destination. At the originating node, that address
+ * will be in the last element of the Routing header; at the recipient(s), that address
+ * will be in the Destination Address field of the IPv6 header.
  * <p>
- * The Next Header value in the pseudo-header identifies the
- * upper-layer protocol (e.g., 6 for TCP, or 17 for UDP).  It will
- * differ from the Next Header value in the IPv6 header if there
- * are extension headers between the IPv6 header and the upper-
- * layer header.
+ * The Next Header value in the pseudo-header identifies the upper-layer protocol (e.g., 6
+ * for TCP, or 17 for UDP). It will differ from the Next Header value in the IPv6 header
+ * if there are extension headers between the IPv6 header and the upper- layer header.
  * <p>
- * The Upper-Layer Packet Length in the pseudo-header is the
- * length of the upper-layer header and data (e.g., UDP header
- * plus UDP data).  Some upper-layer protocols carry their own
- * length information (e.g., the Length field in the UDP header);
- * for such protocols, that is the length used in the pseudo-
- * header.  Other protocols (such as TCP) do not carry their own
- * length information, in which case the length used in the
- * pseudo-header is the Payload Length from the IPv6 header, minus
- * the length of any extension headers present between the IPv6
- * header and the upper-layer header.
- * <p> 
+ * The Upper-Layer Packet Length in the pseudo-header is the length of the upper-layer
+ * header and data (e.g., UDP header plus UDP data). Some upper-layer protocols carry
+ * their own length information (e.g., the Length field in the UDP header); for such
+ * protocols, that is the length used in the pseudo- header. Other protocols (such as TCP)
+ * do not carry their own length information, in which case the length used in the
+ * pseudo-header is the Payload Length from the IPv6 header, minus the length of any
+ * extension headers present between the IPv6 header and the upper-layer header.
+ * <p>
  * If the computed checksum is zero, it is transmitted as all ones (0xFFFF).
  * <p>
- * In IPv4, the checksum is optional. A zero transmitted checksum value
- * means that the transmitter generated no checksum (for debugging or
- * for higher level protocols that don't care).
+ * In IPv4, the checksum is optional. A zero transmitted checksum value means that the
+ * transmitter generated no checksum (for debugging or for higher level protocols that
+ * don't care).
  * <p>
- * In IPv6, the UDP checksum is not optional. An IPv6 node transmitting
- * UDP packets must compute a UDP checksum over the packet and the 
- * pseudo-header, and, if that computation yields a result of zero,
- * it must be changed to all ones (0xFFFF). IPv6 receivers must discard
- * UDP packets containing a zero checksum, and should log the error.
- * <p>
- * </dd>
+ * In IPv6, the UDP checksum is not optional. An IPv6 node transmitting UDP packets must
+ * compute a UDP checksum over the packet and the pseudo-header, and, if that computation
+ * yields a result of zero, it must be changed to all ones (0xFFFF). IPv6 receivers must
+ * discard UDP packets containing a zero checksum, and should log the error.
+ * <p></dd>
  * </dl>
  * </blockquote>
  * 
  * @author Gregory Bumgardner (gbumgard)
- * 
  */
-public final class UdpPacket extends BufferBackedObject implements IPMessage {
+public final class UdpPacket
+                extends BufferBackedObject
+                implements IPMessage {
 
     /*-- Inner Classes ------------------------------------------------------*/
 
     /**
-     * A parser that constructs a {@link UdpPacket} from a {@link BufferSegment} 
-     * and optionally parses an {@link KeyedApplicationMessage} contained within that packet.
+     * A parser that constructs a {@link UdpPacket} from a {@link BufferSegment} and
+     * optionally parses an {@link KeyedApplicationMessage} contained within that packet.
      */
-    public final static class Parser implements IPMessage.ParserType {
+    public final static class Parser
+                    implements IPMessage.ParserType {
 
         @Override
         public final IPMessage parse(final ByteBuffer buffer) throws ParseException, MissingParserException {
@@ -184,9 +184,8 @@ public final class UdpPacket extends BufferBackedObject implements IPMessage {
 
     }
 
-
     /*-- Static Variables ---------------------------------------------------*/
-    
+
     /** Logger used to generate IPHeaderOption log entries. */
     public static final Logger logger = Logger.getLogger(UdpPacket.class.getName());
 
@@ -195,27 +194,31 @@ public final class UdpPacket extends BufferBackedObject implements IPMessage {
 
     /** */
     protected final static int BASE_HEADER_LENGTH = 8;
+
     /** */
     protected final static byte UDP_PRECEDENCE = IPv4Packet.PRECEDENCE_ROUTINE;
+
     /** */
     protected final static byte UDP_TTL = 64;
+
     /** */
     protected final static int CHECKSUM_OFFSET = 6;
-    
-    /** */
-    public static final ShortField  SourcePort = new ShortField(0);
-    /** */
-    public static final ShortField  DestinationPort = new ShortField(2);
-    /** */
-    public static final ShortField  Length = new ShortField(4);
-    /** */
-    public static final ShortField  Checksum = new ShortField(6);
 
+    /** */
+    public static final ShortField SourcePort = new ShortField(0);
+
+    /** */
+    public static final ShortField DestinationPort = new ShortField(2);
+
+    /** */
+    public static final ShortField Length = new ShortField(4);
+
+    /** */
+    public static final ShortField Checksum = new ShortField(6);
 
     /*-- Static Functions ---------------------------------------------------*/
 
     /**
-     * 
      * @return
      */
     public final static UdpPacket.Parser constructUdpPacketParser() {
@@ -223,7 +226,6 @@ public final class UdpPacket extends BufferBackedObject implements IPMessage {
     }
 
     /**
-     * 
      * @return
      */
     public final static IPMessage.Parser constructIPMessageParser() {
@@ -233,7 +235,6 @@ public final class UdpPacket extends BufferBackedObject implements IPMessage {
     }
 
     /**
-     *
      * @return
      */
     public final static IPv4Packet.Parser constructIPv4PacketParser() {
@@ -243,17 +244,15 @@ public final class UdpPacket extends BufferBackedObject implements IPMessage {
     }
 
     /**
-    *
-    * @return
-    */
-   public final static IPv6Packet.Parser constructIPv6PacketParser() {
-       IPv6Packet.Parser parser = new IPv6Packet.Parser();
-       parser.setProtocolParser(constructIPMessageParser());
-       return parser;
+     * @return
+     */
+    public final static IPv6Packet.Parser constructIPv6PacketParser() {
+        IPv6Packet.Parser parser = new IPv6Packet.Parser();
+        parser.setProtocolParser(constructIPMessageParser());
+        return parser;
     }
 
-   /**
-     * 
+    /**
      * @return
      */
     public final static IPPacket.BufferParser constructIPPacketParser() {
@@ -264,13 +263,18 @@ public final class UdpPacket extends BufferBackedObject implements IPMessage {
     }
 
     /**
-     * Verifies the UDP message checksum. Called by the parser prior to constructing the packet.
-     * @param buffer - the buffer containing the UDP message.
-     * @param sourceAddress - IP source address from IPv4 or IPv6 header.
-     * @param destinationAddress - IP destination address from IPv4 or IPv6 header.
+     * Verifies the UDP message checksum. Called by the parser prior to constructing the
+     * packet.
+     * 
+     * @param buffer
+     *            - the buffer containing the UDP message.
+     * @param sourceAddress
+     *            - IP source address from IPv4 or IPv6 header.
+     * @param destinationAddress
+     *            - IP destination address from IPv4 or IPv6 header.
      */
     public final static boolean verifyChecksum(final ByteBuffer buffer,
-                                               final byte[] sourceAddress, 
+                                               final byte[] sourceAddress,
                                                final byte[] destinationAddress) {
 
         short checksum = Checksum.get(buffer);
@@ -282,48 +286,50 @@ public final class UdpPacket extends BufferBackedObject implements IPMessage {
 
         short computedChecksum = calculateChecksum(buffer, sourceAddress, destinationAddress);
         if (checksum != computedChecksum) {
-            logger.warning("received UDP packet with invalid checksum: received="+checksum+" computed="+computedChecksum);
+            logger.warning("received UDP packet with invalid checksum: received=" + checksum + " computed=" + computedChecksum);
             return false;
         }
         return true;
     }
-    
+
     /**
      * Calculates the UDP message checksum for a UDP packet contained in a buffer.
-     * @param buffer - the buffer containing the UDP message.
-     * @param sourceAddress - IP source address from IPv4 or IPv6 header.
-     * @param destinationAddress - IP destination address from IPv4 or IPv6 header.
+     * 
+     * @param buffer
+     *            - the buffer containing the UDP message.
+     * @param sourceAddress
+     *            - IP source address from IPv4 or IPv6 header.
+     * @param destinationAddress
+     *            - IP destination address from IPv4 or IPv6 header.
      */
     public final static short calculateChecksum(final ByteBuffer buffer,
                                                 final byte[] sourceAddress,
                                                 final byte[] destinationAddress) {
-        return IPPacket.calculateChecksum(buffer, Checksum, sourceAddress, destinationAddress, IP_PROTOCOL_NUMBER, Length.get(buffer));
+        return IPPacket.calculateChecksum(buffer, Checksum, sourceAddress, destinationAddress, IP_PROTOCOL_NUMBER,
+                                          Length.get(buffer));
     }
-
 
     /*-- Member Variables ---------------------------------------------------*/
 
     /** */
     private ByteBuffer payload;
-    
 
     /*-- Member Functions ---------------------------------------------------*/
 
     /**
-     * 
      * @param sourcePort
      * @param destinationPort
      */
     public UdpPacket(final int sourcePort, final int destinationPort) {
         super(BASE_HEADER_LENGTH);
-        
+
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "UdpPacket.UdpPacket", sourcePort, destinationPort));
+            logger.finer(this.log.entry("UdpPacket.UdpPacket", sourcePort, destinationPort));
         }
-        
+
         setSourcePort(sourcePort);
         setDestinationPort(destinationPort);
-        setChecksum((short)0);
+        setChecksum((short) 0);
 
         if (logger.isLoggable(Level.FINE)) {
             logState(logger);
@@ -331,7 +337,6 @@ public final class UdpPacket extends BufferBackedObject implements IPMessage {
     }
 
     /**
-     * 
      * @param sourcePort
      * @param destinationPort
      * @param payload
@@ -340,28 +345,27 @@ public final class UdpPacket extends BufferBackedObject implements IPMessage {
                      final int destinationPort,
                      final ByteBuffer payload) {
         this(sourcePort, destinationPort);
-        
+
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "UdpPacket.UdpPacket", sourcePort, destinationPort, payload));
+            logger.finer(this.log.entry("UdpPacket.UdpPacket", sourcePort, destinationPort, payload));
         }
-        
+
         setPayload(payload);
     }
 
     /**
-     * 
      * @param buffer
      * @throws ParseException
      */
     public UdpPacket(final ByteBuffer buffer) throws ParseException {
         super(consume(buffer, BASE_HEADER_LENGTH));
-        
+
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "UdpPacket.UdpPacket", buffer));
+            logger.finer(this.log.entry("UdpPacket.UdpPacket", buffer));
         }
-        
-        this.payload = consume(buffer, Length.get(getBufferInternal())-BASE_HEADER_LENGTH);
-        
+
+        this.payload = consume(buffer, Length.get(getBufferInternal()) - BASE_HEADER_LENGTH);
+
         if (logger.isLoggable(Level.FINER)) {
             logState(logger);
         }
@@ -377,36 +381,36 @@ public final class UdpPacket extends BufferBackedObject implements IPMessage {
         super.log(logger);
         logState(logger);
     }
-    
+
     /**
      * Logs value of member variables declared or maintained by this class.
+     * 
      * @param logger
      */
     private final void logState(final Logger logger) {
-        logger.info(ObjectId+" : source-port="+getSourcePort());
-        logger.info(ObjectId+" : destination-port="+getDestinationPort());
-        logger.info(ObjectId+" : total-length="+getTotalLength());
-        logger.info(ObjectId+" : payload-length="+getPayloadLength());
-        logger.info(ObjectId+" : checksum="+getChecksum());
+        logger.info(this.log.msg(": source-port=" + getSourcePort()));
+        logger.info(this.log.msg(": destination-port=" + getDestinationPort()));
+        logger.info(this.log.msg(": total-length=" + getTotalLength()));
+        logger.info(this.log.msg(": payload-length=" + getPayloadLength()));
+        logger.info(this.log.msg(": checksum=" + getChecksum()));
         if (this.payload != null) {
-            logger.info(ObjectId+" ----> payload");
-            logger.info(ObjectId +
-                    " : buffer array-offset=" + this.payload.arrayOffset() +
-                    ", position=" + this.payload.position() +
-                    ", remaining=" + this.payload.remaining() +
-                    ", limit=" + this.payload.limit() +
-                    ", capacity=" + this.payload.capacity());
-            logger.info(ObjectId+" <---- payload");
+            logger.info(this.log.msg("----> payload"));
+            logger.info(this.log.msg(": buffer array-offset=" + this.payload.arrayOffset() +
+                                     ", position=" + this.payload.position() +
+                                     ", remaining=" + this.payload.remaining() +
+                                     ", limit=" + this.payload.limit() +
+                                     ", capacity=" + this.payload.capacity()));
+            logger.info(this.log.msg("<---- payload"));
         }
     }
 
     @Override
     public final void writeTo(final ByteBuffer buffer) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "UdpPacket.writeTo", buffer));
+            logger.finer(this.log.entry("UdpPacket.writeTo", buffer));
         }
-        
+
         super.writeTo(buffer);
         this.payload.rewind();
         buffer.put(this.payload);
@@ -417,15 +421,14 @@ public final class UdpPacket extends BufferBackedObject implements IPMessage {
     public final void writeChecksum(final ByteBuffer buffer,
                                     final byte[] sourceAddress,
                                     final byte[] destinationAddress) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId,
-                                          "UdpPacket.writeChecksum",
-                                          buffer,
-                                          Logging.address(sourceAddress),
-                                          Logging.address(destinationAddress)));
+            logger.finer(this.log.entry("UdpPacket.writeChecksum",
+                                        buffer,
+                                        Logging.address(sourceAddress),
+                                        Logging.address(destinationAddress)));
         }
-        
+
         Checksum.set(buffer, calculateChecksum(buffer, sourceAddress, destinationAddress));
     }
 
@@ -436,14 +439,14 @@ public final class UdpPacket extends BufferBackedObject implements IPMessage {
 
     @Override
     public final void setProtocolNumber(final byte protocolNumber) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "UdpPacket.setProtocolNumber", protocolNumber));
+            logger.finer(this.log.entry("UdpPacket.setProtocolNumber", protocolNumber));
         }
-        
+
         throw new UnsupportedOperationException();
     }
-    
+
     @Override
     public final byte getNextProtocolNumber() {
         return IPMessage.NO_NEXT_HEADER;
@@ -456,11 +459,11 @@ public final class UdpPacket extends BufferBackedObject implements IPMessage {
 
     @Override
     public final void setNextMessage(final IPMessage protocolHeader) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "UdpPacket.setNextMessage", protocolHeader));
+            logger.finer(this.log.entry("UdpPacket.setNextMessage", protocolHeader));
         }
-        
+
         throw new UnsupportedOperationException();
     }
 
@@ -475,7 +478,6 @@ public final class UdpPacket extends BufferBackedObject implements IPMessage {
     }
 
     /**
-     * 
      * @return
      */
     public final int getLength() {
@@ -483,15 +485,14 @@ public final class UdpPacket extends BufferBackedObject implements IPMessage {
     }
 
     /**
-     * 
      * @param length
      */
     protected final void setLength(final short length) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "UdpPacket.setLength", length));
+            logger.finer(this.log.entry("UdpPacket.setLength", length));
         }
-        
+
         Length.set(getBufferInternal(), length);
     }
 
@@ -501,15 +502,13 @@ public final class UdpPacket extends BufferBackedObject implements IPMessage {
     }
 
     /**
-     * 
      * @return
      */
     public final int getPayloadLength() {
         return this.payload.limit();
     }
-    
+
     /**
-     * 
      * @return
      */
     public final int getSourcePort() {
@@ -517,20 +516,18 @@ public final class UdpPacket extends BufferBackedObject implements IPMessage {
     }
 
     /**
-     * 
      * @param sourcePort
      */
     public final void setSourcePort(final int sourcePort) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "UdpPacket.setSourcePort", sourcePort));
+            logger.finer(this.log.entry("UdpPacket.setSourcePort", sourcePort));
         }
-        
-        SourcePort.set(getBufferInternal(), (short)sourcePort);
+
+        SourcePort.set(getBufferInternal(), (short) sourcePort);
     }
 
     /**
-     * 
      * @return
      */
     public final int getDestinationPort() {
@@ -538,35 +535,32 @@ public final class UdpPacket extends BufferBackedObject implements IPMessage {
     }
 
     /**
-     * 
      * @param destinationPort
      */
     public final void setDestinationPort(final int destinationPort) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "UdpPacket.setDestinationPort", destinationPort));
+            logger.finer(this.log.entry("UdpPacket.setDestinationPort", destinationPort));
         }
-        
-        DestinationPort.set(getBufferInternal(), (short)destinationPort);
+
+        DestinationPort.set(getBufferInternal(), (short) destinationPort);
     }
 
     /**
-     * 
      * @param sourcePort
      * @param destinationPort
      */
     public final void setPorts(final int sourcePort, final int destinationPort) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "UdpPacket.setPorts", sourcePort, destinationPort));
+            logger.finer(this.log.entry("UdpPacket.setPorts", sourcePort, destinationPort));
         }
-        
-        SourcePort.set(getBufferInternal(), (short)sourcePort);
-        DestinationPort.set(getBufferInternal(), (short)destinationPort);
+
+        SourcePort.set(getBufferInternal(), (short) sourcePort);
+        DestinationPort.set(getBufferInternal(), (short) destinationPort);
     }
 
     /**
-     * 
      * @return
      */
     public final short getChecksum() {
@@ -574,40 +568,43 @@ public final class UdpPacket extends BufferBackedObject implements IPMessage {
     }
 
     /**
-     * 
      * @param checksum
      */
     public final void setChecksum(final short checksum) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "UdpPacket.setChecksum", checksum));
+            logger.finer(this.log.entry("UdpPacket.setChecksum", checksum));
         }
-        
+
         Checksum.set(getBufferInternal(), checksum);
     }
-    
+
     /**
      * Returns a ByteBuffer that references the underlying byte array (if any)
      * currently attached to this packet.
+     * 
      * @return
      */
     public final ByteBuffer getPayload() {
         return this.payload.slice();
     }
-    
+
     /**
      * Attaches the specified byte array to this packet.
-     * Note: This method stores a reference to the underlying byte array - the array is NOT copied.
-     * @param payload - The byte array that will become the packet payload.
+     * Note: This method stores a reference to the underlying byte array - the array is
+     * NOT copied.
+     * 
+     * @param payload
+     *            - The byte array that will become the packet payload.
      */
     public final void setPayload(final ByteBuffer payload) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "UdpPacket.setPayload", payload));
+            logger.finer(this.log.entry("UdpPacket.setPayload", payload));
         }
-        
+
         this.payload = payload.slice();
-        setLength((short)(getHeaderLength() + this.payload.limit()));
+        setLength((short) (getHeaderLength() + this.payload.limit()));
     }
 
 }

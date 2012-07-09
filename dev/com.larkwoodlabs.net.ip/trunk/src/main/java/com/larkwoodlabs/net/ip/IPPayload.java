@@ -27,22 +27,23 @@ import java.util.logging.Logger;
 import com.larkwoodlabs.common.exceptions.ParseException;
 import com.larkwoodlabs.util.buffer.BufferBackedObject;
 import com.larkwoodlabs.util.buffer.parser.MissingParserException;
-import com.larkwoodlabs.util.logging.Logging;
 
 /**
  * Represents an opaque IP message.
  * 
- *
  * @author Gregory Bumgardner (gbumgard)
  */
-public class IPPayload extends BufferBackedObject implements IPMessage {
+public class IPPayload
+                extends BufferBackedObject
+                implements IPMessage {
 
     /*-- Inner Classes ------------------------------------------------------*/
 
     /**
      * 
      */
-    public static class Parser implements IPMessage.ParserType {
+    public static class Parser
+                    implements IPMessage.ParserType {
 
         @Override
         public IPPayload parse(final ByteBuffer buffer) {
@@ -70,20 +71,17 @@ public class IPPayload extends BufferBackedObject implements IPMessage {
 
     /** */
     private byte protocolNumber;
- 
-    
+
     /*-- Member Functions ---------------------------------------------------*/
 
     /**
-     * 
      * @param buffer
      */
     public IPPayload(final ByteBuffer buffer) {
-        this((byte)0, buffer);
+        this((byte) 0, buffer);
     }
 
     /**
-     * 
      * @param protocolNumber
      * @param buffer
      */
@@ -92,7 +90,7 @@ public class IPPayload extends BufferBackedObject implements IPMessage {
         this.protocolNumber = protocolNumber;
 
         if (logger.isLoggable(Level.FINE)) {
-            logger.fine(Logging.entering(ObjectId, "IPPayload.IPPayload", protocolNumber, buffer));
+            logger.fine(this.log.entry("IPPayload.IPPayload", protocolNumber, buffer));
             logState(logger);
         }
     }
@@ -102,13 +100,14 @@ public class IPPayload extends BufferBackedObject implements IPMessage {
         super.log(logger);
         logState(logger);
     }
-    
+
     /**
      * Logs value of member variables declared or maintained by this class.
+     * 
      * @param logger
      */
     private void logState(final Logger logger) {
-        logger.info(ObjectId + " : protocol="+getProtocolNumber());
+        logger.info(this.log.msg(": protocol=" + getProtocolNumber()));
     }
 
     @Override
@@ -132,7 +131,7 @@ public class IPPayload extends BufferBackedObject implements IPMessage {
     public void setProtocolNumber(final byte protocolNumber) {
         this.protocolNumber = protocolNumber;
     }
-    
+
     @Override
     public byte getNextProtocolNumber() {
         return NO_NEXT_HEADER;

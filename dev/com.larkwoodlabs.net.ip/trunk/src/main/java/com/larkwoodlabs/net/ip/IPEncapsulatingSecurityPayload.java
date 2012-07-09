@@ -27,7 +27,6 @@ import java.util.logging.Logger;
 import com.larkwoodlabs.common.exceptions.ParseException;
 import com.larkwoodlabs.util.buffer.BufferBackedObject;
 import com.larkwoodlabs.util.buffer.parser.MissingParserException;
-import com.larkwoodlabs.util.logging.Logging;
 
 /**
  * An Encapsulating Security Payload packet.
@@ -62,13 +61,13 @@ import com.larkwoodlabs.util.logging.Logging;
  * e.g., an Initialization Vector (IV, see Section 2.3), usually is not encrypted per se,
  * although it often is referred to as being part of the ciphertext. </blockquote>
  * <p>
- * In the following field descriptions "Optional" means that
- * the field is omitted if the option is not selected, i.e., it is present in neither the
- * packet as transmitted nor as formatted for computation of an Integrity Check Value
- * (ICV, see Section 2.7). Whether or not an option is selected is defined as part of
- * Security Association (SA) establishment. Thus the format of ESP packets for a given SA
- * is fixed, for the duration of the SA. In contrast, "mandatory" fields are always
- * present in the ESP packet format, for all SAs.
+ * In the following field descriptions "Optional" means that the field is omitted if the
+ * option is not selected, i.e., it is present in neither the packet as transmitted nor as
+ * formatted for computation of an Integrity Check Value (ICV, see Section 2.7). Whether
+ * or not an option is selected is defined as part of Security Association (SA)
+ * establishment. Thus the format of ESP packets for a given SA is fixed, for the duration
+ * of the SA. In contrast, "mandatory" fields are always present in the ESP packet format,
+ * for all SAs.
  * <dl>
  * <dt><u>Security Parameters Index</u></dt>
  * <p>
@@ -253,7 +252,7 @@ public class IPEncapsulatingSecurityPayload
         super(consume(buffer, BASE_HEADER_LENGTH));
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPAuthenticationHeader.IPAuthenticationHeader", buffer));
+            logger.finer(this.log.entry("IPAuthenticationHeader.IPAuthenticationHeader", buffer));
         }
 
         this.payload = consume(buffer, buffer.remaining());
@@ -280,16 +279,16 @@ public class IPEncapsulatingSecurityPayload
      * @param logger
      */
     private void logState(final Logger logger) {
-        logger.info(ObjectId + " : payload array=" + this.payload.array() +
-                    " offset=" + this.payload.arrayOffset() +
-                    " limit=" + this.payload.limit());
+        logger.info(this.log.msg(": payload array=" + this.payload.array() +
+                                 " offset=" + this.payload.arrayOffset() +
+                                 " limit=" + this.payload.limit()));
     }
 
     @Override
     public void writeTo(final ByteBuffer buffer) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPEncapsulatingSecurityPayload.writeTo", buffer));
+            logger.finer(this.log.entry("IPEncapsulatingSecurityPayload.writeTo", buffer));
         }
 
         super.writeTo(buffer);
@@ -329,7 +328,7 @@ public class IPEncapsulatingSecurityPayload
     public void setProtocolNumber(final byte protocolNumber) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPEncapsulatingSecurityPayload.setProtocolNumber", protocolNumber));
+            logger.finer(this.log.entry("IPEncapsulatingSecurityPayload.setProtocolNumber", protocolNumber));
         }
 
         throw new UnsupportedOperationException();
@@ -350,7 +349,7 @@ public class IPEncapsulatingSecurityPayload
     public void setNextMessage(final IPMessage message) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPEncapsulatingSecurityPayload.setNextMessage", message));
+            logger.finer(this.log.entry("IPEncapsulatingSecurityPayload.setNextMessage", message));
         }
 
         throw new UnsupportedOperationException();
@@ -360,7 +359,7 @@ public class IPEncapsulatingSecurityPayload
     public void removeNextMessage() {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPEncapsulatingSecurityPayload.removeNextMessage"));
+            logger.finer(this.log.entry("IPEncapsulatingSecurityPayload.removeNextMessage"));
         }
 
         throw new UnsupportedOperationException();

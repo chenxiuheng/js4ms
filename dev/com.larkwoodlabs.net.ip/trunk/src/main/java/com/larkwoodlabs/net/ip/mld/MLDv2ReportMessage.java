@@ -286,7 +286,7 @@ public final class MLDv2ReportMessage
         super(BASE_MESSAGE_LENGTH, MESSAGE_TYPE);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "MLDv2ReportMessage.MLDv2ReportMessage"));
+            logger.finer(this.log.entry("MLDv2ReportMessage.MLDv2ReportMessage"));
         }
 
         Reserved.set(getBufferInternal(), (short) 0);
@@ -304,7 +304,7 @@ public final class MLDv2ReportMessage
         super(consume(buffer, BASE_MESSAGE_LENGTH));
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "MLDv2ReportMessage.MLDv2ReportMessage", buffer));
+            logger.finer(this.log.entry("MLDv2ReportMessage.MLDv2ReportMessage", buffer));
         }
 
         int numberOfGroupRecords = getNumberOfGroupRecords();
@@ -332,16 +332,16 @@ public final class MLDv2ReportMessage
      * @param logger
      */
     private void logState(final Logger logger) {
-        logger.info(ObjectId + " : number-of-group-records=" + getNumberOfGroupRecords());
-        logger.info(ObjectId + " ----> start group records");
+        logger.info(this.log.msg(": number-of-group-records=" + getNumberOfGroupRecords()));
+        logger.info(this.log.msg("----> start group records"));
         int numberOfGroupRecords = getNumberOfGroupRecords();
         if (numberOfGroupRecords > 0) {
             for (int i = 0; i < numberOfGroupRecords; i++) {
-                logger.info(ObjectId + " : group record[" + i + "]:");
+                logger.info(this.log.msg(": group record[" + i + "]:"));
                 this.groupRecords.get(i).log();
             }
         }
-        logger.info(ObjectId + " <---- end group records");
+        logger.info(this.log.msg("<---- end group records"));
     }
 
     /**
@@ -354,7 +354,7 @@ public final class MLDv2ReportMessage
     public void writeTo(final ByteBuffer buffer) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "MLDv2ReportMessage.writeTo", buffer));
+            logger.finer(this.log.entry("MLDv2ReportMessage.writeTo", buffer));
         }
 
         // Precondition.checkReference(buffer);
@@ -373,11 +373,10 @@ public final class MLDv2ReportMessage
                               final byte[] destinationAddress) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId,
-                                          "MLDv2ReportMessage.writeChecksum",
-                                          buffer,
-                                          Logging.address(sourceAddress),
-                                          Logging.address(destinationAddress)));
+            logger.finer(this.log.entry("MLDv2ReportMessage.writeChecksum",
+                                        buffer,
+                                        Logging.address(sourceAddress),
+                                        Logging.address(destinationAddress)));
         }
 
         MLDv2ReportMessage.setChecksum(buffer, sourceAddress, destinationAddress);
@@ -411,7 +410,7 @@ public final class MLDv2ReportMessage
     protected void setNumberOfGroupRecords(final short numberOfGroupRecords) {
 
         if (logger.isLoggable(Level.FINE)) {
-            logger.fine(Logging.entering(ObjectId, "MLDv2ReportMessage.setNumberOfGroupRecords", numberOfGroupRecords));
+            logger.fine(this.log.entry("MLDv2ReportMessage.setNumberOfGroupRecords", numberOfGroupRecords));
         }
 
         NumberOfGroupRecords.set(getBufferInternal(), numberOfGroupRecords);
@@ -424,7 +423,7 @@ public final class MLDv2ReportMessage
     public int addGroupRecord(final MLDGroupRecord groupRecord) {
 
         if (logger.isLoggable(Level.FINE)) {
-            logger.fine(Logging.entering(ObjectId, "MLDv2ReportMessage.addGroupRecord", groupRecord));
+            logger.fine(this.log.entry("MLDv2ReportMessage.addGroupRecord", groupRecord));
         }
 
         // Precondition.checkReference(groupRecord);

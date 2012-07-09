@@ -42,9 +42,8 @@ import com.larkwoodlabs.util.logging.Logging;
  * Represents an ICMPv6 message as described in [<a
  * href="http://tools.ietf.org/html/rfc2463">RFC-2463</a>].
  * <p>
- * <h3>Message Format</h3>
+ * <h3>Message Format</h3> <blockquote>
  * 
- * <blockquote>
  * <pre>
  *   0                   1                   2                   3
  *   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -284,7 +283,7 @@ public class ICMPv6Message
         super(size);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "ICMPv6Message.ICMPv6Message", size));
+            logger.finer(this.log.entry("ICMPv6Message.ICMPv6Message", size));
             logState(logger);
         }
     }
@@ -296,7 +295,7 @@ public class ICMPv6Message
         super(consume(buffer, HEADER_LENGTH));
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "ICMPv6Message.ICMPv6Message", buffer));
+            logger.finer(this.log.entry("ICMPv6Message.ICMPv6Message", buffer));
             logState(logger);
         }
     }
@@ -318,10 +317,10 @@ public class ICMPv6Message
      * @param logger
      */
     private void logState(final Logger logger) {
-        logger.info(ObjectId + " : protocol=" + getProtocolNumber());
-        logger.fine(ObjectId + " : protocol-number=" + getProtocolNumber());
-        logger.fine(ObjectId + " : header-length=" + getHeaderLength());
-        logger.fine(ObjectId + " : next-header=" + getNextProtocolNumber());
+        logger.info(this.log.msg(": protocol=" + getProtocolNumber()));
+        logger.fine(this.log.msg(": protocol-number=" + getProtocolNumber()));
+        logger.fine(this.log.msg(": header-length=" + getHeaderLength()));
+        logger.fine(this.log.msg(": next-header=" + getNextProtocolNumber()));
     }
 
     /**
@@ -334,7 +333,7 @@ public class ICMPv6Message
     public void writeTo(final ByteBuffer buffer) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "ICMPv6Message.writeTo", buffer));
+            logger.finer(this.log.entry("ICMPv6Message.writeTo", buffer));
         }
 
         super.writeTo(buffer);
@@ -406,7 +405,7 @@ public class ICMPv6Message
     protected final void setType(final byte type) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "ICMPv6Message.setType", type));
+            logger.finer(this.log.entry("ICMPv6Message.setType", type));
         }
 
         MessageType.set(getBufferInternal(), type);
@@ -425,7 +424,7 @@ public class ICMPv6Message
     protected final void setCode(final byte code) {
 
         if (logger.isLoggable(Level.FINE)) {
-            logger.fine(Logging.entering(ObjectId, "ICMPv6Message.setCode", code));
+            logger.fine(this.log.entry("ICMPv6Message.setCode", code));
         }
 
         Code.set(getBufferInternal(), code);
@@ -444,7 +443,7 @@ public class ICMPv6Message
     public final void setChecksum(final short checksum) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "ICMPv6Message.setChecksum", checksum));
+            logger.finer(this.log.entry("ICMPv6Message.setChecksum", checksum));
         }
 
         Checksum.set(getBufferInternal(), checksum);
@@ -466,11 +465,11 @@ public class ICMPv6Message
                                      final int packetLength) throws ParseException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId,
-                                          "ICMPv6Message.verifyChecksum",
-                                          Logging.address(sourceAddress),
-                                          Logging.address(destinationAddress),
-                                          packetLength));
+            logger.finer(this.log.entry(
+                                        "ICMPv6Message.verifyChecksum",
+                                        Logging.address(sourceAddress),
+                                        Logging.address(destinationAddress),
+                                        packetLength));
         }
 
         // Save and clear checksum prior to computation
@@ -480,7 +479,7 @@ public class ICMPv6Message
         short computed = calculateChecksum(sourceAddress, destinationAddress, packetLength);
 
         if (computed != checksum) {
-            logger.fine(ObjectId + " ICMP message has invalid checksum - received " + checksum + ", computed " + computed);
+            logger.fine(this.log.msg("ICMP message has invalid checksum - received " + checksum + ", computed " + computed));
             throw new ParseException("ICMP message has invalid checksum - received " + checksum + ", computed " + computed);
         }
 
@@ -503,11 +502,11 @@ public class ICMPv6Message
                                      final int packetLength) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId,
-                                          "ICMPv6Message.updateChecksum",
-                                          Logging.address(sourceAddress),
-                                          Logging.address(destinationAddress),
-                                          packetLength));
+            logger.finer(this.log.entry(
+                                        "ICMPv6Message.updateChecksum",
+                                        Logging.address(sourceAddress),
+                                        Logging.address(destinationAddress),
+                                        packetLength));
         }
 
         // Clear checksum prior to computation
@@ -522,11 +521,11 @@ public class ICMPv6Message
                               final byte[] destinationAddress) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId,
-                                          "ICMPv6Message.writeChecksum",
-                                          buffer,
-                                          Logging.address(sourceAddress),
-                                          Logging.address(destinationAddress)));
+            logger.finer(this.log.entry(
+                                        "ICMPv6Message.writeChecksum",
+                                        buffer,
+                                        Logging.address(sourceAddress),
+                                        Logging.address(destinationAddress)));
         }
 
         ICMPv6Message.setChecksum(buffer, sourceAddress, destinationAddress);
@@ -550,11 +549,11 @@ public class ICMPv6Message
                                          final int packetLength) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId,
-                                          "ICMPv6Message.calculateChecksum",
-                                          Logging.address(sourceAddress),
-                                          Logging.address(destinationAddress),
-                                          packetLength));
+            logger.finer(this.log.entry(
+                                        "ICMPv6Message.calculateChecksum",
+                                        Logging.address(sourceAddress),
+                                        Logging.address(destinationAddress),
+                                        packetLength));
         }
 
         // Construct pseudoHeader

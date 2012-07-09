@@ -134,7 +134,7 @@ public abstract class MLDQueryMessage extends MLDGroupMessage {
         super(size,(byte)0,GENERAL_QUERY_GROUP);
         
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "MLDQueryMessage.MLDQueryMessage"));
+            logger.finer(this.log.entry("MLDQueryMessage.MLDQueryMessage"));
         }
     }
 
@@ -147,7 +147,7 @@ public abstract class MLDQueryMessage extends MLDGroupMessage {
         super(size,(byte)0,groupAddress);
         
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "MLDQueryMessage.MLDQueryMessage", Logging.address(groupAddress)));
+            logger.finer(this.log.entry("MLDQueryMessage.MLDQueryMessage", Logging.address(groupAddress)));
         }
     }
 
@@ -159,7 +159,7 @@ public abstract class MLDQueryMessage extends MLDGroupMessage {
     protected MLDQueryMessage(final ByteBuffer buffer) throws ParseException {
         super(buffer);
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "MLDQueryMessage.MLDQueryMessage", buffer));
+            logger.finer(this.log.entry("MLDQueryMessage.MLDQueryMessage", buffer));
         }
     }
 

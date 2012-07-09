@@ -46,8 +46,7 @@ import com.larkwoodlabs.util.logging.Logging;
 
 /**
  * Represents an IPv6 datagram header. See [<a
- * href="http://tools.ietf.org/html/rfc2460">RFC-2460</a>].
- * <h3>Header Format</h3>
+ * href="http://tools.ietf.org/html/rfc2460">RFC-2460</a>]. <h3>Header Format</h3>
  * <blockquote>
  * 
  * <pre>
@@ -79,22 +78,19 @@ import com.larkwoodlabs.util.logging.Logging;
  * <dt><u>Version</u></dt></p>
  * <dd>4-bit Internet Protocol version number = 6.
  * <p>
- * See {@link #getVersion()}.
- * </dd>
+ * See {@link #getVersion()}.</dd>
  * <p>
  * <dt><u>Traffic Class</u></dt>
  * </p>
  * <dd>8-bit traffic class field. See section 7 in [RFC2460].
  * <p>
- * See {@link #getTrafficClass()}, {@link #setTrafficClass(byte)}.
- * </dd>
+ * See {@link #getTrafficClass()}, {@link #setTrafficClass(byte)}.</dd>
  * <p>
  * <dt><u>Flow Label</u></dt>
  * </p>
  * <dd>20-bit flow label. See section 6 in [RFC2460].
  * <p>
- * See {@link #getFlowLabel()}, {@link #setFlowLabel(int)}.
- * </dd>
+ * See {@link #getFlowLabel()}, {@link #setFlowLabel(int)}.</dd>
  * <p>
  * <dt><u>Payload Length</u></dt>
  * </p>
@@ -102,39 +98,35 @@ import com.larkwoodlabs.util.logging.Logging;
  * following this IPv6 header, in octets. (Note that any extension headers [section 4]
  * present are considered part of the payload, i.e., included in the length count.)
  * <p>
- * See {@link #getPayloadLength()}.
- * </dd>
+ * See {@link #getPayloadLength()}.</dd>
  * <p>
  * <dt><u>Next Header</u></dt>
  * </p>
  * <dd>8-bit selector. Identifies the type of header immediately following the IPv6
  * header. Uses the same values as the IPv4 Protocol field [RFC-1700 et seq.].
  * <p>
- * See {@link #getNextHeader()}, {@link #getNextProtocolNumber()}, {@link #addProtocolMessage(IPMessage)}.
- * </dd>
+ * See {@link #getNextHeader()}, {@link #getNextProtocolNumber()},
+ * {@link #addProtocolMessage(IPMessage)}.</dd>
  * <p>
  * <dt><u>Hop Limit</u></dt>
  * </p>
  * <dd>8-bit unsigned integer. Decremented by 1 by each node that forwards the packet. The
  * packet is discarded if Hop Limit is decremented to zero.
  * <p>
- * See {@link #getHopLimit()}, {@link #setHopLimit(byte)}.
- * </dd>
+ * See {@link #getHopLimit()}, {@link #setHopLimit(byte)}.</dd>
  * <p>
  * <dt><u>Source Address</u></dt>
  * </p>
  * <dd>128-bit address of the originator of the packet.
  * <p>
- * See {@link #getSourceAddress()}, {@link #setSourceAddress(byte[])}.
- * </dd>
+ * See {@link #getSourceAddress()}, {@link #setSourceAddress(byte[])}.</dd>
  * <p>
  * <dt><u>Destination Address</u></dt>
  * </p>
  * <dd>128-bit address of the intended recipient of the packet (possibly not the ultimate
  * recipient, if a Routing header is present). See section 4.4 in [RFC2460].
  * <p>
- * See {@link #getDestinationAddress()}, {@link #setDestinationAddress(byte[])}.
- * </dd>
+ * See {@link #getDestinationAddress()}, {@link #setDestinationAddress(byte[])}.</dd>
  * </dl>
  * </blockquote>
  * 
@@ -314,14 +306,13 @@ public final class IPv6Packet
                       final IPMessage firstProtocolHeader) {
         super(BASE_HEADER_LENGTH);
         if (logger.isLoggable(Level.FINE)) {
-            logger.fine(Logging.entering(ObjectId,
-                                         "IPv6Packet.IPv6Packet",
-                                         trafficClass,
-                                         flowLabel,
-                                         hopLimit,
-                                         Logging.address(sourceAddress),
-                                         Logging.address(destinationAddress),
-                                         firstProtocolHeader));
+            logger.fine(this.log.entry("IPv6Packet.IPv6Packet",
+                                       trafficClass,
+                                       flowLabel,
+                                       hopLimit,
+                                       Logging.address(sourceAddress),
+                                       Logging.address(destinationAddress),
+                                       firstProtocolHeader));
         }
         setVersion(INTERNET_PROTOCOL_VERSION);
         setTrafficClass(trafficClass);
@@ -346,7 +337,7 @@ public final class IPv6Packet
         super(consume(buffer, BASE_HEADER_LENGTH));
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv6Packet.IPv6Packet", buffer));
+            logger.finer(this.log.entry("IPv6Packet.IPv6Packet", buffer));
         }
 
         ByteBuffer payload = consume(buffer, getPayloadLength());
@@ -370,7 +361,7 @@ public final class IPv6Packet
         super(consume(is, BASE_HEADER_LENGTH));
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv6Packet.IPv6Packet", is));
+            logger.finer(this.log.entry("IPv6Packet.IPv6Packet", is));
         }
 
         ByteBuffer payload = consume(is, getPayloadLength());
@@ -398,26 +389,26 @@ public final class IPv6Packet
      * @param logger
      */
     private void logState(final Logger logger) {
-        logger.info(ObjectId + " : length=" + getTotalLength());
-        logger.info(ObjectId + " : version=" + getVersion());
-        logger.info(ObjectId + " : priority=" + getTrafficClass());
-        logger.info(ObjectId + " : flow-label=" + getFlowLabel());
-        logger.info(ObjectId + " : hop-limit=" + getHopLimit());
-        logger.info(ObjectId + " : payload-length=" + getPayloadLength());
-        logger.fine(ObjectId + " : source-address=" + Logging.address(getSourceAddress()));
-        logger.fine(ObjectId + " : destination-address=" + Logging.address(getDestinationAddress()));
-        logger.info(ObjectId + " ----> protocol messages");
+        logger.info(this.log.msg(": length=" + getTotalLength()));
+        logger.info(this.log.msg(": version=" + getVersion()));
+        logger.info(this.log.msg(": priority=" + getTrafficClass()));
+        logger.info(this.log.msg(": flow-label=" + getFlowLabel()));
+        logger.info(this.log.msg(": hop-limit=" + getHopLimit()));
+        logger.info(this.log.msg(": payload-length=" + getPayloadLength()));
+        logger.fine(this.log.msg(": source-address=" + Logging.address(getSourceAddress())));
+        logger.fine(this.log.msg(": destination-address=" + Logging.address(getDestinationAddress())));
+        logger.info(this.log.msg("----> protocol messages"));
         if (getFirstProtocolMessage() != null) {
             getFirstProtocolMessage().log(logger);
         }
-        logger.info(ObjectId + " <---- protocol messages");
+        logger.info(this.log.msg("<---- protocol messages"));
     }
 
     @Override
     public void writeChecksum(final ByteBuffer buffer) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv6Packet.writeChecksum", buffer) + " *** EMPTY");
+            logger.finer(this.log.entry("IPv6Packet.writeChecksum", buffer) + " *** EMPTY");
         }
 
     }
@@ -431,7 +422,7 @@ public final class IPv6Packet
     protected void setNextProtocolNumber(final byte protocolNumber) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv6Packet.setNextProtocolNumber", protocolNumber));
+            logger.finer(this.log.entry("IPv6Packet.setNextProtocolNumber", protocolNumber));
         }
 
         setNextHeader(protocolNumber);
@@ -473,7 +464,7 @@ public final class IPv6Packet
     public void setTrafficClass(final byte trafficClass) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv6Packet.setTrafficClass", trafficClass));
+            logger.finer(this.log.entry("IPv6Packet.setTrafficClass", trafficClass));
         }
 
         TrafficClass.set(getBufferInternal(), (short) trafficClass);
@@ -510,7 +501,7 @@ public final class IPv6Packet
     public void setFlowLabel(final int flowLabel) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv6Packet.setFlowLabel", flowLabel));
+            logger.finer(this.log.entry("IPv6Packet.setFlowLabel", flowLabel));
         }
 
         FlowLabel.set(getBufferInternal(), flowLabel);
@@ -549,7 +540,7 @@ public final class IPv6Packet
     protected void setPayloadLength(final int length) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv6Packet.setPayloadLength", length));
+            logger.finer(this.log.entry("IPv6Packet.setPayloadLength", length));
         }
 
         PayloadLength.set(getBufferInternal(), (short) length);
@@ -586,7 +577,7 @@ public final class IPv6Packet
     protected void setNextHeader(final byte protocolNumber) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv6Packet.setNextHeader", protocolNumber));
+            logger.finer(this.log.entry("IPv6Packet.setNextHeader", protocolNumber));
         }
 
         NextHeader.set(getBufferInternal(), protocolNumber);
@@ -623,7 +614,7 @@ public final class IPv6Packet
     public void setHopLimit(final byte hopLimit) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv6Packet.setHopLimit", hopLimit));
+            logger.finer(this.log.entry("IPv6Packet.setHopLimit", hopLimit));
         }
 
         HopLimit.set(getBufferInternal(), hopLimit);
@@ -695,7 +686,7 @@ public final class IPv6Packet
     public void setSourceAddress(final InetAddress sourceAddress) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv6Packet.setSourceAddress", sourceAddress));
+            logger.finer(this.log.entry("IPv6Packet.setSourceAddress", sourceAddress));
         }
 
         // Precondition.checkReference(sourceAddress);
@@ -713,7 +704,7 @@ public final class IPv6Packet
     public void setSourceAddress(final byte[] address) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv6Packet.setSourceAddress", Logging.address(address)));
+            logger.finer(this.log.entry("IPv6Packet.setSourceAddress", Logging.address(address)));
         }
 
         // Precondition.checkIPv6Address(address);
@@ -781,7 +772,7 @@ public final class IPv6Packet
     public void setDestinationAddress(final InetAddress destinationAddress) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv6Packet.setDestinationAddress", destinationAddress));
+            logger.finer(this.log.entry("IPv6Packet.setDestinationAddress", destinationAddress));
         }
 
         // Precondition.checkReference(destinationAddress);
@@ -799,7 +790,7 @@ public final class IPv6Packet
     public void setDestinationAddress(final byte[] address) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv6Packet.setDestinationAddress", Logging.address(address)));
+            logger.finer(this.log.entry("IPv6Packet.setDestinationAddress", Logging.address(address)));
         }
 
         // Precondition.checkIPv6Address(address);
@@ -871,7 +862,7 @@ public final class IPv6Packet
     public void parsePayload(final IPMessage.Parser protocolParser) throws ParseException, MissingParserException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv6Packet.parsePayload", protocolParser));
+            logger.finer(this.log.entry("IPv6Packet.parsePayload", protocolParser));
         }
 
         // Parse IP protocol headers
@@ -879,7 +870,7 @@ public final class IPv6Packet
         // Check checksum before we consume the payload
         if (!protocolParser.verifyChecksum(this.unparsedPayload, lastProtocolNumber, getSourceAddress(), getDestinationAddress())) {
             if (logger.isLoggable(Level.INFO)) {
-                logger.info(ObjectId + " invalid checksum detected in IP payload");
+                logger.info(this.log.msg("invalid checksum detected in IP payload"));
             }
             throw new ParseException("invalid checksum detected in IP protocol packet");
         }
@@ -890,7 +881,7 @@ public final class IPv6Packet
             if (!protocolParser.verifyChecksum(this.unparsedPayload, lastProtocolNumber, getSourceAddress(),
                                                getDestinationAddress())) {
                 if (logger.isLoggable(Level.INFO)) {
-                    logger.info(ObjectId + " invalid checksum detected in IP payload");
+                    logger.info(this.log.msg("invalid checksum detected in IP payload"));
                 }
                 throw new ParseException("invalid checksum detected in IP payload");
             }

@@ -333,7 +333,7 @@ public final class MLDGroupRecord
 
         if (MLDMessage.logger.isLoggable(Level.FINER)) {
             MLDMessage.logger
-                            .finer(Logging.entering(ObjectId, "MLDGroupRecord.MLDGroupRecord", type, Logging.address(groupAddress)));
+                            .finer(this.log.entry("MLDGroupRecord.MLDGroupRecord", type, Logging.address(groupAddress)));
         }
     }
 
@@ -346,8 +346,8 @@ public final class MLDGroupRecord
         super(BASE_RECORD_LENGTH);
 
         if (MLDMessage.logger.isLoggable(Level.FINER)) {
-            MLDMessage.logger.finer(Logging.entering(ObjectId, "MLDGroupRecord.MLDGroupRecord", type,
-                                                     Logging.address(groupAddress), auxData));
+            MLDMessage.logger.finer(this.log.entry("MLDGroupRecord.MLDGroupRecord", type,
+                                                   Logging.address(groupAddress), auxData));
         }
 
         setType(type);
@@ -367,7 +367,7 @@ public final class MLDGroupRecord
         super(consume(buffer, BASE_RECORD_LENGTH));
 
         if (MLDMessage.logger.isLoggable(Level.FINE)) {
-            MLDMessage.logger.fine(Logging.entering(ObjectId, "MLDGroupRecord.MLDGroupRecord", buffer));
+            MLDMessage.logger.fine(this.log.entry("MLDGroupRecord.MLDGroupRecord", buffer));
         }
 
         int count = getNumberOfSources();
@@ -401,23 +401,23 @@ public final class MLDGroupRecord
      * @param logger
      */
     private void logState(final Logger logger) {
-        logger.info(ObjectId + " : record-type=" + getType() + " " + getTypeName(getType()));
-        logger.info(ObjectId + " : aux-data-length=" + getAuxDataLength());
-        logger.info(ObjectId + " : number-of-sources=" + getNumberOfSources());
-        logger.info(ObjectId + " : group-address=" + Logging.address(getGroupAddress()));
-        logger.info(ObjectId + " ----> start sources");
+        logger.info(this.log.msg(": record-type=" + getType() + " " + getTypeName(getType())));
+        logger.info(this.log.msg(": aux-data-length=" + getAuxDataLength()));
+        logger.info(this.log.msg(": number-of-sources=" + getNumberOfSources()));
+        logger.info(this.log.msg(": group-address=" + Logging.address(getGroupAddress())));
+        logger.info(this.log.msg("----> start sources"));
         for (int i = 0; i < getNumberOfSources(); i++) {
-            logger.info(ObjectId + " : source[" + i + "]=" + Logging.address(getSource(i)));
+            logger.info(this.log.msg(": source[" + i + "]=" + Logging.address(getSource(i))));
         }
-        logger.info(ObjectId + " <---- end sources");
-        logger.info(ObjectId + " : aux-data=" + getAuxData());
+        logger.info(this.log.msg("<---- end sources"));
+        logger.info(this.log.msg(": aux-data=" + getAuxData()));
     }
 
     @Override
     public void writeTo(final ByteBuffer buffer) {
 
         if (MLDMessage.logger.isLoggable(Level.FINER)) {
-            MLDMessage.logger.finer(Logging.entering(ObjectId, "MLDGroupRecord.writeTo", buffer));
+            MLDMessage.logger.finer(this.log.entry("MLDGroupRecord.writeTo", buffer));
         }
 
         // Update fields
@@ -455,7 +455,7 @@ public final class MLDGroupRecord
     public void setType(final byte type) {
 
         if (MLDMessage.logger.isLoggable(Level.FINER)) {
-            MLDMessage.logger.finer(Logging.entering(ObjectId, "MLDGroupRecord.setType", type));
+            MLDMessage.logger.finer(this.log.entry("MLDGroupRecord.setType", type));
         }
 
         if (type == MODE_IS_INCLUDE ||
@@ -484,7 +484,7 @@ public final class MLDGroupRecord
     protected void setNumberOfSources(final short numberOfSources) {
 
         if (MLDMessage.logger.isLoggable(Level.FINER)) {
-            MLDMessage.logger.finer(Logging.entering(ObjectId, "MLDGroupRecord.setNumberOfSources", numberOfSources));
+            MLDMessage.logger.finer(this.log.entry("MLDGroupRecord.setNumberOfSources", numberOfSources));
         }
 
         NumberOfSources.set(getBufferInternal(), numberOfSources);
@@ -508,7 +508,7 @@ public final class MLDGroupRecord
     protected void setAuxDataLength(final int length) {
 
         if (MLDMessage.logger.isLoggable(Level.FINER)) {
-            MLDMessage.logger.finer(Logging.entering(ObjectId, "MLDGroupRecord.setAuxDataLength", length));
+            MLDMessage.logger.finer(this.log.entry("MLDGroupRecord.setAuxDataLength", length));
         }
 
         AuxDataLen.set(getBufferInternal(), (byte) length);
@@ -527,7 +527,7 @@ public final class MLDGroupRecord
     public void setGroupAddress(final InetAddress groupAddress) {
 
         if (MLDMessage.logger.isLoggable(Level.FINER)) {
-            MLDMessage.logger.finer(Logging.entering(ObjectId, "MLDGroupRecord.setGroupAddress", Logging.address(groupAddress)));
+            MLDMessage.logger.finer(this.log.entry("MLDGroupRecord.setGroupAddress", Logging.address(groupAddress)));
         }
 
         setGroupAddress(groupAddress.getAddress());
@@ -539,7 +539,7 @@ public final class MLDGroupRecord
     public void setGroupAddress(final byte[] groupAddress) {
 
         if (MLDMessage.logger.isLoggable(Level.FINER)) {
-            MLDMessage.logger.finer(Logging.entering(ObjectId, "MLDGroupRecord.setGroupAddress", Logging.address(groupAddress)));
+            MLDMessage.logger.finer(this.log.entry("MLDGroupRecord.setGroupAddress", Logging.address(groupAddress)));
         }
 
         // Precondition.checkIPv6MulticastAddress(groupAddress);
@@ -553,7 +553,7 @@ public final class MLDGroupRecord
     public void addSource(final InetAddress sourceAddress) throws UnknownHostException {
 
         if (MLDMessage.logger.isLoggable(Level.FINER)) {
-            MLDMessage.logger.finer(Logging.entering(ObjectId, "MLDGroupRecord.addSource", Logging.address(sourceAddress)));
+            MLDMessage.logger.finer(this.log.entry("MLDGroupRecord.addSource", Logging.address(sourceAddress)));
         }
 
         // Precondition.checkReference(sourceAddress);
@@ -567,14 +567,14 @@ public final class MLDGroupRecord
     public int addSource(final byte[] sourceAddress) {
 
         if (MLDMessage.logger.isLoggable(Level.FINER)) {
-            MLDMessage.logger.finer(Logging.entering(ObjectId, "MLDGroupRecord.addSource", Logging.address(sourceAddress)));
+            MLDMessage.logger.finer(this.log.entry("MLDGroupRecord.addSource", Logging.address(sourceAddress)));
         }
 
         // Precondition.checkIPv6Address(sourceAddress);
         if (sourceAddress.length != 6) {
 
             if (MLDMessage.logger.isLoggable(Level.FINE)) {
-                MLDMessage.logger.fine(ObjectId + " invalid source address - MLD messages only allow use of IPv6 addresses");
+                MLDMessage.logger.fine(this.log.msg("invalid source address - MLD messages only allow use of IPv6 addresses"));
             }
 
             throw new IllegalArgumentException("invalid source address - MLD messages only allow use of IPv6 addresses");
@@ -599,7 +599,7 @@ public final class MLDGroupRecord
     public void removeSource(final int index) {
 
         if (MLDMessage.logger.isLoggable(Level.FINER)) {
-            MLDMessage.logger.finer(Logging.entering(ObjectId, "MLDGroupRecord.removeSource", index));
+            MLDMessage.logger.finer(this.log.entry("MLDGroupRecord.removeSource", index));
         }
 
         this.sources.remove(index);
@@ -618,7 +618,7 @@ public final class MLDGroupRecord
     public void setAuxData(final ByteBuffer auxData) {
 
         if (MLDMessage.logger.isLoggable(Level.FINER)) {
-            MLDMessage.logger.finer(Logging.entering(ObjectId, "MLDGroupRecord.setAuxData", auxData));
+            MLDMessage.logger.finer(this.log.entry("MLDGroupRecord.setAuxData", auxData));
         }
 
         this.auxData = auxData.slice();

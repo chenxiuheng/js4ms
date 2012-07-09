@@ -171,7 +171,7 @@ public final class IGMPv2ReportMessage
         super(BASE_MESSAGE_LENGTH, MESSAGE_TYPE, (byte) 0, groupAddress);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IGMPv2ReportMessage.IGMPv2ReportMessage", Logging.address(groupAddress)));
+            logger.finer(this.log.entry("IGMPv2ReportMessage.IGMPv2ReportMessage", Logging.address(groupAddress)));
         }
     }
 
@@ -182,7 +182,7 @@ public final class IGMPv2ReportMessage
     public IGMPv2ReportMessage(final ByteBuffer buffer) throws ParseException {
         super(consume(buffer, BASE_MESSAGE_LENGTH));
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IGMPv2ReportMessage.IGMPv2ReportMessage", buffer));
+            logger.finer(this.log.entry("IGMPv2ReportMessage.IGMPv2ReportMessage", buffer));
         }
     }
 
@@ -192,7 +192,7 @@ public final class IGMPv2ReportMessage
                               final byte[] destinationAddress) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IGMPv2ReportMessage.writeChecksum", buffer, Logging.address(sourceAddress),
+            logger.finer(this.log.entry("IGMPv2ReportMessage.writeChecksum", buffer, Logging.address(sourceAddress),
                                           Logging.address(destinationAddress)));
         }
 

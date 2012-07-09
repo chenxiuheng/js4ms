@@ -31,7 +31,7 @@ import com.larkwoodlabs.util.buffer.fields.BooleanField;
 import com.larkwoodlabs.util.buffer.fields.IntegerField;
 import com.larkwoodlabs.util.buffer.fields.ShortBitField;
 import com.larkwoodlabs.util.buffer.parser.MissingParserException;
-import com.larkwoodlabs.util.logging.Logging;
+
 
 /**
  * Represents an IPv6 fragment header.
@@ -54,8 +54,8 @@ import com.larkwoodlabs.util.logging.Logging;
  * <dd>Identifies the initial header type of the Fragmentable Part of the original packet
  * (defined below). Uses the same values as the IPv4 Protocol field [RFC-1700 et seq.].
  * <p>
- * See {@link #getNextProtocolNumber()}, {@link #getNextMessage()}, {@link #setNextMessage(IPMessage)}.
- * </dd>
+ * See {@link #getNextProtocolNumber()}, {@link #getNextMessage()},
+ * {@link #setNextMessage(IPMessage)}.</dd>
  * <p>
  * <dt><u>Reserved</u></dt>
  * <p>
@@ -66,8 +66,7 @@ import com.larkwoodlabs.util.logging.Logging;
  * <dd>The offset, in 8-octet units, of the data following this header, relative to the
  * start of the Fragmentable Part of the original packet.
  * <p>
- * See {@link #getFragmentOffset()}, {@link #setFragmentOffset(short)}.
- * </dd>
+ * See {@link #getFragmentOffset()}, {@link #setFragmentOffset(short)}.</dd>
  * <p>
  * <dt><u>Reserved (Res)</u></dt>
  * <p>
@@ -81,9 +80,9 @@ import com.larkwoodlabs.util.logging.Logging;
  *   1 = more fragments;
  *   0 = last fragment.
  * </pre>
+ * 
  * <p>
- * See {@link #getMoreFragments()}, {@link #setMoreFragments(boolean)}.
- * </dd>
+ * See {@link #getMoreFragments()}, {@link #setMoreFragments(boolean)}.</dd>
  * <p>
  * <dt><u>Identification</u></dt>
  * <p>
@@ -93,8 +92,7 @@ import com.larkwoodlabs.util.logging.Logging;
  * If a Routing header is present, the Destination Address of concern is that of the final
  * destination.
  * <p>
- * See {@link #getIdentification()}, {@link #setIdentification(int)}.
- * </dd>
+ * See {@link #getIdentification()}, {@link #setIdentification(int)}.</dd>
  * </dl>
  * 
  * @author Gregory Bumgardner (gbumgard)
@@ -164,8 +162,8 @@ public final class IPv6FragmentHeader
         super(IP_PROTOCOL_NUMBER);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv6FragmentHeader.IPv6FragmentHeader", fragmentOffset, moreFragments,
-                                          identification));
+            logger.finer(this.log.entry("IPv6FragmentHeader.IPv6FragmentHeader", fragmentOffset, moreFragments,
+                                        identification));
         }
 
         setFragmentOffset(fragmentOffset);
@@ -185,7 +183,7 @@ public final class IPv6FragmentHeader
         super(consume(buffer, BASE_HEADER_LENGTH), IP_PROTOCOL_NUMBER);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv6FragmentHeader.IPv6FragmentHeader", buffer));
+            logger.finer(this.log.entry("IPv6FragmentHeader.IPv6FragmentHeader", buffer));
         }
 
         this.fragment = consume(buffer, buffer.remaining());
@@ -207,12 +205,12 @@ public final class IPv6FragmentHeader
      * @param logger
      */
     private void logState(final Logger logger) {
-        logger.fine(ObjectId + " : more-fragments=" + getMoreFragments());
-        logger.fine(ObjectId + " : fragment-offset=" + getFragmentOffset());
-        logger.fine(ObjectId + " : identification=" + getIdentification());
-        logger.fine(ObjectId + " : fragment array=" + this.fragment.array() +
-                    " offset=" + this.fragment.arrayOffset() +
-                    " limit=" + this.fragment.limit());
+        logger.fine(this.log.msg(": more-fragments=" + getMoreFragments()));
+        logger.fine(this.log.msg(": fragment-offset=" + getFragmentOffset()));
+        logger.fine(this.log.msg(": identification=" + getIdentification()));
+        logger.fine(this.log.msg(": fragment array=" + this.fragment.array() +
+                                 " offset=" + this.fragment.arrayOffset() +
+                                 " limit=" + this.fragment.limit()));
     }
 
     /**
@@ -244,7 +242,7 @@ public final class IPv6FragmentHeader
     public void setFragmentOffset(final short offset) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv6FragmentHeader.setFragmentOffset", offset));
+            logger.finer(this.log.entry("IPv6FragmentHeader.setFragmentOffset", offset));
         }
 
         FragmentOffset.set(getBufferInternal(), offset);
@@ -263,7 +261,7 @@ public final class IPv6FragmentHeader
     public void setMoreFragments(final boolean moreFragments) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv6FragmentHeader.setMoreFragments", moreFragments));
+            logger.finer(this.log.entry("IPv6FragmentHeader.setMoreFragments", moreFragments));
         }
 
         MoreFragments.set(getBufferInternal(), moreFragments);
@@ -282,7 +280,7 @@ public final class IPv6FragmentHeader
     public void setIdentification(final int identification) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv6FragmentHeader.setIdentification", identification));
+            logger.finer(this.log.entry("IPv6FragmentHeader.setIdentification", identification));
         }
 
         Identification.set(getBufferInternal(), identification);

@@ -42,8 +42,8 @@ import com.larkwoodlabs.util.logging.Logging;
  * See [<a
  * href="http://www.ietf.org/rfc/rfc3376.txt">RFC-3376</a>].
  * <p>
- * <h3>Message Format</h3>
- * <blockquote>
+ * <h3>Message Format</h3> <blockquote>
+ * 
  * <pre>
  *   0                   1                   2                   3
  *   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -88,16 +88,15 @@ import com.larkwoodlabs.util.logging.Logging;
  * field is set to zero. When receiving packets, the checksum MUST be verified before
  * processing a message.
  * <p>
- * See {@link #getChecksum()}, {@link #setChecksum(short)}, {@link #calculateChecksum(ByteBuffer, int)}.
- * </dd>
+ * See {@link #getChecksum()}, {@link #setChecksum(short)},
+ * {@link #calculateChecksum(ByteBuffer, int)}.</dd>
  * <p>
  * <dt><u>Number of Group Records (M)</u></dt>
  * <p>
  * <dd>The Number of Group Records (M) field specifies how many Group Records are present
  * in this Report.
  * <p>
- * See {@link #getNumberOfGroupRecords()}.
- * </dd>
+ * See {@link #getNumberOfGroupRecords()}.</dd>
  * <p>
  * <dt><u>Group Record</u></dt>
  * <p>
@@ -140,10 +139,10 @@ import com.larkwoodlabs.util.logging.Logging;
  * CHANGE_TO_EXCLUDE_MODE, it is split into multiple Group Records, each containing a
  * different subset of the source addresses and each sent in a separate Report message. If
  * its Type is MODE_IS_EXCLUDE or CHANGE_TO_EXCLUDE_MODE, a single Group Record is sent,
- * containing as many source addresses as can fit, and
- * the remaining source addresses are not reported; though the choice of which sources to
- * report is arbitrary, it is preferable to report the same set of sources in each
- * subsequent report, rather than reporting different sources each time.
+ * containing as many source addresses as can fit, and the remaining source addresses are
+ * not reported; though the choice of which sources to report is arbitrary, it is
+ * preferable to report the same set of sources in each subsequent report, rather than
+ * reporting different sources each time.
  * 
  * @author Gregory Bumgardner (gbumgard)
  */
@@ -268,7 +267,7 @@ public final class IGMPv3ReportMessage
         super(BASE_MESSAGE_LENGTH, MESSAGE_TYPE, (byte) 0);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IGMPv3ReportMessage.IGMPv3ReportMessage"));
+            logger.finer(this.log.entry("IGMPv3ReportMessage.IGMPv3ReportMessage"));
         }
 
         getBufferInternal().put(1, (byte) 0); // Reserved
@@ -288,7 +287,7 @@ public final class IGMPv3ReportMessage
         super(consume(buffer, BASE_MESSAGE_LENGTH));
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.fine(Logging.entering(ObjectId, "IGMPv3ReportMessage.IGMPv3ReportMessage", buffer));
+            logger.fine(this.log.entry("IGMPv3ReportMessage.IGMPv3ReportMessage", buffer));
         }
 
         int numberOfGroupRecords = getNumberOfGroupRecords();
@@ -314,23 +313,23 @@ public final class IGMPv3ReportMessage
      * @param logger
      */
     private void logState(final Logger logger) {
-        logger.info(ObjectId + " : number-of-group-records=" + getNumberOfGroupRecords());
-        logger.info(ObjectId + " : ----> group records");
+        logger.info(this.log.msg(": number-of-group-records=" + getNumberOfGroupRecords()));
+        logger.info(this.log.msg(": ----> group records"));
         int numberOfGroupRecords = getNumberOfGroupRecords();
         if (numberOfGroupRecords > 0) {
             for (int i = 0; i < numberOfGroupRecords; i++) {
-                logger.info(ObjectId + " : group record[" + i + "]:");
+                logger.info(this.log.msg(": group record[" + i + "]:"));
                 this.groupRecords.get(i).log(logger);
             }
         }
-        logger.info(ObjectId + " <---- end group records");
+        logger.info(this.log.msg("<---- end group records"));
     }
 
     @Override
     public void writeTo(final ByteBuffer buffer) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IGMPv3ReportMessage.writeTo", buffer));
+            logger.finer(this.log.entry("IGMPv3ReportMessage.writeTo", buffer));
         }
 
         // Precondition.checkReference(buffer);
@@ -349,11 +348,10 @@ public final class IGMPv3ReportMessage
                               final byte[] sourceAddress,
                               final byte[] destinationAddress) {
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId,
-                                          "IGMPv3ReportMessage.writeChecksum",
-                                          buffer,
-                                          Logging.address(sourceAddress),
-                                          Logging.address(destinationAddress)));
+            logger.finer(this.log.entry("IGMPv3ReportMessage.writeChecksum",
+                                        buffer,
+                                        Logging.address(sourceAddress),
+                                        Logging.address(destinationAddress)));
         }
 
         IGMPv3ReportMessage.setChecksum(buffer);
@@ -389,7 +387,7 @@ public final class IGMPv3ReportMessage
     protected void setNumberOfGroupRecords(final short numberOfGroupRecords) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IGMPv3ReportMessage.setNumberOfGroupRecords", numberOfGroupRecords));
+            logger.finer(this.log.entry("IGMPv3ReportMessage.setNumberOfGroupRecords", numberOfGroupRecords));
         }
 
         NumberOfGroupRecords.set(getBufferInternal(), numberOfGroupRecords);
@@ -402,7 +400,7 @@ public final class IGMPv3ReportMessage
     public int addGroupRecord(final IGMPGroupRecord groupRecord) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IGMPv3ReportMessage.addGroupRecord", groupRecord));
+            logger.finer(this.log.entry("IGMPv3ReportMessage.addGroupRecord", groupRecord));
         }
 
         int index = this.groupRecords.size();
@@ -417,7 +415,7 @@ public final class IGMPv3ReportMessage
     public void removeGroupRecord(final int index) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IGMPv3ReportMessage.removeGroupRecord", index));
+            logger.finer(this.log.entry("IGMPv3ReportMessage.removeGroupRecord", index));
         }
 
         this.groupRecords.remove(index);

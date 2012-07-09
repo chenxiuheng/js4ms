@@ -44,8 +44,8 @@ import com.larkwoodlabs.util.logging.Logging;
  * multicast reception state of neighboring interfaces.
  * See [<a href="http://www.ietf.org/rfc/rfc3376.txt">RFC-3376</a>].
  * <p>
- * <h3>Message Format</h3>
- * <blockquote>
+ * <h3>Message Format</h3> <blockquote>
+ * 
  * <pre>
  *   0                   1                   2                   3
  *   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -351,7 +351,7 @@ public final class IGMPv3QueryMessage
         super(BASE_MESSAGE_LENGTH, maximumResponseTime);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IGMPv3QueryMessage.IGMPv3QueryMessage", maximumResponseTime));
+            logger.finer(this.log.entry("IGMPv3QueryMessage.IGMPv3QueryMessage", maximumResponseTime));
         }
 
         setSuppressRouterSideProcessing(false);
@@ -370,8 +370,8 @@ public final class IGMPv3QueryMessage
         super(BASE_MESSAGE_LENGTH, maximumResponseTime, groupAddress);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IGMPv3QueryMessage.IGMPv3QueryMessage", maximumResponseTime,
-                                          Logging.address(groupAddress)));
+            logger.finer(this.log.entry("IGMPv3QueryMessage.IGMPv3QueryMessage", maximumResponseTime,
+                                        Logging.address(groupAddress)));
         }
 
         setSuppressRouterSideProcessing(false);
@@ -390,7 +390,7 @@ public final class IGMPv3QueryMessage
         super(consume(buffer, BASE_MESSAGE_LENGTH));
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IGMPv3QueryMessage.IGMPv3QueryMessage", buffer));
+            logger.finer(this.log.entry("IGMPv3QueryMessage.IGMPv3QueryMessage", buffer));
         }
 
         int numberOfSources = getNumberOfSources();
@@ -416,23 +416,23 @@ public final class IGMPv3QueryMessage
      * @param logger
      */
     private void logState(final Logger logger) {
-        logger.info(ObjectId + " : suppress-router-side-processing=" + getSuppressRouterSideProcessing());
-        logger.info(ObjectId + " : querier-robustness-variable=" + getQuerierRobustnessVariable());
-        logger.info(ObjectId + " : querier-query-interval-code=" + getQuerierQueryIntervalCode() + " " + getQueryIntervalTime()
-                    + "s");
-        logger.info(ObjectId + " : number-of-sources=" + getNumberOfSources());
-        logger.info(ObjectId + " ----> sources");
+        logger.info(this.log.msg(": suppress-router-side-processing=" + getSuppressRouterSideProcessing()));
+        logger.info(this.log.msg(": querier-robustness-variable=" + getQuerierRobustnessVariable()));
+        logger.info(this.log.msg(": querier-query-interval-code=" + getQuerierQueryIntervalCode() + " " + getQueryIntervalTime()
+                                 + "s"));
+        logger.info(this.log.msg(": number-of-sources=" + getNumberOfSources()));
+        logger.info(this.log.msg("----> sources"));
         for (int i = 0; i < getNumberOfSources(); i++) {
-            logger.info(ObjectId + " : source[" + i + "]=" + Logging.address(getSource(i)));
+            logger.info(this.log.msg(": source[" + i + "]=" + Logging.address(getSource(i))));
         }
-        logger.info(ObjectId + " <---- sources");
+        logger.info(this.log.msg("<---- sources"));
     }
 
     @Override
     public void writeTo(final ByteBuffer buffer) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IGMPv3QueryMessage.writeTo", buffer));
+            logger.finer(this.log.entry("IGMPv3QueryMessage.writeTo", buffer));
         }
 
         // Precondition.checkReference(buffer);
@@ -451,8 +451,8 @@ public final class IGMPv3QueryMessage
                               final byte[] destinationAddress) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IGMPv3QueryMessage.writeChecksum", buffer, Logging.address(sourceAddress),
-                                          Logging.address(destinationAddress)));
+            logger.finer(this.log.entry("IGMPv3QueryMessage.writeChecksum", buffer, Logging.address(sourceAddress),
+                                        Logging.address(destinationAddress)));
         }
 
         IGMPv3QueryMessage.setChecksum(buffer);
@@ -468,6 +468,7 @@ public final class IGMPv3QueryMessage
      * This value is calculated from {@linkplain #MaxRespCode Max Resp Code} field.
      * <p>
      * See {@link #setMaximumResponseTime(int)}.
+     * 
      * @return
      */
     public int getMaximumResponseTime() {
@@ -483,12 +484,13 @@ public final class IGMPv3QueryMessage
      * The specified number of milliseconds is converted into a Max Resp Code value.
      * <p>
      * See {@link #getMaximumResponseTime()}.
+     * 
      * @param milliseconds
      */
     public void setMaximumResponseTime(final int milliseconds) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IGMPv3QueryMessage.setMaximumResponseTime", milliseconds));
+            logger.finer(this.log.entry("IGMPv3QueryMessage.setMaximumResponseTime", milliseconds));
         }
 
         short tenths = (short) (milliseconds / 100);
@@ -528,8 +530,8 @@ public final class IGMPv3QueryMessage
     public void setSuppressRouterSideProcessing(final boolean suppressRouterSideProcessing) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IGMPv3QueryMessage.setSuppressRouterSideProcessing",
-                                          suppressRouterSideProcessing));
+            logger.finer(this.log.entry("IGMPv3QueryMessage.setSuppressRouterSideProcessing",
+                                        suppressRouterSideProcessing));
         }
 
         SuppressRouterSideProcessing.set(getBufferInternal(), suppressRouterSideProcessing);
@@ -551,7 +553,7 @@ public final class IGMPv3QueryMessage
      *       | Resv  |S| QRV | Byte #8
      *       +-+-+-+-+-+-+-+-+
      * </pre>
-     *
+     * 
      * See {@link #setQuerierRobustnessVariable(byte)}.
      * 
      * @return
@@ -569,7 +571,7 @@ public final class IGMPv3QueryMessage
     public void setQuerierRobustnessVariable(final byte querierRobustnessVariable) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IGMPv3QueryMessage.setQuerierRobustnessVariable", querierRobustnessVariable));
+            logger.finer(this.log.entry("IGMPv3QueryMessage.setQuerierRobustnessVariable", querierRobustnessVariable));
         }
 
         QuerierRobustnessVariable.set(getBufferInternal(), querierRobustnessVariable);
@@ -621,7 +623,7 @@ public final class IGMPv3QueryMessage
     public void setQuerierQueryIntervalCode(final byte querierQueryIntervalCode) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IGMPv3QueryMessage.setQuerierQueryIntervalCode", querierQueryIntervalCode));
+            logger.finer(this.log.entry("IGMPv3QueryMessage.setQuerierQueryIntervalCode", querierQueryIntervalCode));
         }
 
         QuerierQueryIntervalCode.set(getBufferInternal(), querierQueryIntervalCode);
@@ -657,7 +659,7 @@ public final class IGMPv3QueryMessage
     public void setQueryIntervalTime(final int seconds) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IGMPv3QueryMessage.setQueryIntervalTime", seconds));
+            logger.finer(this.log.entry("IGMPv3QueryMessage.setQueryIntervalTime", seconds));
         }
 
         if (seconds < 128) {
@@ -682,7 +684,7 @@ public final class IGMPv3QueryMessage
     protected void setNumberOfSources(final int numberOfSources) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IGMPv3QueryMessage.setNumberOfSources", numberOfSources));
+            logger.finer(this.log.entry("IGMPv3QueryMessage.setNumberOfSources", numberOfSources));
         }
 
         NumberOfSources.set(getBufferInternal(), (short) numberOfSources);
@@ -695,7 +697,7 @@ public final class IGMPv3QueryMessage
     public void addSource(final InetAddress sourceAddress) throws UnknownHostException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IGMPv3QueryMessage.addSource", Logging.address(sourceAddress)));
+            logger.finer(this.log.entry("IGMPv3QueryMessage.addSource", Logging.address(sourceAddress)));
         }
 
         addSource(sourceAddress.getAddress());
@@ -707,7 +709,7 @@ public final class IGMPv3QueryMessage
     public void addSource(final byte[] sourceAddress) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IGMPv3QueryMessage.addSource", Logging.address(sourceAddress)));
+            logger.finer(this.log.entry("IGMPv3QueryMessage.addSource", Logging.address(sourceAddress)));
         }
 
         this.sources.add(sourceAddress.clone());

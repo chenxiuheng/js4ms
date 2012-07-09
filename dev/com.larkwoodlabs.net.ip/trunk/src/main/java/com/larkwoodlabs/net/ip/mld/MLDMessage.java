@@ -32,7 +32,6 @@ import com.larkwoodlabs.net.ip.ipv6.IPv6HopByHopOptionsHeader;
 import com.larkwoodlabs.net.ip.ipv6.IPv6Packet;
 import com.larkwoodlabs.net.ip.ipv6.IPv6RouterAlertOption;
 import com.larkwoodlabs.util.buffer.fields.ShortField;
-import com.larkwoodlabs.util.logging.Logging;
 
 /**
  * Represents a Multicast Listener Discovery (MLD) message as described in
@@ -357,7 +356,7 @@ public abstract class MLDMessage
         super(size);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "MLDMessage.MLDMessage", size, type));
+            logger.finer(this.log.entry("MLDMessage.MLDMessage", size, type));
         }
 
         setType(type);
@@ -378,7 +377,7 @@ public abstract class MLDMessage
         super(buffer);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "MLDMessage.MLDMessage", buffer));
+            logger.finer(this.log.entry("MLDMessage.MLDMessage", buffer));
             logState(logger);
         }
     }
@@ -400,7 +399,7 @@ public abstract class MLDMessage
      * @param logger
      */
     private void logState(final Logger logger) {
-        logger.info(ObjectId + " : message-length=" + getTotalLength());
+        logger.info(this.log.msg(": message-length=" + getTotalLength()));
     }
 
     /**
@@ -416,7 +415,7 @@ public abstract class MLDMessage
     public void setMaximumResponseDelay(final short milliseconds) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "MLDMessage.setMaximumResponseDelay", milliseconds));
+            logger.finer(this.log.entry("MLDMessage.setMaximumResponseDelay", milliseconds));
         }
 
         MLDMessage.MaximumResponseDelay.set(getBufferInternal(), milliseconds);

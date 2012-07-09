@@ -200,7 +200,7 @@ public final class IGMPv2QueryMessage
         super(BASE_MESSAGE_LENGTH, maximumResponseTime, groupAddress);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IGMPv2QueryMessage.IGMPv2QueryMessage", maximumResponseTime,
+            logger.finer(this.log.entry("IGMPv2QueryMessage.IGMPv2QueryMessage", maximumResponseTime,
                                           Logging.address(groupAddress)));
         }
     }
@@ -213,7 +213,7 @@ public final class IGMPv2QueryMessage
         super(consume(buffer, BASE_MESSAGE_LENGTH));
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IGMPv2QueryMessage.IGMPv2QueryMessage", buffer));
+            logger.finer(this.log.entry("IGMPv2QueryMessage.IGMPv2QueryMessage", buffer));
         }
     }
 
@@ -248,7 +248,7 @@ public final class IGMPv2QueryMessage
     public void setMaximumResponseTime(final int milliseconds) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IGMPv2QueryMessage.setMaximumResponseTime", milliseconds));
+            logger.finer(this.log.entry("IGMPv2QueryMessage.setMaximumResponseTime", milliseconds));
         }
 
         short tenths = (short) (milliseconds / 100);

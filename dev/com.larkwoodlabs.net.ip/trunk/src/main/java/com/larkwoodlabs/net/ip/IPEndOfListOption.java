@@ -24,12 +24,10 @@ import java.nio.ByteBuffer;
 import java.util.logging.Level;
 
 import com.larkwoodlabs.common.exceptions.ParseException;
-import com.larkwoodlabs.util.logging.Logging;
 
 /**
  * Represents an IP End of Options list Option (Option 0).
  * Used to indicate that no more options follow.
- * 
  * The Type field has the following value:
  * Copy=0, Class=0, Option=0
  * 
@@ -41,11 +39,13 @@ import com.larkwoodlabs.util.logging.Logging;
  * 
  * @author Gregory Bumgardner (gbumgard)
  */
-public class IPEndOfListOption extends IPSingleByteHeaderOption {
+public class IPEndOfListOption
+                extends IPSingleByteHeaderOption {
 
     /*-- Inner Classes ------------------------------------------------------*/
 
-    public static class Parser implements IPHeaderOption.ParserType {
+    public static class Parser
+                    implements IPHeaderOption.ParserType {
 
         @Override
         public IPHeaderOption parse(final ByteBuffer buffer) throws ParseException {
@@ -61,9 +61,10 @@ public class IPEndOfListOption extends IPSingleByteHeaderOption {
     /*-- Static Variables ---------------------------------------------------*/
 
     public static final int OPTION_CLASS = 0;
-    public static final int OPTION_NUMBER = 0;
-    public static final byte OPTION_CODE = OPTION_CLASS | OPTION_NUMBER;
 
+    public static final int OPTION_NUMBER = 0;
+
+    public static final byte OPTION_CODE = OPTION_CLASS | OPTION_NUMBER;
 
     /*-- Member Functions ---------------------------------------------------*/
 
@@ -72,20 +73,19 @@ public class IPEndOfListOption extends IPSingleByteHeaderOption {
      */
     public IPEndOfListOption() {
         super(OPTION_CODE);
-        
+
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPEndOfListOption.IPEndOfListOption"));
+            logger.finer(this.log.entry("IPEndOfListOption.IPEndOfListOption"));
         }
     }
 
     /**
-     * 
      * @param segment
      */
     public IPEndOfListOption(final ByteBuffer segment) {
         super(segment);
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPEndOfListOption.IPEndOfListOption", segment));
+            logger.finer(this.log.entry("IPEndOfListOption.IPEndOfListOption", segment));
         }
     }
 

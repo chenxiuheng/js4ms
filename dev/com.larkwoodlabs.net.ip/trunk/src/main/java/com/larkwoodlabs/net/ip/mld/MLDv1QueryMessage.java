@@ -129,12 +129,14 @@ import com.larkwoodlabs.util.logging.Logging;
  * 
  * @author Gregory Bumgardner (gbumgard)
  */
-public final class MLDv1QueryMessage extends MLDQueryMessage {
+public final class MLDv1QueryMessage
+                extends MLDQueryMessage {
 
     /**
      * 
      */
-    public static class Parser implements MLDMessage.ParserType {
+    public static class Parser
+                    implements MLDMessage.ParserType {
 
         @Override
         public MLDMessage parse(final ByteBuffer buffer) throws ParseException {
@@ -161,13 +163,11 @@ public final class MLDv1QueryMessage extends MLDQueryMessage {
     public static final int BASE_MESSAGE_LENGTH = 24;
 
     /** */
-    public static final short QUERY_RESPONSE_INTERVAL = 10*1000; // 10 secs as ms
-
+    public static final short QUERY_RESPONSE_INTERVAL = 10 * 1000; // 10 secs as ms
 
     /*-- Static Functions ---------------------------------------------------*/
 
     /**
-     * 
      * @return
      */
     public static MLDMessage.Parser getMLDMessageParser() {
@@ -175,7 +175,6 @@ public final class MLDv1QueryMessage extends MLDQueryMessage {
     }
 
     /**
-     * 
      * @return
      */
     public static IPMessage.Parser getIPMessageParser() {
@@ -183,7 +182,6 @@ public final class MLDv1QueryMessage extends MLDQueryMessage {
     }
 
     /**
-     * 
      * @return
      */
     public static IPv6Packet.Parser getIPv6PacketParser() {
@@ -191,7 +189,6 @@ public final class MLDv1QueryMessage extends MLDQueryMessage {
     }
 
     /**
-     * 
      * @return
      */
     public static IPPacket.BufferParser getIPPacketParser() {
@@ -199,16 +196,14 @@ public final class MLDv1QueryMessage extends MLDQueryMessage {
     }
 
     /**
-     * 
      * @param sourceAddress
      * @return
      */
     public static IPv6Packet constructGeneralQueryPacket(final byte[] sourceAddress) {
-        return constructGroupQueryPacket(sourceAddress,IPv6GeneralQueryGroupAddress);
+        return constructGroupQueryPacket(sourceAddress, IPv6GeneralQueryGroupAddress);
     }
 
     /**
-     *
      * @param sourceAddress
      * @param groupAddress
      * @return
@@ -221,10 +216,15 @@ public final class MLDv1QueryMessage extends MLDQueryMessage {
     }
 
     /**
-     * Verifies the MLD message checksum. Called by the parser prior to constructing the packet.
-     * @param buffer - the buffer containing the MLD message.
-     * @param sourceAddress An IPv6 (16-byte) address..
-     * @param destinationAddress An IPv6 (16-byte) address.
+     * Verifies the MLD message checksum. Called by the parser prior to constructing the
+     * packet.
+     * 
+     * @param buffer
+     *            - the buffer containing the MLD message.
+     * @param sourceAddress
+     *            An IPv6 (16-byte) address..
+     * @param destinationAddress
+     *            An IPv6 (16-byte) address.
      * @return
      */
     public static boolean verifyChecksum(final ByteBuffer buffer,
@@ -235,10 +235,15 @@ public final class MLDv1QueryMessage extends MLDQueryMessage {
 
     /**
      * Writes the MLD message checksum into a buffer containing an MLD message.
-     * @param buffer - a byte array.
-     * @param offset - the offset within the array at which to write the message.
-     * @param sourceAddress An IPv6 (16-byte) address..
-     * @param destinationAddress An IPv6 (16-byte) address.
+     * 
+     * @param buffer
+     *            - a byte array.
+     * @param offset
+     *            - the offset within the array at which to write the message.
+     * @param sourceAddress
+     *            An IPv6 (16-byte) address..
+     * @param destinationAddress
+     *            An IPv6 (16-byte) address.
      */
     public static void setChecksum(final ByteBuffer buffer,
                                    final byte[] sourceAddress,
@@ -246,43 +251,41 @@ public final class MLDv1QueryMessage extends MLDQueryMessage {
         Checksum.set(buffer, MLDMessage.calculateChecksum(buffer, BASE_MESSAGE_LENGTH, sourceAddress, destinationAddress));
     }
 
-    
     /*-- Member Functions ---------------------------------------------------*/
 
     /**
      * Constructs a general query
+     * 
      * @param groupAddress
      */
     public MLDv1QueryMessage() {
         super(BASE_MESSAGE_LENGTH);
-        
-        if (logger.isLoggable(Level.FINER)){
-            logger.finer(Logging.entering(ObjectId, "MLDv1QueryMessage.MLDv1QueryMessage"));
+
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer(this.log.entry("MLDv1QueryMessage.MLDv1QueryMessage"));
         }
     }
 
     /**
-     * 
      * @param groupAddress
      */
     public MLDv1QueryMessage(final byte[] groupAddress) {
-        super(BASE_MESSAGE_LENGTH,groupAddress);
-        
-        if (logger.isLoggable(Level.FINER)){
-            logger.finer(Logging.entering(ObjectId, "MLDv1QueryMessage.MLDv1QueryMessage", Logging.address(groupAddress)));
+        super(BASE_MESSAGE_LENGTH, groupAddress);
+
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer(this.log.entry("MLDv1QueryMessage.MLDv1QueryMessage", Logging.address(groupAddress)));
         }
     }
 
     /**
-     * 
      * @param buffer
      * @throws ParseException
      */
     public MLDv1QueryMessage(final ByteBuffer buffer) throws ParseException {
         super(consume(buffer, BASE_MESSAGE_LENGTH));
-        
+
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "MLDv1QueryMessage.MLDv1QueryMessage", buffer));
+            logger.finer(this.log.entry("MLDv1QueryMessage.MLDv1QueryMessage", buffer));
         }
     }
 
@@ -290,15 +293,14 @@ public final class MLDv1QueryMessage extends MLDQueryMessage {
     public void writeChecksum(final ByteBuffer buffer,
                               final byte[] sourceAddress,
                               final byte[] destinationAddress) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId,
-                                          "MLDv1QueryMessage.writeChecksum",
-                                          buffer,
-                                          Logging.address(sourceAddress),
-                                          Logging.address(destinationAddress)));
+            logger.finer(this.log.entry("MLDv1QueryMessage.writeChecksum",
+                                        buffer,
+                                        Logging.address(sourceAddress),
+                                        Logging.address(destinationAddress)));
         }
-        
+
         MLDv1QueryMessage.setChecksum(buffer, sourceAddress, destinationAddress);
     }
 

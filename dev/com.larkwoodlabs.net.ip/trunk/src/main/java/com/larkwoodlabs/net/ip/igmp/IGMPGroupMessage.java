@@ -35,8 +35,8 @@ import com.larkwoodlabs.util.logging.Logging;
  * See [<a href="http://www.ietf.org/rfc/rfc2236.txt">RFC-2236</a>] and [<a
  * href="http://www.ietf.org/rfc/rfc3376.txt">RFC-3376</a>].
  * <p>
- * <h3>Message Format</h3>
- * <blockquote>
+ * <h3>Message Format</h3> <blockquote>
+ * 
  * <pre>
  *   0                   1                   2                   3
  *   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -46,6 +46,7 @@ import com.larkwoodlabs.util.logging.Logging;
  *  |                         Group Address                         |
  *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  * </pre>
+ * 
  * <dl>
  * <dt><u>Type</u></dt>
  * <p>
@@ -107,8 +108,8 @@ public abstract class IGMPGroupMessage
         // Precondition.checkIPv4MulticastAddress(groupAddress);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IGMPGroupMessage.IGMPGroupMessage", size, type, maximumResponseTime,
-                                          Logging.address(groupAddress)));
+            logger.finer(this.log.entry("IGMPGroupMessage.IGMPGroupMessage", size, type, maximumResponseTime,
+                                        Logging.address(groupAddress)));
         }
         setGroupAddress(groupAddress);
 
@@ -125,7 +126,7 @@ public abstract class IGMPGroupMessage
         super(buffer);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IGMPGroupMessage.IGMPGroupMessage", buffer));
+            logger.finer(this.log.entry("IGMPGroupMessage.IGMPGroupMessage", buffer));
             logState(logger);
         }
     }
@@ -142,7 +143,7 @@ public abstract class IGMPGroupMessage
      * @param logger
      */
     private void logState(final Logger logger) {
-        logger.info(ObjectId + " : group-address=" + Logging.address(getGroupAddress()));
+        logger.info(this.log.msg(": group-address=" + Logging.address(getGroupAddress())));
     }
 
     /**
@@ -164,7 +165,7 @@ public abstract class IGMPGroupMessage
     public final void setGroupAddress(final InetAddress groupAddress) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IGMPGroupMessage.setGroupAddress", Logging.address(groupAddress)));
+            logger.finer(this.log.entry("IGMPGroupMessage.setGroupAddress", Logging.address(groupAddress)));
         }
 
         setGroupAddress(groupAddress == null ? null : groupAddress.getAddress());
@@ -176,7 +177,7 @@ public abstract class IGMPGroupMessage
     public final void setGroupAddress(final byte[] groupAddress) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IGMPGroupMessage.setGroupAddress", Logging.address(groupAddress)));
+            logger.finer(this.log.entry("IGMPGroupMessage.setGroupAddress", Logging.address(groupAddress)));
         }
 
         // Precondition.checkIPv6MulticastAddress(groupAddress);

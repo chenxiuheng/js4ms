@@ -24,7 +24,6 @@ import java.nio.ByteBuffer;
 import java.util.logging.Level;
 
 import com.larkwoodlabs.common.exceptions.ParseException;
-import com.larkwoodlabs.util.logging.Logging;
 
 /**
  * Represents an IP No-Operation Option (Option 1).
@@ -82,7 +81,7 @@ public final class IPNoOperationOption
         super(OPTION_CODE);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPNoOperationOption.IPNoOperationOption"));
+            logger.finer(this.log.entry("IPNoOperationOption.IPNoOperationOption"));
         }
     }
 
@@ -93,7 +92,7 @@ public final class IPNoOperationOption
         super(copyFlag, OPTION_CLASS, OPTION_NUMBER);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPNoOperationOption.IPNoOperationOption", copyFlag));
+            logger.finer(this.log.entry("IPNoOperationOption.IPNoOperationOption", copyFlag));
         }
     }
 
@@ -103,7 +102,7 @@ public final class IPNoOperationOption
     public IPNoOperationOption(final ByteBuffer buffer) {
         super(buffer);
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPNoOperationOption.IPNoOperationOption", buffer));
+            logger.finer(this.log.entry("IPNoOperationOption.IPNoOperationOption", buffer));
         }
     }
 

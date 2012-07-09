@@ -31,34 +31,33 @@ import com.larkwoodlabs.util.logging.Logging;
 /**
  * Base class for Mulicast Listener Discovery Message classes
  * that use the multicast group address field.
- *
+ * 
  * @author Gregory Bumgardner (gbumgard)
  */
-public abstract class MLDGroupMessage extends MLDMessage {
+public abstract class MLDGroupMessage
+                extends MLDMessage {
 
     /*-- Static Variables ---------------------------------------------------*/
-    
+
     /**
      * 
      */
-    public static final ByteArrayField GroupAddress = new ByteArrayField(4,16);
-
+    public static final ByteArrayField GroupAddress = new ByteArrayField(4, 16);
 
     /*-- Member Functions ---------------------------------------------------*/
 
     /**
-     * 
      * @param size
      * @param type
      * @param groupAddress
      */
     protected MLDGroupMessage(final int size, final byte type, final byte[] groupAddress) {
         super(size, type);
-        
+
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "MLDGroupMessage.MLDGroupMessage", size, type, Logging.address(groupAddress)));
+            logger.finer(this.log.entry("MLDGroupMessage.MLDGroupMessage", size, type, Logging.address(groupAddress)));
         }
-        
+
         setGroupAddress(groupAddress);
 
         if (logger.isLoggable(Level.FINER)) {
@@ -66,7 +65,6 @@ public abstract class MLDGroupMessage extends MLDMessage {
     }
 
     /**
-     * 
      * @param buffer
      * @throws ParseException
      */
@@ -74,17 +72,17 @@ public abstract class MLDGroupMessage extends MLDMessage {
         super(buffer);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "MLDGroupMessage.MLDGroupMessage", buffer));
+            logger.finer(this.log.entry("MLDGroupMessage.MLDGroupMessage", buffer));
         }
     }
 
     /**
      * A field whose interpretation depends on message type.
      * Typically this field identifies an IPv6 multicast group address.
-     * 
      * The Group Address field is set to zero when sending a General Query,
      * and set to the IP multicast address being queried when sending a
      * Group-Specific Query or Group-and-Source-Specific Query.
+     * 
      * @return
      */
     public final byte[] getGroupAddress() {
@@ -92,36 +90,34 @@ public abstract class MLDGroupMessage extends MLDMessage {
     }
 
     /**
-     * 
      * @param groupAddress
      */
     public final void setGroupAddress(final InetAddress groupAddress) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "MLDGroupMessage.setGroupAddress", Logging.address(groupAddress)));
+            logger.finer(this.log.entry("MLDGroupMessage.setGroupAddress", Logging.address(groupAddress)));
         }
-        
+
         setGroupAddress(groupAddress.getAddress());
     }
 
     /**
-     * 
      * @param groupAddress
      */
     public final void setGroupAddress(final byte[] groupAddress) {
-        
+
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "MLDGroupMessage.setGroupAddress", Logging.address(groupAddress)));
+            logger.finer(this.log.entry("MLDGroupMessage.setGroupAddress", Logging.address(groupAddress)));
         }
-        
+
         if (groupAddress.length != 16) {
-            
+
             if (logger.isLoggable(Level.FINE)) {
-                logger.fine(ObjectId + " invalid group address - MLD messages only allow use of IPv6 addresses");
+                logger.fine(this.log.msg("invalid group address - MLD messages only allow use of IPv6 addresses"));
             }
-            
+
             throw new IllegalArgumentException("invalid group address - MLD messages only allow use of IPv6 addresses");
         }
-        GroupAddress.set(getBufferInternal(),groupAddress);
+        GroupAddress.set(getBufferInternal(), groupAddress);
     }
 }

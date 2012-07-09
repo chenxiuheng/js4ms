@@ -26,7 +26,6 @@ import java.util.logging.Logger;
 
 import com.larkwoodlabs.common.exceptions.ParseException;
 import com.larkwoodlabs.util.buffer.fields.ByteField;
-import com.larkwoodlabs.util.logging.Logging;
 
 /**
  * Base class for multibyte IP Header Options.
@@ -80,7 +79,7 @@ public class IPMultiByteHeaderOption
         setOptionLength(optionLength);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPMultiByteHeaderOption.IPMultiByteHeaderOption", option, optionLength));
+            logger.finer(this.log.entry("IPMultiByteHeaderOption.IPMultiByteHeaderOption", option, optionLength));
             logState(logger);
         }
     }
@@ -92,7 +91,7 @@ public class IPMultiByteHeaderOption
         super(consume(buffer, OptionLength.get(buffer)));
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPMultiByteHeaderOption.IPMultiByteHeaderOption", buffer));
+            logger.finer(this.log.entry("IPMultiByteHeaderOption.IPMultiByteHeaderOption", buffer));
             logState(logger);
         }
     }
@@ -109,7 +108,7 @@ public class IPMultiByteHeaderOption
      * @param logger
      */
     private void logState(final Logger logger) {
-        logger.info(ObjectId + " : length=" + getOptionLength());
+        logger.info(this.log.msg(": length=" + getOptionLength()));
     }
 
     /**
@@ -125,7 +124,7 @@ public class IPMultiByteHeaderOption
     public final void setOptionLength(final int length) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPMultiByteHeaderOption.setOptionLength", length));
+            logger.finer(this.log.entry("IPMultiByteHeaderOption.setOptionLength", length));
         }
 
         OptionLength.set(getBufferInternal(), (byte) length);

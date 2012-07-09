@@ -221,7 +221,7 @@ public final class MLDv1ReportMessage
         super(BASE_MESSAGE_LENGTH, (byte) 0, groupAddress);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "MLDv1ReportMessage.MLDv1ReportMessage", Logging.address(groupAddress)));
+            logger.finer(this.log.entry("MLDv1ReportMessage.MLDv1ReportMessage", Logging.address(groupAddress)));
         }
     }
 
@@ -233,7 +233,7 @@ public final class MLDv1ReportMessage
         super(consume(buffer, BASE_MESSAGE_LENGTH));
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "MLDv1ReportMessage.MLDv1ReportMessage", buffer));
+            logger.finer(this.log.entry("MLDv1ReportMessage.MLDv1ReportMessage", buffer));
         }
     }
 
@@ -243,11 +243,10 @@ public final class MLDv1ReportMessage
                               final byte[] destinationAddress) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId,
-                                          "MLDv1ReportMessage.writeChecksum",
-                                          buffer,
-                                          Logging.address(sourceAddress),
-                                          Logging.address(destinationAddress)));
+            logger.finer(this.log.entry("MLDv1ReportMessage.writeChecksum",
+                                        buffer,
+                                        Logging.address(sourceAddress),
+                                        Logging.address(destinationAddress)));
         }
 
         MLDv1ReportMessage.setChecksum(buffer, sourceAddress, destinationAddress);

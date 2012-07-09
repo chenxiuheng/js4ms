@@ -33,7 +33,6 @@ import com.larkwoodlabs.util.buffer.fields.SelectorField;
 import com.larkwoodlabs.util.buffer.parser.BufferParserSelector;
 import com.larkwoodlabs.util.buffer.parser.KeyedBufferParser;
 import com.larkwoodlabs.util.buffer.parser.MissingParserException;
-import com.larkwoodlabs.util.logging.Logging;
 
 /**
  * Represents an IPv6 Routing header.
@@ -65,23 +64,21 @@ import com.larkwoodlabs.util.logging.Logging;
  * <dd>Identifies the type of header immediately following the Routing header. Uses the
  * same values as the IPv4 Protocol field [RFC-1700].
  * <p>
- * See {@link #getNextProtocolNumber()}, {@link #getNextMessage()}, {@link #setNextMessage(IPMessage)}.
- * </dd>
+ * See {@link #getNextProtocolNumber()}, {@link #getNextMessage()},
+ * {@link #setNextMessage(IPMessage)}.</dd>
  * <p>
  * <dt><u>Hdr Ext Len</u></dt>
  * <p>
  * <dd>An unsigned integer. Length of the Routing header in 8-octet units, not including
  * the first 8 octets.
  * <p>
- * See {@link #getHeaderLength()}, {@link #getTotalLength()}.
- * </dd>
+ * See {@link #getHeaderLength()}, {@link #getTotalLength()}.</dd>
  * <p>
  * <dt><u>Routing Type</u></dt>
  * <p>
  * <dd>Identifies the particular Routing header variant.
  * <p>
- * See {@link #getRoutingType()}, {@link #setRoutingType(byte)}.
- * </dd>
+ * See {@link #getRoutingType()}, {@link #setRoutingType(byte)}.</dd>
  * <p>
  * <dt><u>Segments Left</u></dt>
  * <p>
@@ -89,8 +86,7 @@ import com.larkwoodlabs.util.logging.Logging;
  * explicitly listed intermediate nodes still to be visited before reaching the final
  * destination.
  * <p>
- * See {@link #getSegmentsLeft()}, {@link #setSegmentsLeft(byte)}.
- * </dd>
+ * See {@link #getSegmentsLeft()}, {@link #setSegmentsLeft(byte)}.</dd>
  * <p>
  * <dt><u>Type-specific Data</u></dt>
  * <p>
@@ -103,15 +99,15 @@ import com.larkwoodlabs.util.logging.Logging;
  * <ul>
  * <li>If Segments Left is zero, the node must ignore the Routing header and proceed to
  * process the next header in the packet, whose type is identified by the Next Header
- * field in the Routing header.</li> <li>If Segments Left is non-zero, the node must
- * discard the packet and send an ICMP Parameter Problem, Code 0, message to the packet's
- * Source Address, pointing to the unrecognized Routing Type.</li></ul>
+ * field in the Routing header.</li>
+ * <li>If Segments Left is non-zero, the node must discard the packet and send an ICMP
+ * Parameter Problem, Code 0, message to the packet's Source Address, pointing to the
+ * unrecognized Routing Type.</li>
+ * </ul>
  * If, after processing a Routing header of a received packet, an intermediate node
  * determines that the packet is to be forwarded onto a link whose link MTU is less than
  * the size of the packet, the node must discard the packet and send an ICMP Packet Too
- * Big message to the packet's Source Address.</li>
- * </ul>
- * </dd>
+ * Big message to the packet's Source Address.</li> </ul></dd>
  * </dl>
  * </blockquote>
  * 
@@ -176,7 +172,7 @@ public class IPv6RoutingHeader
         super(IP_PROTOCOL_NUMBER);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv6RoutingHeader.IPv6RoutingHeader", routingType, segmentsLeft));
+            logger.finer(this.log.entry("IPv6RoutingHeader.IPv6RoutingHeader", routingType, segmentsLeft));
         }
 
         setRoutingType(routingType);
@@ -195,7 +191,7 @@ public class IPv6RoutingHeader
         super(consume(buffer, MIN_HEADER_LENGTH + HeaderLength.get(buffer) * 8), IP_PROTOCOL_NUMBER);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv6RoutingHeader.IPv6RoutingHeader", buffer));
+            logger.finer(this.log.entry("IPv6RoutingHeader.IPv6RoutingHeader", buffer));
             logState(logger);
         }
     }
@@ -212,8 +208,8 @@ public class IPv6RoutingHeader
      * @param logger
      */
     private void logState(final Logger logger) {
-        logger.info(ObjectId + " : routing-type=" + getRoutingType());
-        logger.info(ObjectId + " : segments-left=" + getSegmentsLeft());
+        logger.info(this.log.msg(": routing-type=" + getRoutingType()));
+        logger.info(this.log.msg(": segments-left=" + getSegmentsLeft()));
     }
 
     /**
@@ -229,7 +225,7 @@ public class IPv6RoutingHeader
     public final void setRoutingType(final byte routingType) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv6RoutingHeader.setRoutingType", routingType));
+            logger.finer(this.log.entry("IPv6RoutingHeader.setRoutingType", routingType));
         }
 
         RoutingType.set(getBufferInternal(), routingType);
@@ -248,7 +244,7 @@ public class IPv6RoutingHeader
     public final void setSegmentsLeft(final byte segmentsLeft) {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPv6RoutingHeader.setSegmentsLeft", segmentsLeft));
+            logger.finer(this.log.entry("IPv6RoutingHeader.setSegmentsLeft", segmentsLeft));
         }
 
         SegmentsLeft.set(getBufferInternal(), segmentsLeft);

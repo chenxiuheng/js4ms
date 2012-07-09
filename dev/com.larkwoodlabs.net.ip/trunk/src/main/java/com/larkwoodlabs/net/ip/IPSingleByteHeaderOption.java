@@ -25,8 +25,6 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.logging.Level;
 
-import com.larkwoodlabs.util.logging.Logging;
-
 /**
  * Represents a simple IP Header Option that consists of a single byte.
  * 
@@ -51,7 +49,7 @@ public class IPSingleByteHeaderOption
         super(OPTION_LENGTH, option);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPSingleByteHeaderOption.IPSingleByteHeaderOption", option));
+            logger.finer(this.log.entry("IPSingleByteHeaderOption.IPSingleByteHeaderOption", option));
         }
 
     }
@@ -64,8 +62,8 @@ public class IPSingleByteHeaderOption
     public IPSingleByteHeaderOption(final boolean copyFlag, final int optionClass, final int optionNumber) {
         super(OPTION_LENGTH, copyFlag, optionClass, optionNumber);
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPSingleByteHeaderOption.IPSingleByteHeaderOption", copyFlag, optionClass,
-                                          optionNumber));
+            logger.finer(this.log.entry("IPSingleByteHeaderOption.IPSingleByteHeaderOption", copyFlag, optionClass,
+                                        optionNumber));
         }
     }
 
@@ -75,7 +73,7 @@ public class IPSingleByteHeaderOption
     public IPSingleByteHeaderOption(final ByteBuffer buffer) {
         super(consume(buffer, OPTION_LENGTH));
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPSingleByteHeaderOption.IPSingleByteHeaderOption", buffer));
+            logger.finer(this.log.entry("IPSingleByteHeaderOption.IPSingleByteHeaderOption", buffer));
         }
     }
 
@@ -86,7 +84,7 @@ public class IPSingleByteHeaderOption
     public IPSingleByteHeaderOption(final InputStream is) throws IOException {
         super(consume(is, OPTION_LENGTH));
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(Logging.entering(ObjectId, "IPSingleByteHeaderOption.IPSingleByteHeaderOption", is));
+            logger.finer(this.log.entry("IPSingleByteHeaderOption.IPSingleByteHeaderOption", is));
         }
     }
 
