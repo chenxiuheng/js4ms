@@ -18,7 +18,7 @@ import javax.sdp.SessionDescription;
 import com.larkwoodlabs.channels.MessageSource;
 import com.larkwoodlabs.channels.OutputChannel;
 import com.larkwoodlabs.net.amt.SourceFilter;
-import com.larkwoodlabs.net.amt.gateway.AmtInterfaceManager;
+import com.larkwoodlabs.net.amt.gateway.AmtPseudoInterfaceManager;
 import com.larkwoodlabs.service.protocol.rtsp.TransportDescription;
 import com.larkwoodlabs.service.protocol.rtsp.presentation.MediaStream;
 import com.larkwoodlabs.service.protocol.rtsp.presentation.Presentation;
@@ -362,7 +362,7 @@ public class MulticastReflectorStream extends MediaStream {
    private static InetAddress getRelayDiscoveryAddress(final SessionDescription sessionDescription,
                                                        final MediaDescription mediaDescription) throws SdpException {
        // Look for relay discovery address attribute record
-       InetAddress relayDiscoveryAddress = AmtInterfaceManager.getDefaultRelayDiscoveryAddress();
+       InetAddress relayDiscoveryAddress = AmtPseudoInterfaceManager.getDefaultRelayDiscoveryAddress();
        String anycastAddress = mediaDescription.getAttribute(MulticastReflectorFactory.AMT_RELAY_DISCOVERY_ADDRESS_SDP_ATTRIBUTE);
        if (anycastAddress == null) {
            anycastAddress = sessionDescription.getAttribute(MulticastReflectorFactory.AMT_RELAY_DISCOVERY_ADDRESS_SDP_ATTRIBUTE);
