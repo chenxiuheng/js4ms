@@ -1,6 +1,6 @@
 package com.larkwoodlabs.service.protocol.http;
 
-import com.larkwoodlabs.service.protocol.rest.message.Method;
+import com.larkwoodlabs.service.protocol.restful.message.Method;
 
 public interface HttpMethods {
     public static final Method GET = new Method("GET");

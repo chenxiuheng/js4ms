@@ -5,8 +5,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.larkwoodlabs.service.protocol.rest.RequestException;
-import com.larkwoodlabs.service.protocol.rest.message.Request;
+import com.larkwoodlabs.service.protocol.restful.RequestException;
+import com.larkwoodlabs.service.protocol.restful.message.Request;
 import com.larkwoodlabs.util.logging.Log;
 
 /**

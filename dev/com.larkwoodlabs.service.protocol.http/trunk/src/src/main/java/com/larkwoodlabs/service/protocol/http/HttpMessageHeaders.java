@@ -1,6 +1,6 @@
 package com.larkwoodlabs.service.protocol.http;
 
-import com.larkwoodlabs.service.protocol.rest.MessageHeaders;
+import com.larkwoodlabs.service.protocol.restful.MessageHeaders;
 
 public interface HttpMessageHeaders extends MessageHeaders {
 

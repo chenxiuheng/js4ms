@@ -33,10 +33,10 @@ import javax.sdp.SdpParseException;
 import javax.sdp.SessionDescription;
 
 import com.larkwoodlabs.io.FixedLengthInputStream;
-import com.larkwoodlabs.service.protocol.rest.RequestException;
-import com.larkwoodlabs.service.protocol.rest.message.Method;
-import com.larkwoodlabs.service.protocol.rest.message.Request;
-import com.larkwoodlabs.service.protocol.rest.message.Status;
+import com.larkwoodlabs.service.protocol.restful.RequestException;
+import com.larkwoodlabs.service.protocol.restful.message.Method;
+import com.larkwoodlabs.service.protocol.restful.message.Request;
+import com.larkwoodlabs.service.protocol.restful.message.Status;
 import com.larkwoodlabs.service.protocol.rtsp.RtspMethods;
 import com.larkwoodlabs.service.protocol.rtsp.RtspStatusCodes;
 import com.larkwoodlabs.service.protocol.rtsp.presentation.Presentation;

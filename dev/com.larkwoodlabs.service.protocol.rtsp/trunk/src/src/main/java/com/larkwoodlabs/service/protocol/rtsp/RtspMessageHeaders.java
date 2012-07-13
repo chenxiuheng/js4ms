@@ -1,6 +1,6 @@
 package com.larkwoodlabs.service.protocol.rtsp;
 
-import com.larkwoodlabs.service.protocol.rest.MessageHeaders;
+import com.larkwoodlabs.service.protocol.restful.MessageHeaders;
 
 public interface RtspMessageHeaders extends MessageHeaders {
     public static final String BANDWIDTH = "Bandwidth"; // rtsp(R)

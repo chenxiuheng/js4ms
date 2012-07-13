@@ -1,7 +1,7 @@
 package com.larkwoodlabs.service.protocol.rtsp;
 
-import com.larkwoodlabs.service.protocol.rest.StatusCodes;
-import com.larkwoodlabs.service.protocol.rest.message.Status;
+import com.larkwoodlabs.service.protocol.restful.StatusCodes;
+import com.larkwoodlabs.service.protocol.restful.message.Status;
 
 public interface RtspStatusCodes extends StatusCodes {
 

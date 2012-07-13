@@ -5,16 +5,16 @@ import java.util.LinkedHashMap;
 
 import com.larkwoodlabs.common.exceptions.ParseException;
 import com.larkwoodlabs.service.Connection;
-import com.larkwoodlabs.service.protocol.rest.RequestException;
-import com.larkwoodlabs.service.protocol.rest.entity.Entity;
-import com.larkwoodlabs.service.protocol.rest.handler.RequestHandler;
-import com.larkwoodlabs.service.protocol.rest.message.Message;
-import com.larkwoodlabs.service.protocol.rest.message.MessageHeader;
-import com.larkwoodlabs.service.protocol.rest.message.MessageHeaderParser;
-import com.larkwoodlabs.service.protocol.rest.message.MessageParser;
-import com.larkwoodlabs.service.protocol.rest.message.Request;
-import com.larkwoodlabs.service.protocol.rest.message.RequestLine;
-import com.larkwoodlabs.service.protocol.rest.message.StartLine;
+import com.larkwoodlabs.service.protocol.restful.RequestException;
+import com.larkwoodlabs.service.protocol.restful.entity.Entity;
+import com.larkwoodlabs.service.protocol.restful.handler.RequestHandler;
+import com.larkwoodlabs.service.protocol.restful.message.Message;
+import com.larkwoodlabs.service.protocol.restful.message.MessageHeader;
+import com.larkwoodlabs.service.protocol.restful.message.MessageHeaderParser;
+import com.larkwoodlabs.service.protocol.restful.message.MessageParser;
+import com.larkwoodlabs.service.protocol.restful.message.Request;
+import com.larkwoodlabs.service.protocol.restful.message.RequestLine;
+import com.larkwoodlabs.service.protocol.restful.message.StartLine;
 
 public class RequestParser extends MessageParser {
 

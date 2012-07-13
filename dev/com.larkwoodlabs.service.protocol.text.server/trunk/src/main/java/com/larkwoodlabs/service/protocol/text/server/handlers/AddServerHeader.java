@@ -1,9 +1,9 @@
 package com.larkwoodlabs.service.protocol.text.server.handlers;
 
-import com.larkwoodlabs.service.protocol.rest.MessageHeaders;
-import com.larkwoodlabs.service.protocol.rest.handler.ResponseHandler;
-import com.larkwoodlabs.service.protocol.rest.headers.SimpleMessageHeader;
-import com.larkwoodlabs.service.protocol.rest.message.Response;
+import com.larkwoodlabs.service.protocol.restful.MessageHeaders;
+import com.larkwoodlabs.service.protocol.restful.handler.ResponseHandler;
+import com.larkwoodlabs.service.protocol.restful.headers.SimpleMessageHeader;
+import com.larkwoodlabs.service.protocol.restful.message.Response;
 
 public class AddServerHeader implements ResponseHandler {
 

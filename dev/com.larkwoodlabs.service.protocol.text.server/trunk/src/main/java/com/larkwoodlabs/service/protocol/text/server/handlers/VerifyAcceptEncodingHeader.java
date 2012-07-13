@@ -2,12 +2,12 @@ package com.larkwoodlabs.service.protocol.text.server.handlers;
 
 import java.io.IOException;
 
-import com.larkwoodlabs.service.protocol.rest.MessageHeaders;
-import com.larkwoodlabs.service.protocol.rest.StatusCodes;
-import com.larkwoodlabs.service.protocol.rest.entity.CodecManager;
-import com.larkwoodlabs.service.protocol.rest.handler.TransactionHandler;
-import com.larkwoodlabs.service.protocol.rest.message.Request;
-import com.larkwoodlabs.service.protocol.rest.message.Response;
+import com.larkwoodlabs.service.protocol.restful.MessageHeaders;
+import com.larkwoodlabs.service.protocol.restful.StatusCodes;
+import com.larkwoodlabs.service.protocol.restful.entity.CodecManager;
+import com.larkwoodlabs.service.protocol.restful.handler.TransactionHandler;
+import com.larkwoodlabs.service.protocol.restful.message.Request;
+import com.larkwoodlabs.service.protocol.restful.message.Response;
 
 public class VerifyAcceptEncodingHeader implements TransactionHandler {
 

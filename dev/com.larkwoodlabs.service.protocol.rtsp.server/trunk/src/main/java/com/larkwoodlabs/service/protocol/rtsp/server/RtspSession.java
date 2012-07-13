@@ -6,8 +6,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.larkwoodlabs.service.Server;
-import com.larkwoodlabs.service.protocol.rest.message.Request;
-import com.larkwoodlabs.service.protocol.rest.message.Response;
+import com.larkwoodlabs.service.protocol.restful.message.Request;
+import com.larkwoodlabs.service.protocol.restful.message.Response;
 import com.larkwoodlabs.service.protocol.rtsp.RtspMessageHeaders;
 import com.larkwoodlabs.service.protocol.rtsp.RtspMethods;
 import com.larkwoodlabs.service.protocol.rtsp.presentation.Presentation;
