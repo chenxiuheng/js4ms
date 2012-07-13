@@ -19,7 +19,7 @@ import com.larkwoodlabs.net.udp.UdpDatagram;
 import com.larkwoodlabs.util.logging.Log;
 import com.larkwoodlabs.util.logging.Logging;
 
-public class AmtUDPInterface {
+public final class AmtUDPInterface {
 
     /*-- Static Variables ----------------------------------------------------*/
 
@@ -31,9 +31,9 @@ public class AmtUDPInterface {
 
     protected final Log log = new Log(this);
 
-    private final AmtUDPInterfaceManager manager;
+    private AmtUDPInterfaceManager manager = null;
 
-    private final AmtIPInterface ipInterface;
+    private final AmtIPInterface amtIPInterface;
 
     private int referenceCount = 0;
 
@@ -47,9 +47,11 @@ public class AmtUDPInterface {
      * @param manager
      * @param relayDiscoveryAddress
      * @throws IOException
+     * @throws InterruptedException
      */
     AmtUDPInterface(final AmtUDPInterfaceManager manager,
-                    final InetAddress relayDiscoveryAddress) throws IOException {
+                    final InetAddress relayDiscoveryAddress) throws IOException, InterruptedException {
+        this(AmtIPInterfaceManager.getInstance().getInterface(relayDiscoveryAddress));
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("AmtUDPInterface.AmtUDPInterface", manager, Logging.address(relayDiscoveryAddress)));
@@ -57,7 +59,24 @@ public class AmtUDPInterface {
 
         this.manager = manager;
 
-        this.ipInterface = AmtIPInterfaceManager.getInstance().getInterface(relayDiscoveryAddress);
+        // Reverse acquire() call made in public constructor.
+        this.amtIPInterface.release();
+
+    }
+
+    /**
+     * @param amtIPInterface
+     * @throws IOException
+     */
+    public AmtUDPInterface(final AmtIPInterface amtIPInterface) throws IOException {
+
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer(this.log.entry("AmtUDPInterface.AmtUDPInterface", amtIPInterface));
+        }
+
+        amtIPInterface.acquire();
+
+        this.amtIPInterface = amtIPInterface;
 
         // Create an extractor to differentiate between IGMP, MLD and other message types.
         MessageKeyExtractor<IPPacket> protocolExtractor = new MessageKeyExtractor<IPPacket>() {
@@ -78,7 +97,7 @@ public class AmtUDPInterface {
                                                         MAX_REASSEMBLY_CACHE_SIZE,
                                                         new Timer("AMT UDP Interface"));
 
-        this.ipInterface.addOutputChannel(assembler);
+        this.amtIPInterface.addOutputChannel(assembler);
 
     }
 
@@ -87,14 +106,14 @@ public class AmtUDPInterface {
      * 
      * @return An InetAddress object containing the Relay Discovery Address
      */
-    public final InetAddress getRelayDiscoveryAddress() {
-        return this.ipInterface.getRelayDiscoveryAddress();
+    public InetAddress getRelayDiscoveryAddress() {
+        return this.amtIPInterface.getRelayDiscoveryAddress();
     }
 
     /**
      * 
      */
-    final synchronized void acquire() {
+    synchronized void acquire() {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("AmtUDPInterface.acquire"));
@@ -107,14 +126,19 @@ public class AmtUDPInterface {
      * @throws InterruptedException
      * @throws IOException
      */
-    final synchronized void release() throws InterruptedException, IOException {
+    public synchronized void release() throws InterruptedException, IOException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("AmtUDPInterface.release"));
         }
 
         if (--this.referenceCount == 0) {
-            this.manager.closeInterface(this);
+            if (this.manager != null) {
+                this.manager.closeInterface(this);
+            }
+            else {
+                close();
+            }
         }
     }
 
@@ -122,13 +146,13 @@ public class AmtUDPInterface {
      * @throws InterruptedException
      * @throws IOException
      */
-    public final void close() throws InterruptedException, IOException {
-        this.ipInterface.release();
+    public void close() throws InterruptedException, IOException {
+        this.amtIPInterface.release();
     }
 
-    private final void constructIPv4MembershipManager() {
+    private void constructIPv4MembershipManager() {
 
-        this.ipv4MembershipManager = new ChannelMembershipManager(this.ipInterface);
+        this.ipv4MembershipManager = new ChannelMembershipManager(this.amtIPInterface);
         // Create channels that transform route UDP packets to the appropriate channel
         // membership manager channels.
         this.outputChannelMap
@@ -138,9 +162,9 @@ public class AmtUDPInterface {
                                                                                new MulticastDataTransform()));
     }
 
-    private final void constructIPv6MembershipManager() {
+    private void constructIPv6MembershipManager() {
 
-        this.ipv6MembershipManager = new ChannelMembershipManager(this.ipInterface);
+        this.ipv6MembershipManager = new ChannelMembershipManager(this.amtIPInterface);
         // Create channels that transform route UDP packets to the appropriate channel
         // membership manager channels.
         this.outputChannelMap
@@ -157,9 +181,9 @@ public class AmtUDPInterface {
      * @throws IOException
      * @throws InterruptedException
      */
-    public final void join(final OutputChannel<UdpDatagram> pushChannel,
-                           final InetAddress groupAddress,
-                           int port) throws IOException {
+    public void join(final OutputChannel<UdpDatagram> pushChannel,
+                     final InetAddress groupAddress,
+                     int port) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("AmtUDPInterface.join", pushChannel, Logging.address(groupAddress), port));
@@ -187,10 +211,10 @@ public class AmtUDPInterface {
      * @throws IOException
      * @throws InterruptedException
      */
-    public final void join(final OutputChannel<UdpDatagram> pushChannel,
-                           final InetAddress groupAddress,
-                           final InetAddress sourceAddress,
-                           final int port) throws IOException {
+    public void join(final OutputChannel<UdpDatagram> pushChannel,
+                     final InetAddress groupAddress,
+                     final InetAddress sourceAddress,
+                     final int port) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("AmtUDPInterface.join",
@@ -221,8 +245,8 @@ public class AmtUDPInterface {
      * @param groupAddress
      * @throws IOException
      */
-    public final void leave(final OutputChannel<UdpDatagram> pushChannel,
-                            final InetAddress groupAddress) throws IOException {
+    public void leave(final OutputChannel<UdpDatagram> pushChannel,
+                      final InetAddress groupAddress) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("AmtUDPInterface.leave", pushChannel, Logging.address(groupAddress)));
@@ -248,9 +272,9 @@ public class AmtUDPInterface {
      * @param port
      * @throws IOException
      */
-    public final void leave(final OutputChannel<UdpDatagram> pushChannel,
-                            final InetAddress groupAddress,
-                            final int port) throws IOException {
+    public void leave(final OutputChannel<UdpDatagram> pushChannel,
+                      final InetAddress groupAddress,
+                      final int port) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("AmtUDPInterface.leave", pushChannel, Logging.address(groupAddress), port));
@@ -276,9 +300,9 @@ public class AmtUDPInterface {
      * @param sourceAddress
      * @throws IOException
      */
-    public final void leave(final OutputChannel<UdpDatagram> pushChannel,
-                            final InetAddress groupAddress,
-                            final InetAddress sourceAddress) throws IOException {
+    public void leave(final OutputChannel<UdpDatagram> pushChannel,
+                      final InetAddress groupAddress,
+                      final InetAddress sourceAddress) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("AmtUDPInterface.leave",
@@ -310,10 +334,10 @@ public class AmtUDPInterface {
      * @param port
      * @throws IOException
      */
-    public final void leave(final OutputChannel<UdpDatagram> pushChannel,
-                            final InetAddress groupAddress,
-                            final InetAddress sourceAddress,
-                            final int port) throws IOException {
+    public void leave(final OutputChannel<UdpDatagram> pushChannel,
+                      final InetAddress groupAddress,
+                      final InetAddress sourceAddress,
+                      final int port) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("AmtUDPInterface.leave",
@@ -344,7 +368,7 @@ public class AmtUDPInterface {
      * @param pushChannel
      * @throws IOException
      */
-    public final void leave(final OutputChannel<UdpDatagram> pushChannel) throws IOException {
+    public void leave(final OutputChannel<UdpDatagram> pushChannel) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("AmtUDPInterface.leave", pushChannel));

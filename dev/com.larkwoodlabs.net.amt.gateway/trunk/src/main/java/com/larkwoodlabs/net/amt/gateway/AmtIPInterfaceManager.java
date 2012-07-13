@@ -63,8 +63,9 @@ public class AmtIPInterfaceManager {
      * @param relayDiscoveryAddress
      * @return
      * @throws IOException
+     * @throws InterruptedException 
      */
-    public synchronized AmtIPInterface getInterface(final InetAddress relayDiscoveryAddress) throws IOException {
+    public synchronized AmtIPInterface getInterface(final InetAddress relayDiscoveryAddress) throws IOException, InterruptedException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("AmtIPInterfaceManager.getInterface", Logging.address(relayDiscoveryAddress)));

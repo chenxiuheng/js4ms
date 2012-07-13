@@ -122,9 +122,10 @@ public class AmtDatagramSource
      * 
      * @throws IOException
      *             If an I/O error occurs while starting the message source.
+     * @throws InterruptedException 
      */
     @Override
-    protected void doStart() throws IOException {
+    protected void doStart() throws IOException, InterruptedException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("doStart"));

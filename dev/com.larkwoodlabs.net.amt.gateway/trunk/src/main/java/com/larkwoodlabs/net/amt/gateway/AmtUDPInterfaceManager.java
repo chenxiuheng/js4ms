@@ -63,8 +63,9 @@ public class AmtUDPInterfaceManager {
      * @param relayDiscoveryAddress
      * @return
      * @throws IOException
+     * @throws InterruptedException 
      */
-    public synchronized AmtUDPInterface getInterface(final InetAddress relayDiscoveryAddress) throws IOException {
+    public synchronized AmtUDPInterface getInterface(final InetAddress relayDiscoveryAddress) throws IOException, InterruptedException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("AmtUDPInterfaceManager.getInterface", Logging.address(relayDiscoveryAddress)));

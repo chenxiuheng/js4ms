@@ -38,7 +38,7 @@ public class AmtIPInterface {
 
     protected final Log log = new Log(this);
 
-    private final AmtIPInterfaceManager manager;
+    private AmtIPInterfaceManager manager = null;
 
     private final AmtPseudoInterface amtPseudoInterface;
 
@@ -56,16 +56,39 @@ public class AmtIPInterface {
      * @param manager
      * @param relayDiscoveryAddress
      * @throws IOException
+     * @throws InterruptedException
      */
     AmtIPInterface(final AmtIPInterfaceManager manager,
-                   final InetAddress relayDiscoveryAddress) throws IOException {
+                   final InetAddress relayDiscoveryAddress) throws IOException, InterruptedException {
+        this(AmtPseudoInterfaceManager.getInstance().getInterface(relayDiscoveryAddress));
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("AmtIPInterface.AmtIPInterface", manager, Logging.address(relayDiscoveryAddress)));
         }
 
         this.manager = manager;
-        this.amtPseudoInterface = AmtPseudoInterfaceManager.getInstance().getInterface(relayDiscoveryAddress);
+
+        // Reverse extra acquire() call made in public constructor
+        this.amtPseudoInterface.release();
+    }
+
+    /**
+     * Constructs an AMT IP interface.
+     * The release method MUST be called if the AmtIPInterfaceManager was not used to
+     * construct this object.
+     * 
+     * @param amtPseudoInterface
+     * @throws IOException
+     */
+    public AmtIPInterface(final AmtPseudoInterface amtPseudoInterface) throws IOException {
+
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer(this.log.entry("AmtIPInterface.AmtIPInterface", amtPseudoInterface));
+        }
+
+        amtPseudoInterface.acquire();
+
+        this.amtPseudoInterface = amtPseudoInterface;
         this.dispatchChannel = new OutputChannelTee<IPPacket>();
 
         this.taskTimer = new Timer("AMT IP Interface");
@@ -154,7 +177,7 @@ public class AmtIPInterface {
      * 
      * @param destinationChannel
      */
-    public final void addOutputChannel(final OutputChannel<IPPacket> destinationChannel) {
+    public void addOutputChannel(final OutputChannel<IPPacket> destinationChannel) {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("AmtIPInterface.addOutputChannel", destinationChannel));
@@ -168,7 +191,7 @@ public class AmtIPInterface {
      * 
      * @param destinationChannel
      */
-    public final void removeOutputChannel(final OutputChannel<IPPacket> destinationChannel) {
+    public void removeOutputChannel(final OutputChannel<IPPacket> destinationChannel) {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("AmtIPInterface.removeOutputChannel", destinationChannel));
@@ -182,14 +205,14 @@ public class AmtIPInterface {
      * 
      * @return An InetAddress object containing the Relay Discovery Address
      */
-    public final InetAddress getRelayDiscoveryAddress() {
+    public InetAddress getRelayDiscoveryAddress() {
         return this.amtPseudoInterface.getRelayDiscoveryAddress();
     }
 
     /**
      * 
      */
-    final synchronized void acquire() {
+    synchronized void acquire() {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("AmtIPInterface.acquire"));
@@ -202,14 +225,19 @@ public class AmtIPInterface {
      * @throws InterruptedException
      * @throws IOException
      */
-    final synchronized void release() throws InterruptedException, IOException {
+    public synchronized void release() throws InterruptedException, IOException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("AmtIPInterface.release"));
         }
 
         if (--this.referenceCount == 0) {
-            this.manager.closeInterface(this);
+            if (this.manager != null) {
+                this.manager.closeInterface(this);
+            }
+            else {
+                close();
+            }
         }
     }
 
@@ -217,7 +245,7 @@ public class AmtIPInterface {
      * @throws InterruptedException
      * @throws IOException
      */
-    public final void close() throws InterruptedException, IOException {
+    public void close() throws InterruptedException, IOException {
         this.amtPseudoInterface.release();
     }
 
@@ -226,7 +254,7 @@ public class AmtIPInterface {
      * @throws IOException
      * @throws InterruptedException
      */
-    public final void join(final InetAddress groupAddress) throws IOException {
+    public void join(final InetAddress groupAddress) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("AmtIPInterface.join", Logging.address(groupAddress)));
@@ -246,13 +274,13 @@ public class AmtIPInterface {
      * @throws IOException
      * @throws InterruptedException
      */
-    public final void join(final InetAddress groupAddress,
-                           final InetAddress sourceAddress) throws IOException {
+    public void join(final InetAddress groupAddress,
+                     final InetAddress sourceAddress) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("AmtIPInterface.join",
-                                   Logging.address(groupAddress),
-                                   Logging.address(sourceAddress)));
+                                        Logging.address(groupAddress),
+                                        Logging.address(sourceAddress)));
         }
 
         Precondition.checkAddresses(groupAddress, sourceAddress);
@@ -269,7 +297,7 @@ public class AmtIPInterface {
      * @param groupAddress
      * @throws IOException
      */
-    public final void leave(final InetAddress groupAddress) throws IOException {
+    public void leave(final InetAddress groupAddress) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("AmtIPInterface.leave", Logging.address(groupAddress)));
@@ -288,13 +316,13 @@ public class AmtIPInterface {
      * @param sourceAddress
      * @throws IOException
      */
-    public final void leave(final InetAddress groupAddress,
-                            final InetAddress sourceAddress) throws IOException {
+    public void leave(final InetAddress groupAddress,
+                      final InetAddress sourceAddress) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("AmtIPInterface.leave",
-                                   Logging.address(groupAddress),
-                                   Logging.address(sourceAddress)));
+                                        Logging.address(groupAddress),
+                                        Logging.address(sourceAddress)));
         }
 
         Precondition.checkAddresses(groupAddress, sourceAddress);
@@ -310,7 +338,7 @@ public class AmtIPInterface {
     /**
      * @throws IOException
      */
-    public final void leave() throws IOException {
+    public void leave() throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("AmtIPInterface.leave"));

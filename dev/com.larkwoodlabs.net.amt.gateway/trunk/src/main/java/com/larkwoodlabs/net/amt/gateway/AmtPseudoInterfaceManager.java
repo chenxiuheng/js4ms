@@ -108,8 +108,9 @@ public final class AmtPseudoInterfaceManager {
      * @param relayDiscoveryAddress
      * @return
      * @throws IOException
+     * @throws InterruptedException 
      */
-    public synchronized AmtPseudoInterface getInterface(final InetAddress relayDiscoveryAddress) throws IOException {
+    public synchronized AmtPseudoInterface getInterface(final InetAddress relayDiscoveryAddress) throws IOException, InterruptedException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(log.entry("AmtPseudoInterfaceManager.getInterface", Logging.address(relayDiscoveryAddress)));

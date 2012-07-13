@@ -34,7 +34,8 @@ import com.larkwoodlabs.util.logging.Logging;
 
 /**
  * An AMT pseudo-interface.
- * The {@link AmtPseudoInterfaceManager} constructs a separate AMT interface for each unique
+ * The {@link AmtPseudoInterfaceManager} constructs a separate AMT interface for each
+ * unique
  * AMT relay acting as a remote AMT tunnel end-point.
  * 
  * @author Greg Bumgardner (gbumgard)
@@ -49,7 +50,7 @@ public final class AmtPseudoInterface {
 
     protected final Log log = new Log(this);
 
-    private final AmtPseudoInterfaceManager manager;
+    private AmtPseudoInterfaceManager manager = null;
 
     private final InetAddress relayDiscoveryAddress;
 
@@ -67,33 +68,56 @@ public final class AmtPseudoInterface {
      * @param manager
      * @param relayDiscoveryAddress
      * @throws IOException
+     * @throws InterruptedException 
      */
     AmtPseudoInterface(final AmtPseudoInterfaceManager manager,
-                       final InetAddress relayDiscoveryAddress) throws IOException {
+                       final InetAddress relayDiscoveryAddress) throws IOException, InterruptedException {
+        this(relayDiscoveryAddress);
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("AmtPseudoInterface.AmtPseudoInterface", manager, Logging.address(relayDiscoveryAddress)));
         }
 
+        // Reverse extra acquire() call made in public constructor
+        this.release();
+        
         this.manager = manager;
-        this.relayDiscoveryAddress = relayDiscoveryAddress;
-        this.dispatchChannel = new OutputChannelTee<IPPacket>();
 
     }
 
     /**
+     * Constructs an AMT pseudo interface.
+     * The release method MUST be called if the AmtPseudoInterfaceManager was not used to
+     * construct this object.
      * 
+     * @param manager
+     * @param relayDiscoveryAddress
+     * @throws IOException
+     */
+    public AmtPseudoInterface(final InetAddress relayDiscoveryAddress) throws IOException {
+
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer(this.log.entry("AmtPseudoInterface.AmtPseudoInterface", manager, Logging.address(relayDiscoveryAddress)));
+        }
+
+        this.acquire();
+
+        this.relayDiscoveryAddress = relayDiscoveryAddress;
+
+        this.dispatchChannel = new OutputChannelTee<IPPacket>();
+    }
+
+    /**
      * @param destinationChannel
      */
-    public final void addOutputChannel(final OutputChannel<IPPacket> destinationChannel) {
+    public void addOutputChannel(final OutputChannel<IPPacket> destinationChannel) {
         this.dispatchChannel.add(destinationChannel);
     }
 
     /**
-     * 
      * @param destinationChannel
      */
-    public final void removeOutputChannel(final OutputChannel<IPPacket> destinationChannel) {
+    public void removeOutputChannel(final OutputChannel<IPPacket> destinationChannel) {
         this.dispatchChannel.remove(destinationChannel);
     }
 
@@ -102,7 +126,7 @@ public final class AmtPseudoInterface {
      * 
      * @return An InetAddress object containing the Relay Discovery Address
      */
-    public final InetAddress getRelayDiscoveryAddress() {
+    public InetAddress getRelayDiscoveryAddress() {
         return this.relayDiscoveryAddress;
     }
 
@@ -122,14 +146,19 @@ public final class AmtPseudoInterface {
      * @throws InterruptedException
      * @throws IOException
      */
-    final synchronized void release() throws InterruptedException, IOException {
+    public synchronized void release() throws InterruptedException, IOException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("AmtPseudoInterface.release"));
         }
 
         if (--this.referenceCount == 0) {
-            this.manager.closeInterface(this);
+            if (this.manager != null) {
+                this.manager.closeInterface(this);
+            }
+            else {
+                close();
+            }
         }
     }
 
@@ -137,7 +166,7 @@ public final class AmtPseudoInterface {
      * @throws InterruptedException
      * @throws IOException
      */
-    public final void close() throws InterruptedException, IOException {
+    public void close() throws InterruptedException, IOException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("AmtPseudoInterface.close"));
@@ -157,7 +186,7 @@ public final class AmtPseudoInterface {
      * @param packet
      * @throws IOException
      */
-    public final void send(final IPPacket packet) throws IOException {
+    public void send(final IPPacket packet) throws IOException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("AmtPseudoInterface.send", packet));

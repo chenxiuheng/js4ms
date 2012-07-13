@@ -221,7 +221,7 @@ public final class AmtMulticastEndpoint
     }
 
     @Override
-    public final void join(final InetAddress groupAddress) throws IOException {
+    public final void join(final InetAddress groupAddress) throws IOException, InterruptedException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("AmtMulticastEndpoint.join", Logging.address(groupAddress)));
@@ -232,7 +232,7 @@ public final class AmtMulticastEndpoint
     }
 
     @Override
-    public final void join(final InetAddress groupAddress, final int port) throws IOException {
+    public final void join(final InetAddress groupAddress, final int port) throws IOException, InterruptedException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("AmtMulticastEndpoint.join", Logging.address(groupAddress), port));
@@ -245,7 +245,7 @@ public final class AmtMulticastEndpoint
     }
 
     @Override
-    public final void join(final InetAddress groupAddress, final InetAddress sourceAddress) throws IOException {
+    public final void join(final InetAddress groupAddress, final InetAddress sourceAddress) throws IOException, InterruptedException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("AmtMulticastEndpoint.join", Logging.address(groupAddress),
@@ -256,7 +256,7 @@ public final class AmtMulticastEndpoint
     }
 
     @Override
-    public final void join(final InetAddress groupAddress, final InetAddress sourceAddress, final int port) throws IOException {
+    public final void join(final InetAddress groupAddress, final InetAddress sourceAddress, final int port) throws IOException, InterruptedException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("AmtMulticastEndpoint.join", Logging.address(groupAddress),
