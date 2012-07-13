@@ -2,11 +2,11 @@ package com.larkwoodlabs.service.protocol.rtsp.handlers;
 
 import java.io.IOException;
 
+import com.larkwoodlabs.service.protocol.rest.handler.TransactionHandler;
+import com.larkwoodlabs.service.protocol.rest.message.MessageHeader;
+import com.larkwoodlabs.service.protocol.rest.message.Request;
+import com.larkwoodlabs.service.protocol.rest.message.Response;
 import com.larkwoodlabs.service.protocol.rtsp.RtspMessageHeaders;
-import com.larkwoodlabs.service.protocol.text.handler.TransactionHandler;
-import com.larkwoodlabs.service.protocol.text.message.MessageHeader;
-import com.larkwoodlabs.service.protocol.text.message.Request;
-import com.larkwoodlabs.service.protocol.text.message.Response;
 
 public class TransferSessionHeader implements TransactionHandler {
 

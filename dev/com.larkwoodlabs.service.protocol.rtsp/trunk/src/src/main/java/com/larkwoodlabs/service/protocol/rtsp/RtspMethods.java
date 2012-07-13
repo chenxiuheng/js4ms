@@ -1,6 +1,6 @@
 package com.larkwoodlabs.service.protocol.rtsp;
 
-import com.larkwoodlabs.service.protocol.text.message.Method;
+import com.larkwoodlabs.service.protocol.rest.message.Method;
 
 public interface RtspMethods {
 

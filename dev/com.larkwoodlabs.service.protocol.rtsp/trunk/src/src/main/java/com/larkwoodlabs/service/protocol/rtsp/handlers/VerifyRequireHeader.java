@@ -3,13 +3,13 @@ package com.larkwoodlabs.service.protocol.rtsp.handlers;
 import java.io.IOException;
 import java.util.HashSet;
 
-import com.larkwoodlabs.service.protocol.text.MessageHeaders;
-import com.larkwoodlabs.service.protocol.text.StatusCodes;
-import com.larkwoodlabs.service.protocol.text.handler.TransactionHandler;
-import com.larkwoodlabs.service.protocol.text.headers.SimpleMessageHeader;
-import com.larkwoodlabs.service.protocol.text.message.MessageHeader;
-import com.larkwoodlabs.service.protocol.text.message.Request;
-import com.larkwoodlabs.service.protocol.text.message.Response;
+import com.larkwoodlabs.service.protocol.rest.MessageHeaders;
+import com.larkwoodlabs.service.protocol.rest.StatusCodes;
+import com.larkwoodlabs.service.protocol.rest.handler.TransactionHandler;
+import com.larkwoodlabs.service.protocol.rest.headers.SimpleMessageHeader;
+import com.larkwoodlabs.service.protocol.rest.message.MessageHeader;
+import com.larkwoodlabs.service.protocol.rest.message.Request;
+import com.larkwoodlabs.service.protocol.rest.message.Response;
 
 public class VerifyRequireHeader implements TransactionHandler {
 

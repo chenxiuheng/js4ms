@@ -13,19 +13,19 @@ import javax.sdp.SdpException;
 import javax.sdp.SessionDescription;
 
 import com.larkwoodlabs.channels.OutputChannel;
+import com.larkwoodlabs.service.protocol.rest.RequestException;
+import com.larkwoodlabs.service.protocol.rest.entity.Entity;
+import com.larkwoodlabs.service.protocol.rest.entity.StringEntity;
+import com.larkwoodlabs.service.protocol.rest.handler.TransactionHandler;
+import com.larkwoodlabs.service.protocol.rest.headers.SimpleMessageHeader;
+import com.larkwoodlabs.service.protocol.rest.message.MessageHeader;
+import com.larkwoodlabs.service.protocol.rest.message.Method;
+import com.larkwoodlabs.service.protocol.rest.message.Request;
+import com.larkwoodlabs.service.protocol.rest.message.Response;
 import com.larkwoodlabs.service.protocol.rtsp.RtspMessageHeaders;
 import com.larkwoodlabs.service.protocol.rtsp.RtspMethods;
 import com.larkwoodlabs.service.protocol.rtsp.RtspStatusCodes;
 import com.larkwoodlabs.service.protocol.rtsp.rtp.InterleavedPacketReader;
-import com.larkwoodlabs.service.protocol.text.RequestException;
-import com.larkwoodlabs.service.protocol.text.entity.Entity;
-import com.larkwoodlabs.service.protocol.text.entity.StringEntity;
-import com.larkwoodlabs.service.protocol.text.handler.TransactionHandler;
-import com.larkwoodlabs.service.protocol.text.headers.SimpleMessageHeader;
-import com.larkwoodlabs.service.protocol.text.message.MessageHeader;
-import com.larkwoodlabs.service.protocol.text.message.Method;
-import com.larkwoodlabs.service.protocol.text.message.Request;
-import com.larkwoodlabs.service.protocol.text.message.Response;
 import com.larkwoodlabs.util.logging.Log;
 
 
