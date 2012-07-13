@@ -6,11 +6,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.larkwoodlabs.service.Server;
+import com.larkwoodlabs.service.protocol.rest.message.Request;
+import com.larkwoodlabs.service.protocol.rest.message.Response;
 import com.larkwoodlabs.service.protocol.rtsp.RtspMessageHeaders;
 import com.larkwoodlabs.service.protocol.rtsp.RtspMethods;
 import com.larkwoodlabs.service.protocol.rtsp.presentation.Presentation;
-import com.larkwoodlabs.service.protocol.text.message.Request;
-import com.larkwoodlabs.service.protocol.text.message.Response;
 import com.larkwoodlabs.service.protocol.text.server.session.AbstractTimedSession;
 import com.larkwoodlabs.service.protocol.text.server.session.SessionManager;
 import com.larkwoodlabs.util.logging.Log;

@@ -3,8 +3,8 @@
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/com.larkwoodlabs.service.protocol.rtsp"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.larkwoodlabs.service.protocol.text"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.larkwoodlabs.service.protocol.text.server"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.larkwoodlabs.service.protocol.rest"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.larkwoodlabs.service.protocol.rest.server"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/com.larkwoodlabs.util.logging"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/com.larkwoodlabs.service"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/com.larkwoodlabs.io"/>
