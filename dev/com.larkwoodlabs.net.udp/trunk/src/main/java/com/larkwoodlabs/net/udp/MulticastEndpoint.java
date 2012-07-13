@@ -41,8 +41,9 @@ public interface MulticastEndpoint
      *            The multicast group to join.
      * @throws IOException
      *             The operation failed.
+     * @throws InterruptedException 
      */
-    void join(InetAddress groupAddress) throws IOException;
+    void join(InetAddress groupAddress) throws IOException, InterruptedException;
 
     /**
      * Joins the specified source-specific multicast source-group address pair.
@@ -53,8 +54,9 @@ public interface MulticastEndpoint
      *            The address of a source for the specified group.
      * @throws IOException
      *             The operation failed.
+     * @throws InterruptedException 
      */
-    void join(InetAddress groupAddress, InetAddress sourceAddress) throws IOException;
+    void join(InetAddress groupAddress, InetAddress sourceAddress) throws IOException, InterruptedException;
 
     /**
      * Starts forwarding of datagrams sent to the specified any-source multicast
@@ -67,8 +69,9 @@ public interface MulticastEndpoint
      * @param port
      *            A UDP port number in the range 0-32767.
      * @throws IOException
+     * @throws InterruptedException 
      */
-    void join(InetAddress groupAddress, int port) throws IOException;
+    void join(InetAddress groupAddress, int port) throws IOException, InterruptedException;
 
     /**
      * Starts forwarding of datagrams sent to the specified source-specific
@@ -84,8 +87,9 @@ public interface MulticastEndpoint
      *            A UDP port number in the range 0-32767.
      * @throws IOException
      *             The operation failed.
+     * @throws InterruptedException 
      */
-    void join(InetAddress groupAddress, InetAddress sourceAddress, int port) throws IOException;
+    void join(InetAddress groupAddress, InetAddress sourceAddress, int port) throws IOException, InterruptedException;
 
     /**
      * Leaves the specified multicast group. This method will cause the
