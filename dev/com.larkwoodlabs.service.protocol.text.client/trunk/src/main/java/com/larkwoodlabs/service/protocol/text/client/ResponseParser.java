@@ -5,16 +5,16 @@ import java.util.LinkedHashMap;
 
 import com.larkwoodlabs.common.exceptions.ParseException;
 import com.larkwoodlabs.service.Connection;
-import com.larkwoodlabs.service.protocol.text.RequestException;
-import com.larkwoodlabs.service.protocol.text.entity.Entity;
-import com.larkwoodlabs.service.protocol.text.handler.ResponseHandler;
-import com.larkwoodlabs.service.protocol.text.message.Message;
-import com.larkwoodlabs.service.protocol.text.message.MessageHeader;
-import com.larkwoodlabs.service.protocol.text.message.MessageHeaderParser;
-import com.larkwoodlabs.service.protocol.text.message.MessageParser;
-import com.larkwoodlabs.service.protocol.text.message.Response;
-import com.larkwoodlabs.service.protocol.text.message.StartLine;
-import com.larkwoodlabs.service.protocol.text.message.StatusLine;
+import com.larkwoodlabs.service.protocol.rest.RequestException;
+import com.larkwoodlabs.service.protocol.rest.entity.Entity;
+import com.larkwoodlabs.service.protocol.rest.handler.ResponseHandler;
+import com.larkwoodlabs.service.protocol.rest.message.Message;
+import com.larkwoodlabs.service.protocol.rest.message.MessageHeader;
+import com.larkwoodlabs.service.protocol.rest.message.MessageHeaderParser;
+import com.larkwoodlabs.service.protocol.rest.message.MessageParser;
+import com.larkwoodlabs.service.protocol.rest.message.Response;
+import com.larkwoodlabs.service.protocol.rest.message.StartLine;
+import com.larkwoodlabs.service.protocol.rest.message.StatusLine;
 
 public class ResponseParser extends MessageParser {
 
