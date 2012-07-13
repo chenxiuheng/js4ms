@@ -11,12 +11,12 @@ import java.util.logging.XMLFormatter;
 
 import com.larkwoodlabs.service.protocol.http.HttpMessageHeaders;
 import com.larkwoodlabs.service.protocol.http.HttpStatusCodes;
-import com.larkwoodlabs.service.protocol.text.entity.Entity;
-import com.larkwoodlabs.service.protocol.text.entity.StringEntity;
-import com.larkwoodlabs.service.protocol.text.handler.TransactionHandler;
-import com.larkwoodlabs.service.protocol.text.headers.SimpleMessageHeader;
-import com.larkwoodlabs.service.protocol.text.message.Request;
-import com.larkwoodlabs.service.protocol.text.message.Response;
+import com.larkwoodlabs.service.protocol.rest.entity.Entity;
+import com.larkwoodlabs.service.protocol.rest.entity.StringEntity;
+import com.larkwoodlabs.service.protocol.rest.handler.TransactionHandler;
+import com.larkwoodlabs.service.protocol.rest.headers.SimpleMessageHeader;
+import com.larkwoodlabs.service.protocol.rest.message.Request;
+import com.larkwoodlabs.service.protocol.rest.message.Response;
 import com.larkwoodlabs.util.logging.JsonLogFormatter;
 import com.larkwoodlabs.util.logging.LogFormatter;
 
