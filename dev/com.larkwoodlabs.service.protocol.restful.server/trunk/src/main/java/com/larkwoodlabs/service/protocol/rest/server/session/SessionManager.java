@@ -1,4 +1,4 @@
-package com.larkwoodlabs.service.protocol.text.server.session;
+package com.larkwoodlabs.service.protocol.rest.server.session;
 
 import java.util.HashMap;
 import java.util.logging.Level;

@@ -1,4 +1,4 @@
-package com.larkwoodlabs.service.protocol.text.server;
+package com.larkwoodlabs.service.protocol.rest.server;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -6,17 +6,17 @@ import java.util.logging.Level;
 import com.larkwoodlabs.common.exceptions.ParseException;
 import com.larkwoodlabs.service.Connection;
 import com.larkwoodlabs.service.Service;
-import com.larkwoodlabs.service.protocol.restful.MessageException;
-import com.larkwoodlabs.service.protocol.restful.RequestException;
-import com.larkwoodlabs.service.protocol.restful.StatusCodes;
-import com.larkwoodlabs.service.protocol.restful.handler.RequestHandler;
-import com.larkwoodlabs.service.protocol.restful.handler.RequestHandlerList;
-import com.larkwoodlabs.service.protocol.restful.handler.ResponseHandlerList;
-import com.larkwoodlabs.service.protocol.restful.handler.TransactionHandlerList;
-import com.larkwoodlabs.service.protocol.restful.message.ProtocolVersion;
-import com.larkwoodlabs.service.protocol.restful.message.Request;
-import com.larkwoodlabs.service.protocol.restful.message.Response;
-import com.larkwoodlabs.service.protocol.restful.message.StatusLine;
+import com.larkwoodlabs.service.protocol.rest.MessageException;
+import com.larkwoodlabs.service.protocol.rest.RequestException;
+import com.larkwoodlabs.service.protocol.rest.StatusCodes;
+import com.larkwoodlabs.service.protocol.rest.handler.RequestHandler;
+import com.larkwoodlabs.service.protocol.rest.handler.RequestHandlerList;
+import com.larkwoodlabs.service.protocol.rest.handler.ResponseHandlerList;
+import com.larkwoodlabs.service.protocol.rest.handler.TransactionHandlerList;
+import com.larkwoodlabs.service.protocol.rest.message.ProtocolVersion;
+import com.larkwoodlabs.service.protocol.rest.message.Request;
+import com.larkwoodlabs.service.protocol.rest.message.Response;
+import com.larkwoodlabs.service.protocol.rest.message.StatusLine;
 import com.larkwoodlabs.util.logging.Log;
 import com.larkwoodlabs.util.logging.Loggable;
 

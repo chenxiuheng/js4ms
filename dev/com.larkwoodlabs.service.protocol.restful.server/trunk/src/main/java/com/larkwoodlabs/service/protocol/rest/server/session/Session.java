@@ -1,6 +1,6 @@
-package com.larkwoodlabs.service.protocol.text.server.session;
+package com.larkwoodlabs.service.protocol.rest.server.session;
 
-import com.larkwoodlabs.service.protocol.restful.handler.TransactionHandler;
+import com.larkwoodlabs.service.protocol.rest.handler.TransactionHandler;
 
 /**
  * An interface exposed by objects that maintain state information over a
