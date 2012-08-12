@@ -27,7 +27,6 @@ import java.util.logging.Logger;
 import com.larkwoodlabs.common.exceptions.ParseException;
 import com.larkwoodlabs.net.ip.IPPacket;
 import com.larkwoodlabs.util.buffer.parser.MissingParserException;
-import com.larkwoodlabs.util.logging.Logging;
 
 /**
  * Base class for AMT message classes that carry an IP packet payload.<br/>
