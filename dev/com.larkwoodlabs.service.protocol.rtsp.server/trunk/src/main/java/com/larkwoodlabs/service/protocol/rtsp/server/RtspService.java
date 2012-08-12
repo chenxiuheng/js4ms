@@ -4,23 +4,23 @@ import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.larkwoodlabs.service.protocol.restful.handler.ResponseHandlerList;
-import com.larkwoodlabs.service.protocol.restful.handler.TransactionDispatcher;
-import com.larkwoodlabs.service.protocol.restful.handler.TransactionHandlerList;
-import com.larkwoodlabs.service.protocol.restful.handler.TransactionHeaderResolver;
-import com.larkwoodlabs.service.protocol.restful.handler.TransactionProtocolResolver;
-import com.larkwoodlabs.service.protocol.restful.handlers.AddDateHeader;
-import com.larkwoodlabs.service.protocol.restful.message.MessageHeaderParser;
-import com.larkwoodlabs.service.protocol.restful.message.ProtocolName;
-import com.larkwoodlabs.service.protocol.restful.message.ProtocolVersion;
+import com.larkwoodlabs.service.protocol.rest.handler.ResponseHandlerList;
+import com.larkwoodlabs.service.protocol.rest.handler.TransactionDispatcher;
+import com.larkwoodlabs.service.protocol.rest.handler.TransactionHandlerList;
+import com.larkwoodlabs.service.protocol.rest.handler.TransactionHeaderResolver;
+import com.larkwoodlabs.service.protocol.rest.handler.TransactionProtocolResolver;
+import com.larkwoodlabs.service.protocol.rest.handlers.AddDateHeader;
+import com.larkwoodlabs.service.protocol.rest.message.MessageHeaderParser;
+import com.larkwoodlabs.service.protocol.rest.message.ProtocolName;
+import com.larkwoodlabs.service.protocol.rest.message.ProtocolVersion;
+import com.larkwoodlabs.service.protocol.restful.server.AbstractService;
+import com.larkwoodlabs.service.protocol.restful.server.RequestParser;
+import com.larkwoodlabs.service.protocol.restful.server.handlers.VerifyAcceptEncodingHeader;
 import com.larkwoodlabs.service.protocol.rtsp.handlers.TransferCSeqHeader;
 import com.larkwoodlabs.service.protocol.rtsp.handlers.TransferSessionHeader;
 import com.larkwoodlabs.service.protocol.rtsp.handlers.TransferTimestampHeader;
 import com.larkwoodlabs.service.protocol.rtsp.handlers.VerifyRequireHeader;
 import com.larkwoodlabs.service.protocol.rtsp.presentation.PresentationResolver;
-import com.larkwoodlabs.service.protocol.text.server.AbstractService;
-import com.larkwoodlabs.service.protocol.text.server.RequestParser;
-import com.larkwoodlabs.service.protocol.text.server.handlers.VerifyAcceptEncodingHeader;
 
 
 /**
