@@ -103,11 +103,11 @@
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
-            <fileset dir="../com.larkwoodlabs.service.protocol.restful/bin">
+            <fileset dir="../com.larkwoodlabs.service.protocol.rest/bin">
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
-            <fileset dir="../com.larkwoodlabs.service.protocol.restful.server/bin">
+            <fileset dir="../com.larkwoodlabs.service.protocol.rest.server/bin">
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
