@@ -21,7 +21,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.logging.Logger;
 
-import com.larkwoodlabs.service.protocol.restful.RequestException;
+import com.larkwoodlabs.service.protocol.rest.RequestException;
 import com.larkwoodlabs.util.logging.Logging;
 
 
