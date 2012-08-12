@@ -20,7 +20,7 @@ import com.larkwoodlabs.service.protocol.rest.message.MessageHeader;
 import com.larkwoodlabs.service.protocol.rest.message.Method;
 import com.larkwoodlabs.service.protocol.rest.message.Request;
 import com.larkwoodlabs.service.protocol.rest.message.Response;
-import com.larkwoodlabs.service.protocol.restful.server.session.SessionManager;
+import com.larkwoodlabs.service.protocol.rest.server.session.SessionManager;
 import com.larkwoodlabs.service.protocol.rtsp.RtspMessageHeaders;
 import com.larkwoodlabs.service.protocol.rtsp.RtspMethods;
 import com.larkwoodlabs.service.protocol.rtsp.RtspStatusCodes;
