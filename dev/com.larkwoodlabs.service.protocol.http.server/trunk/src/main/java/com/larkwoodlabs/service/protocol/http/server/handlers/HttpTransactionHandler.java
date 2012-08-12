@@ -2,22 +2,18 @@ package com.larkwoodlabs.service.protocol.http.server.handlers;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.HashMap;
 import java.util.Map;
 
 import com.larkwoodlabs.service.protocol.http.HttpMethods;
 import com.larkwoodlabs.service.protocol.http.HttpStatusCodes;
 import com.larkwoodlabs.service.protocol.rest.entity.CodecManager;
 import com.larkwoodlabs.service.protocol.rest.entity.Entity;
-import com.larkwoodlabs.service.protocol.rest.entity.IdentityCodec;
 import com.larkwoodlabs.service.protocol.rest.entity.MediaType;
 import com.larkwoodlabs.service.protocol.rest.entity.StringEntity;
 import com.larkwoodlabs.service.protocol.rest.handler.TransactionHandler;
-import com.larkwoodlabs.service.protocol.rest.message.MessageHeader;
 import com.larkwoodlabs.service.protocol.rest.message.Method;
 import com.larkwoodlabs.service.protocol.rest.message.Request;
 import com.larkwoodlabs.service.protocol.rest.message.Response;
@@ -136,10 +132,12 @@ public class HttpTransactionHandler
     }
 
     static boolean parseMultipartFormParameters(final String entity, final String boundary, final Map<String, String> map) {
+        // TODO
+        /*
         String parts[] = entity.split("^--"+boundary+"(--)$");
         for (String part : parts) {
-            
         }
+        **/
         return false;
     }
 
