@@ -1,9 +1,9 @@
-package com.larkwoodlabs.service.protocol.rest.server.handlers;
+package org.js4ms.service.protocol.rest.server.handlers;
 
-import com.larkwoodlabs.service.protocol.rest.MessageHeaders;
-import com.larkwoodlabs.service.protocol.rest.handler.ResponseHandler;
-import com.larkwoodlabs.service.protocol.rest.headers.SimpleMessageHeader;
-import com.larkwoodlabs.service.protocol.rest.message.Response;
+import org.js4ms.service.protocol.rest.MessageHeaders;
+import org.js4ms.service.protocol.rest.handler.ResponseHandler;
+import org.js4ms.service.protocol.rest.headers.SimpleMessageHeader;
+import org.js4ms.service.protocol.rest.message.Response;
 
 public class AddServerHeader implements ResponseHandler {
 

@@ -1,6 +1,6 @@
-package com.larkwoodlabs.service.protocol.rest.server.session;
+package org.js4ms.service.protocol.rest.server.session;
 
-import com.larkwoodlabs.service.protocol.rest.handler.TransactionHandler;
+import org.js4ms.service.protocol.rest.handler.TransactionHandler;
 
 /**
  * An interface exposed by objects that maintain state information over a

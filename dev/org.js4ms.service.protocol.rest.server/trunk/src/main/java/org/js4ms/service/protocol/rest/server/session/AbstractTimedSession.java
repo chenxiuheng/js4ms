@@ -1,12 +1,13 @@
-package com.larkwoodlabs.service.protocol.rest.server.session;
+package org.js4ms.service.protocol.rest.server.session;
 
 import java.io.IOException;
 import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.larkwoodlabs.service.protocol.rest.message.Request;
-import com.larkwoodlabs.service.protocol.rest.message.Response;
+import org.js4ms.service.protocol.rest.message.Request;
+import org.js4ms.service.protocol.rest.message.Response;
+
 
 /**
  * A session that self-terminates if it receives no messages within a specified time period.

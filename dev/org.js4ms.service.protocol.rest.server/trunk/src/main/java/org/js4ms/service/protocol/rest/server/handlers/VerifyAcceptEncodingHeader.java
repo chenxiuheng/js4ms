@@ -1,13 +1,14 @@
-package com.larkwoodlabs.service.protocol.rest.server.handlers;
+package org.js4ms.service.protocol.rest.server.handlers;
 
 import java.io.IOException;
 
-import com.larkwoodlabs.service.protocol.rest.MessageHeaders;
-import com.larkwoodlabs.service.protocol.rest.StatusCodes;
-import com.larkwoodlabs.service.protocol.rest.entity.CodecManager;
-import com.larkwoodlabs.service.protocol.rest.handler.TransactionHandler;
-import com.larkwoodlabs.service.protocol.rest.message.Request;
-import com.larkwoodlabs.service.protocol.rest.message.Response;
+import org.js4ms.service.protocol.rest.MessageHeaders;
+import org.js4ms.service.protocol.rest.StatusCodes;
+import org.js4ms.service.protocol.rest.entity.CodecManager;
+import org.js4ms.service.protocol.rest.handler.TransactionHandler;
+import org.js4ms.service.protocol.rest.message.Request;
+import org.js4ms.service.protocol.rest.message.Response;
+
 
 public class VerifyAcceptEncodingHeader implements TransactionHandler {
 

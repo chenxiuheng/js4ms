@@ -1,22 +1,23 @@
-package com.larkwoodlabs.service.protocol.rest.server;
+package org.js4ms.service.protocol.rest.server;
 
 import java.io.IOException;
 import java.util.logging.Level;
 
-import com.larkwoodlabs.common.exceptions.ParseException;
-import com.larkwoodlabs.service.Connection;
-import com.larkwoodlabs.service.Service;
-import com.larkwoodlabs.service.protocol.rest.MessageException;
-import com.larkwoodlabs.service.protocol.rest.RequestException;
-import com.larkwoodlabs.service.protocol.rest.StatusCodes;
-import com.larkwoodlabs.service.protocol.rest.handler.RequestHandler;
-import com.larkwoodlabs.service.protocol.rest.handler.RequestHandlerList;
-import com.larkwoodlabs.service.protocol.rest.handler.ResponseHandlerList;
-import com.larkwoodlabs.service.protocol.rest.handler.TransactionHandlerList;
-import com.larkwoodlabs.service.protocol.rest.message.ProtocolVersion;
-import com.larkwoodlabs.service.protocol.rest.message.Request;
-import com.larkwoodlabs.service.protocol.rest.message.Response;
-import com.larkwoodlabs.service.protocol.rest.message.StatusLine;
+import org.js4ms.common.exceptions.ParseException;
+import org.js4ms.service.Connection;
+import org.js4ms.service.Service;
+import org.js4ms.service.protocol.rest.MessageException;
+import org.js4ms.service.protocol.rest.RequestException;
+import org.js4ms.service.protocol.rest.StatusCodes;
+import org.js4ms.service.protocol.rest.handler.RequestHandler;
+import org.js4ms.service.protocol.rest.handler.RequestHandlerList;
+import org.js4ms.service.protocol.rest.handler.ResponseHandlerList;
+import org.js4ms.service.protocol.rest.handler.TransactionHandlerList;
+import org.js4ms.service.protocol.rest.message.ProtocolVersion;
+import org.js4ms.service.protocol.rest.message.Request;
+import org.js4ms.service.protocol.rest.message.Response;
+import org.js4ms.service.protocol.rest.message.StatusLine;
+
 import com.larkwoodlabs.util.logging.Log;
 import com.larkwoodlabs.util.logging.Loggable;
 

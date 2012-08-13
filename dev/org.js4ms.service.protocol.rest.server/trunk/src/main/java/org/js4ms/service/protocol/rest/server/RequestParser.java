@@ -1,20 +1,21 @@
-package com.larkwoodlabs.service.protocol.rest.server;
+package org.js4ms.service.protocol.rest.server;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
 
-import com.larkwoodlabs.common.exceptions.ParseException;
-import com.larkwoodlabs.service.Connection;
-import com.larkwoodlabs.service.protocol.rest.RequestException;
-import com.larkwoodlabs.service.protocol.rest.entity.Entity;
-import com.larkwoodlabs.service.protocol.rest.handler.RequestHandler;
-import com.larkwoodlabs.service.protocol.rest.message.Message;
-import com.larkwoodlabs.service.protocol.rest.message.MessageHeader;
-import com.larkwoodlabs.service.protocol.rest.message.MessageHeaderParser;
-import com.larkwoodlabs.service.protocol.rest.message.MessageParser;
-import com.larkwoodlabs.service.protocol.rest.message.Request;
-import com.larkwoodlabs.service.protocol.rest.message.RequestLine;
-import com.larkwoodlabs.service.protocol.rest.message.StartLine;
+import org.js4ms.common.exceptions.ParseException;
+import org.js4ms.service.Connection;
+import org.js4ms.service.protocol.rest.RequestException;
+import org.js4ms.service.protocol.rest.entity.Entity;
+import org.js4ms.service.protocol.rest.handler.RequestHandler;
+import org.js4ms.service.protocol.rest.message.Message;
+import org.js4ms.service.protocol.rest.message.MessageHeader;
+import org.js4ms.service.protocol.rest.message.MessageHeaderParser;
+import org.js4ms.service.protocol.rest.message.MessageParser;
+import org.js4ms.service.protocol.rest.message.Request;
+import org.js4ms.service.protocol.rest.message.RequestLine;
+import org.js4ms.service.protocol.rest.message.StartLine;
+
 
 public class RequestParser extends MessageParser {
 

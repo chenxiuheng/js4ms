@@ -1,4 +1,4 @@
-package com.larkwoodlabs.service.protocol.rest.server.session;
+package org.js4ms.service.protocol.rest.server.session;
 
 import java.util.HashMap;
 import java.util.logging.Level;
