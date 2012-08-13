@@ -1,4 +1,4 @@
-package com.larkwoodlabs.service.protocol.rtsp.presentation;
+package org.js4ms.service.protocol.rtsp.presentation;
 
 import java.io.IOException;
 import java.net.DatagramSocket;
@@ -14,24 +14,25 @@ import javax.sdp.MediaDescription;
 import javax.sdp.SdpException;
 import javax.sdp.SessionDescription;
 
-import com.larkwoodlabs.channels.MessageSource;
-import com.larkwoodlabs.channels.OutputChannel;
-import com.larkwoodlabs.net.udp.UdpEndpoint;
-import com.larkwoodlabs.net.udp.UdpPacketOutputChannel;
-import com.larkwoodlabs.net.udp.UdpDatagramPayloadSource;
-import com.larkwoodlabs.net.udp.UdpSocketEndpoint;
-import com.larkwoodlabs.service.protocol.rest.RequestException;
-import com.larkwoodlabs.service.protocol.rest.entity.Entity;
-import com.larkwoodlabs.service.protocol.rest.headers.SimpleMessageHeader;
-import com.larkwoodlabs.service.protocol.rest.message.MessageHeader;
-import com.larkwoodlabs.service.protocol.rest.message.Request;
-import com.larkwoodlabs.service.protocol.rest.message.Response;
-import com.larkwoodlabs.service.protocol.rtsp.RtspMessageHeaders;
-import com.larkwoodlabs.service.protocol.rtsp.RtspStatusCodes;
-import com.larkwoodlabs.service.protocol.rtsp.TransportDescription;
-import com.larkwoodlabs.service.protocol.rtsp.TransportPreferences;
-import com.larkwoodlabs.service.protocol.rtsp.presentation.Presentation.Source;
-import com.larkwoodlabs.service.protocol.rtsp.rtp.InterleavedPacketOutputChannel;
+import org.js4ms.channels.MessageSource;
+import org.js4ms.channels.OutputChannel;
+import org.js4ms.net.udp.UdpDatagramPayloadSource;
+import org.js4ms.net.udp.UdpEndpoint;
+import org.js4ms.net.udp.UdpPacketOutputChannel;
+import org.js4ms.net.udp.UdpSocketEndpoint;
+import org.js4ms.service.protocol.rest.RequestException;
+import org.js4ms.service.protocol.rest.entity.Entity;
+import org.js4ms.service.protocol.rest.headers.SimpleMessageHeader;
+import org.js4ms.service.protocol.rest.message.MessageHeader;
+import org.js4ms.service.protocol.rest.message.Request;
+import org.js4ms.service.protocol.rest.message.Response;
+import org.js4ms.service.protocol.rtsp.RtspMessageHeaders;
+import org.js4ms.service.protocol.rtsp.RtspStatusCodes;
+import org.js4ms.service.protocol.rtsp.TransportDescription;
+import org.js4ms.service.protocol.rtsp.TransportPreferences;
+import org.js4ms.service.protocol.rtsp.presentation.Presentation.Source;
+import org.js4ms.service.protocol.rtsp.rtp.InterleavedPacketOutputChannel;
+
 import com.larkwoodlabs.util.logging.Log;
 import com.larkwoodlabs.util.logging.Logging;
 

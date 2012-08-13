@@ -14,14 +14,15 @@
  * limitations under the license.
  */
 
-package com.larkwoodlabs.service.protocol.rtsp;
+package org.js4ms.service.protocol.rtsp;
 
 import java.net.UnknownHostException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.logging.Logger;
 
-import com.larkwoodlabs.service.protocol.rest.RequestException;
+import org.js4ms.service.protocol.rest.RequestException;
+
 import com.larkwoodlabs.util.logging.Logging;
 
 

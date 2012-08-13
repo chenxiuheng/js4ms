@@ -1,4 +1,4 @@
-package com.larkwoodlabs.service.protocol.rtsp.rtp;
+package org.js4ms.service.protocol.rtsp.rtp;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
@@ -7,8 +7,9 @@ import java.nio.ByteBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.larkwoodlabs.channels.OutputChannel;
-import com.larkwoodlabs.service.Connection;
+import org.js4ms.channels.OutputChannel;
+import org.js4ms.service.Connection;
+
 import com.larkwoodlabs.util.logging.Log;
 
 /**

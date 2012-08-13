@@ -1,4 +1,4 @@
-package com.larkwoodlabs.service.protocol.rtsp.rtp;
+package org.js4ms.service.protocol.rtsp.rtp;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
@@ -7,7 +7,8 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 
-import com.larkwoodlabs.channels.OutputChannel;
+import org.js4ms.channels.OutputChannel;
+
 
 /**
  * An {@link OutputChannel} that can be used to send a byte array containing an

@@ -1,6 +1,6 @@
-package com.larkwoodlabs.service.protocol.rtsp;
+package org.js4ms.service.protocol.rtsp;
 
-import com.larkwoodlabs.service.protocol.rest.message.Method;
+import org.js4ms.service.protocol.rest.message.Method;
 
 public interface RtspMethods {
 

@@ -14,7 +14,7 @@
  * limitations under the license.
  */
 
-package com.larkwoodlabs.service.protocol.rtsp;
+package org.js4ms.service.protocol.rtsp;
 
 import gov.nist.javax.sdp.fields.ConnectionAddress;
 import gov.nist.javax.sdp.fields.ConnectionField;
