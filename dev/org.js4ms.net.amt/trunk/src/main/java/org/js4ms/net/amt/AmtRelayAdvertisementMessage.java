@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: AmtRelayAdvertisementMessage.java (com.larkwoodlabs.net.amt)
+ * File: AmtRelayAdvertisementMessage.java (org.js4ms.net.amt)
  * 
  * Copyright © 2010-2012 Cisco Systems, Inc.
  * 
@@ -18,14 +18,15 @@
  * limitations under the License.
  */
 
-package com.larkwoodlabs.net.amt;
+package org.js4ms.net.amt;
 
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.larkwoodlabs.common.exceptions.ParseException;
+import org.js4ms.common.exceptions.ParseException;
+
 import com.larkwoodlabs.util.buffer.fields.ByteArrayField;
 import com.larkwoodlabs.util.buffer.fields.IntegerField;
 import com.larkwoodlabs.util.logging.Logging;

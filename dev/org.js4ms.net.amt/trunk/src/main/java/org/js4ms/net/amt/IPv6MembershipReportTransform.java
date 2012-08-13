@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: IPv4MembershipReportTransform.java (com.larkwoodlabs.net.amt)
+ * File: IPv6MembershipReportTransform.java (org.js4ms.net.amt)
  * 
  * Copyright © 2010-2012 Cisco Systems, Inc.
  * 
@@ -18,46 +18,43 @@
  * limitations under the License.
  */
 
-package com.larkwoodlabs.net.amt;
+package org.js4ms.net.amt;
 
 import java.io.IOException;
 import java.net.InetAddress;
 
-import com.larkwoodlabs.channels.MessageTransform;
+import org.js4ms.channels.MessageTransform;
+
 import com.larkwoodlabs.net.ip.IPPacket;
-import com.larkwoodlabs.net.ip.igmp.IGMPGroupRecord;
-import com.larkwoodlabs.net.ip.igmp.IGMPMessage;
-import com.larkwoodlabs.net.ip.igmp.IGMPv3ReportMessage;
+import com.larkwoodlabs.net.ip.mld.MLDGroupRecord;
+import com.larkwoodlabs.net.ip.mld.MLDMessage;
+import com.larkwoodlabs.net.ip.mld.MLDv2ReportMessage;
 
 /**
  * Transforms a protocol-independent MembershipReport object into an IPPacket object
- * containing an IGMPv3 report message.
+ * containing an MLDv2 report message.
  * 
  * @author Greg Bumgardner (gbumgard)
  */
-public final class IPv4MembershipReportTransform
+public final class IPv6MembershipReportTransform
                 implements MessageTransform<MembershipReport, IPPacket> {
 
     /**
-     * An IANA-assigned link-local address used by AMT gateways as an IGMP packet
-     * source address.
+     * The link-local address used by AMT gateways as an MLD packet source address.
      */
-    private static final byte[] ASSIGNED_IGMP_SOURCE_ADDRESS = {
-                    (byte) 154, (byte) 7, (byte) 1, (byte) 2
+    private static final byte[] ASSIGNED_MLD_SOURCE_ADDRESS = {
+                    (byte) 0xFE, (byte) 0x80, (byte) 0, (byte) 0,
+                    (byte) 0, (byte) 0, (byte) 0, (byte) 0,
+                    (byte) 0, (byte) 0, (byte) 0, (byte) 0,
+                    (byte) 0, (byte) 0, (byte) 0, (byte) 3
     };
 
-    // private byte[] ipv4SourceAddress = null;
+    // private byte[] ipv6SourceAddress = null;
 
-    /**
-     * Constructs a transform instance.
-     * This constructor iterates over the set of network interfaces
-     * to acquire an IPv4 address to use as the source address in the
-     * packets
-     */
-    public IPv4MembershipReportTransform() {
+    public IPv6MembershipReportTransform() {
 
         /*
-         * NOTE: A host IPv4 address is no longer used as the source address in the IGMP
+         * NOTE: A host IPv6 address is no longer used as the source address in the MLD
          * packet.
          * 
          * InetAddress localHostAddress;
@@ -74,7 +71,7 @@ public final class IPv4MembershipReportTransform
          * networkInterface = NetworkInterface.getByInetAddress(localHostAddress);
          * }
          * catch (SocketException e) {
-         * //throw new UnknownHostException(
+         * // throw new UnknownHostException(
          * "attempt to identify network interface for local host address " +
          * // localHostAddress.getHostAddress() +
          * // " failed - " + e.getMessage());
@@ -84,14 +81,14 @@ public final class IPv4MembershipReportTransform
          * Enumeration<InetAddress> iter = networkInterface.getInetAddresses();
          * while (iter.hasMoreElements()) {
          * byte[] address = iter.nextElement().getAddress();
-         * if (address.length == 4) {
-         * this.ipv4SourceAddress = address;
+         * if (address.length == 6) {
+         * this.ipv6SourceAddress = address;
          * }
          * }
          * }
          * 
-         * if (this.ipv4SourceAddress == null) {
-         * this.ipv4SourceAddress = new byte[4];
+         * if (this.ipv6SourceAddress == null) {
+         * this.ipv6SourceAddress = new byte[16];
          * }
          */
     }
@@ -100,11 +97,10 @@ public final class IPv4MembershipReportTransform
     public IPPacket transform(final MembershipReport message) throws IOException {
 
         IPPacket reportPacket = null;
-
-        IGMPv3ReportMessage reportMessage = new IGMPv3ReportMessage();
+        MLDv2ReportMessage reportMessage = new MLDv2ReportMessage();
 
         for (GroupMembershipRecord record : message.getRecords()) {
-            IGMPGroupRecord groupRecord = new IGMPGroupRecord((byte) record.getRecordType().getValue(), record.getGroup()
+            MLDGroupRecord groupRecord = new MLDGroupRecord((byte) record.getRecordType().getValue(), record.getGroup()
                             .getAddress());
             for (InetAddress sourceAddress : record.getSources()) {
                 groupRecord.addSource(sourceAddress);
@@ -112,9 +108,9 @@ public final class IPv4MembershipReportTransform
             reportMessage.addGroupRecord(groupRecord);
         }
 
-        reportPacket = IGMPMessage.constructIPv4Packet(ASSIGNED_IGMP_SOURCE_ADDRESS,
-                                                       IGMPMessage.IPv4ReportDestinationAddress,
-                                                       reportMessage);
+        reportPacket = MLDMessage.constructIPv6Packet(ASSIGNED_MLD_SOURCE_ADDRESS,
+                                                      MLDMessage.IPv6ReportDestinationAddress,
+                                                      reportMessage);
 
         return reportPacket;
     }

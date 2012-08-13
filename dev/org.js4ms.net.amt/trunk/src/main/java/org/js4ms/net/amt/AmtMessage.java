@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: AmtMessage.java (com.larkwoodlabs.net.amt)
+ * File: AmtMessage.java (org.js4ms.net.amt)
  * 
  * Copyright © 2010-2012 Cisco Systems, Inc.
  * 
@@ -18,13 +18,14 @@
  * limitations under the License.
  */
 
-package com.larkwoodlabs.net.amt;
+package org.js4ms.net.amt;
 
 import java.nio.ByteBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.larkwoodlabs.net.KeyedApplicationMessage;
+import org.js4ms.net.KeyedApplicationMessage;
+
 import com.larkwoodlabs.util.buffer.BufferBackedObject;
 import com.larkwoodlabs.util.buffer.fields.ByteField;
 import com.larkwoodlabs.util.buffer.fields.SelectorField;

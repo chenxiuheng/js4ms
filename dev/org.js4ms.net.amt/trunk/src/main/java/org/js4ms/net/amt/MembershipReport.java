@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: MembershipReport.java (com.larkwoodlabs.net.amt)
+ * File: MembershipReport.java (org.js4ms.net.amt)
  * 
  * Copyright © 2010-2012 Cisco Systems, Inc.
  * 
@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package com.larkwoodlabs.net.amt;
+package org.js4ms.net.amt;
 
 import java.util.HashSet;
 import java.util.Iterator;
