@@ -1,6 +1,6 @@
 package org.js4ms.service.protocol.http;
 
-import com.larkwoodlabs.service.protocol.rest.message.Method;
+import org.js4ms.service.protocol.rest.message.Method;
 
 public interface HttpMethods {
     public static final Method GET = new Method("GET");

@@ -1,6 +1,6 @@
 package org.js4ms.service.protocol.http;
 
-import com.larkwoodlabs.service.protocol.rest.MessageHeaders;
+import org.js4ms.service.protocol.rest.MessageHeaders;
 
 public interface HttpMessageHeaders extends MessageHeaders {
 
