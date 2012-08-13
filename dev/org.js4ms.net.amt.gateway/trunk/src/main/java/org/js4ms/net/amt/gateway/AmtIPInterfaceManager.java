@@ -1,4 +1,4 @@
-package com.larkwoodlabs.net.amt.gateway;
+package org.js4ms.net.amt.gateway;
 
 import java.io.IOException;
 import java.net.InetAddress;

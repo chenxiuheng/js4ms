@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: MulticastDataTransform.java (com.larkwoodlabs.net.amt.gateway)
+ * File: MulticastDataTransform.java (org.js4ms.net.amt.gateway)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,11 +18,12 @@
  * limitations under the License.
  */
 
-package com.larkwoodlabs.net.amt.gateway;
+package org.js4ms.net.amt.gateway;
 
 import java.io.IOException;
 
-import com.larkwoodlabs.channels.MessageTransform;
+import org.js4ms.channels.MessageTransform;
+
 import com.larkwoodlabs.net.ip.IPPacket;
 import com.larkwoodlabs.net.ip.udp.UdpPacket;
 import com.larkwoodlabs.net.udp.UdpDatagram;

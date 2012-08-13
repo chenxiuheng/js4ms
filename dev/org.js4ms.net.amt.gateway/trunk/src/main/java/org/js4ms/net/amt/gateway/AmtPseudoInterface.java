@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: AmtPseudoInterface.java (com.larkwoodlabs.net.amt.gateway)
+ * File: AmtPseudoInterface.java (org.js4ms.net.amt.gateway)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,15 +18,16 @@
  * limitations under the License.
  */
 
-package com.larkwoodlabs.net.amt.gateway;
+package org.js4ms.net.amt.gateway;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.larkwoodlabs.channels.OutputChannel;
-import com.larkwoodlabs.channels.OutputChannelTee;
+import org.js4ms.channels.OutputChannel;
+import org.js4ms.channels.OutputChannelTee;
+
 import com.larkwoodlabs.net.ip.IPPacket;
 import com.larkwoodlabs.net.ip.ipv4.IPv4Packet;
 import com.larkwoodlabs.util.logging.Log;

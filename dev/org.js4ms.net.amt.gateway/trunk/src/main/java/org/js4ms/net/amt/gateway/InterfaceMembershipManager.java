@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: InterfaceMembershipManager.java (com.larkwoodlabs.net.amt.gateway)
+ * File: InterfaceMembershipManager.java (org.js4ms.net.amt.gateway)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package com.larkwoodlabs.net.amt.gateway;
+package org.js4ms.net.amt.gateway;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -29,11 +29,12 @@ import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.larkwoodlabs.channels.OutputChannel;
-import com.larkwoodlabs.net.amt.GroupMembershipRecord;
-import com.larkwoodlabs.net.amt.MembershipQuery;
-import com.larkwoodlabs.net.amt.MembershipReport;
-import com.larkwoodlabs.net.amt.SourceFilter;
+import org.js4ms.channels.OutputChannel;
+import org.js4ms.net.amt.GroupMembershipRecord;
+import org.js4ms.net.amt.MembershipQuery;
+import org.js4ms.net.amt.MembershipReport;
+import org.js4ms.net.amt.SourceFilter;
+
 import com.larkwoodlabs.util.logging.Log;
 import com.larkwoodlabs.util.logging.LoggableBase;
 import com.larkwoodlabs.util.logging.Logging;

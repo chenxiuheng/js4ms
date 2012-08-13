@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: PacketAssembler.java (com.larkwoodlabs.net.amt.gateway)
+ * File: PacketAssembler.java (org.js4ms.net.amt.gateway)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package com.larkwoodlabs.net.amt.gateway;
+package org.js4ms.net.amt.gateway;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
@@ -32,9 +32,10 @@ import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.larkwoodlabs.channels.OutputChannel;
-import com.larkwoodlabs.common.exceptions.ParseException;
-import com.larkwoodlabs.net.Precondition;
+import org.js4ms.channels.OutputChannel;
+import org.js4ms.common.exceptions.ParseException;
+import org.js4ms.net.Precondition;
+
 import com.larkwoodlabs.net.ip.IPPacket;
 import com.larkwoodlabs.net.ip.ipv4.IPv4Packet;
 import com.larkwoodlabs.net.ip.ipv6.IPv6Packet;

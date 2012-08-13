@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: GeneralQueryReportTimer.java (com.larkwoodlabs.net.amt.gateway)
+ * File: GeneralQueryReportTimer.java (org.js4ms.net.amt.gateway)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package com.larkwoodlabs.net.amt.gateway;
+package org.js4ms.net.amt.gateway;
 
 import java.util.Timer;
 

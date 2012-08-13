@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: StateChangeReportTask.java (com.larkwoodlabs.net.amt.gateway)
+ * File: StateChangeReportTask.java (org.js4ms.net.amt.gateway)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package com.larkwoodlabs.net.amt.gateway;
+package org.js4ms.net.amt.gateway;
 
 import java.net.InetAddress;
 import java.util.HashSet;
@@ -26,7 +26,8 @@ import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.larkwoodlabs.net.amt.SourceFilter;
+import org.js4ms.net.amt.SourceFilter;
+
 import com.larkwoodlabs.util.logging.Log;
 import com.larkwoodlabs.util.logging.Logging;
 import com.larkwoodlabs.util.task.ReschedulableTask;

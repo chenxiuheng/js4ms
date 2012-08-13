@@ -1,4 +1,4 @@
-package com.larkwoodlabs.net.amt.gateway;
+package org.js4ms.net.amt.gateway;
 
 import java.io.IOException;
 import java.net.Inet4Address;
@@ -7,18 +7,19 @@ import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.larkwoodlabs.channels.MessageKeyExtractor;
-import com.larkwoodlabs.channels.OutputChannel;
-import com.larkwoodlabs.channels.OutputChannelMap;
-import com.larkwoodlabs.channels.OutputChannelTee;
-import com.larkwoodlabs.channels.OutputChannelTransform;
-import com.larkwoodlabs.net.Precondition;
-import com.larkwoodlabs.net.amt.IPv4MembershipQueryTransform;
-import com.larkwoodlabs.net.amt.IPv4MembershipReportTransform;
-import com.larkwoodlabs.net.amt.IPv6MembershipQueryTransform;
-import com.larkwoodlabs.net.amt.IPv6MembershipReportTransform;
-import com.larkwoodlabs.net.amt.MembershipQuery;
-import com.larkwoodlabs.net.amt.MembershipReport;
+import org.js4ms.channels.MessageKeyExtractor;
+import org.js4ms.channels.OutputChannel;
+import org.js4ms.channels.OutputChannelMap;
+import org.js4ms.channels.OutputChannelTee;
+import org.js4ms.channels.OutputChannelTransform;
+import org.js4ms.net.Precondition;
+import org.js4ms.net.amt.IPv4MembershipQueryTransform;
+import org.js4ms.net.amt.IPv4MembershipReportTransform;
+import org.js4ms.net.amt.IPv6MembershipQueryTransform;
+import org.js4ms.net.amt.IPv6MembershipReportTransform;
+import org.js4ms.net.amt.MembershipQuery;
+import org.js4ms.net.amt.MembershipReport;
+
 import com.larkwoodlabs.net.ip.IPMessage;
 import com.larkwoodlabs.net.ip.IPPacket;
 import com.larkwoodlabs.net.ip.igmp.IGMPMessage;

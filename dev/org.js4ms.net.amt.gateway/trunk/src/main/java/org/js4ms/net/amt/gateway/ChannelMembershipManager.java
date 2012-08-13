@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: ChannelMembershipManager.java (com.larkwoodlabs.net.amt.gateway)
+ * File: ChannelMembershipManager.java (org.js4ms.net.amt.gateway)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package com.larkwoodlabs.net.amt.gateway;
+package org.js4ms.net.amt.gateway;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -26,13 +26,14 @@ import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.larkwoodlabs.channels.MessageKeyExtractor;
-import com.larkwoodlabs.channels.OutputChannel;
-import com.larkwoodlabs.channels.OutputChannelMap;
-import com.larkwoodlabs.channels.OutputChannelTee;
-import com.larkwoodlabs.common.exceptions.BoundException;
-import com.larkwoodlabs.common.exceptions.MultiIOException;
-import com.larkwoodlabs.net.Precondition;
+import org.js4ms.channels.MessageKeyExtractor;
+import org.js4ms.channels.OutputChannel;
+import org.js4ms.channels.OutputChannelMap;
+import org.js4ms.channels.OutputChannelTee;
+import org.js4ms.common.exceptions.BoundException;
+import org.js4ms.common.exceptions.MultiIOException;
+import org.js4ms.net.Precondition;
+
 import com.larkwoodlabs.net.udp.UdpDatagram;
 import com.larkwoodlabs.util.logging.Log;
 import com.larkwoodlabs.util.logging.LoggableBase;

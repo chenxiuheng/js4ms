@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: AmtDatagramSource.java (com.larkwoodlabs.net.amt.gateway)
+ * File: AmtDatagramSource.java (org.js4ms.net.amt.gateway)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package com.larkwoodlabs.net.amt.gateway;
+package org.js4ms.net.amt.gateway;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -26,9 +26,10 @@ import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.larkwoodlabs.channels.MessageSource;
-import com.larkwoodlabs.channels.OutputChannel;
-import com.larkwoodlabs.net.amt.SourceFilter;
+import org.js4ms.channels.MessageSource;
+import org.js4ms.channels.OutputChannel;
+import org.js4ms.net.amt.SourceFilter;
+
 import com.larkwoodlabs.net.udp.UdpDatagram;
 import com.larkwoodlabs.util.logging.Log;
 

@@ -1,4 +1,4 @@
-package com.larkwoodlabs.net.amt.gateway;
+package org.js4ms.net.amt.gateway;
 
 import java.io.IOException;
 import java.net.Inet4Address;
@@ -7,11 +7,12 @@ import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.larkwoodlabs.channels.MessageKeyExtractor;
-import com.larkwoodlabs.channels.OutputChannel;
-import com.larkwoodlabs.channels.OutputChannelMap;
-import com.larkwoodlabs.channels.OutputChannelTransform;
-import com.larkwoodlabs.net.Precondition;
+import org.js4ms.channels.MessageKeyExtractor;
+import org.js4ms.channels.OutputChannel;
+import org.js4ms.channels.OutputChannelMap;
+import org.js4ms.channels.OutputChannelTransform;
+import org.js4ms.net.Precondition;
+
 import com.larkwoodlabs.net.ip.IPPacket;
 import com.larkwoodlabs.net.ip.ipv4.IPv4Packet;
 import com.larkwoodlabs.net.ip.ipv6.IPv6Packet;
