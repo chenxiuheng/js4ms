@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: PoolableObject.java (com.larkwoodlabs.util.pool)
+ * File: PooledObjectFactory.java (org.js4ms.util.pool)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,15 +18,21 @@
  * limitations under the License.
  */
 
-package com.larkwoodlabs.util.pool;
+package org.js4ms.util.pool;
 
-public interface PoolableObject {
+public abstract class PooledObjectFactory<T> {
 
-    public void validate() throws Exception;
+    public abstract T create();
 
-    public void activate() throws Exception;
+    public void destroy(T object) throws Exception {
+    }
 
-    public void deactivate() throws Exception;
+    public void validate(T object) throws Exception {
+    }
 
-    public void release() throws Exception;
+    public void activate(T object) throws Exception {
+    }
+
+    public void deactivate(T object) throws Exception {
+    }
 }

@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: TimedObjectPool.java (com.larkwoodlabs.util.pool)
+ * File: TimedObjectPool.java (org.js4ms.util.pool)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,14 +18,15 @@
  * limitations under the License.
  */
 
-package com.larkwoodlabs.util.pool;
+package org.js4ms.util.pool;
 
 import java.util.HashMap;
 import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.larkwoodlabs.util.logging.Logging;
+import org.js4ms.util.logging.Logging;
+
 import com.larkwoodlabs.util.task.TimerService;
 
 /**

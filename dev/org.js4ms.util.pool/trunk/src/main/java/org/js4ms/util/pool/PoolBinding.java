@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: ObjectPoolFactory.java (com.larkwoodlabs.util.pool)
+ * File: PoolBinding.java (org.js4ms.util.pool)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,9 +18,31 @@
  * limitations under the License.
  */
 
-package com.larkwoodlabs.util.pool;
+package org.js4ms.util.pool;
 
-public interface ObjectPoolFactory<T> {
+public class PoolBinding<T> {
 
-    public ObjectPool<T> makePool(PooledObjectFactory<T> objectFactory);
+    T pooledObject;
+
+    ObjectPool<T> pool;
+
+    public PoolBinding(T pooledObject) {
+        this(pooledObject, null);
+    }
+
+    public PoolBinding(T pooledObject, ObjectPool<T> pool) {
+        this.pooledObject = pooledObject;
+        this.pool = pool;
+    }
+
+    public T get() {
+        return this.pooledObject;
+    }
+
+    public void release() throws Exception {
+        if (this.pool != null) {
+            this.pool.release(this.pooledObject);
+        }
+        this.pooledObject = null;
+    }
 }

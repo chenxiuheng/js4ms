@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: PoolBinding.java (com.larkwoodlabs.util.pool)
+ * File: PoolableObjectWrapper.java (org.js4ms.util.pool)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,31 +18,30 @@
  * limitations under the License.
  */
 
-package com.larkwoodlabs.util.pool;
+package org.js4ms.util.pool;
 
-public class PoolBinding<T> {
+public abstract class PoolableObjectWrapper<ObjectType>
+                implements PoolableObject {
 
-    T pooledObject;
+    protected ObjectType object;
 
-    ObjectPool<T> pool;
+    protected ObjectPool<ObjectType> pool;
 
-    public PoolBinding(T pooledObject) {
-        this(pooledObject, null);
-    }
-
-    public PoolBinding(T pooledObject, ObjectPool<T> pool) {
-        this.pooledObject = pooledObject;
+    protected PoolableObjectWrapper(ObjectType object, ObjectPool<ObjectType> pool) {
+        this.object = object;
         this.pool = pool;
     }
 
-    public T get() {
-        return this.pooledObject;
+    public void release() throws Exception {
+        if (this.pool != null) this.pool.release(this.object);
     }
 
-    public void release() throws Exception {
-        if (this.pool != null) {
-            this.pool.release(this.pooledObject);
-        }
-        this.pooledObject = null;
+    public ObjectType getObject() {
+        return this.object;
     }
+
+    public ObjectPool<ObjectType> getPool() {
+        return this.pool;
+    }
+
 }

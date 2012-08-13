@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: ObjectPool.java (com.larkwoodlabs.util.pool)
+ * File: ObjectPool.java (org.js4ms.util.pool)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package com.larkwoodlabs.util.pool;
+package org.js4ms.util.pool;
 
 /**
  * @param <T>

@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: Condition.java (com.larkwoodlabs.util.pool)
+ * File: ObjectPoolFactory.java (org.js4ms.util.pool)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,8 +18,9 @@
  * limitations under the License.
  */
 
-package com.larkwoodlabs.util.pool;
+package org.js4ms.util.pool;
 
-public interface Condition<T> {
-    public boolean test(T object);
+public interface ObjectPoolFactory<T> {
+
+    public ObjectPool<T> makePool(PooledObjectFactory<T> objectFactory);
 }
