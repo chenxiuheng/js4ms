@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: KeyedApplicationMessage.java (com.larkwoodlabs.net)
+ * File: KeyedApplicationMessage.java (org.js4ms.net)
  * 
  * Copyright © 2010-2012 Cisco Systems, Inc.
  * 

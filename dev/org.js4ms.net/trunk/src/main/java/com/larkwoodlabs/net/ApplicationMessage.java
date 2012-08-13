@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: ApplicationMessage.java (com.larkwoodlabs.net)
+ * File: ApplicationMessage.java (org.js4ms.net)
  * 
  * Copyright © 2010-2012 Cisco Systems, Inc.
  * 
