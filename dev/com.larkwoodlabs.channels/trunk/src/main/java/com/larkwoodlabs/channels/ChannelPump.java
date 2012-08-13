@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.js4ms.util.logging.Log;
+import com.larkwoodlabs.util.logging.Log;
 
 
 /**
