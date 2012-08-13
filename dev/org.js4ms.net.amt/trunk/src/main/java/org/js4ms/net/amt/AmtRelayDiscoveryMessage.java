@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 
 import org.js4ms.common.exceptions.ParseException;
 
-import com.larkwoodlabs.util.buffer.fields.IntegerField;
+import org.js4ms.util.buffer.fields.IntegerField;
 
 /**
  * Represents an AMT Relay Discovery message.

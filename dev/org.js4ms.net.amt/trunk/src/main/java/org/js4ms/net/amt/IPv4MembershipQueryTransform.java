@@ -28,12 +28,12 @@ import java.util.Iterator;
 
 import org.js4ms.channels.MessageTransform;
 
-import com.larkwoodlabs.net.ip.IPMessage;
-import com.larkwoodlabs.net.ip.IPPacket;
-import com.larkwoodlabs.net.ip.igmp.IGMPMessage;
-import com.larkwoodlabs.net.ip.igmp.IGMPQueryMessage;
-import com.larkwoodlabs.net.ip.igmp.IGMPv3QueryMessage;
-import com.larkwoodlabs.net.ip.ipv4.IPv4Packet;
+import org.js4ms.net.ip.IPMessage;
+import org.js4ms.net.ip.IPPacket;
+import org.js4ms.net.ip.igmp.IGMPMessage;
+import org.js4ms.net.ip.igmp.IGMPQueryMessage;
+import org.js4ms.net.ip.igmp.IGMPv3QueryMessage;
+import org.js4ms.net.ip.ipv4.IPv4Packet;
 
 /**
  * Transforms an IPPacket object containing an IGMPv3 query message into a 

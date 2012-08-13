@@ -29,17 +29,17 @@ import java.util.logging.Logger;
 
 import org.js4ms.common.exceptions.ParseException;
 
-import com.larkwoodlabs.net.ip.IPPacket;
-import com.larkwoodlabs.net.ip.igmp.IGMPMessage;
-import com.larkwoodlabs.net.ip.igmp.IGMPv3QueryMessage;
-import com.larkwoodlabs.net.ip.ipv4.IPv4Packet;
-import com.larkwoodlabs.net.ip.ipv6.IPv6Packet;
-import com.larkwoodlabs.net.ip.mld.MLDMessage;
-import com.larkwoodlabs.net.ip.mld.MLDv2QueryMessage;
-import com.larkwoodlabs.util.buffer.fields.BooleanField;
-import com.larkwoodlabs.util.buffer.fields.ByteArrayField;
-import com.larkwoodlabs.util.buffer.fields.IntegerField;
-import com.larkwoodlabs.util.logging.Logging;
+import org.js4ms.net.ip.IPPacket;
+import org.js4ms.net.ip.igmp.IGMPMessage;
+import org.js4ms.net.ip.igmp.IGMPv3QueryMessage;
+import org.js4ms.net.ip.ipv4.IPv4Packet;
+import org.js4ms.net.ip.ipv6.IPv6Packet;
+import org.js4ms.net.ip.mld.MLDMessage;
+import org.js4ms.net.ip.mld.MLDv2QueryMessage;
+import org.js4ms.util.buffer.fields.BooleanField;
+import org.js4ms.util.buffer.fields.ByteArrayField;
+import org.js4ms.util.buffer.fields.IntegerField;
+import org.js4ms.util.logging.Logging;
 
 /**
  * Represents an AMT Membership Query message.

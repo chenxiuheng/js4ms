@@ -28,12 +28,12 @@ import java.util.Iterator;
 
 import org.js4ms.channels.MessageTransform;
 
-import com.larkwoodlabs.net.ip.IPMessage;
-import com.larkwoodlabs.net.ip.IPPacket;
-import com.larkwoodlabs.net.ip.ipv6.IPv6Packet;
-import com.larkwoodlabs.net.ip.mld.MLDMessage;
-import com.larkwoodlabs.net.ip.mld.MLDQueryMessage;
-import com.larkwoodlabs.net.ip.mld.MLDv2QueryMessage;
+import org.js4ms.net.ip.IPMessage;
+import org.js4ms.net.ip.IPPacket;
+import org.js4ms.net.ip.ipv6.IPv6Packet;
+import org.js4ms.net.ip.mld.MLDMessage;
+import org.js4ms.net.ip.mld.MLDQueryMessage;
+import org.js4ms.net.ip.mld.MLDv2QueryMessage;
 
 /**
  * Transforms an IPPacket object containing an MLDv2 query message into a

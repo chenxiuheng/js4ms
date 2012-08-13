@@ -26,9 +26,9 @@ import java.util.logging.Logger;
 
 import org.js4ms.net.KeyedApplicationMessage;
 
-import com.larkwoodlabs.util.buffer.BufferBackedObject;
-import com.larkwoodlabs.util.buffer.fields.ByteField;
-import com.larkwoodlabs.util.buffer.fields.SelectorField;
+import org.js4ms.util.buffer.BufferBackedObject;
+import org.js4ms.util.buffer.fields.ByteField;
+import org.js4ms.util.buffer.fields.SelectorField;
 
 /**
  * Base class for all AMT message classes.

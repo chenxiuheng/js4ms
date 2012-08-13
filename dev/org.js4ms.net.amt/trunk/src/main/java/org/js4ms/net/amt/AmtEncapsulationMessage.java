@@ -26,8 +26,8 @@ import java.util.logging.Logger;
 
 import org.js4ms.common.exceptions.ParseException;
 
-import com.larkwoodlabs.net.ip.IPPacket;
-import com.larkwoodlabs.util.buffer.parser.MissingParserException;
+import org.js4ms.net.ip.IPPacket;
+import org.js4ms.util.buffer.parser.MissingParserException;
 
 /**
  * Base class for AMT message classes that carry an IP packet payload.<br/>

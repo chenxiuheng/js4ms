@@ -25,7 +25,7 @@ import java.net.InetAddress;
 import java.util.HashSet;
 import java.util.logging.Logger;
 
-import com.larkwoodlabs.util.logging.Logging;
+import org.js4ms.util.logging.Logging;
 
 /**
  * Describes the current reception state for a single multicast group address.

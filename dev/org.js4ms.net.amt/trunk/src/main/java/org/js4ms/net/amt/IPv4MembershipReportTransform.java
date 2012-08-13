@@ -25,10 +25,10 @@ import java.net.InetAddress;
 
 import org.js4ms.channels.MessageTransform;
 
-import com.larkwoodlabs.net.ip.IPPacket;
-import com.larkwoodlabs.net.ip.igmp.IGMPGroupRecord;
-import com.larkwoodlabs.net.ip.igmp.IGMPMessage;
-import com.larkwoodlabs.net.ip.igmp.IGMPv3ReportMessage;
+import org.js4ms.net.ip.IPPacket;
+import org.js4ms.net.ip.igmp.IGMPGroupRecord;
+import org.js4ms.net.ip.igmp.IGMPMessage;
+import org.js4ms.net.ip.igmp.IGMPv3ReportMessage;
 
 /**
  * Transforms a protocol-independent MembershipReport object into an IPPacket object

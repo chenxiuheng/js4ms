@@ -25,10 +25,10 @@ import java.net.InetAddress;
 
 import org.js4ms.channels.MessageTransform;
 
-import com.larkwoodlabs.net.ip.IPPacket;
-import com.larkwoodlabs.net.ip.mld.MLDGroupRecord;
-import com.larkwoodlabs.net.ip.mld.MLDMessage;
-import com.larkwoodlabs.net.ip.mld.MLDv2ReportMessage;
+import org.js4ms.net.ip.IPPacket;
+import org.js4ms.net.ip.mld.MLDGroupRecord;
+import org.js4ms.net.ip.mld.MLDMessage;
+import org.js4ms.net.ip.mld.MLDv2ReportMessage;
 
 /**
  * Transforms a protocol-independent MembershipReport object into an IPPacket object

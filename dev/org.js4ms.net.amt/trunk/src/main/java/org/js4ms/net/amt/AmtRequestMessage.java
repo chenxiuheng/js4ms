@@ -26,8 +26,8 @@ import java.util.logging.Logger;
 
 import org.js4ms.common.exceptions.ParseException;
 
-import com.larkwoodlabs.util.buffer.fields.BooleanField;
-import com.larkwoodlabs.util.buffer.fields.IntegerField;
+import org.js4ms.util.buffer.fields.BooleanField;
+import org.js4ms.util.buffer.fields.IntegerField;
 
 /**
  * Represents an AMT Request message.

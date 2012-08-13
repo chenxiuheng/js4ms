@@ -29,11 +29,11 @@ import java.util.logging.Logger;
 
 import org.js4ms.common.exceptions.ParseException;
 
-import com.larkwoodlabs.util.buffer.fields.ByteArrayField;
-import com.larkwoodlabs.util.buffer.fields.ByteField;
-import com.larkwoodlabs.util.buffer.fields.IntegerField;
-import com.larkwoodlabs.util.buffer.fields.ShortField;
-import com.larkwoodlabs.util.logging.Logging;
+import org.js4ms.util.buffer.fields.ByteArrayField;
+import org.js4ms.util.buffer.fields.ByteField;
+import org.js4ms.util.buffer.fields.IntegerField;
+import org.js4ms.util.buffer.fields.ShortField;
+import org.js4ms.util.logging.Logging;
 
 /**
  * Represents an AMT Teardown message.
