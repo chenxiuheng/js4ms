@@ -9,15 +9,15 @@ import java.util.Map;
 
 import org.js4ms.service.protocol.http.HttpMethods;
 import org.js4ms.service.protocol.http.HttpStatusCodes;
+import org.js4ms.service.protocol.rest.entity.CodecManager;
+import org.js4ms.service.protocol.rest.entity.Entity;
+import org.js4ms.service.protocol.rest.entity.MediaType;
+import org.js4ms.service.protocol.rest.entity.StringEntity;
+import org.js4ms.service.protocol.rest.handler.TransactionHandler;
+import org.js4ms.service.protocol.rest.message.Method;
+import org.js4ms.service.protocol.rest.message.Request;
+import org.js4ms.service.protocol.rest.message.Response;
 
-import com.larkwoodlabs.service.protocol.rest.entity.CodecManager;
-import com.larkwoodlabs.service.protocol.rest.entity.Entity;
-import com.larkwoodlabs.service.protocol.rest.entity.MediaType;
-import com.larkwoodlabs.service.protocol.rest.entity.StringEntity;
-import com.larkwoodlabs.service.protocol.rest.handler.TransactionHandler;
-import com.larkwoodlabs.service.protocol.rest.message.Method;
-import com.larkwoodlabs.service.protocol.rest.message.Request;
-import com.larkwoodlabs.service.protocol.rest.message.Response;
 
 public class HttpTransactionHandler
                 implements TransactionHandler {

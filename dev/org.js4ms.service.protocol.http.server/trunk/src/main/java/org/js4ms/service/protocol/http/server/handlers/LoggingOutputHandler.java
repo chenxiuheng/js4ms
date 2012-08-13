@@ -11,15 +11,15 @@ import java.util.logging.XMLFormatter;
 
 import org.js4ms.service.protocol.http.HttpMessageHeaders;
 import org.js4ms.service.protocol.http.HttpStatusCodes;
+import org.js4ms.service.protocol.rest.entity.Entity;
+import org.js4ms.service.protocol.rest.entity.StringEntity;
+import org.js4ms.service.protocol.rest.handler.TransactionHandler;
+import org.js4ms.service.protocol.rest.headers.SimpleMessageHeader;
+import org.js4ms.service.protocol.rest.message.Request;
+import org.js4ms.service.protocol.rest.message.Response;
+import org.js4ms.util.logging.JsonLogFormatter;
+import org.js4ms.util.logging.LogFormatter;
 
-import com.larkwoodlabs.service.protocol.rest.entity.Entity;
-import com.larkwoodlabs.service.protocol.rest.entity.StringEntity;
-import com.larkwoodlabs.service.protocol.rest.handler.TransactionHandler;
-import com.larkwoodlabs.service.protocol.rest.headers.SimpleMessageHeader;
-import com.larkwoodlabs.service.protocol.rest.message.Request;
-import com.larkwoodlabs.service.protocol.rest.message.Response;
-import com.larkwoodlabs.util.logging.JsonLogFormatter;
-import com.larkwoodlabs.util.logging.LogFormatter;
 
 /**
  * An HTTP transaction handler that publishes log records to an open connection.
