@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: OutputChannel.java (com.larkwoodlabs.channels)
+ * File: OutputChannel.java (org.js4ms.channels)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package com.larkwoodlabs.channels;
+package org.js4ms.channels;
 
 import java.io.IOException;
 

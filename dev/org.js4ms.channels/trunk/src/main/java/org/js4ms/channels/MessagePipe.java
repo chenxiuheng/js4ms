@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: InputChannel.java (com.larkwoodlabs.channels)
+ * File: MessagePipe.java (org.js4ms.channels)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,29 +18,16 @@
  * limitations under the License.
  */
 
-package com.larkwoodlabs.channels;
-
-import java.io.IOException;
+package org.js4ms.channels;
 
 /**
- * Interface exposed by all message input channel objects.
- * A message input channel provides the means for retrieving a message
- * from a message source via the {@link MessageInput#receive(int)} method.
+ * Interface exposed by objects that accept messages from a message sender
+ * source and make those messages available to a message receiver.
  * 
  * @param <MessageType>
- *            The message object type.
  * @author Greg Bumgardner (gbumgard)
  */
-public interface InputChannel<MessageType>
-                extends MessageInput<MessageType> {
-
-    /**
-     * Closes this channel and optionally closes any channels wrapped or attached to this
-     * channel.
-     * 
-     * @throws IOException
-     *             The close operation has failed.
-     */
-    public void close() throws IOException;
+public interface MessagePipe<MessageType>
+                extends MessageInput<MessageType>, MessageOutput<MessageType> {
 
 }
