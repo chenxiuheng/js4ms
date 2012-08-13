@@ -1,4 +1,4 @@
-package com.larkwoodlabs.service.protocol.http.server.handlers;
+package org.js4ms.service.protocol.http.server.handlers;
 
 import java.io.IOException;
 import java.net.URI;
@@ -10,7 +10,8 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
-import com.larkwoodlabs.service.protocol.http.HttpStatusCodes;
+import org.js4ms.service.protocol.http.HttpStatusCodes;
+
 import com.larkwoodlabs.service.protocol.rest.entity.StringEntity;
 import com.larkwoodlabs.service.protocol.rest.handler.TransactionHandler;
 import com.larkwoodlabs.service.protocol.rest.message.Request;
@@ -33,7 +34,7 @@ import com.larkwoodlabs.util.logging.Logging;
  * that assigns a logging level to a parameter that consists of the logger name followed
  * by a '.level' suffix, e.g.:
  * <pre>
- * http://host/path?com.larkwoodlabs.service.level=FINE
+ * http://host/path?org.js4ms.service.level=FINE
  * </pre>
  * To load logging configuration properties include a 'properties' parameter that is assigned
  * a URL for a logging properties file, e.g.:

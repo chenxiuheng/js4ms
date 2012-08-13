@@ -1,4 +1,4 @@
-package com.larkwoodlabs.service.protocol.http.server.handlers;
+package org.js4ms.service.protocol.http.server.handlers;
 
 import java.io.IOException;
 import java.util.logging.ErrorManager;
@@ -9,8 +9,9 @@ import java.util.logging.Logger;
 import java.util.logging.StreamHandler;
 import java.util.logging.XMLFormatter;
 
-import com.larkwoodlabs.service.protocol.http.HttpMessageHeaders;
-import com.larkwoodlabs.service.protocol.http.HttpStatusCodes;
+import org.js4ms.service.protocol.http.HttpMessageHeaders;
+import org.js4ms.service.protocol.http.HttpStatusCodes;
+
 import com.larkwoodlabs.service.protocol.rest.entity.Entity;
 import com.larkwoodlabs.service.protocol.rest.entity.StringEntity;
 import com.larkwoodlabs.service.protocol.rest.handler.TransactionHandler;

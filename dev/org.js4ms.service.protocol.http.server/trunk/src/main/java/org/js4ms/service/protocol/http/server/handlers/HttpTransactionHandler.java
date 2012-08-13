@@ -1,4 +1,4 @@
-package com.larkwoodlabs.service.protocol.http.server.handlers;
+package org.js4ms.service.protocol.http.server.handlers;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,8 +7,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Map;
 
-import com.larkwoodlabs.service.protocol.http.HttpMethods;
-import com.larkwoodlabs.service.protocol.http.HttpStatusCodes;
+import org.js4ms.service.protocol.http.HttpMethods;
+import org.js4ms.service.protocol.http.HttpStatusCodes;
+
 import com.larkwoodlabs.service.protocol.rest.entity.CodecManager;
 import com.larkwoodlabs.service.protocol.rest.entity.Entity;
 import com.larkwoodlabs.service.protocol.rest.entity.MediaType;
