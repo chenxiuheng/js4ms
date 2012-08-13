@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: OutputChannelAdapter.java (org.js4ms.channels)
+ * File: InputChannelAdapter.java (com.larkwoodlabs.channels)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,45 +18,43 @@
  * limitations under the License.
  */
 
-package org.js4ms.channels;
+package com.larkwoodlabs.channels;
 
 import java.io.IOException;
 
 /**
- * Abstract base class for all message output channels that transform or filter
- * messages before sending them to an inner message channel.
+ * Abstract base class for all message input channels that transform or
+ * filter messages received from an inner message channel.
  * 
- * @param <OuterMessageType>
- *            The type of message accepted by the outer message channel.
  * @param <InnerMessageType>
- *            The type of message accepted by the inner message channel.
+ *            The type of message produced by the inner message channel.
+ * @param <OuterMessageType>
+ *            The type of message produced by the outer message channel.
  * @author Greg Bumgardner (gbumgard)
  */
-public abstract class OutputChannelAdapter<OuterMessageType, InnerMessageType>
-                implements OutputChannel<OuterMessageType> {
+public abstract class InputChannelAdapter<InnerMessageType, OuterMessageType>
+                implements InputChannel<OuterMessageType> {
 
     /*-- Member Variables ----------------------------------------------------*/
 
     /**
-     * The output channel that will receive messages produced by this adapter channel.
+     * The input channel that will produce messages for the adapter channel.
      */
-    protected final OutputChannel<InnerMessageType> innerChannel;
+    protected final InputChannel<InnerMessageType> innerChannel;
 
     /*-- Member Functions ----------------------------------------------------*/
-    ;
 
     /**
-     * Constructs an output channel adapter for the specified output channel.
+     * Constructs an input channel adapter for the specified input channel.
      * 
      * @param innerChannel
-     *            The output channel to be wrapped.
      */
-    protected OutputChannelAdapter(final OutputChannel<InnerMessageType> innerChannel) {
+    protected InputChannelAdapter(final InputChannel<InnerMessageType> innerChannel) {
         this.innerChannel = innerChannel;
     }
 
     @Override
-    public void close() throws IOException, InterruptedException {
+    public void close() throws IOException {
         this.innerChannel.close();
     }
 }

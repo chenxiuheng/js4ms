@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: DuplexChannel.java (org.js4ms.channels)
+ * File: MessageKeyExtractor.java (com.larkwoodlabs.channels)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,31 +18,25 @@
  * limitations under the License.
  */
 
-package org.js4ms.channels;
-
-import java.io.IOException;
+package com.larkwoodlabs.channels;
 
 /**
- * Interface exposed by all duplex message channel objects.
- * A duplex channel provides the means for both sending message to and
- * receiving messages from a single endpoint.
+ * Interface exposed by objects that extract a key value from a message.
+ * Key extractors are used to select message channels, handlers and parsers.
  * 
  * @param <MessageType>
  *            The message object type.
  * @author Greg Bumgardner (gbumgard)
  */
-public interface DuplexChannel<MessageType>
-                extends MessageInput<MessageType>, MessageOutput<MessageType> {
+public interface MessageKeyExtractor<MessageType> {
 
     /**
-     * Closes this channel and optionally closes any channels wrapped or attached to this
-     * channel.
+     * Returns a value derived from one or more attributes of a message.
      * 
-     * @param isCloseAll
-     *            Indicates whether attached channels should also be closed.
-     * @throws IOException
-     *             The close operation has failed.
+     * @param message
+     *            The message from which to extract a key value.
+     * @return An Object representing a key value.
      */
-    public void close(boolean isCloseAll) throws IOException;
+    public Object getKey(MessageType message);
 
 }

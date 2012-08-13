@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: OutputChannelMap.java (org.js4ms.channels)
+ * File: MessageOutputMap.java (com.larkwoodlabs.channels)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,37 +18,38 @@
  * limitations under the License.
  */
 
-package org.js4ms.channels;
+package com.larkwoodlabs.channels;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 
 /**
- * An output channel that forwards a message to one output channel out of a set
- * of one or more output channels based on a key value extracted from the message.
- * The channel map only allows one channel per key value. A channel added previously
+ * An message channel that routes an incoming message to one in a set of message channels.
+ * The message output channel is chosen using a key value extracted from the message.
+ * The message channel map only allows one channel per key value. A channel added
+ * previously
  * can be replaced by adding a different channel using the same key value.
  * A thread should not attempt to add or remove channels while executing in the
- * {@link #send(Object, int)} method as this may result in an exception.
+ * {@link #send(Object, int)} method as this may result
+ * in an exception.
  * 
  * @param <MessageType>
  *            The message object type.
  * @see MessageKeyExtractor
  * @author Greg Bumgardner (gbumgard)
  */
-public final class OutputChannelMap<MessageType>
-                implements OutputChannel<MessageType> {
+public final class MessageOutputMap<MessageType>
+                implements MessageOutput<MessageType> {
 
     /*-- Member Variables ----------------------------------------------------*/
 
     /**
-     * A hash map that maps message keys to output channels.
+     * A hash map that maps message keys to message output channels.
      */
-    private final HashMap<Object, OutputChannel<MessageType>> channelMap = new HashMap<Object, OutputChannel<MessageType>>();
+    private final HashMap<Object, MessageOutput<MessageType>> channelMap = new HashMap<Object, MessageOutput<MessageType>>();
 
     /**
      * A message key extractor that will be used to extract a key from each message
@@ -64,38 +65,36 @@ public final class OutputChannelMap<MessageType>
     /*-- Member Functions ----------------------------------------------------*/
 
     /**
-     * Constructs an output channel map that uses the specified
-     * {@link MessageKeyExtractor} to retrieve the key value from each message that will
-     * be used to select which output
+     * Constructs an message channel map that uses the specified
+     * {@link MessageKeyExtractor} to retrieve the key value from each
+     * message that will be used to select which output
      * channel will receive the message.
-     * 
-     * @param keyExtractor
      */
-    public OutputChannelMap(final MessageKeyExtractor<MessageType> keyExtractor) {
+    public MessageOutputMap(final MessageKeyExtractor<MessageType> keyExtractor) {
         this.keyExtractor = keyExtractor;
     }
 
     /**
-     * Adds or replaces a channel in the map.
+     * Adds or replaces a message channel in the map.
      * 
      * @param key
      *            The key value that will be used to select the channel.
      * @param channel
      *            The output channel that will be selected for the specified key.
      */
-    public final void put(final Object key, final OutputChannel<MessageType> channel) {
+    public final void put(final Object key, final MessageOutput<MessageType> channel) {
         synchronized (this.lock) {
             this.channelMap.put(key, channel);
         }
     }
 
     /**
-     * Returns the channel, if any, added using the specified key.
+     * Returns the message channel, if any, added using the specified key.
      * 
      * @param key
      *            The key value used to add a channel.
      */
-    public final OutputChannel<MessageType> get(final Object key) {
+    public final MessageOutput<MessageType> get(final Object key) {
         synchronized (this.lock) {
             return this.channelMap.get(key);
         }
@@ -103,10 +102,6 @@ public final class OutputChannelMap<MessageType>
 
     /**
      * Indicates whether the map contains any channels.
-     * 
-     * @return A boolean value of <code>true</code> indicates that no
-     *         output channels are currently mapped and <code>false</code> indicates that
-     *         one or more channels are currently mapped.
      */
     public final boolean isEmpty() {
         synchronized (this.lock) {
@@ -116,8 +111,6 @@ public final class OutputChannelMap<MessageType>
 
     /**
      * Returns the current key set.
-     * 
-     * @return The current output channel key set.
      */
     public final Set<Object> getKeys() {
         synchronized (this.lock) {
@@ -138,17 +131,17 @@ public final class OutputChannelMap<MessageType>
     }
 
     /**
-     * Removes the specified channel from the map.
+     * Removes the specified message channel from the map.
      * 
      * @param channel
      *            The channel to remove.
      */
-    public final void remove(final OutputChannel<MessageType> channel) {
+    public final void remove(final MessageOutput<MessageType> channel) {
         synchronized (this.lock) {
-            Iterator<Map.Entry<Object, OutputChannel<MessageType>>> iter = this.channelMap.entrySet().iterator();
+            Iterator<MessageOutput<MessageType>> iter = this.channelMap.values().iterator();
             while (iter.hasNext()) {
-                Map.Entry<Object, OutputChannel<MessageType>> entry = iter.next();
-                if (entry.getValue() == channel) {
+                MessageOutput<MessageType> entry = iter.next();
+                if (entry == channel) {
                     iter.remove();
                     return;
                 }
@@ -157,21 +150,11 @@ public final class OutputChannelMap<MessageType>
     }
 
     @Override
-    public final void close() throws IOException, InterruptedException {
-        synchronized (this.lock) {
-            for (Map.Entry<Object, OutputChannel<MessageType>> entry : this.channelMap.entrySet()) {
-                entry.getValue().close();
-            }
-            this.channelMap.clear();
-        }
-    }
-
-    @Override
     public final void send(final MessageType message, final int milliseconds) throws IOException,
                                                                              InterruptedIOException,
                                                                              InterruptedException {
         synchronized (this.lock) {
-            OutputChannel<MessageType> channel = this.channelMap.get(this.keyExtractor.getKey(message));
+            MessageOutput<MessageType> channel = this.channelMap.get(this.keyExtractor.getKey(message));
             if (channel != null) {
                 channel.send(message, milliseconds);
             }

@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: MessageQueue.java (org.js4ms.channels)
+ * File: MessageQueue.java (com.larkwoodlabs.channels)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.channels;
+package com.larkwoodlabs.channels;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;

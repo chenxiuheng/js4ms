@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: MessageFilter.java (org.js4ms.channels)
+ * File: MessageFilter.java (com.larkwoodlabs.channels)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.channels;
+package com.larkwoodlabs.channels;
 
 /**
  * Interface exposed by objects used to filter messages based on some
