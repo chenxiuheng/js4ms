@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: JsonLogFormatter.java (com.larkwoodlabs.util.logging)
+ * File: JsonLogFormatter.java (org.js4ms.util.logging)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package com.larkwoodlabs.util.logging;
+package org.js4ms.util.logging;
 
 import java.text.MessageFormat;
 import java.util.Date;

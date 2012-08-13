@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: Loggable.java (com.larkwoodlabs.util.logging)
+ * File: Loggable.java (org.js4ms.util.logging)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -19,7 +19,7 @@
  */
 
 
-package com.larkwoodlabs.util.logging;
+package org.js4ms.util.logging;
 
 import java.util.logging.Logger;
 

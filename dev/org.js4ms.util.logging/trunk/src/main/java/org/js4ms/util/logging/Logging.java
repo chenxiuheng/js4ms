@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: Logging.java (com.larkwoodlabs.util.logging)
+ * File: Logging.java (org.js4ms.util.logging)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package com.larkwoodlabs.util.logging;
+package org.js4ms.util.logging;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -45,7 +45,7 @@ import java.util.logging.Logger;
 
 public final class Logging {
 
-    public static final String LOGGING_PROPERTIES_URL_PROPERTY = "com.larkwoodlabs.logging.properties.url";
+    public static final String LOGGING_PROPERTIES_URL_PROPERTY = "org.js4ms.logging.properties.url";
 
     public static final int methodStackTraceLevel = determineStackTraceLevel();
 
