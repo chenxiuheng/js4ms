@@ -14,7 +14,7 @@
  * limitations under the license.
  */
 
-package com.larkwoodlabs.util.event;
+package org.js4ms.util.event;
 
 public abstract class EventRecord {
 

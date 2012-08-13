@@ -14,7 +14,7 @@
  * limitations under the license.
  */
 
-package com.larkwoodlabs.util.event;
+package org.js4ms.util.event;
 
 import java.util.Iterator;
 import java.util.LinkedList;
