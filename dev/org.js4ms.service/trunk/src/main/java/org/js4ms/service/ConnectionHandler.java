@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: ConnectionHandler.java (com.larkwoodlabs.service)
+ * File: ConnectionHandler.java (org.js4ms.service)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package com.larkwoodlabs.service;
+package org.js4ms.service;
 
 import java.io.EOFException;
 import java.io.IOException;

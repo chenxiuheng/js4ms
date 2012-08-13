@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: ConnectionHandlerFactory.java (com.larkwoodlabs.service)
+ * File: ConnectionHandlerFactory.java (org.js4ms.service)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package com.larkwoodlabs.service;
+package org.js4ms.service;
 
 /**
  * Interface exposed by objects that construct {@link ConnectionHandler} objects.
