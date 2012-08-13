@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: ServiceLauncherApplet.java (com.larkwoodlabs.jws.applet)
+ * File: ServiceLauncherApplet.java (org.js4ms.jws.applet)
  * 
  * Copyright © 2011-2012 Cisco Systems, Inc.
  * 
@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package com.larkwoodlabs.jws.applet;
+package org.js4ms.jws.applet;
 
 import java.applet.Applet;
 import java.io.IOException;
@@ -55,7 +55,7 @@ public class ServiceLauncherApplet extends Applet {
     private static final String ON_CONNECT_URL_PARAM = "OnConnectUrl";
     private static final String ON_DISCONNECT_URL_PARAM = "OnDisconnectUrl";
 
-    private static final String SERVICE_PORT_PROPERTY = "com.larkwoodlabs.service.socket.port";
+    private static final String SERVICE_PORT_PROPERTY = "org.js4ms.service.socket.port";
 
     private static final int DEFAULT_SERVICE_PORT = 9999;
     private static final int DEFAULT_CONNECTION_RETRY_COUNT = 10;
