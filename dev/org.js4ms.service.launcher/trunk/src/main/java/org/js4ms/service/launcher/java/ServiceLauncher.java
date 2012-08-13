@@ -1,4 +1,4 @@
-package com.larkwoodlabs.service.launcher.jws;
+package org.js4ms.service.launcher.java;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,7 +6,6 @@ import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.URI;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Map.Entry;
@@ -18,25 +17,21 @@ import java.util.logging.Logger;
 import com.larkwoodlabs.util.logging.Log;
 
 /**
- * Launches a Java Web Start application in a new process. 
+ * 
  * 
  *
  * @author gbumgard@cisco.com
  */
 public class ServiceLauncher {
 
-    public interface Listener {
-        void onConnect();
+    public static interface DisconnectListener {
         void onDisconnect();
     }
 
     /*-- Static Constants  ----------------------------------------------------*/
 
-    /**
-     * 
-     */
-    public static final String SERVICE_PORT_PROPERTY = "com.larkwoodlabs.service.socket.port";
-    public static final String SERVICE_KEEP_ALIVE_ENABLED_PROPERTY = "com.larkwoodlabs.service.keepalive.enabled";
+    public static final String SERVICE_PORT_PROPERTY = "org.js4ms.service.socket.port";
+    public static final String SERVICE_KEEP_ALIVE_ENABLED_PROPERTY = "org.js4ms.service.keepalive.enabled";
 
     public static final int DEFAULT_CONNECTION_RETRY_COUNT = 10;
     public static final int DEFAULT_CONNECTION_RETRY_INTERVAL = 1000;
@@ -59,13 +54,15 @@ public class ServiceLauncher {
 
     private Properties serviceProperties;
 
-    private URI serviceJnlpUri;
+    private String javaApplicationLauncher;
+    private String serviceClassPath;
+    private String serviceClassName;
     private int servicePort;
     private boolean useKeepAlive;
     private int retryCount;
     private int retryInterval;
 
-    private final Listener listener;
+    private final DisconnectListener listener;
 
     private Socket socket;
 
@@ -83,18 +80,23 @@ public class ServiceLauncher {
      * @param useKeepAlive
      * @param retryCount
      * @param retryInterval
+     * @param listener
      * @param serviceProperties
      */
-    public ServiceLauncher(final URI serviceJnlpUri,
+    public ServiceLauncher(final String javaApplicationLauncher,
+                           final String serviceClassPath,
+                           final String serviceClassName,
                            final int servicePort,
                            final boolean useKeepAlive,
                            final int retryCount,
                            final int retryInterval,
-                           final Listener listener,
+                           final DisconnectListener listener,
                            final Properties serviceProperties) {
 
+        this.javaApplicationLauncher = javaApplicationLauncher;
         this.serviceProperties = serviceProperties;
-        this.serviceJnlpUri = serviceJnlpUri;
+        this.serviceClassPath = serviceClassPath;
+        this.serviceClassName = serviceClassName;
         this.servicePort = servicePort;
         this.useKeepAlive = useKeepAlive;
         this.retryCount = retryCount;
@@ -150,21 +152,23 @@ public class ServiceLauncher {
 
         ArrayList<String> parameters = new ArrayList<String>();
 
-        parameters.add(System.getProperty("java.home")+File.separator + "bin" + File.separator + "javaws");
+        parameters.add(System.getProperty("java.home")+File.separator + "bin" + File.separator + this.javaApplicationLauncher);
 
-        parameters.add("-J-Djavaws."+SERVICE_PORT_PROPERTY+"="+this.servicePort);
+        parameters.add("-D"+SERVICE_PORT_PROPERTY+"="+this.servicePort);
 
         if (this.useKeepAlive) {
-            parameters.add("-J-Djavaws."+SERVICE_KEEP_ALIVE_ENABLED_PROPERTY+"=true");
+            parameters.add("-D"+SERVICE_KEEP_ALIVE_ENABLED_PROPERTY+"=true");
         }
 
         Set<Entry<Object, Object>> entries = this.serviceProperties.entrySet();
 
         for (Entry<Object,Object> entry : entries) {
-            parameters.add("-J-Djavaws."+(String)entry.getKey()+"="+(String)entry.getValue());
+            parameters.add("-D"+(String)entry.getKey()+"="+(String)entry.getValue());
         }
 
-        parameters.add(this.serviceJnlpUri.toString());
+        parameters.add("-classpath");
+        parameters.add(this.serviceClassPath);
+        parameters.add(this.serviceClassName);
 
         try {
 
@@ -175,16 +179,10 @@ public class ServiceLauncher {
                 commandLine += s+" ";
             }
 
-            if (commandLine.contains("Xaltjvm")) {
-                logger.warning(log.msg("launch aborted because web start command line contains possible javaws exploit"));
-                throw new IllegalArgumentException("command line contains possible JWS exploit");
-            }
-
             if (logger.isLoggable(Level.FINE)) {
                 logger.fine(log.msg("attempting to launch web start service using:"));
                 logger.fine(log.msg(commandLine));
             }
-
 
             ProcessBuilder builder = new ProcessBuilder(commandLineParams);
             builder.start();
@@ -192,7 +190,7 @@ public class ServiceLauncher {
             logger.fine(log.msg("service launched"));
         }
         catch (IOException e) {
-            logger.severe(log.msg("launch failed with exception: "+e.getMessage()));
+            logger.severe(log.msg("launch failed with exception:"+e.getMessage()));
             return false;
         }
 
@@ -222,15 +220,17 @@ public class ServiceLauncher {
                 logger.fine(log.msg("connected to running service instance"));
                 this.isConnected = true;
                 if (this.listener != null) {
-                    this.listener.onConnect();
+                    logger.fine(log.msg("starting service connection listener"));
                     Thread thread = new Thread() {
                         @Override
                         public void run() {
+                            logger.fine(log.msg("started service connection listener"));
                             try {
                                 ServiceLauncher.this.socket.getInputStream().read();
                             }
                             catch (IOException e) {
                             }
+                            logger.fine(log.msg("service connection broken"));
                             if (ServiceLauncher.this.isConnected) {
                                 ServiceLauncher.this.isConnected = false;
                                 ServiceLauncher.this.listener.onDisconnect();
@@ -273,6 +273,7 @@ public class ServiceLauncher {
             this.isConnected = false;
 
             try {
+                this.socket.shutdownInput();
                 this.socket.close();
             }
             catch (IOException e) {
