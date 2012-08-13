@@ -2,9 +2,9 @@
 <classpath>
 	<classpathentry excluding="**/package.html" kind="src" path="src/main/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.larkwoodlabs.service"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.larkwoodlabs.util.logging"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.larkwoodlabs.common"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.larkwoodlabs.util.task"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.service"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.util.logging"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.common"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.util.task"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
