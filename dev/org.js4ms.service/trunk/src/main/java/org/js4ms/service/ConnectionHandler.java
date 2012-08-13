@@ -26,7 +26,8 @@ import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.larkwoodlabs.util.logging.Log;
+import org.js4ms.util.logging.Log;
+
 
 /**
  * Base class for objects that manage the serialization of messages over a

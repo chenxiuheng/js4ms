@@ -28,7 +28,8 @@ import java.net.InetSocketAddress;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.larkwoodlabs.util.logging.Log;
+import org.js4ms.util.logging.Log;
+
 
 /**
  * An abstract base class for persistent client-server connections. 
