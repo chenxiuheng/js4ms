@@ -15,7 +15,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.larkwoodlabs.util.logging.Log;
+import org.js4ms.util.logging.Log;
+
 
 /**
  * Launches a Java Web Start application in a new process. 
