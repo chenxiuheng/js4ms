@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: ParseException.java (com.larkwoodlabs.common)
+ * File: ParseException.java (org.js4ms.common)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package com.larkwoodlabs.common.exceptions;
+package org.js4ms.common.exceptions;
 
 /**
  * @author Greg Bumgardner (gbumgard)

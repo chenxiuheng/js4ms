@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: MultiException.java (com.larkwoodlabs.common)
+ * File: BoundException.java (org.js4ms.common)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,50 +18,47 @@
  * limitations under the License.
  */
 
-package com.larkwoodlabs.common.exceptions;
-
-import java.util.Iterator;
-import java.util.LinkedList;
+package org.js4ms.common.exceptions;
 
 /**
  * @author Greg Bumgardner (gbumgard)
  */
-public class MultiException
+public class BoundException
                 extends Exception {
 
-    private static final long serialVersionUID = 4050769134360179803L;
+    private static final long serialVersionUID = -5587197699181393667L;
 
-    private LinkedList<Throwable> throwables;
+    protected final Object object;
 
-    /**
-     * 
-     */
-    public MultiException() {
-    }
+    protected final Throwable throwable;
 
     /**
-     * @param t
+     * @param object
+     * @param throwable
      */
-    public void add(Throwable t) {
-        if (this.throwables == null) {
-            this.throwables = new LinkedList<Throwable>();
-        }
-        this.throwables.add(t);
+    public BoundException(final Object object, final Throwable throwable) {
+        this.object = object;
+        this.throwable = throwable;
     }
 
     /**
      * @return
      */
-    public Iterator<Throwable> iterator() {
-        return this.throwables.iterator();
+    public Object getObject() {
+        return this.object;
     }
 
     /**
-     * @throws MultiException
+     * @return
      */
-    public void rethrow() throws MultiException {
-        if (!this.throwables.isEmpty()) {
-            throw this;
-        }
+    public Throwable getThrowable() {
+        return this.throwable;
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public void rethrow() throws Throwable {
+        throw this.throwable;
     }
 }
