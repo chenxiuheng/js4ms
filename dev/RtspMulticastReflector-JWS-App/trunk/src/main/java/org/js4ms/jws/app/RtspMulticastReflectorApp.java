@@ -1,4 +1,4 @@
-package com.larkwoodlabs.jws.app;
+package org.js4ms.jws.app;
 
 import java.io.IOException;
 import java.net.URL;
@@ -12,10 +12,11 @@ import javax.jnlp.SingleInstanceListener;
 import javax.jnlp.SingleInstanceService;
 import javax.jnlp.UnavailableServiceException;
 
+import org.js4ms.util.logging.Log;
+import org.js4ms.util.logging.Logging;
+import org.js4ms.util.logging.swing.Console;
+
 import com.larkwoodlabs.app.RtspMulticastReflector;
-import com.larkwoodlabs.util.logging.Log;
-import com.larkwoodlabs.util.logging.Logging;
-import com.larkwoodlabs.util.logging.swing.Console;
 
 
 public class RtspMulticastReflectorApp implements SingleInstanceListener {
@@ -29,8 +30,8 @@ public class RtspMulticastReflectorApp implements SingleInstanceListener {
 
     public static final String  JAVAWS_PROPERTY_PREFIX = "javaws.com.larkwoodlabs.";
 
-    public static final String  CONSOLE_ENABLED_PROPERTY = "com.larkwoodlabs.service.console.enabled";
-    public static final String  CONSOLE_CLOSE_PROPERTY = "com.larkwoodlabs.service.console.close";
+    public static final String  CONSOLE_ENABLED_PROPERTY = "org.js4ms.service.console.enabled";
+    public static final String  CONSOLE_CLOSE_PROPERTY = "org.js4ms.service.console.close";
 
     static final Log slog = new Log(RtspMulticastReflectorApp.class);
 
