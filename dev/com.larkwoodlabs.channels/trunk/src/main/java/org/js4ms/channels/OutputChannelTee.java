@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: OutputChannelTee.java (com.larkwoodlabs.channels)
+ * File: OutputChannelTee.java (org.js4ms.channels)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,14 +18,15 @@
  * limitations under the License.
  */
 
-package com.larkwoodlabs.channels;
+package org.js4ms.channels;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.util.LinkedHashSet;
 
-import com.larkwoodlabs.common.exceptions.BoundException;
-import com.larkwoodlabs.common.exceptions.MultiIOException;
+import org.js4ms.common.exceptions.BoundException;
+import org.js4ms.common.exceptions.MultiIOException;
+
 
 /**
  * An output channel that forwards messages to one or more attached output channels.

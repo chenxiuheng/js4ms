@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: ChannelPump.java (com.larkwoodlabs.channels)
+ * File: ChannelPump.java (org.js4ms.channels)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,13 +18,14 @@
  * limitations under the License.
  */
 
-package com.larkwoodlabs.channels;
+package org.js4ms.channels;
 
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.larkwoodlabs.util.logging.Log;
+import org.js4ms.util.logging.Log;
+
 
 /**
  * A message pump uses an internal thread to continuously receive messages
