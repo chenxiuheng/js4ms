@@ -1,4 +1,4 @@
-package com.larkwoodlabs.service.protocol.http;
+package org.js4ms.service.protocol.http;
 
 import com.larkwoodlabs.service.protocol.rest.StatusCodes;
 
