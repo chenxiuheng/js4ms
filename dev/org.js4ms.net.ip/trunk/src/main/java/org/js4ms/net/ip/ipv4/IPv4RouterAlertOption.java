@@ -27,8 +27,8 @@ import java.util.logging.Logger;
 import org.js4ms.common.exceptions.ParseException;
 import org.js4ms.net.ip.IPHeaderOption;
 import org.js4ms.net.ip.IPMultiByteHeaderOption;
+import org.js4ms.util.buffer.fields.ShortField;
 
-import com.larkwoodlabs.util.buffer.fields.ShortField;
 
 /**
  * Represents an IPv4 Router Alert Option. <h3>Option Format</h3> <blockquote>

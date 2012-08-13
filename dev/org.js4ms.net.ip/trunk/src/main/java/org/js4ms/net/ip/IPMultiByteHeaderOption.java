@@ -25,8 +25,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.js4ms.common.exceptions.ParseException;
+import org.js4ms.util.buffer.fields.ByteField;
 
-import com.larkwoodlabs.util.buffer.fields.ByteField;
 
 /**
  * Base class for multibyte IP Header Options.

@@ -25,9 +25,9 @@ import java.nio.ByteBuffer;
 import java.util.logging.Level;
 
 import org.js4ms.common.exceptions.ParseException;
+import org.js4ms.util.buffer.fields.ByteArrayField;
+import org.js4ms.util.logging.Logging;
 
-import com.larkwoodlabs.util.buffer.fields.ByteArrayField;
-import com.larkwoodlabs.util.logging.Logging;
 
 /**
  * Base class for Mulicast Listener Discovery Message classes

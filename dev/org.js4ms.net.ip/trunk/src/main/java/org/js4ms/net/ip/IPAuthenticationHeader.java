@@ -25,8 +25,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.js4ms.common.exceptions.ParseException;
+import org.js4ms.util.buffer.parser.MissingParserException;
 
-import com.larkwoodlabs.util.buffer.parser.MissingParserException;
 
 /**
  * An IP authentication header.

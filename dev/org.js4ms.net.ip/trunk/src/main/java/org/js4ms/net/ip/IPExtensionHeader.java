@@ -25,11 +25,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.js4ms.common.exceptions.ParseException;
+import org.js4ms.util.buffer.BufferBackedObject;
+import org.js4ms.util.buffer.fields.ByteField;
+import org.js4ms.util.buffer.parser.MissingParserException;
+import org.js4ms.util.logging.Logging;
 
-import com.larkwoodlabs.util.buffer.BufferBackedObject;
-import com.larkwoodlabs.util.buffer.fields.ByteField;
-import com.larkwoodlabs.util.buffer.parser.MissingParserException;
-import com.larkwoodlabs.util.logging.Logging;
 
 /**
  * Represents an IP extension header. Used as a base class for classes that represent

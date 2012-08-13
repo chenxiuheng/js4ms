@@ -31,8 +31,8 @@ import org.js4ms.net.ip.IPEndOfListOption;
 import org.js4ms.net.ip.IPExtensionHeader;
 import org.js4ms.net.ip.IPHeaderOption;
 import org.js4ms.net.ip.IPMessage;
+import org.js4ms.util.buffer.parser.MissingParserException;
 
-import com.larkwoodlabs.util.buffer.parser.MissingParserException;
 
 /**
  * Base class for IPv6 options headers.

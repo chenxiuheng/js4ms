@@ -29,12 +29,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.js4ms.common.exceptions.ParseException;
+import org.js4ms.util.buffer.BufferBackedObject;
+import org.js4ms.util.buffer.fields.ByteArrayField;
+import org.js4ms.util.buffer.fields.ByteField;
+import org.js4ms.util.buffer.fields.ShortField;
+import org.js4ms.util.logging.Logging;
 
-import com.larkwoodlabs.util.buffer.BufferBackedObject;
-import com.larkwoodlabs.util.buffer.fields.ByteArrayField;
-import com.larkwoodlabs.util.buffer.fields.ByteField;
-import com.larkwoodlabs.util.buffer.fields.ShortField;
-import com.larkwoodlabs.util.logging.Logging;
 
 /**
  * A Multicast Address Record from a Multicast Listener Report Message as

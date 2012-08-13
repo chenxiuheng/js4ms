@@ -27,17 +27,17 @@ import java.util.logging.Logger;
 import org.js4ms.common.exceptions.ParseException;
 import org.js4ms.net.ip.IPMessage;
 import org.js4ms.net.ip.IPPacket;
+import org.js4ms.util.buffer.BufferBackedObject;
+import org.js4ms.util.buffer.fields.ByteArrayField;
+import org.js4ms.util.buffer.fields.ByteField;
+import org.js4ms.util.buffer.fields.IntegerField;
+import org.js4ms.util.buffer.fields.SelectorField;
+import org.js4ms.util.buffer.fields.ShortField;
+import org.js4ms.util.buffer.parser.BufferParserSelector;
+import org.js4ms.util.buffer.parser.KeyedBufferParser;
+import org.js4ms.util.buffer.parser.MissingParserException;
+import org.js4ms.util.logging.Logging;
 
-import com.larkwoodlabs.util.buffer.BufferBackedObject;
-import com.larkwoodlabs.util.buffer.fields.ByteArrayField;
-import com.larkwoodlabs.util.buffer.fields.ByteField;
-import com.larkwoodlabs.util.buffer.fields.IntegerField;
-import com.larkwoodlabs.util.buffer.fields.SelectorField;
-import com.larkwoodlabs.util.buffer.fields.ShortField;
-import com.larkwoodlabs.util.buffer.parser.BufferParserSelector;
-import com.larkwoodlabs.util.buffer.parser.KeyedBufferParser;
-import com.larkwoodlabs.util.buffer.parser.MissingParserException;
-import com.larkwoodlabs.util.logging.Logging;
 
 /**
  * Represents an ICMPv6 message as described in [<a

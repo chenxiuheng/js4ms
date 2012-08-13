@@ -25,9 +25,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.js4ms.common.exceptions.ParseException;
+import org.js4ms.util.buffer.BufferBackedObject;
+import org.js4ms.util.buffer.parser.MissingParserException;
 
-import com.larkwoodlabs.util.buffer.BufferBackedObject;
-import com.larkwoodlabs.util.buffer.parser.MissingParserException;
 
 /**
  * An Encapsulating Security Payload packet.

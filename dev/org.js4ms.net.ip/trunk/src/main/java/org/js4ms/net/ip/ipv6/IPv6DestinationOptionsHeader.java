@@ -24,9 +24,9 @@ import java.nio.ByteBuffer;
 import java.util.logging.Level;
 
 import org.js4ms.common.exceptions.ParseException;
+import org.js4ms.util.buffer.parser.MissingParserException;
+import org.js4ms.util.logging.Logging;
 
-import com.larkwoodlabs.util.buffer.parser.MissingParserException;
-import com.larkwoodlabs.util.logging.Logging;
 
 /**
  * Represents an IPv6 Destination Options header.

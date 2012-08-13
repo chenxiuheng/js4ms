@@ -30,13 +30,13 @@ import java.util.logging.Logger;
 
 import org.js4ms.common.exceptions.ParseException;
 import org.js4ms.net.ip.igmp.IGMPMessage;
+import org.js4ms.util.buffer.fields.BooleanField;
+import org.js4ms.util.buffer.fields.ByteBitField;
+import org.js4ms.util.buffer.fields.ByteField;
+import org.js4ms.util.buffer.fields.ShortField;
+import org.js4ms.util.buffer.parser.MissingParserException;
+import org.js4ms.util.logging.Logging;
 
-import com.larkwoodlabs.util.buffer.fields.BooleanField;
-import com.larkwoodlabs.util.buffer.fields.ByteBitField;
-import com.larkwoodlabs.util.buffer.fields.ByteField;
-import com.larkwoodlabs.util.buffer.fields.ShortField;
-import com.larkwoodlabs.util.buffer.parser.MissingParserException;
-import com.larkwoodlabs.util.logging.Logging;
 
 /**
  * A Multicast Listener Query Message as described in

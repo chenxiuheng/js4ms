@@ -27,9 +27,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.js4ms.net.Precondition;
+import org.js4ms.util.logging.LoggableBase;
+import org.js4ms.util.logging.Logging;
 
-import com.larkwoodlabs.util.logging.LoggableBase;
-import com.larkwoodlabs.util.logging.Logging;
 
 /**
  * Represents an IP datagram containing a single IP message.

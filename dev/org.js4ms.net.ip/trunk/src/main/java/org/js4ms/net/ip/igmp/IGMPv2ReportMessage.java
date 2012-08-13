@@ -27,9 +27,9 @@ import org.js4ms.common.exceptions.ParseException;
 import org.js4ms.net.ip.IPMessage;
 import org.js4ms.net.ip.IPPacket;
 import org.js4ms.net.ip.ipv4.IPv4Packet;
+import org.js4ms.util.buffer.parser.MissingParserException;
+import org.js4ms.util.logging.Logging;
 
-import com.larkwoodlabs.util.buffer.parser.MissingParserException;
-import com.larkwoodlabs.util.logging.Logging;
 
 /**
  * Represents an IGMPv2 Membership Report Message.

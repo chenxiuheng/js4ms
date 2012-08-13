@@ -27,11 +27,11 @@ import java.util.logging.Logger;
 import org.js4ms.common.exceptions.ParseException;
 import org.js4ms.net.ip.IPExtensionHeader;
 import org.js4ms.net.ip.IPMessage;
+import org.js4ms.util.buffer.fields.BooleanField;
+import org.js4ms.util.buffer.fields.IntegerField;
+import org.js4ms.util.buffer.fields.ShortBitField;
+import org.js4ms.util.buffer.parser.MissingParserException;
 
-import com.larkwoodlabs.util.buffer.fields.BooleanField;
-import com.larkwoodlabs.util.buffer.fields.IntegerField;
-import com.larkwoodlabs.util.buffer.fields.ShortBitField;
-import com.larkwoodlabs.util.buffer.parser.MissingParserException;
 
 
 /**

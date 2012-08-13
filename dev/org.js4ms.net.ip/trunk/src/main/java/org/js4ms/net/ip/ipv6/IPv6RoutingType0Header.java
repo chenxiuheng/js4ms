@@ -30,8 +30,8 @@ import java.util.logging.Logger;
 
 import org.js4ms.common.exceptions.ParseException;
 import org.js4ms.net.Precondition;
+import org.js4ms.util.logging.Logging;
 
-import com.larkwoodlabs.util.logging.Logging;
 
 /**
  * Represents an IPv6 Routing Header with routing type equal to zero.

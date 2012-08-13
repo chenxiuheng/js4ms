@@ -31,8 +31,8 @@ import org.js4ms.net.ip.icmp.ICMPv6Message;
 import org.js4ms.net.ip.ipv6.IPv6HopByHopOptionsHeader;
 import org.js4ms.net.ip.ipv6.IPv6Packet;
 import org.js4ms.net.ip.ipv6.IPv6RouterAlertOption;
+import org.js4ms.util.buffer.fields.ShortField;
 
-import com.larkwoodlabs.util.buffer.fields.ShortField;
 
 /**
  * Represents a Multicast Listener Discovery (MLD) message as described in
