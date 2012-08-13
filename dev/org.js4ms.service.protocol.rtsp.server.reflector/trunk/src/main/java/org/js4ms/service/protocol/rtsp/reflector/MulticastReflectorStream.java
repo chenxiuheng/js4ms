@@ -1,4 +1,4 @@
-package com.larkwoodlabs.service.protocol.rtsp.reflector;
+package org.js4ms.service.protocol.rtsp.reflector;
 
 import gov.nist.javax.sdp.fields.AttributeField;
 
@@ -15,13 +15,14 @@ import javax.sdp.MediaDescription;
 import javax.sdp.SdpException;
 import javax.sdp.SessionDescription;
 
-import com.larkwoodlabs.channels.MessageSource;
-import com.larkwoodlabs.channels.OutputChannel;
-import com.larkwoodlabs.net.amt.SourceFilter;
-import com.larkwoodlabs.net.amt.gateway.AmtPseudoInterfaceManager;
-import com.larkwoodlabs.service.protocol.rtsp.TransportDescription;
-import com.larkwoodlabs.service.protocol.rtsp.presentation.MediaStream;
-import com.larkwoodlabs.service.protocol.rtsp.presentation.Presentation;
+import org.js4ms.channels.MessageSource;
+import org.js4ms.channels.OutputChannel;
+import org.js4ms.net.amt.SourceFilter;
+import org.js4ms.net.amt.gateway.AmtPseudoInterfaceManager;
+import org.js4ms.service.protocol.rtsp.TransportDescription;
+import org.js4ms.service.protocol.rtsp.presentation.MediaStream;
+import org.js4ms.service.protocol.rtsp.presentation.Presentation;
+
 import com.larkwoodlabs.util.logging.Logging;
 
 public class MulticastReflectorStream extends MediaStream {

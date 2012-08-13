@@ -1,4 +1,4 @@
-package com.larkwoodlabs.service.protocol.rtsp.reflector;
+package org.js4ms.service.protocol.rtsp.reflector;
 
 import gov.nist.core.Host;
 import gov.nist.javax.sdp.fields.ConnectionAddress;
@@ -32,16 +32,17 @@ import javax.sdp.SdpFactory;
 import javax.sdp.SdpParseException;
 import javax.sdp.SessionDescription;
 
-import com.larkwoodlabs.io.FixedLengthInputStream;
-import com.larkwoodlabs.service.protocol.rest.RequestException;
-import com.larkwoodlabs.service.protocol.rest.message.Method;
-import com.larkwoodlabs.service.protocol.rest.message.Request;
-import com.larkwoodlabs.service.protocol.rest.message.Status;
-import com.larkwoodlabs.service.protocol.rtsp.RtspMethods;
-import com.larkwoodlabs.service.protocol.rtsp.RtspStatusCodes;
-import com.larkwoodlabs.service.protocol.rtsp.presentation.Presentation;
-import com.larkwoodlabs.service.protocol.rtsp.presentation.PresentationResolver;
-import com.larkwoodlabs.service.protocol.rtsp.server.RtspService;
+import org.js4ms.io.FixedLengthInputStream;
+import org.js4ms.service.protocol.rest.RequestException;
+import org.js4ms.service.protocol.rest.message.Method;
+import org.js4ms.service.protocol.rest.message.Request;
+import org.js4ms.service.protocol.rest.message.Status;
+import org.js4ms.service.protocol.rtsp.RtspMethods;
+import org.js4ms.service.protocol.rtsp.RtspStatusCodes;
+import org.js4ms.service.protocol.rtsp.presentation.Presentation;
+import org.js4ms.service.protocol.rtsp.presentation.PresentationResolver;
+import org.js4ms.service.protocol.rtsp.server.RtspService;
+
 import com.larkwoodlabs.util.logging.Log;
 
 /**

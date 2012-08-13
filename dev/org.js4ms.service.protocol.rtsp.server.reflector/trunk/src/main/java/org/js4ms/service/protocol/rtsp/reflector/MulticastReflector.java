@@ -1,4 +1,4 @@
-package com.larkwoodlabs.service.protocol.rtsp.reflector;
+package org.js4ms.service.protocol.rtsp.reflector;
 
 
 import java.net.URI;
@@ -8,8 +8,9 @@ import javax.sdp.MediaDescription;
 import javax.sdp.SdpException;
 import javax.sdp.SessionDescription;
 
-import com.larkwoodlabs.service.protocol.rtsp.presentation.MediaStream;
-import com.larkwoodlabs.service.protocol.rtsp.presentation.Presentation;
+import org.js4ms.service.protocol.rtsp.presentation.MediaStream;
+import org.js4ms.service.protocol.rtsp.presentation.Presentation;
+
 
 
 /**
