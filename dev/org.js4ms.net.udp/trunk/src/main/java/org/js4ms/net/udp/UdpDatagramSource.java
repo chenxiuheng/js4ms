@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: UdpDatagramSource.java (com.larkwoodlabs.net.udp)
+ * File: UdpDatagramSource.java (org.js4ms.net.udp)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,13 +18,14 @@
  * limitations under the License.
  */
 
-package com.larkwoodlabs.net.udp;
+package org.js4ms.net.udp;
 
 import java.io.IOException;
 
-import com.larkwoodlabs.channels.ChannelPump;
-import com.larkwoodlabs.channels.MessageSource;
-import com.larkwoodlabs.channels.OutputChannel;
+import org.js4ms.channels.ChannelPump;
+import org.js4ms.channels.MessageSource;
+import org.js4ms.channels.OutputChannel;
+
 
 /**
  * A {@link MessageSource} that receives UDP datagrams via a {@link UdpEndpoint} and

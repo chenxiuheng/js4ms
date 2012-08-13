@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: UdpEndpoint.java (com.larkwoodlabs.net.udp)
+ * File: UdpEndpoint.java (org.js4ms.net.udp)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,11 +18,12 @@
  * limitations under the License.
  */
 
-package com.larkwoodlabs.net.udp;
+package org.js4ms.net.udp;
 
 import java.net.InetSocketAddress;
 
-import com.larkwoodlabs.channels.DuplexChannel;
+import org.js4ms.channels.DuplexChannel;
+
 
 /**
  * A {@link DuplexChannel} used to send and receive {@link UdpDatagram} objects.

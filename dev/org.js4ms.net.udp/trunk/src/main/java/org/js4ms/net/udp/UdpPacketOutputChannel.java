@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: UdpPacketOutputChannel.java (com.larkwoodlabs.net.udp)
+ * File: UdpPacketOutputChannel.java (org.js4ms.net.udp)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package com.larkwoodlabs.net.udp;
+package org.js4ms.net.udp;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
@@ -28,7 +28,8 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.util.logging.Logger;
 
-import com.larkwoodlabs.channels.OutputChannel;
+import org.js4ms.channels.OutputChannel;
+
 import com.larkwoodlabs.util.logging.Log;
 
 /**

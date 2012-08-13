@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: UdpOutputChannel.java (com.larkwoodlabs.net.udp)
+ * File: UdpInputChannel.java (org.js4ms.net.udp)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,49 +18,49 @@
  * limitations under the License.
  */
 
-package com.larkwoodlabs.net.udp;
+package org.js4ms.net.udp;
 
 import java.io.IOException;
 
-import com.larkwoodlabs.channels.OutputChannel;
+import org.js4ms.channels.InputChannel;
+
 
 /**
- * An {@link OutputChannel} that can be used to send {@link UdpDatagram} instances to a
- * {@link UdpEndpoint}.
+ * An {@link InputChannel} that can be used to receive {@link UdpDatagram} instances from
+ * a {@link UdpEndpoint}.
  * 
  * @author Gregory Bumgardner (gbumgard)
  */
-public final class UdpOutputChannel
-                implements OutputChannel<UdpDatagram> {
+public final class UdpInputChannel
+                implements InputChannel<UdpDatagram> {
 
     /*-- Member Variables ----------------------------------------------------*/
 
-    private final UdpEndpoint endpoint;
+    protected final UdpEndpoint endpoint;
 
     /*-- Member Functions ----------------------------------------------------*/
 
     /**
-     * Constructs a UDP input channel bound the the specified endpoint.
+     * Constructs a UDP output channel bound the the specified endpoint.
      * 
      * @param endpoint
-     *            The destination for datagrams sent to this channel.
+     *            The source for datagrams received from this channel.
      */
-    public UdpOutputChannel(final UdpEndpoint endpoint) {
+    public UdpInputChannel(final UdpEndpoint endpoint) {
         this.endpoint = endpoint;
     }
 
     @Override
-    public final void send(final UdpDatagram message, final int milliseconds) throws IOException, InterruptedException {
-        this.endpoint.send(message, milliseconds);
+    public final UdpDatagram receive(final int milliseconds) throws IOException, InterruptedException {
+        return endpoint.receive(milliseconds);
     }
 
     /**
      * Closes this channel. This implementation does nothing.
-     * Call {@link UdpEndpoint#close()} to close the UDP endpoint.
+     * Call {@link UdpEndpoint#close()} to close the endpoint.
      */
     @Override
-    public final void close() {
+    public void close() {
         // NO-OP
     }
-
 }

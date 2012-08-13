@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: MulticastEndpoint.java (com.larkwoodlabs.net.udp)
+ * File: MulticastEndpoint.java (org.js4ms.net.udp)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,12 +18,13 @@
  * limitations under the License.
  */
 
-package com.larkwoodlabs.net.udp;
+package org.js4ms.net.udp;
 
 import java.io.IOException;
 import java.net.InetAddress;
 
-import com.larkwoodlabs.channels.MessageInput;
+import org.js4ms.channels.MessageInput;
+
 
 /**
  * Interface exposed by objects that forward multicast datagrams as requested

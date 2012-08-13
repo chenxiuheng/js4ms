@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: UdpDatagramPayloadSource.java (com.larkwoodlabs.net.udp)
+ * File: UdpDatagramPayloadSource.java (org.js4ms.net.udp)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,16 +18,17 @@
  * limitations under the License.
  */
 
-package com.larkwoodlabs.net.udp;
+package org.js4ms.net.udp;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import com.larkwoodlabs.channels.ChannelPump;
-import com.larkwoodlabs.channels.MessageSource;
-import com.larkwoodlabs.channels.MessageTransform;
-import com.larkwoodlabs.channels.OutputChannel;
-import com.larkwoodlabs.channels.OutputChannelTransform;
+import org.js4ms.channels.ChannelPump;
+import org.js4ms.channels.MessageSource;
+import org.js4ms.channels.MessageTransform;
+import org.js4ms.channels.OutputChannel;
+import org.js4ms.channels.OutputChannelTransform;
+
 
 /**
  * A {@link MessageSource} that receives UDP packets via a {@link UdpEndpoint} and
