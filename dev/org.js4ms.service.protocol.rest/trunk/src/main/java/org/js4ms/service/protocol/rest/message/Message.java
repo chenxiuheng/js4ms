@@ -12,8 +12,8 @@ import org.js4ms.service.protocol.rest.entity.Codec;
 import org.js4ms.service.protocol.rest.entity.CodecManager;
 import org.js4ms.service.protocol.rest.entity.Entity;
 import org.js4ms.service.protocol.rest.entity.RawEntity;
+import org.js4ms.util.logging.Log;
 
-import com.larkwoodlabs.util.logging.Log;
 
 
 public abstract class Message {

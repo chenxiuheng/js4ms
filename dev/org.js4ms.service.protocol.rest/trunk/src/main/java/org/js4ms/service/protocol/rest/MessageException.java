@@ -1,8 +1,8 @@
 package org.js4ms.service.protocol.rest;
 
 import org.js4ms.service.protocol.rest.message.ProtocolVersion;
+import org.js4ms.util.logging.Log;
 
-import com.larkwoodlabs.util.logging.Log;
 
 public class MessageException extends Exception {
 

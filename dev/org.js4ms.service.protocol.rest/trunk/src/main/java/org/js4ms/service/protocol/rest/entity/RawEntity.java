@@ -15,8 +15,8 @@ import org.js4ms.service.protocol.rest.headers.SimpleMessageHeader;
 import org.js4ms.service.protocol.rest.message.Message;
 import org.js4ms.service.protocol.rest.message.MessageHeader;
 import org.js4ms.service.protocol.rest.util.DateUtil;
+import org.js4ms.util.logging.Log;
 
-import com.larkwoodlabs.util.logging.Log;
 
 
 /**

@@ -7,8 +7,8 @@ import java.util.regex.Pattern;
 
 import org.js4ms.service.protocol.rest.RequestException;
 import org.js4ms.service.protocol.rest.message.Request;
+import org.js4ms.util.logging.Log;
 
-import com.larkwoodlabs.util.logging.Log;
 
 public class TransactionHeaderResolver implements TransactionHandlerResolver {
 
