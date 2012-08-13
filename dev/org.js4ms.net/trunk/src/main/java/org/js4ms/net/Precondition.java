@@ -22,7 +22,7 @@ package org.js4ms.net;
 
 import java.net.InetAddress;
 
-import com.larkwoodlabs.util.logging.Logging;
+import org.js4ms.util.logging.Logging;
 
 /**
  * Provides static methods that may be used to test various preconditions.

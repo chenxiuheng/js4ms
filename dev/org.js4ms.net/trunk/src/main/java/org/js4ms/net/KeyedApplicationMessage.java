@@ -20,9 +20,9 @@
 
 package org.js4ms.net;
 
-import com.larkwoodlabs.util.buffer.fields.Field;
-import com.larkwoodlabs.util.buffer.parser.BufferParserSelector;
-import com.larkwoodlabs.util.buffer.parser.KeyedBufferParser;
+import org.js4ms.util.buffer.fields.Field;
+import org.js4ms.util.buffer.parser.BufferParserSelector;
+import org.js4ms.util.buffer.parser.KeyedBufferParser;
 
 /**
  * Interface implemented by typed-message classes.
