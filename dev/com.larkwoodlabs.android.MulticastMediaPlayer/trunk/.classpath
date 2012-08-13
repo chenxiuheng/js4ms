@@ -4,7 +4,7 @@
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="lib" path="/jars-jain-sdp/ext/jain-sdp-1.0.100.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.larkwoodlabs.util.logging.android"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.util.logging.android"/>
 	<classpathentry kind="lib" path="libs/RtspMulticastReflector__V0.0.1.jar"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry kind="output" path="bin/classes"/>

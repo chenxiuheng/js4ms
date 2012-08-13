@@ -18,91 +18,91 @@
         </delete>
   
 	    <jar destfile="libs/${service.jar.file}">
-            <fileset dir="../com.larkwoodlabs.util.logging/bin">
+            <fileset dir="../org.js4ms.util.logging/bin">
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
-            <fileset dir="../com.larkwoodlabs.common/bin">
+            <fileset dir="../org.js4ms.common/bin">
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
-            <fileset dir="../com.larkwoodlabs.util.buffer/bin">
+            <fileset dir="../org.js4ms.util.buffer/bin">
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
-            <fileset dir="../com.larkwoodlabs.net/bin">
+            <fileset dir="../org.js4ms.net/bin">
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
-            <fileset dir="../com.larkwoodlabs.channels/bin">
+            <fileset dir="../org.js4ms.channels/bin">
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
-            <fileset dir="../com.larkwoodlabs.net.udp/bin">
+            <fileset dir="../org.js4ms.net.udp/bin">
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
-            <fileset dir="../com.larkwoodlabs.util/bin">
+            <fileset dir="../org.js4ms.util/bin">
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
-            <fileset dir="../com.larkwoodlabs.io/bin">
+            <fileset dir="../org.js4ms.io/bin">
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
-            <fileset dir="../com.larkwoodlabs.net.ip/bin">
+            <fileset dir="../org.js4ms.net.ip/bin">
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
-            <fileset dir="../com.larkwoodlabs.util.task/bin">
+            <fileset dir="../org.js4ms.util.task/bin">
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
-            <fileset dir="../com.larkwoodlabs.net.amt/bin">
+            <fileset dir="../org.js4ms.net.amt/bin">
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
-            <fileset dir="../com.larkwoodlabs.net.amt.gateway/bin">
+            <fileset dir="../org.js4ms.net.amt.gateway/bin">
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
-            <fileset dir="../com.larkwoodlabs.service/bin">
+            <fileset dir="../org.js4ms.service/bin">
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
-            <fileset dir="../com.larkwoodlabs.service.launcher/bin">
+            <fileset dir="../org.js4ms.service.launcher/bin">
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
-            <fileset dir="../com.larkwoodlabs.service.protocol.text/bin">
+            <fileset dir="../org.js4ms.service.protocol.text/bin">
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
-            <fileset dir="../com.larkwoodlabs.service.protocol.text.server/bin">
+            <fileset dir="../org.js4ms.service.protocol.text.server/bin">
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
-            <fileset dir="../com.larkwoodlabs.service.protocol.rtsp/bin">
+            <fileset dir="../org.js4ms.service.protocol.rtsp/bin">
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
-            <fileset dir="../com.larkwoodlabs.service.protocol.rtsp.server/bin">
+            <fileset dir="../org.js4ms.service.protocol.rtsp.server/bin">
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
-            <fileset dir="../com.larkwoodlabs.service.protocol.rtsp.server.reflector/bin">
+            <fileset dir="../org.js4ms.service.protocol.rtsp.server.reflector/bin">
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
-            <fileset dir="../com.larkwoodlabs.service.protocol.http/bin">
+            <fileset dir="../org.js4ms.service.protocol.http/bin">
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
-            <fileset dir="../com.larkwoodlabs.service.protocol.http.server/bin">
+            <fileset dir="../org.js4ms.service.protocol.http.server/bin">
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
-            <fileset dir="../com.larkwoodlabs.app.RtspMulticastReflector/bin">
+            <fileset dir="../org.js4ms.app.RtspMulticastReflector/bin">
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
