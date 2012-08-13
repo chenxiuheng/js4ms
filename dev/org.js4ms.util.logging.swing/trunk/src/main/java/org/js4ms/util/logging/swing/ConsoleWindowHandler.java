@@ -1,4 +1,4 @@
-package com.larkwoodlabs.util.logging.swing;
+package org.js4ms.util.logging.swing;
 
 import java.nio.charset.Charset;
 import java.util.logging.LogRecord;
@@ -13,7 +13,7 @@ public class ConsoleWindowHandler extends StreamHandler {
         super();
 
         LogManager logManager = LogManager.getLogManager();
-        String title = logManager.getProperty("com.larkwoodlabs.util.logging.swing.ConsoleWindowHandler.title");
+        String title = logManager.getProperty("org.js4ms.util.logging.swing.ConsoleWindowHandler.title");
         if (title == null) title = "Log Messages";
 
         String encoding = getEncoding();
@@ -23,7 +23,7 @@ public class ConsoleWindowHandler extends StreamHandler {
 
         this.console = new Console(title,
                                    encoding,
-                                   Boolean.parseBoolean(logManager.getProperty("com.larkwoodlabs.util.logging.swing.ConsoleWindowHandler.waitforclose")));
+                                   Boolean.parseBoolean(logManager.getProperty("org.js4ms.util.logging.swing.ConsoleWindowHandler.waitforclose")));
     }
 
     @Override

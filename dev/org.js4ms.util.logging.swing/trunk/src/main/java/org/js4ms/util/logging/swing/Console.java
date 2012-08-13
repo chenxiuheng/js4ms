@@ -1,4 +1,4 @@
-package com.larkwoodlabs.util.logging.swing;
+package org.js4ms.util.logging.swing;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
