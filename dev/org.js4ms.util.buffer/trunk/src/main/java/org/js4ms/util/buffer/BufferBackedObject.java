@@ -21,7 +21,8 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.logging.Logger;
 
-import com.larkwoodlabs.util.logging.LoggableBase;
+import org.js4ms.util.logging.LoggableBase;
+
 
 /**
  * @author Gregory Bumgardner
