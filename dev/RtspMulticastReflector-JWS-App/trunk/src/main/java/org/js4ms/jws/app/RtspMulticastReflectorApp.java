@@ -16,7 +16,7 @@ import org.js4ms.util.logging.Log;
 import org.js4ms.util.logging.Logging;
 import org.js4ms.util.logging.swing.Console;
 
-import com.larkwoodlabs.app.RtspMulticastReflector;
+import org.js4ms.app.RtspMulticastReflector;
 
 
 public class RtspMulticastReflectorApp implements SingleInstanceListener {
@@ -28,7 +28,7 @@ public class RtspMulticastReflectorApp implements SingleInstanceListener {
      */
     public static final Logger logger = Logger.getLogger(RtspMulticastReflectorApp.class.getName());
 
-    public static final String  JAVAWS_PROPERTY_PREFIX = "javaws.com.larkwoodlabs.";
+    public static final String  JAVAWS_PROPERTY_PREFIX = "javaws.org.js4ms.";
 
     public static final String  CONSOLE_ENABLED_PROPERTY = "org.js4ms.service.console.enabled";
     public static final String  CONSOLE_CLOSE_PROPERTY = "org.js4ms.service.console.close";
