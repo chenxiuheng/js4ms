@@ -14,7 +14,7 @@ import org.js4ms.service.protocol.rtsp.RtspMessageHeaders;
 import org.js4ms.service.protocol.rtsp.RtspMethods;
 import org.js4ms.service.protocol.rtsp.presentation.Presentation;
 
-import com.larkwoodlabs.util.logging.Log;
+import org.js4ms.util.logging.Log;
 
 public class RtspSession extends AbstractTimedSession {
 
