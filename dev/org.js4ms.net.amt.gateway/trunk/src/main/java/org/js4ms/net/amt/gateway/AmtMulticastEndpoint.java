@@ -30,10 +30,10 @@ import org.js4ms.channels.MessageQueue;
 import org.js4ms.channels.OutputChannel;
 import org.js4ms.channels.OutputChannelPipe;
 
-import com.larkwoodlabs.net.udp.MulticastEndpoint;
-import com.larkwoodlabs.net.udp.UdpDatagram;
-import com.larkwoodlabs.util.logging.Log;
-import com.larkwoodlabs.util.logging.Logging;
+import org.js4ms.net.udp.MulticastEndpoint;
+import org.js4ms.net.udp.UdpDatagram;
+import org.js4ms.util.logging.Log;
+import org.js4ms.util.logging.Logging;
 
 /**
  * A {@link MulticastEndpoint} that uses AMT to request and receive multicast

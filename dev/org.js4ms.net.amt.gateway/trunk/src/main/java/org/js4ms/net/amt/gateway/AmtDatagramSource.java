@@ -30,8 +30,8 @@ import org.js4ms.channels.MessageSource;
 import org.js4ms.channels.OutputChannel;
 import org.js4ms.net.amt.SourceFilter;
 
-import com.larkwoodlabs.net.udp.UdpDatagram;
-import com.larkwoodlabs.util.logging.Log;
+import org.js4ms.net.udp.UdpDatagram;
+import org.js4ms.util.logging.Log;
 
 /**
  * A {@link MessageSource} that constructs an AMT multicast endpoint to forward datagrams

@@ -36,12 +36,12 @@ import org.js4ms.channels.OutputChannel;
 import org.js4ms.common.exceptions.ParseException;
 import org.js4ms.net.Precondition;
 
-import com.larkwoodlabs.net.ip.IPPacket;
-import com.larkwoodlabs.net.ip.ipv4.IPv4Packet;
-import com.larkwoodlabs.net.ip.ipv6.IPv6Packet;
-import com.larkwoodlabs.util.logging.Log;
-import com.larkwoodlabs.util.logging.LoggableBase;
-import com.larkwoodlabs.util.logging.Logging;
+import org.js4ms.net.ip.IPPacket;
+import org.js4ms.net.ip.ipv4.IPv4Packet;
+import org.js4ms.net.ip.ipv6.IPv6Packet;
+import org.js4ms.util.logging.Log;
+import org.js4ms.util.logging.LoggableBase;
+import org.js4ms.util.logging.Logging;
 
 /**
  * An {@link OutputChannel} that reassembles fragmented IP datagrams.

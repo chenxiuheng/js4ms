@@ -24,7 +24,7 @@ import java.net.InetAddress;
 import java.util.HashSet;
 import java.util.Timer;
 
-import com.larkwoodlabs.util.task.ReschedulableTask;
+import org.js4ms.util.task.ReschedulableTask;
 
 final class GroupQueryReportTask
                 extends ReschedulableTask {

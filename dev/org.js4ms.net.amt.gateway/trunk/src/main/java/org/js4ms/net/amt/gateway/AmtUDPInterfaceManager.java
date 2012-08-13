@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.larkwoodlabs.util.logging.Log;
-import com.larkwoodlabs.util.logging.Logging;
+import org.js4ms.util.logging.Log;
+import org.js4ms.util.logging.Logging;
 
 
 public class AmtUDPInterfaceManager {

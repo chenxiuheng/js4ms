@@ -35,9 +35,9 @@ import org.js4ms.net.amt.MembershipQuery;
 import org.js4ms.net.amt.MembershipReport;
 import org.js4ms.net.amt.SourceFilter;
 
-import com.larkwoodlabs.util.logging.Log;
-import com.larkwoodlabs.util.logging.LoggableBase;
-import com.larkwoodlabs.util.logging.Logging;
+import org.js4ms.util.logging.Log;
+import org.js4ms.util.logging.LoggableBase;
+import org.js4ms.util.logging.Logging;
 
 final class InterfaceMembershipManager
                 extends LoggableBase {

@@ -34,10 +34,10 @@ import org.js4ms.common.exceptions.BoundException;
 import org.js4ms.common.exceptions.MultiIOException;
 import org.js4ms.net.Precondition;
 
-import com.larkwoodlabs.net.udp.UdpDatagram;
-import com.larkwoodlabs.util.logging.Log;
-import com.larkwoodlabs.util.logging.LoggableBase;
-import com.larkwoodlabs.util.logging.Logging;
+import org.js4ms.net.udp.UdpDatagram;
+import org.js4ms.util.logging.Log;
+import org.js4ms.util.logging.LoggableBase;
+import org.js4ms.util.logging.Logging;
 
 final class ChannelMembershipManager
                 extends LoggableBase {
