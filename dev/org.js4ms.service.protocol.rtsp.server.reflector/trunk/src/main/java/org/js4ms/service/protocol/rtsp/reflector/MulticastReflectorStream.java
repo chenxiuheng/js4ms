@@ -23,7 +23,7 @@ import org.js4ms.service.protocol.rtsp.TransportDescription;
 import org.js4ms.service.protocol.rtsp.presentation.MediaStream;
 import org.js4ms.service.protocol.rtsp.presentation.Presentation;
 
-import com.larkwoodlabs.util.logging.Logging;
+import org.js4ms.util.logging.Logging;
 
 public class MulticastReflectorStream extends MediaStream {
 

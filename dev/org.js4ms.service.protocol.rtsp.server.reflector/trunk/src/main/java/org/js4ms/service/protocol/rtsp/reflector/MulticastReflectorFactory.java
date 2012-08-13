@@ -43,7 +43,7 @@ import org.js4ms.service.protocol.rtsp.presentation.Presentation;
 import org.js4ms.service.protocol.rtsp.presentation.PresentationResolver;
 import org.js4ms.service.protocol.rtsp.server.RtspService;
 
-import com.larkwoodlabs.util.logging.Log;
+import org.js4ms.util.logging.Log;
 
 /**
  * 
