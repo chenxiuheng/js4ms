@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: InputChannel.java (com.larkwoodlabs.channels)
+ * File: InputChannel.java (org.js4ms.channels)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,34 +18,34 @@
  * limitations under the License.
  */
 
-package com.larkwoodlabs.app;
+package org.js4ms.app;
 
 import java.io.IOException;
 import java.util.Properties;
 
-import com.larkwoodlabs.service.Connection;
-import com.larkwoodlabs.service.ConnectionHandler;
-import com.larkwoodlabs.service.ConnectionHandlerFactory;
-import com.larkwoodlabs.service.ConnectionManager;
-import com.larkwoodlabs.service.Server;
-import com.larkwoodlabs.service.ServerFactory;
-import com.larkwoodlabs.service.Service;
-import com.larkwoodlabs.service.protocol.http.server.handlers.LoggingConfigurationHandler;
-import com.larkwoodlabs.service.protocol.http.server.handlers.LoggingOutputHandler;
-import com.larkwoodlabs.service.protocol.rest.entity.StringEntity;
-import com.larkwoodlabs.service.protocol.rest.handler.ResponseHandlerList;
-import com.larkwoodlabs.service.protocol.rest.handler.TransactionDispatcher;
-import com.larkwoodlabs.service.protocol.rest.handler.TransactionHandler;
-import com.larkwoodlabs.service.protocol.rest.handler.TransactionProtocolResolver;
-import com.larkwoodlabs.service.protocol.rest.handler.TransactionUriPathResolver;
-import com.larkwoodlabs.service.protocol.rest.message.Request;
-import com.larkwoodlabs.service.protocol.rest.message.Response;
-import com.larkwoodlabs.service.protocol.rest.server.handlers.AddServerHeader;
-import com.larkwoodlabs.service.protocol.rtsp.RtspStatusCodes;
-import com.larkwoodlabs.service.protocol.rtsp.presentation.PresentationUriPathResolver;
-import com.larkwoodlabs.service.protocol.rtsp.reflector.MulticastReflectorFactory;
-import com.larkwoodlabs.service.protocol.rtsp.server.RtspService;
-import com.larkwoodlabs.util.logging.Logging;
+import org.js4ms.service.Connection;
+import org.js4ms.service.ConnectionHandler;
+import org.js4ms.service.ConnectionHandlerFactory;
+import org.js4ms.service.ConnectionManager;
+import org.js4ms.service.Server;
+import org.js4ms.service.ServerFactory;
+import org.js4ms.service.Service;
+import org.js4ms.service.protocol.http.server.handlers.LoggingConfigurationHandler;
+import org.js4ms.service.protocol.http.server.handlers.LoggingOutputHandler;
+import org.js4ms.service.protocol.rest.entity.StringEntity;
+import org.js4ms.service.protocol.rest.handler.ResponseHandlerList;
+import org.js4ms.service.protocol.rest.handler.TransactionDispatcher;
+import org.js4ms.service.protocol.rest.handler.TransactionHandler;
+import org.js4ms.service.protocol.rest.handler.TransactionProtocolResolver;
+import org.js4ms.service.protocol.rest.handler.TransactionUriPathResolver;
+import org.js4ms.service.protocol.rest.message.Request;
+import org.js4ms.service.protocol.rest.message.Response;
+import org.js4ms.service.protocol.rest.server.handlers.AddServerHeader;
+import org.js4ms.service.protocol.rtsp.RtspStatusCodes;
+import org.js4ms.service.protocol.rtsp.presentation.PresentationUriPathResolver;
+import org.js4ms.service.protocol.rtsp.reflector.MulticastReflectorFactory;
+import org.js4ms.service.protocol.rtsp.server.RtspService;
+import org.js4ms.util.logging.Logging;
 
 /**
  * @author Greg Bumgardner (gbumgard)
