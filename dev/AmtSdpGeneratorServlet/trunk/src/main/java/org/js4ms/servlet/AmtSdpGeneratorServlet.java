@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: AmtSdpGeneratorServlet.java (com.larkwoodlabs.channels)
+ * File: AmtSdpGeneratorServlet.java (org.js4ms.channels)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package com.larkwoodlabs.servlet;
+package org.js4ms.servlet;
 
 import gov.nist.core.Host;
 import gov.nist.javax.sdp.fields.AttributeField;
