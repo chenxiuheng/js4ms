@@ -1,4 +1,4 @@
-package com.larkwoodlabs.service.protocol.rtsp.server;
+package org.js4ms.service.protocol.rtsp.server;
 
 import java.io.IOException;
 import java.io.PushbackInputStream;
@@ -8,24 +8,25 @@ import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.larkwoodlabs.io.Base64InputStream;
-import com.larkwoodlabs.service.Connection;
-import com.larkwoodlabs.service.protocol.http.HttpMessageHeaders;
-import com.larkwoodlabs.service.protocol.rest.RequestException;
-import com.larkwoodlabs.service.protocol.rest.entity.Entity;
-import com.larkwoodlabs.service.protocol.rest.entity.StringEntity;
-import com.larkwoodlabs.service.protocol.rest.handler.TransactionHandler;
-import com.larkwoodlabs.service.protocol.rest.headers.SimpleMessageHeader;
-import com.larkwoodlabs.service.protocol.rest.message.MessageHeader;
-import com.larkwoodlabs.service.protocol.rest.message.Method;
-import com.larkwoodlabs.service.protocol.rest.message.Request;
-import com.larkwoodlabs.service.protocol.rest.message.Response;
-import com.larkwoodlabs.service.protocol.rest.server.session.SessionManager;
-import com.larkwoodlabs.service.protocol.rtsp.RtspMessageHeaders;
-import com.larkwoodlabs.service.protocol.rtsp.RtspMethods;
-import com.larkwoodlabs.service.protocol.rtsp.RtspStatusCodes;
-import com.larkwoodlabs.service.protocol.rtsp.presentation.Presentation;
-import com.larkwoodlabs.service.protocol.rtsp.presentation.PresentationResolver;
+import org.js4ms.io.Base64InputStream;
+import org.js4ms.service.Connection;
+import org.js4ms.service.protocol.http.HttpMessageHeaders;
+import org.js4ms.service.protocol.rest.RequestException;
+import org.js4ms.service.protocol.rest.entity.Entity;
+import org.js4ms.service.protocol.rest.entity.StringEntity;
+import org.js4ms.service.protocol.rest.handler.TransactionHandler;
+import org.js4ms.service.protocol.rest.headers.SimpleMessageHeader;
+import org.js4ms.service.protocol.rest.message.MessageHeader;
+import org.js4ms.service.protocol.rest.message.Method;
+import org.js4ms.service.protocol.rest.message.Request;
+import org.js4ms.service.protocol.rest.message.Response;
+import org.js4ms.service.protocol.rest.server.session.SessionManager;
+import org.js4ms.service.protocol.rtsp.RtspMessageHeaders;
+import org.js4ms.service.protocol.rtsp.RtspMethods;
+import org.js4ms.service.protocol.rtsp.RtspStatusCodes;
+import org.js4ms.service.protocol.rtsp.presentation.Presentation;
+import org.js4ms.service.protocol.rtsp.presentation.PresentationResolver;
+
 import com.larkwoodlabs.util.logging.Log;
 import com.larkwoodlabs.util.logging.Logging;
 

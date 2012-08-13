@@ -1,18 +1,19 @@
-package com.larkwoodlabs.service.protocol.rtsp.server;
+package org.js4ms.service.protocol.rtsp.server;
 
 import java.io.IOException;
 import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.larkwoodlabs.service.Server;
-import com.larkwoodlabs.service.protocol.rest.message.Request;
-import com.larkwoodlabs.service.protocol.rest.message.Response;
-import com.larkwoodlabs.service.protocol.rest.server.session.AbstractTimedSession;
-import com.larkwoodlabs.service.protocol.rest.server.session.SessionManager;
-import com.larkwoodlabs.service.protocol.rtsp.RtspMessageHeaders;
-import com.larkwoodlabs.service.protocol.rtsp.RtspMethods;
-import com.larkwoodlabs.service.protocol.rtsp.presentation.Presentation;
+import org.js4ms.service.Server;
+import org.js4ms.service.protocol.rest.message.Request;
+import org.js4ms.service.protocol.rest.message.Response;
+import org.js4ms.service.protocol.rest.server.session.AbstractTimedSession;
+import org.js4ms.service.protocol.rest.server.session.SessionManager;
+import org.js4ms.service.protocol.rtsp.RtspMessageHeaders;
+import org.js4ms.service.protocol.rtsp.RtspMethods;
+import org.js4ms.service.protocol.rtsp.presentation.Presentation;
+
 import com.larkwoodlabs.util.logging.Log;
 
 public class RtspSession extends AbstractTimedSession {

@@ -1,26 +1,27 @@
-package com.larkwoodlabs.service.protocol.rtsp.server;
+package org.js4ms.service.protocol.rtsp.server;
 
 import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.larkwoodlabs.service.protocol.rest.handler.ResponseHandlerList;
-import com.larkwoodlabs.service.protocol.rest.handler.TransactionDispatcher;
-import com.larkwoodlabs.service.protocol.rest.handler.TransactionHandlerList;
-import com.larkwoodlabs.service.protocol.rest.handler.TransactionHeaderResolver;
-import com.larkwoodlabs.service.protocol.rest.handler.TransactionProtocolResolver;
-import com.larkwoodlabs.service.protocol.rest.handlers.AddDateHeader;
-import com.larkwoodlabs.service.protocol.rest.message.MessageHeaderParser;
-import com.larkwoodlabs.service.protocol.rest.message.ProtocolName;
-import com.larkwoodlabs.service.protocol.rest.message.ProtocolVersion;
-import com.larkwoodlabs.service.protocol.rest.server.AbstractService;
-import com.larkwoodlabs.service.protocol.rest.server.RequestParser;
-import com.larkwoodlabs.service.protocol.rest.server.handlers.VerifyAcceptEncodingHeader;
-import com.larkwoodlabs.service.protocol.rtsp.handlers.TransferCSeqHeader;
-import com.larkwoodlabs.service.protocol.rtsp.handlers.TransferSessionHeader;
-import com.larkwoodlabs.service.protocol.rtsp.handlers.TransferTimestampHeader;
-import com.larkwoodlabs.service.protocol.rtsp.handlers.VerifyRequireHeader;
-import com.larkwoodlabs.service.protocol.rtsp.presentation.PresentationResolver;
+import org.js4ms.service.protocol.rest.handler.ResponseHandlerList;
+import org.js4ms.service.protocol.rest.handler.TransactionDispatcher;
+import org.js4ms.service.protocol.rest.handler.TransactionHandlerList;
+import org.js4ms.service.protocol.rest.handler.TransactionHeaderResolver;
+import org.js4ms.service.protocol.rest.handler.TransactionProtocolResolver;
+import org.js4ms.service.protocol.rest.handlers.AddDateHeader;
+import org.js4ms.service.protocol.rest.message.MessageHeaderParser;
+import org.js4ms.service.protocol.rest.message.ProtocolName;
+import org.js4ms.service.protocol.rest.message.ProtocolVersion;
+import org.js4ms.service.protocol.rest.server.AbstractService;
+import org.js4ms.service.protocol.rest.server.RequestParser;
+import org.js4ms.service.protocol.rest.server.handlers.VerifyAcceptEncodingHeader;
+import org.js4ms.service.protocol.rtsp.handlers.TransferCSeqHeader;
+import org.js4ms.service.protocol.rtsp.handlers.TransferSessionHeader;
+import org.js4ms.service.protocol.rtsp.handlers.TransferTimestampHeader;
+import org.js4ms.service.protocol.rtsp.handlers.VerifyRequireHeader;
+import org.js4ms.service.protocol.rtsp.presentation.PresentationResolver;
+
 
 
 /**
