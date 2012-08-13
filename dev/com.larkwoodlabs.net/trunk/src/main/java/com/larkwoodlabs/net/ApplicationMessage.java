@@ -22,8 +22,8 @@ package com.larkwoodlabs.net;
 
 import java.nio.ByteBuffer;
 
-import org.js4ms.util.buffer.parser.BufferParser;
-import org.js4ms.util.logging.Loggable;
+import com.larkwoodlabs.util.buffer.parser.BufferParser;
+import com.larkwoodlabs.util.logging.Loggable;
 
 /**
  * Interface implemented by various application-protocol classes.
