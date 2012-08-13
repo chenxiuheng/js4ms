@@ -27,7 +27,7 @@ import org.js4ms.service.protocol.rtsp.RtspMethods;
 import org.js4ms.service.protocol.rtsp.RtspStatusCodes;
 import org.js4ms.service.protocol.rtsp.rtp.InterleavedPacketReader;
 
-import com.larkwoodlabs.util.logging.Log;
+import org.js4ms.util.logging.Log;
 
 
 /**

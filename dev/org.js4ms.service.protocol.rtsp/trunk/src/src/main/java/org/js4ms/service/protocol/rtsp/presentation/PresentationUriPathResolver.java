@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 import org.js4ms.service.protocol.rest.RequestException;
 import org.js4ms.service.protocol.rest.message.Request;
 
-import com.larkwoodlabs.util.logging.Log;
+import org.js4ms.util.logging.Log;
 
 /**
  * Examples:

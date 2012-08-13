@@ -33,8 +33,8 @@ import org.js4ms.service.protocol.rtsp.TransportPreferences;
 import org.js4ms.service.protocol.rtsp.presentation.Presentation.Source;
 import org.js4ms.service.protocol.rtsp.rtp.InterleavedPacketOutputChannel;
 
-import com.larkwoodlabs.util.logging.Log;
-import com.larkwoodlabs.util.logging.Logging;
+import org.js4ms.util.logging.Log;
+import org.js4ms.util.logging.Logging;
 
 
 /**

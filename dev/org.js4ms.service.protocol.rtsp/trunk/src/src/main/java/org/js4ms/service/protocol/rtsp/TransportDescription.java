@@ -29,7 +29,7 @@ import javax.sdp.MediaDescription;
 import javax.sdp.SdpException;
 import javax.sdp.SessionDescription;
 
-import com.larkwoodlabs.util.logging.Logging;
+import org.js4ms.util.logging.Logging;
 
 /**
  * Describes the preferred or actual transport characteristics of a media stream.

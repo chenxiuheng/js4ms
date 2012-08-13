@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 import org.js4ms.channels.OutputChannel;
 import org.js4ms.service.Connection;
 
-import com.larkwoodlabs.util.logging.Log;
+import org.js4ms.util.logging.Log;
 
 
 public class InterleavedPacketReader {

@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 
 import org.js4ms.service.protocol.rest.RequestException;
 
-import com.larkwoodlabs.util.logging.Logging;
+import org.js4ms.util.logging.Logging;
 
 
 /**
