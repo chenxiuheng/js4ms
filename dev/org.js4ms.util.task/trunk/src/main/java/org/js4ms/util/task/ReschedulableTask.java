@@ -14,7 +14,7 @@
  * limitations under the license.
  */
 
-package com.larkwoodlabs.util.task;
+package org.js4ms.util.task;
 
 import java.util.Timer;
 import java.util.TimerTask;

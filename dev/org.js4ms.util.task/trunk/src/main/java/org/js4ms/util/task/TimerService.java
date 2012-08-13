@@ -14,7 +14,7 @@
  * limitations under the license.
  */
 
-package com.larkwoodlabs.util.task;
+package org.js4ms.util.task;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -23,7 +23,8 @@ import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.larkwoodlabs.util.logging.Logging;
+import org.js4ms.util.logging.Logging;
+
 
 /**
  * 
