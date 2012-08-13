@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: FixedLengthInputStream.java (org.js4ms.io)
+ * File: FixedLengthInputStream.java (com.larkwoodlabs.io)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.io;
+package com.larkwoodlabs.io;
 
 import java.io.IOException;
 import java.io.InputStream;
