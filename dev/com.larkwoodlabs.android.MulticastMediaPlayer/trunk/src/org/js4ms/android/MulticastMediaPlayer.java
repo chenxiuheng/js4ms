@@ -25,8 +25,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.js4ms.android.R;
-import org.js4ms.util.logging.android.LogCatFormatter;
-import org.js4ms.util.logging.android.LogCatHandler;
+import com.larkwoodlabs.util.logging.android.LogCatFormatter;
+import com.larkwoodlabs.util.logging.android.LogCatHandler;
 
 import android.app.Activity;
 import android.app.AlertDialog;
