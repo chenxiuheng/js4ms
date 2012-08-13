@@ -26,8 +26,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.js4ms.util.logging.Logging;
+import org.js4ms.util.task.TimerService;
 
-import com.larkwoodlabs.util.task.TimerService;
 
 /**
  * @param <T>
