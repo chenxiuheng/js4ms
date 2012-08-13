@@ -36,11 +36,11 @@
         </delete>
 
         <jar destfile="WebContent/${applet.jar.file}">
-            <fileset dir="../com.larkwoodlabs.util.logging/bin">
+            <fileset dir="../org.js4ms.util.logging/bin">
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
-            <fileset dir="../com.larkwoodlabs.service.launcher/bin">
+            <fileset dir="../org.js4ms.service.launcher/bin">
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>

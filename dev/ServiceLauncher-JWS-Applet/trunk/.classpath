@@ -9,7 +9,7 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.larkwoodlabs.service.launcher"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.larkwoodlabs.util.logging"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.service.launcher"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.util.logging"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
