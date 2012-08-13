@@ -17,9 +17,9 @@ import org.js4ms.service.protocol.rest.message.ProtocolVersion;
 import org.js4ms.service.protocol.rest.message.Request;
 import org.js4ms.service.protocol.rest.message.Response;
 import org.js4ms.service.protocol.rest.message.StatusLine;
+import org.js4ms.util.logging.Log;
+import org.js4ms.util.logging.Loggable;
 
-import com.larkwoodlabs.util.logging.Log;
-import com.larkwoodlabs.util.logging.Loggable;
 
 public abstract class AbstractService implements Service, RequestHandler, Loggable {
 

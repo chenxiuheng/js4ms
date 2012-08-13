@@ -2,7 +2,8 @@ package org.js4ms.service.protocol.rest.server.session;
 
 import java.util.Timer;
 
-import com.larkwoodlabs.util.task.ReschedulableTask;
+import org.js4ms.util.task.ReschedulableTask;
+
 
 /**
  * A task used to terminate timed sessions following a period of inactivity.
