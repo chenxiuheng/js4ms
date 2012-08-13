@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 
 import org.js4ms.channels.OutputChannel;
 
-import com.larkwoodlabs.util.logging.Log;
+import org.js4ms.util.logging.Log;
 
 /**
  * An {@link OutputChannel} that can be used to send a byte array containing an

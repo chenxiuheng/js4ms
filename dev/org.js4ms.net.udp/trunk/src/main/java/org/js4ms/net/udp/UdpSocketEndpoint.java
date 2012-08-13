@@ -29,7 +29,7 @@ import java.nio.ByteBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.larkwoodlabs.util.logging.Logging;
+import org.js4ms.util.logging.Logging;
 
 /**
  * A {@link UdpEndpoint} implementation that uses a DatagramChannel to provide transport.

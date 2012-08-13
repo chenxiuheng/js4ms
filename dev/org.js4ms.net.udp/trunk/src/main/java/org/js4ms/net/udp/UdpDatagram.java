@@ -30,8 +30,8 @@ import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.larkwoodlabs.util.logging.LoggableBase;
-import com.larkwoodlabs.util.logging.Logging;
+import org.js4ms.util.logging.LoggableBase;
+import org.js4ms.util.logging.Logging;
 
 /**
  * A representation of a UDP datagram.
