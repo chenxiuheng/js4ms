@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package com.larkwoodlabs.net;
+package org.js4ms.net;
 
 import com.larkwoodlabs.util.buffer.fields.Field;
 import com.larkwoodlabs.util.buffer.parser.BufferParserSelector;

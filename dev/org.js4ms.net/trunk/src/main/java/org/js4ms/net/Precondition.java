@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package com.larkwoodlabs.net;
+package org.js4ms.net;
 
 import java.net.InetAddress;
 
