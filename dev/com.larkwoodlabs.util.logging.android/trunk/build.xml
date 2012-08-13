@@ -4,13 +4,13 @@
               To include a user specific buildfile here, simply create one in the same
               directory with the processing instruction <?eclipse.ant.import?>
               as the first entry and export the buildfile again. -->
-<project basedir="." default="build" name="com.larkwoodlabs.util.logging.android">
+<project basedir="." default="build" name="org.js4ms.util.logging.android">
     <property environment="env"/>
-    <property name="com.larkwoodlabs.android.MulticastMediaPlayer.location" value="../com.larkwoodlabs.android.MulticastMediaPlayer"/>
+    <property name="org.js4ms.android.MulticastMediaPlayer.location" value="../org.js4ms.android.MulticastMediaPlayer"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.6"/>
     <property name="source" value="1.6"/>
-    <path id="com.larkwoodlabs.util.logging.android.classpath">
+    <path id="org.js4ms.util.logging.android.classpath">
         <pathelement location="bin"/>
         <pathelement location="../../SDKs/android-sdk-mac_86/platforms/android-4/android.jar"/>
     </path>
@@ -33,11 +33,11 @@
         <echo message="${ant.project.name}: ${ant.file}"/>
         <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
             <src path="src/main/java"/>
-            <classpath refid="com.larkwoodlabs.util.logging.android.classpath"/>
+            <classpath refid="org.js4ms.util.logging.android.classpath"/>
         </javac>
     </target>
     <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects">
-        <ant antfile="build.xml" dir="${com.larkwoodlabs.android.MulticastMediaPlayer.location}" inheritAll="false" target="clean"/>
-        <ant antfile="build.xml" dir="${com.larkwoodlabs.android.MulticastMediaPlayer.location}" inheritAll="false" target="build"/>
+        <ant antfile="build.xml" dir="${org.js4ms.android.MulticastMediaPlayer.location}" inheritAll="false" target="clean"/>
+        <ant antfile="build.xml" dir="${org.js4ms.android.MulticastMediaPlayer.location}" inheritAll="false" target="build"/>
     </target>
 </project>
