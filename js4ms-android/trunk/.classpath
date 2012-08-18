@@ -6,13 +6,5 @@
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry kind="lib" path="/jars-jain-sdp/ext/jain-sdp-1.0.100.jar"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
-	<classpathentry kind="lib" path="/Users/gbumgard/Documents/SDKs/android-sdk-mac_86/platforms/android-14/android.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="file:/Users/gbumgard/Documents/SDKs/android-sdk-mac_86/docs/reference"/>
-		</attributes>
-		<accessrules>
-			<accessrule kind="nonaccessible" pattern="com/android/internal/**"/>
-		</accessrules>
-	</classpathentry>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
