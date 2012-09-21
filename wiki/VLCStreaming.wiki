@@ -1,3 +1,5 @@
+<font color="red"><b>Draft Text - This page has not yet been formatted.</b></font>
+
 VLC provides a flexible platform for media transcoding and streaming. VLC can accept media input from network and filesystem sources, and can duplicate, transcode, and encapsulate the input media into any number of output files or streams.
 
 We have been using the Darwin Streaming Server (Apple's QTSS) to generate some multicast streams for testing, but are now experimenting with using VLC as it can generate IPv6 streams while DSS cannot.&nbsp;
