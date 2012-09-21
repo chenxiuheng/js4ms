@@ -1,3 +1,5 @@
+<font color="red"><b>Draft Text - This page has not yet been formatted.</b></font>
+
 {section}
 {column:width=25%}
 {info:title=Table Of Contents|icon=false}
