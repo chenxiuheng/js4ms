@@ -1,4 +1,4 @@
-package org.js4ms.util.logging.android;
+package net.js4ms.util.logging.android;
 
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
