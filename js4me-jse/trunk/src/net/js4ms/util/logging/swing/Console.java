@@ -1,4 +1,4 @@
-package org.js4ms.util.logging.swing;
+package net.js4ms.util.logging.swing;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
