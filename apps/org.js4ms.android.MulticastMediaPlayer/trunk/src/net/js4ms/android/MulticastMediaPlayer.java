@@ -18,15 +18,15 @@
  * limitations under the License.
  */
 
-package org.js4ms.android;
+package net.js4ms.android;
 
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.js4ms.android.R;
-import com.larkwoodlabs.util.logging.android.LogCatFormatter;
-import com.larkwoodlabs.util.logging.android.LogCatHandler;
+import net.js4ms.android.R;
+import net.js4ms.util.logging.android.LogCatFormatter;
+import net.js4ms.util.logging.android.LogCatHandler;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -40,7 +40,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 import android.widget.VideoView;
 
-import com.larkwoodlabs.service.launcher.java.ServiceLauncher;
+import net.js4ms.service.launcher.java.ServiceLauncher;
 
 /**
  * @author Greg Bumgardner (gbumgard)
@@ -69,7 +69,7 @@ public class MulticastMediaPlayer extends Activity {
 
     private ProgressDialog progressDialog;
 
-    private final com.larkwoodlabs.util.logging.Log log = new com.larkwoodlabs.util.logging.Log(this);
+    private final net.js4ms.util.logging.Log log = new net.js4ms.util.logging.Log(this);
 
     static {
         LogCatHandler handler = new LogCatHandler();
@@ -78,7 +78,7 @@ public class MulticastMediaPlayer extends Activity {
         handler.setLevel(Level.FINEST);
         Logger.getLogger("").addHandler(handler);
         logger.setLevel(Level.FINER);
-        com.larkwoodlabs.service.launcher.java.ServiceLauncher.logger.setLevel(Level.FINER);
+        net.js4ms.service.launcher.java.ServiceLauncher.logger.setLevel(Level.FINER);
     }
 
     /**
@@ -121,7 +121,7 @@ public class MulticastMediaPlayer extends Activity {
 
             this.launcher = new ServiceLauncher("dalvikvm",
                                                 info.sourceDir,
-                                                "org.js4ms.app.RtspMulticastReflector",
+                                                "net.js4ms.app.RtspMulticastReflector",
                                                 8554,
                                                 true,
                                                 10,
