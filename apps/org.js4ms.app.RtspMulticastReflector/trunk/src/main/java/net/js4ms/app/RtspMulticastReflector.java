@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.app;
+package net.js4ms.app;
 
 import java.io.IOException;
 import java.util.Properties;
