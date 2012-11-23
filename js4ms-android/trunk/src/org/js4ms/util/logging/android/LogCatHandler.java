@@ -1,4 +1,4 @@
-package net.js4ms.util.logging.android;
+package org.js4ms.util.logging.android;
 
 import java.util.logging.Handler;
 import java.util.logging.Level;
