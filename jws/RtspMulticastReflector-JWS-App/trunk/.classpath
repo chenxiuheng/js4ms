@@ -3,14 +3,13 @@
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="var" path="JAVAWS_JAR"/>
-	<classpathentry kind="lib" path="/jars-jain-sdp/ext/jain-sdp-1.0.100.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6">
 		<attributes>
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.app.RtspMulticastReflector"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.util.logging"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.util.logging.swing"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/js4ms-jse"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/js4ms-jse-RtspMulticastReflector"/>
+	<classpathentry kind="lib" path="ext/jain-sdp-1.0.100.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

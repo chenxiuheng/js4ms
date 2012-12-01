@@ -29,7 +29,7 @@
     </target>
 
     <target name="copy-jars">
-        <copy file="../jars-jain-sdp/ext/jain-sdp-1.0.100.jar" toDir="WebContent" />
+        <copy file="ext/jain-sdp-1.0.100.jar" toDir="WebContent" />
     </target>
 
     <target name="prompt-for-obfuscation">
@@ -47,91 +47,7 @@
         </delete>
 
         <jar destfile="WebContent/${app.jar.name}">
-            <fileset dir="../org.js4ms.util.logging/bin">
-                <include name="**/*.class" />
-                <exclude name="**/test/*.class" />
-            </fileset>
-            <fileset dir="../org.js4ms.util.logging.swing/bin">
-                <include name="**/*.class" />
-                <exclude name="**/test/*.class" />
-            </fileset>
-            <fileset dir="../org.js4ms.common/bin">
-                <include name="**/*.class" />
-                <exclude name="**/test/*.class" />
-            </fileset>
-            <fileset dir="../org.js4ms.util.buffer/bin">
-                <include name="**/*.class" />
-                <exclude name="**/test/*.class" />
-            </fileset>
-            <fileset dir="../org.js4ms.net/bin">
-                <include name="**/*.class" />
-                <exclude name="**/test/*.class" />
-            </fileset>
-            <fileset dir="../org.js4ms.channels/bin">
-                <include name="**/*.class" />
-                <exclude name="**/test/*.class" />
-            </fileset>
-            <fileset dir="../org.js4ms.net.udp/bin">
-                <include name="**/*.class" />
-                <exclude name="**/test/*.class" />
-            </fileset>
-            <fileset dir="../org.js4ms.util/bin">
-                <include name="**/*.class" />
-                <exclude name="**/test/*.class" />
-            </fileset>
-            <fileset dir="../org.js4ms.io/bin">
-                <include name="**/*.class" />
-                <exclude name="**/test/*.class" />
-            </fileset>
-            <fileset dir="../org.js4ms.net.ip/bin">
-                <include name="**/*.class" />
-                <exclude name="**/test/*.class" />
-            </fileset>
-            <fileset dir="../org.js4ms.util.task/bin">
-                <include name="**/*.class" />
-                <exclude name="**/test/*.class" />
-            </fileset>
-            <fileset dir="../org.js4ms.net.amt/bin">
-                <include name="**/*.class" />
-                <exclude name="**/test/*.class" />
-            </fileset>
-            <fileset dir="../org.js4ms.net.amt.gateway/bin">
-                <include name="**/*.class" />
-                <exclude name="**/test/*.class" />
-            </fileset>
-            <fileset dir="../org.js4ms.service/bin">
-                <include name="**/*.class" />
-                <exclude name="**/test/*.class" />
-            </fileset>
-            <fileset dir="../org.js4ms.service.protocol.rest/bin">
-                <include name="**/*.class" />
-                <exclude name="**/test/*.class" />
-            </fileset>
-            <fileset dir="../org.js4ms.service.protocol.rest.server/bin">
-                <include name="**/*.class" />
-                <exclude name="**/test/*.class" />
-            </fileset>
-            <fileset dir="../org.js4ms.service.protocol.rtsp/bin">
-                <include name="**/*.class" />
-                <exclude name="**/test/*.class" />
-            </fileset>
-            <fileset dir="../org.js4ms.service.protocol.rtsp.server/bin">
-                <include name="**/*.class" />
-                <exclude name="**/test/*.class" />
-            </fileset>
-            <fileset dir="../org.js4ms.service.protocol.http/bin">
-                <include name="**/*.class" />
-                <exclude name="**/test/*.class" />
-            </fileset>
-            <fileset dir="../org.js4ms.service.protocol.http.server/bin">
-                <include name="**/*.class" />
-                <exclude name="**/test/*.class" />
-            </fileset>
-            <fileset dir="../org.js4ms.service.protocol.rtsp.server.reflector/bin">
-                <include name="**/*.class" />
-                <exclude name="**/test/*.class" />
-            </fileset>
-            <fileset dir="../org.js4ms.app.RtspMulticastReflector/bin">
+            <fileset dir="../js4ms-jse/bin">
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
