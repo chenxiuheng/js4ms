@@ -1,4 +1,4 @@
-#Describes procedure for deploying js4ms servlet projects to Google App Engine.
+Describes procedure for deploying js4ms servlet projects to Google App Engine.
 
 = Eclipse Setup =
 
