@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: TimeoutException.java (org.js4ms.common)
+ * File: ParseException.java (org.js4ms.common)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,29 +18,42 @@
  * limitations under the License.
  */
 
-package org.js4ms.common.exceptions;
-
-import java.io.IOException;
+package org.js4ms.exceptions;
 
 /**
  * @author Greg Bumgardner (gbumgard)
  */
-public class TimeoutException
-                extends IOException {
+public class ParseException
+                extends Exception {
 
-    private static final long serialVersionUID = -8396512668584669976L;
+    private static final long serialVersionUID = -8100180238203347845L;
 
     /**
      * 
      */
-    public TimeoutException() {
-        super("operation has timed out");
+    public ParseException() {
+        super();
     }
 
     /**
      * @param message
      */
-    public TimeoutException(String message) {
+    public ParseException(String message) {
         super(message);
+    }
+
+    /**
+     * @param message
+     * @param throwable
+     */
+    public ParseException(String message, Throwable throwable) {
+        super(message, throwable);
+    }
+
+    /**
+     * @param throwable
+     */
+    public ParseException(Throwable throwable) {
+        super(throwable);
     }
 }

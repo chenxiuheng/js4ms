@@ -19,7 +19,7 @@ package org.js4ms.util.buffer.parser;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 
-import org.js4ms.common.exceptions.ParseException;
+import org.js4ms.exceptions.ParseException;
 
 
 

@@ -23,7 +23,7 @@ package org.js4ms.net.ip;
 import java.nio.ByteBuffer;
 import java.util.logging.Level;
 
-import org.js4ms.common.exceptions.ParseException;
+import org.js4ms.exceptions.ParseException;
 
 
 

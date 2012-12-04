@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.common.exceptions;
+package org.js4ms.exceptions;
 
 import java.io.IOException;
 import java.util.Iterator;

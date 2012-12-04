@@ -19,7 +19,7 @@ package org.js4ms.util.buffer.parser;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.js4ms.common.exceptions.ParseException;
+import org.js4ms.exceptions.ParseException;
 
 
 

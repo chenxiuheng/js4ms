@@ -3,7 +3,7 @@ package org.js4ms.service.protocol.rest.server;
 import java.io.IOException;
 import java.util.logging.Level;
 
-import org.js4ms.common.exceptions.ParseException;
+import org.js4ms.exceptions.ParseException;
 import org.js4ms.service.Connection;
 import org.js4ms.service.Service;
 import org.js4ms.service.protocol.rest.MessageException;

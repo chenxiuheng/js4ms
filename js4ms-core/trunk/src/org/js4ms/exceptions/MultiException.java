@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: BoundException.java (org.js4ms.common)
+ * File: MultiException.java (org.js4ms.common)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,47 +18,50 @@
  * limitations under the License.
  */
 
-package org.js4ms.common.exceptions;
+package org.js4ms.exceptions;
+
+import java.util.Iterator;
+import java.util.LinkedList;
 
 /**
  * @author Greg Bumgardner (gbumgard)
  */
-public class BoundException
+public class MultiException
                 extends Exception {
 
-    private static final long serialVersionUID = -5587197699181393667L;
+    private static final long serialVersionUID = 4050769134360179803L;
 
-    protected final Object object;
-
-    protected final Throwable throwable;
+    private LinkedList<Throwable> throwables;
 
     /**
-     * @param object
-     * @param throwable
+     * 
      */
-    public BoundException(final Object object, final Throwable throwable) {
-        this.object = object;
-        this.throwable = throwable;
+    public MultiException() {
+    }
+
+    /**
+     * @param t
+     */
+    public void add(Throwable t) {
+        if (this.throwables == null) {
+            this.throwables = new LinkedList<Throwable>();
+        }
+        this.throwables.add(t);
     }
 
     /**
      * @return
      */
-    public Object getObject() {
-        return this.object;
+    public Iterator<Throwable> iterator() {
+        return this.throwables.iterator();
     }
 
     /**
-     * @return
+     * @throws MultiException
      */
-    public Throwable getThrowable() {
-        return this.throwable;
-    }
-
-    /**
-     * @throws Throwable
-     */
-    public void rethrow() throws Throwable {
-        throw this.throwable;
+    public void rethrow() throws MultiException {
+        if (!this.throwables.isEmpty()) {
+            throw this;
+        }
     }
 }
