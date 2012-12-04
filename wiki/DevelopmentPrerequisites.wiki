@@ -14,5 +14,9 @@ Download the Eclipse IDE for Java SE or Java EE from [http://www.eclipse.org].
 === Tomcat Build Deployment ===
 
  * Download and install Apache Tomcat from [http://tomcat.apache.org].
- * Download Tomcat plugin for Eclipse. Set the runtime location for the Tomcat plugin (the Tomcat root directory).
+ * Install the Tomcat plugin for Eclipse. Point the Tomcat plugin to the Tomcat runtime (the top-level directory of the Tomcat installation).
  * Open the Ant preferences and add a global class path entry pointing to the catalina-ant.jar file in the Tomcat lib directory.
+
+=== Google App Engine Deployment ===
+
+ * Install the Google App Engine plugin for Eclipse.
