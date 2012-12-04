@@ -2,6 +2,7 @@
 
  * [GettingStarted Getting Started]
  * [FAQ]
+ * [DevelopmentPrerequisites Development Prerequisites]
  * [ProjectArtifacts Project Artifacts]
   * [JS4MSLib JS4MS SDK]
   * [RTSPReflectorApp RTSP Reflector Application]
