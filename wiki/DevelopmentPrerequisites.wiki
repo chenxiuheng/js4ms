@@ -1,0 +1,18 @@
+Describes setup required to successfully checkout, use, build and deploy js4ms components.
+
+= Eclipse IDE =
+
+Download the Eclipse IDE for Java SE or Java EE from [http://www.eclipse.org].
+
+== Ant build support ==
+
+=== Proguard Code Compression and Obfuscation ===
+
+ * Download the Proguard distribution from [http://proguard.sourceforge.net].
+ * Open the Ant preferences and add a global class path entry pointing to the proguard.jar file in the Proguard lib directory.
+ 
+=== Tomcat Build Deployment ===
+
+ * Download and install Apache Tomcat from [http://tomcat.apache.org].
+ * Download Tomcat plugin for Eclipse. Set the runtime location for the Tomcat plugin (the Tomcat root directory).
+ * Open the Ant preferences and add a global class path entry pointing to the catalina-ant.jar file in the Tomcat lib directory.
