@@ -1,0 +1,140 @@
+<?eclipse.ant.import?>
+<!--
+  ServiceLauncher-JWS-Applet build-jar.xml
+
+  Copyright © 2011 Cisco Systems, Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+ -->
+<project default="build-jar-file">
+
+    <property file="applet.properties" />
+
+    <import file="gen-version.xml" />
+
+    <target name="gen-jar-name" depends="gen-version">
+        <property name="applet.jar.name" value="${applet.name}.jar" />
+        <property name="applet.jar.file" value="${applet.name}__V${applet.version}.jar" />
+    </target>
+
+    <target name="copy-jars">
+        <!-- None to copy <copy file="?" toDir="WebContent" /> -->
+    </target>
+
+    <target name="build-jar" depends="gen-jar-name,copy-jars">
+
+        <!-- Delete all existing versions of the jar file -->
+        <delete>
+            <fileset dir="WebContent" includes="${applet.name}_*.jar" />
+        </delete>
+
+        <jar destfile="WebContent/${applet.jar.name}">
+            <fileset dir="../js4ms-jse/bin">
+                <include name="org/js4ms/service/launcher/jws/**/*.class" />
+                <include name="org/js4ms/util/logging/**/*.class" />
+                </fileset>
+            <fileset dir="../org.js4ms.jws.applet.ServiceLauncherApplet/bin">
+                <include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+            </fileset>
+            <manifest>
+                <attribute name="Main-Class" value="${applet.class}" />
+                <attribute name="Built-By" value="${user.name}" />
+                <attribute name="Implementation-Vendor" value="${applet.vendor}" />
+                <attribute name="Implementation-Title" value="${applet.name}" />
+                <attribute name="Implementation-Version" value="${applet.version}" />
+            </manifest>
+        </jar>
+
+    </target>
+
+    <target name="prompt-for-obfuscation">
+        <input message="Obfuscate Java Bytecode (y/n)?" validargs="y,n" defaultvalue="n" addproperty="do.obfuscate"/>
+        <condition property="dont.obfuscate" value="-dontobfuscate" else="">
+          <equals arg1="n" arg2="${do.obfuscate}"/>
+        </condition>
+    </target>
+
+    <available property="proguard-installed" resource="proguard/ant/task.properties" classpath="proguard.jar" />
+
+    <target name="run-proguard" depends="build-jar" if="proguard-installed">
+
+        <taskdef resource="proguard/ant/task.properties" classpath="proguard.jar" />
+
+        <condition property="rtlibjars" value="${java.home}/../Classes/classes.jar">
+            <available file="${java.home}/../Classes/classes.jar" />
+        </condition>
+
+        <condition property="rtlibjars" value="${java.home}/lib/rt.jar">
+            <available file="${java.home}/lib/rt.jar" />
+        </condition>
+
+        <fail message="Java runtime jar not found!" unless="rtlibjars" />
+
+        <echo message="${rtlibjars}"/>
+
+        <proguard printusage="true">
+            <![CDATA[
+
+            -verbose
+
+            -injars WebContent/${applet.jar.name}
+            -outjars WebContent/${applet.jar.file}
+
+            -libraryjars ${rtlibjars}
+            -libraryjars ${java.home}/lib/javaws.jar
+
+            -printmapping ./proguard.mapping
+
+            -flattenpackagehierarchy ''
+
+            -keep public class org.js4ms.util.logging.LogFormatter
+            -keep public class org.js4ms.util.logging.JsonLogFormatter
+
+            -keepclasseswithmembers public class * {
+                public static void main(java.lang.String[]);
+            }
+
+            -keepclassmembers enum  * {
+                public static **[] values();
+                public static ** valueOf(java.lang.String);
+            }
+
+            -keepclasseswithmembers,allowshrinking class * {
+                native <methods>;
+            }
+
+            ]]>
+        </proguard>
+
+        <delete>
+            <fileset dir="WebContent" includes="${applet.jar.name}" />
+        </delete>
+
+    </target>
+        
+    <target name="rename-jar-file" depends="build-jar" unless="proguard-installed">
+        <move file="WebContent/${applet.jar.name}" toFile="WebContent/${applet.jar.file}"/>
+    </target>
+
+    <target name="build-jar-file" description="build applet jar" depends="run-proguard,rename-jar-file" />
+
+    <target name="clean-jar-file">
+        <delete>
+            <file name="proguard.mapping" />
+            <fileset dir="WebContent" includes="*.jar" />
+        </delete>
+    </target>
+
+</project>

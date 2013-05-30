@@ -1,0 +1,57 @@
+<?eclipse.ant.import?>
+<!--
+  ServiceLauncher-JWS-Applet build-descriptor.xml
+
+  Copyright © 2011 Cisco Systems, Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+ -->
+<project>
+
+    <import file="build-jnlp.xml" />
+
+
+    <target name="build-descriptor-file" depends="gen-jar-name">
+
+        <delete>
+            <fileset dir="WebContent/WEB-INF" includes="web.xml" />
+            <fileset dir="WebContent/WEB-INF" includes="jboss-web.xml" />
+        </delete>
+
+        <copy file="web-template.xml" toFile="WebContent/WEB-INF/web.xml">
+            <filterset>
+                <filter token="LAST_MODIFIED" value="${applet.last-modified}" />
+                <filter token="JNLP_NAME" value="${applet.jnlp.file}" />
+                <filter token="JAR_NAME" value="${applet.jar.name}" />
+                <filter token="CACHE_VERSION" value="${applet.version.cache}" />
+                <filter token="MAIN_CLASS" value="${applet.package}.${applet.class}.class" />
+            </filterset>
+        </copy>
+
+        <copy file="jboss-web-template.xml" toFile="WebContent/WEB-INF/jboss-web.xml">
+            <filterset>
+                <filter token="CONTEXT_ROOT" value="${applet.context.path}" />
+            </filterset>
+        </copy>
+
+    </target>
+
+    <target name="clean-descriptor-file">
+        <delete>
+            <fileset dir="WebContent/WEB-INF" includes="web.xml" />
+            <fileset dir="WebContent/WEB-INF" includes="jboss-web.xml" />
+        </delete>
+    </target>
+
+</project>

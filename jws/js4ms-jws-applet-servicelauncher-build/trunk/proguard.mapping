@@ -1,0 +1,9 @@
+org.js4ms.util.logging.JsonLogFormatter -> org.js4ms.util.logging.JsonLogFormatter:
+    java.text.MessageFormat messageFormat -> a
+    java.lang.String callbackFunction -> b
+    long startTime -> c
+    java.lang.String format(java.util.logging.LogRecord) -> format
+org.js4ms.util.logging.LogFormatter -> org.js4ms.util.logging.LogFormatter:
+    java.text.MessageFormat messageFormat -> a
+    long startTime -> b
+    java.lang.String format(java.util.logging.LogRecord) -> format
