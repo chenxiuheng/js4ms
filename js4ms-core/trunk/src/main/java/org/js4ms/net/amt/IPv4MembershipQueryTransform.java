@@ -29,9 +29,9 @@ import java.util.Iterator;
 import org.js4ms.channels.MessageTransform;
 import org.js4ms.net.ip.IPMessage;
 import org.js4ms.net.ip.IPPacket;
-import org.js4ms.net.ip.igmp.IGMPMessage;
-import org.js4ms.net.ip.igmp.IGMPQueryMessage;
-import org.js4ms.net.ip.igmp.IGMPv3QueryMessage;
+import org.js4ms.net.ip.protocol.igmp.IGMPMessage;
+import org.js4ms.net.ip.protocol.igmp.IGMPQueryMessage;
+import org.js4ms.net.ip.protocol.igmp.IGMPv3QueryMessage;
 import org.js4ms.net.ip.ipv4.IPv4Packet;
 
 

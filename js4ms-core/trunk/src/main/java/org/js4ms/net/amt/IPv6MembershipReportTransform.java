@@ -25,9 +25,9 @@ import java.net.InetAddress;
 
 import org.js4ms.channels.MessageTransform;
 import org.js4ms.net.ip.IPPacket;
-import org.js4ms.net.ip.mld.MLDGroupRecord;
-import org.js4ms.net.ip.mld.MLDMessage;
-import org.js4ms.net.ip.mld.MLDv2ReportMessage;
+import org.js4ms.net.ip.protocol.mld.MLDGroupRecord;
+import org.js4ms.net.ip.protocol.mld.MLDMessage;
+import org.js4ms.net.ip.protocol.mld.MLDv2ReportMessage;
 
 
 

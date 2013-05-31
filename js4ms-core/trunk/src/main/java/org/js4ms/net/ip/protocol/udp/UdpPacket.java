@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.net.ip.udp;
+package org.js4ms.net.ip.protocol.udp;
 
 import java.nio.ByteBuffer;
 import java.util.logging.Level;

@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.net.ip.igmp;
+package org.js4ms.net.ip.protocol.igmp;
 
 import java.nio.ByteBuffer;
 import java.util.logging.Level;

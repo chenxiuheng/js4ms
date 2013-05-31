@@ -30,9 +30,9 @@ import org.js4ms.channels.MessageTransform;
 import org.js4ms.net.ip.IPMessage;
 import org.js4ms.net.ip.IPPacket;
 import org.js4ms.net.ip.ipv6.IPv6Packet;
-import org.js4ms.net.ip.mld.MLDMessage;
-import org.js4ms.net.ip.mld.MLDQueryMessage;
-import org.js4ms.net.ip.mld.MLDv2QueryMessage;
+import org.js4ms.net.ip.protocol.mld.MLDMessage;
+import org.js4ms.net.ip.protocol.mld.MLDQueryMessage;
+import org.js4ms.net.ip.protocol.mld.MLDv2QueryMessage;
 
 
 

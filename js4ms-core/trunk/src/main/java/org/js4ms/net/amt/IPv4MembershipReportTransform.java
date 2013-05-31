@@ -25,9 +25,9 @@ import java.net.InetAddress;
 
 import org.js4ms.channels.MessageTransform;
 import org.js4ms.net.ip.IPPacket;
-import org.js4ms.net.ip.igmp.IGMPGroupRecord;
-import org.js4ms.net.ip.igmp.IGMPMessage;
-import org.js4ms.net.ip.igmp.IGMPv3ReportMessage;
+import org.js4ms.net.ip.protocol.igmp.IGMPGroupRecord;
+import org.js4ms.net.ip.protocol.igmp.IGMPMessage;
+import org.js4ms.net.ip.protocol.igmp.IGMPv3ReportMessage;
 
 
 

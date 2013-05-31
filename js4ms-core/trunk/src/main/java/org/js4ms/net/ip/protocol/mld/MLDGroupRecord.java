@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.net.ip.mld;
+package org.js4ms.net.ip.protocol.mld;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
