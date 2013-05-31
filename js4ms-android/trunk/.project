@@ -32,9 +32,9 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>js4ms-core</name>
+			<name>js4ms-src</name>
 			<type>2</type>
-			<locationURI>WORKSPACE_LOC/js4ms-core/src</locationURI>
+			<location>/Users/gbumgard/Documents/workspace/js4ms-core/src/main/java</location>
 		</link>
 	</linkedResources>
 </projectDescription>
