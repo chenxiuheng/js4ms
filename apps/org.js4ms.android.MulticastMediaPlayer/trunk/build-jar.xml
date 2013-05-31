@@ -22,6 +22,10 @@
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
+            <fileset dir="../js4ms-android-RtspMulticastReflector/bin">
+                <include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+            </fileset>
             <manifest>
                 <attribute name="Main-Class" value="${service.package}.${service.class}"/>
                 <attribute name="Built-By" value="${user.name}"/>
