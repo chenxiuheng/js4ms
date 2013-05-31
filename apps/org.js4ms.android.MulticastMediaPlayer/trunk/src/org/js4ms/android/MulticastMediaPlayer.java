@@ -18,15 +18,16 @@
  * limitations under the License.
  */
 
-package net.js4ms.android;
+package org.js4ms.android;
 
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.js4ms.android.R;
-import net.js4ms.util.logging.android.LogCatFormatter;
-import net.js4ms.util.logging.android.LogCatHandler;
+import org.js4ms.util.logging.android.LogCatFormatter;
+import org.js4ms.util.logging.android.LogCatHandler;
+
+import org.js4ms.android.R;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -40,7 +41,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 import android.widget.VideoView;
 
-import net.js4ms.service.launcher.java.ServiceLauncher;
+import org.js4ms.service.launcher.java.ServiceLauncher;
 
 /**
  * @author Greg Bumgardner (gbumgard)
@@ -69,7 +70,7 @@ public class MulticastMediaPlayer extends Activity {
 
     private ProgressDialog progressDialog;
 
-    private final net.js4ms.util.logging.Log log = new net.js4ms.util.logging.Log(this);
+    private final org.js4ms.util.logging.Log log = new org.js4ms.util.logging.Log(this);
 
     static {
         LogCatHandler handler = new LogCatHandler();
@@ -78,7 +79,7 @@ public class MulticastMediaPlayer extends Activity {
         handler.setLevel(Level.FINEST);
         Logger.getLogger("").addHandler(handler);
         logger.setLevel(Level.FINER);
-        net.js4ms.service.launcher.java.ServiceLauncher.logger.setLevel(Level.FINER);
+        org.js4ms.service.launcher.java.ServiceLauncher.logger.setLevel(Level.FINER);
     }
 
     /**
@@ -121,7 +122,7 @@ public class MulticastMediaPlayer extends Activity {
 
             this.launcher = new ServiceLauncher("dalvikvm",
                                                 info.sourceDir,
-                                                "net.js4ms.app.RtspMulticastReflector",
+                                                "org.js4ms.app.RtspMulticastReflector",
                                                 8554,
                                                 true,
                                                 10,
