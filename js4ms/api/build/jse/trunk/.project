@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>js4ms-api-build-jse</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>src-common</name>
+			<type>2</type>
+			<location>/Users/gbumgard/Documents/workspace/js4ms-api-src-common/src/main/java</location>
+		</link>
+		<link>
+			<name>src-jse</name>
+			<type>2</type>
+			<location>/Users/gbumgard/Documents/workspace/js4ms-api-src-jse/src/main/java</location>
+		</link>
+	</linkedResources>
+</projectDescription>
