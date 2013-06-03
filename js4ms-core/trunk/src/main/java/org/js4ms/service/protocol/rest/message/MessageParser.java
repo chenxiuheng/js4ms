@@ -8,10 +8,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.js4ms.exceptions.ParseException;
-import org.js4ms.service.Connection;
 import org.js4ms.service.protocol.rest.MessageException;
 import org.js4ms.service.protocol.rest.entity.Entity;
 import org.js4ms.service.protocol.rest.entity.RawEntity;
+import org.js4ms.service.server.Connection;
 import org.js4ms.util.logging.Log;
 
 

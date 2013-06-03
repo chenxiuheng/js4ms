@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.service;
+package org.js4ms.service.server;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;

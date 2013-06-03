@@ -23,13 +23,6 @@ package org.js4ms.app.reflector;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.js4ms.service.Connection;
-import org.js4ms.service.ConnectionHandler;
-import org.js4ms.service.ConnectionHandlerFactory;
-import org.js4ms.service.ConnectionManager;
-import org.js4ms.service.Server;
-import org.js4ms.service.ServerFactory;
-import org.js4ms.service.Service;
 import org.js4ms.service.protocol.http.server.handlers.LoggingConfigurationHandler;
 import org.js4ms.service.protocol.http.server.handlers.LoggingOutputHandler;
 import org.js4ms.service.protocol.rest.entity.StringEntity;
@@ -45,6 +38,13 @@ import org.js4ms.service.protocol.rtsp.RtspStatusCodes;
 import org.js4ms.service.protocol.rtsp.presentation.PresentationUriPathResolver;
 import org.js4ms.service.protocol.rtsp.reflector.MulticastReflectorFactory;
 import org.js4ms.service.protocol.rtsp.server.RtspService;
+import org.js4ms.service.server.Connection;
+import org.js4ms.service.server.ConnectionHandler;
+import org.js4ms.service.server.ConnectionHandlerFactory;
+import org.js4ms.service.server.ConnectionManager;
+import org.js4ms.service.server.Server;
+import org.js4ms.service.server.ServerFactory;
+import org.js4ms.service.server.Service;
 import org.js4ms.util.logging.Logging;
 
 /**

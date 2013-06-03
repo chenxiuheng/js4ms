@@ -5,7 +5,6 @@ import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.js4ms.service.Server;
 import org.js4ms.service.protocol.rest.message.Request;
 import org.js4ms.service.protocol.rest.message.Response;
 import org.js4ms.service.protocol.rest.server.session.AbstractTimedSession;
@@ -13,6 +12,7 @@ import org.js4ms.service.protocol.rest.server.session.SessionManager;
 import org.js4ms.service.protocol.rtsp.RtspMessageHeaders;
 import org.js4ms.service.protocol.rtsp.RtspMethods;
 import org.js4ms.service.protocol.rtsp.presentation.Presentation;
+import org.js4ms.service.server.Server;
 import org.js4ms.util.logging.Log;
 
 

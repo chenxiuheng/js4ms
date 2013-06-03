@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.service;
+package org.js4ms.service.server;
 
 import java.io.IOException;
 import java.util.HashMap;

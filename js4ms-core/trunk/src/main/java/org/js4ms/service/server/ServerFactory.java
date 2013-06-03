@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: ConnectionHandlerFactory.java (org.js4ms.service)
+ * File: ServerFactory.java (org.js4ms.service)
  * 
  * Copyright © 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,20 +18,21 @@
  * limitations under the License.
  */
 
-package org.js4ms.service;
+package org.js4ms.service.server;
+
+import java.util.Properties;
 
 /**
- * Interface exposed by objects that construct {@link ConnectionHandler} objects.
+ * Interface exposed by objects that contruct {@link Server} objects.
  * 
  * @author Greg Bumgardner (gbumgard)
  */
-public interface ConnectionHandlerFactory {
+public interface ServerFactory {
 
     /**
-     * @param manager
-     * @param connection
-     * @param service
+     * @param properties
+     *            Factory configuration properties.
      * @return
      */
-    ConnectionHandler construct(ConnectionManager manager, Connection connection, Service service);
+    Server construct(Properties properties);
 }

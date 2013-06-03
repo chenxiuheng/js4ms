@@ -2,8 +2,8 @@ package org.js4ms.service.protocol.rest.message;
 
 import java.util.LinkedHashMap;
 
-import org.js4ms.service.Connection;
 import org.js4ms.service.protocol.rest.entity.Entity;
+import org.js4ms.service.server.Connection;
 
 
 
