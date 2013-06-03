@@ -93,7 +93,7 @@ public final class AmtMulticastEndpoint
     /*-- Member Functions ---------------------------------------------------*/
 
     /**
-     * Constructs an instance bound that buffers incoming UDP datagrams in
+     * Constructs an instance that buffers incoming UDP datagrams in
      * an internal queue that can be read using the {@link #receive(int)} method.
      * 
      * @param port
