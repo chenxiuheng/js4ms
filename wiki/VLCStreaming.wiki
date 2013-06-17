@@ -2,24 +2,24 @@
 
 VLC provides a flexible platform for media transcoding and streaming. VLC can accept media input from network and filesystem sources, and can duplicate, transcode, and encapsulate the input media into any number of output files or streams.
 
-We have been using the Darwin Streaming Server (Apple's QTSS) to generate some multicast streams for testing, but are now experimenting with using VLC as it can generate IPv6 streams while DSS cannot.&nbsp;
+We have been using the Darwin Streaming Server (Apple's QTSS) to generate some multicast streams for testing, but are now experimenting with using VLC as it can generate IPv6 streams while DSS cannot.
 
-h2. Setup
+==Setup==
 
-The following procedure was used to install and configure VLC for execution on the 172.20.168.88 / \[2003::214:c2ff:fe3b:b3ff\] server.
+The following procedure was used to install and configure VLC for execution on a Ubuntu server (0.0.0.0 / [0::0]).
 
-Upgrade server to Ubuntu 11. This upgrade is required to enable installation of new VLC v2.0.
+* Upgrade server to Ubuntu 11. This upgrade is required to enable installation of new VLC v2.0.
 
-Install VLC using apt-get package installer:
+* Install VLC using apt-get package installer:
 
-{code}
+{{{
 > apt-get install vlc
-{code}
+}}}
 Add group 'vlc' and user 'vlc'. Separate user and group is required because VLC does not allow execution as root.
 
-Create a shell script&nbsp;{color:#000080}*/etc/init.d/vlm{*}{color}, that can be used to start VLC as a VLM broadcast daemon at system startup. The telnet and HTTP interfaces are enabled to allow access for configuring broadcast channels:
+Create a shell script <font color="#000080">/etc/init.d/vlm</font>, that can be used to start VLC as a VLM broadcast daemon at system startup. The telnet and HTTP interfaces are enabled to allow access for configuring broadcast channels:
 
-{code}
+{{{
 #!/bin/bash
 ### BEGIN INIT INFO
 # Provides:      VLM 
@@ -93,16 +93,16 @@ case "$1" in
     exit 1
 esac
 exit
-{code}
-Use {color:#000080}{*}update-rc.d{*}{color}&nbsp;utility to create links to script at default startup run-levels:
+}}}
+Use <font color="#000080">'update-rc.d'</font> utility to create links to script at default startup run-levels:
 
-{code}
+{{{
 > update-rc.d -f vlm defaults
-{code}
+}}}
 
-h2. Use
+==Use==
 
-The telnet interface is used to create and control VOD and broadcast programs. It provides a simple command interface for identifying input(s) and required output. The output options are numerous - see&nbsp;[VLC Advanced Streaming|http://wiki.videolan.org/Documentation:Streaming_HowTo/Advanced_Streaming_Using_the_Command_Line].
+The telnet interface is used to create and control VOD and broadcast programs. It provides a simple command interface for identifying input(s) and required output. The output options are numerous - see [http://wiki.videolan.org/Documentation:Streaming_HowTo/Advanced_Streaming_Using_the_Command_Line'VLC Advanced Streaming'].
 
 The following VLC telnet commands create a broadcast that reads media from a single file and broadcasts it as separate IPv4 and IPv6 multicast streams (using arbitrarily-chosen group addresses). The broadcast descriptions are retrieved using the SDP URLs specified in the output command.
 
