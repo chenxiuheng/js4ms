@@ -139,4 +139,4 @@ The js4ms project provides a servlet that can be used to convert an SDP descript
 
 The following RTSP URL can be used to play the streams via the AMT reflector running on localhost:
 
-[rtsp://127.0.0.1:8554/reflect?http://149.20.1.154:8080/servlet/sdpgenerator/src_sdp=http://149.20.1.154:8088/yosemite_1280x720_ipv4.sdp&src_relay=149.20.65.205]
+<a href="rtsp://127.0.0.1:8554/reflect?http://149.20.1.154:8080/servlet/sdpgenerator/src_sdp=http://149.20.1.154:8088/yosemite_1280x720_ipv4.sdp&src_relay=149.20.65.205">rtsp://127.0.0.1:8554/reflect?http://149.20.1.154:8080/servlet/sdpgenerator/src_sdp=http://149.20.1.154:8088/yosemite_1280x720_ipv4.sdp&src_relay=149.20.65.205</a>
