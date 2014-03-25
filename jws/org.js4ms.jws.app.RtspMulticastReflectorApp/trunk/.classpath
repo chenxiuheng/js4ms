@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="lib" path="/System/Library/Java/Support/Deploy.bundle/Contents/Resources/Java/javaws.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/js4ms-api-build-jse"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/js4ms-app-jse-rtsp-multicast-reflector"/>
+	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
