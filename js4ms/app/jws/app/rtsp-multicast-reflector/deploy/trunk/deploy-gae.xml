@@ -1,0 +1,46 @@
+<?eclipse.ant.import?>
+<!--
+  RtspMulticastReflector-JWS-App build-war.xml
+
+  Copyright © 2011 Cisco Systems, Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+ -->
+<project>
+
+    <import file="sign-jars.xml" />
+    <import file="build-jnlp.xml" />
+    <import file="build-version.xml" />
+    <import file="build-descriptor.xml" />
+
+    <import file="${appengine.sdk}/config/user/ant-macros.xml" />
+
+    <target name="runserver" description="Starts the development server.">
+      <dev_appserver war="WebContent" port="8888" address="localhost">
+        <options>
+        </options>
+      </dev_appserver>
+    </target>
+
+	<target name="update-gae"
+            description="Uploads the application to App Engine.">
+    	<appcfg action="update" war="WebContent" />
+  	</target>
+
+  	<target name="rollback-gae"
+            description="Rolls back an interrupted application update.">
+    	<appcfg action="rollback" war="WebContent" />
+  	</target>
+
+</project>

@@ -1,0 +1,52 @@
+<?eclipse.ant.import?>
+<!--
+  RtspMulticastReflector-JWS-App build-jnlp.xml
+
+  Copyright © 2011 Cisco Systems, Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+ -->
+<project>
+
+    <import file="build-jar.xml" />
+
+    <property name="app.jnlp.file" value="${app.name}.jnlp" />
+    <property name="app.version.file" value="version.xml" />
+
+	<target name="build-jnlp-file" depends="gen-jar-name">
+
+        <delete>
+            <fileset dir="WebContent" includes="${app.jnlp.file}"/>
+        </delete>
+
+        <copy file="jnlp-template.xml" toFile="WebContent/${app.jnlp.file}">
+            <filterset>
+                <filter token="TITLE" value="${app.title}"/>
+                <filter token="VENDOR" value="${app.vendor}"/>
+                <filter token="DESCRIPTION" value="${app.description}"/>
+                <filter token="JAR_NAME" value="${app.jar.name}"/>
+                <filter token="JAR_VERSION" value="${app.version}"/>
+                <filter token="MAIN_CLASS" value="${app.package}.${app.class}"/>
+            </filterset>
+        </copy>
+
+    </target>
+
+    <target name="clean-jnlp-file">
+        <delete>
+            <fileset dir="WebContent" includes="${app.jnlp.file}"/>
+        </delete>
+    </target>
+
+</project>

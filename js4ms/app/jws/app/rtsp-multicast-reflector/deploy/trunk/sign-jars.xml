@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="sign-jars">
+
+    <import file="build-jar.xml" />
+
+    <target name="sign-jars" depends="build-jar-file">
+        <input message="Please enter keystore file path:" addproperty="keystore" defaultvalue="keystore" />
+        <input message="Please enter keystore password:" addproperty="keypass" defaultvalue="testpass" />
+        <input message="Please enter key name:" addproperty="alias" defaultvalue="testkey" />
+        <signjar keystore="${keystore}" storepass="${keypass}" alias="${alias}">
+            <fileset dir="WebContent" includes="*.jar" />
+        </signjar>
+    </target>
+
+</project>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
+  <application>js4ms-rtsp-reflector</application>
+  <version>1</version>
+
+  <threadsafe>true</threadsafe>
+
+  <!-- Configure java.util.logging -->
+  <system-properties>
+    <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
+  </system-properties>
+
+  <static-files>
+    <exclude path="/*.jnlp"/>
+  </static-files>
+
+  <resource-files>
+    <include path="/*.jnlp" />
+  </resource-files>
+
+</appengine-web-app>
