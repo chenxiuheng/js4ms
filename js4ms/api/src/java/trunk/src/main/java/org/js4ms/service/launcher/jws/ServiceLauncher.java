@@ -28,6 +28,7 @@ import org.js4ms.util.logging.Log;
 public class ServiceLauncher {
 
     public interface Listener {
+        void onExit(int exitCode);
         void onConnect();
         void onDisconnect();
     }
@@ -73,6 +74,7 @@ public class ServiceLauncher {
 
     private boolean isConnected = false;
 
+    private Process process;
 
     /*-- Member Functions ----------------------------------------------------*/
 
@@ -110,10 +112,12 @@ public class ServiceLauncher {
             logger.finer(log.entry("start"));
         }
 
-        if (!isServiceStarted()) {
+        if (!isServiceRunning()) {
             return launchProcess();
         }
-        return true;
+        else {
+            return isServiceListening();
+        }
     }
 
     public void stop() {
@@ -127,19 +131,30 @@ public class ServiceLauncher {
         }
     }
 
-    public boolean isServiceStarted() throws InterruptedException {
+    public boolean isServiceRunning() {
+        if (this.process != null) {
+            try {
+                this.process.exitValue();
+                return false;
+            }
+            catch (IllegalThreadStateException e) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isServiceListening() throws InterruptedException {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(log.entry("isServiceStarted"));
         }
 
-        if (this.servicePort != -1) {
-            if (connect(1,0)) {
-                if (!this.useKeepAlive) {
-                    disconnect();
-                }
-                return true;
+        if (connect(1,0)) {
+            if (!this.useKeepAlive) {
+                disconnect();
             }
+            return true;
         }
         return false;
     }
@@ -155,6 +170,8 @@ public class ServiceLauncher {
         parameters.add(System.getProperty("java.home")+File.separator + "bin" + File.separator + "javaws");
 
         parameters.add("-J-Djavaws."+SERVICE_PORT_PROPERTY+"="+this.servicePort);
+
+        parameters.add("-wait");
 
         if (this.useKeepAlive) {
             parameters.add("-J-Djavaws."+SERVICE_KEEP_ALIVE_ENABLED_PROPERTY+"=true");
@@ -189,7 +206,27 @@ public class ServiceLauncher {
 
 
             ProcessBuilder builder = new ProcessBuilder(commandLineParams);
-            builder.start();
+            this.process = builder.start();
+            if (this.listener != null) {
+                Thread thread = new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            int result = ServiceLauncher.this.process.waitFor();
+                            // If the launcher killed javaws, the process member will be set to null
+                            if (ServiceLauncher.this.process != null) {
+                                ServiceLauncher.this.listener.onExit(result);
+                            }
+                        }
+                        catch (InterruptedException e) {
+                            // The waitFor() call was interrupted - interrupt again
+                            Thread.currentThread().interrupt();
+                        }
+                    }
+                };
+                thread.setDaemon(true);
+                thread.start();
+            }
 
             logger.fine(log.msg("service launched"));
         }
