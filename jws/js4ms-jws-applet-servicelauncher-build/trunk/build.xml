@@ -17,7 +17,7 @@
   limitations under the License.
 
  -->
-<project basedir="." default="build" name="service launcher applet build for JNLP deployment">
+<project basedir="." default="build-jar" name="service launcher applet build for JNLP deployment">
 
 	<property environment="env"/>
     <property name="debuglevel" value="source,lines,vars"/>
@@ -26,14 +26,16 @@
     <import file="build-descriptor.xml"/>
     <import file="build-jnlp.xml"/>
     <import file="build-version.xml"/>
+    <import file="deploy-tomcat.xml"/>
+    <import file="deploy-gae.xml"/>
     
     <target name="init"></target>
 
-    <target name="build"
+    <target name="build-web-application"
             description="builds web application"
             depends="sign-jars,build-jnlp-file,build-version-file,build-descriptor-file" />
 
-    <target name="clean"
+    <target name="clean-web-application-files"
             description="deletes all generated files"
             depends="clean-jar-file,clean-jnlp-file,clean-version-file,clean-descriptor-file" />
 

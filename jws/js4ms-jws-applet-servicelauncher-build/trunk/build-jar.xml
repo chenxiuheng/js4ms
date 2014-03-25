@@ -40,11 +40,13 @@
         </delete>
 
         <jar destfile="WebContent/${applet.jar.name}">
-            <fileset dir="../js4ms-jse/bin">
+            <fileset dir="../js4ms-api-build-jse/bin">
                 <include name="org/js4ms/service/launcher/jws/**/*.class" />
-                <include name="org/js4ms/util/logging/**/*.class" />
-                </fileset>
-            <fileset dir="../org.js4ms.jws.applet.ServiceLauncherApplet/bin">
+                <include name="org/js4ms/util/logging/*.class" />
+                <include name="org/js4ms/util/logging/swing/*.class" />
+                <exclude name="**/test/*.class" />
+            </fileset>
+            <fileset dir="../js4ms-jws-applet-service-launcher/bin">
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
@@ -54,6 +56,7 @@
                 <attribute name="Implementation-Vendor" value="${applet.vendor}" />
                 <attribute name="Implementation-Title" value="${applet.name}" />
                 <attribute name="Implementation-Version" value="${applet.version}" />
+                <attribute name="Trusted-Library" value="true" />
             </manifest>
         </jar>
 
@@ -99,6 +102,8 @@
 
             -flattenpackagehierarchy ''
 
+            -keep public class org.js4ms.jws.applet.ServiceLauncherApplet
+            -keep public class org.js4ms.util.logging.swing.ConsoleWindowHandler
             -keep public class org.js4ms.util.logging.LogFormatter
             -keep public class org.js4ms.util.logging.JsonLogFormatter
 
