@@ -18,7 +18,7 @@
 		<link>
 			<name>src-reflector</name>
 			<type>2</type>
-			<locationURI>$%7BWORKSPACE_LOC%7D/js4ms-app-java-rtsp-multicast-reflector/src/main/java</locationURI>
+			<location>/Users/gbumgard/Documents/workspace/js4ms-app-src-java-rtsp-multicast-reflector/src/main/java</location>
 		</link>
 	</linkedResources>
 </projectDescription>
