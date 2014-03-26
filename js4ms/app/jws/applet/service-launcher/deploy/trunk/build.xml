@@ -17,7 +17,8 @@
   limitations under the License.
 
  -->
-<project basedir="." default="build" name="Builds service launcher applet for JNLP deployment">
+<project basedir="." default="build" name="ServiceLauncherApplet">
+    <description>Builds service launcher applet for JNLP deployment</description>
 
 	<property environment="env"/>
     <property name="debuglevel" value="source,lines,vars"/>
