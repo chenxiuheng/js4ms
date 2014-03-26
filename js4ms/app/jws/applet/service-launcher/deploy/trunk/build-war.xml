@@ -1,8 +1,8 @@
 <?eclipse.ant.import?>
 <!--
-  RtspMulticastReflector-JWS-App build-war.xml
+  build-war.xml
 
-  Copyright © 2011 Cisco Systems, Inc.
+  Copyright © 2013 Cisco Systems, Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -19,10 +19,7 @@
  -->
 <project>
 
-    <import file="build-jar.xml" />
-    <import file="build-jnlp.xml" />
-    <import file="build-version.xml" />
-    <import file="build-descriptor.xml" />
+	<property file="applet.properties" />
 
     <property name="war.file" value="${applet.name}.war" />
 
