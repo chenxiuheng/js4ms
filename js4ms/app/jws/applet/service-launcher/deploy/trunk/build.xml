@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
-  RtspMulticastReflector-JWS-App build.xml
+  build.xml
 
   Copyright © 2011 Cisco Systems, Inc.
 
@@ -17,26 +17,24 @@
   limitations under the License.
 
  -->
-<project basedir="." default="build-jar" name="service launcher applet build for JNLP deployment">
+<project basedir="." default="build" name="Builds service launcher applet for JNLP deployment">
 
 	<property environment="env"/>
     <property name="debuglevel" value="source,lines,vars"/>
 
-    <import file="sign-jars.xml"/>
-    <import file="build-descriptor.xml"/>
-    <import file="build-jnlp.xml"/>
-    <import file="build-version.xml"/>
+    <import file="build-web-app.xml"/>
+    <import file="build-war.xml"/>
     <import file="deploy-tomcat.xml"/>
     <import file="deploy-gae.xml"/>
     
     <target name="init"></target>
 
-    <target name="build-web-application"
+    <target name="build"
             description="builds web application"
-            depends="sign-jars,build-jnlp-file,build-version-file,build-descriptor-file" />
+            depends="build-web-app" />
 
-    <target name="clean-web-application-files"
+    <target name="clean"
             description="deletes all generated files"
-            depends="clean-jar-file,clean-jnlp-file,clean-version-file,clean-descriptor-file" />
+            depends="clean-web-app,clean-war-file" />
 
 </project>
