@@ -45,7 +45,11 @@
                 <exclude name="org/js4ms/service/launcher/**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
-            <fileset dir="../js4ms-app-jws-rtps-multicast-reflector/bin">
+            <fileset dir="../js4ms-app-jse-rtsp-multicast-reflector/bin">
+                <include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+            </fileset>
+            <fileset dir="../js4ms-app-jws-rtsp-multicast-reflector/bin">
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
