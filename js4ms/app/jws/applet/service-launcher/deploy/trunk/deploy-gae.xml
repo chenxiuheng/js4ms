@@ -26,7 +26,16 @@
 
     <import file="${appengine.sdk}/config/user/ant-macros.xml" />
 
-    <target name="runserver" description="Starts the development server.">
+    <target name="copy-gae-jars"
+            description="Copies the App Engine JARs">
+      <copy todir="WebContent/WEB-INF/lib" flatten="true">
+      <fileset dir="${appengine.sdk}/lib/user">
+          <include name="**/*.jar" />
+      </fileset>
+    </copy>
+  </target>
+
+    <target name="runserver" description="Starts the development server." depends="copy-gae-jars">
       <dev_appserver war="WebContent" port="8888" address="localhost">
         <options>
         </options>
@@ -34,7 +43,7 @@
     </target>
 
 	<target name="update-gae"
-            description="Uploads the application to App Engine.">
+            description="Uploads the application to App Engine." depends="copy-gae-jars">
     	<appcfg action="update" war="WebContent" />
   	</target>
 
