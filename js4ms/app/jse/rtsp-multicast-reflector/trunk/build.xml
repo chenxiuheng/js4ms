@@ -1,0 +1,131 @@
+<?eclipse.ant.import?>
+<!--
+  RtspMulticastReflector-JWS-App build-jar.xml
+
+  Copyright © 2011 Cisco Systems, Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+ -->
+<project default="build">
+
+    <property file="app.properties" />
+
+    <import file="gen-version.xml" />
+
+    <target name="gen-jar-name" depends="gen-version">
+        <property name="app.jar.name" value="${app.name}.jar" />
+        <property name="app.jar.file" value="${app.name}__V${app.version}.jar" />
+    </target>
+
+    <target name="build-jar-file" depends="gen-jar-name">
+
+        <!-- Delete all existing versions of the jar file -->
+        <delete>
+            <fileset dir="build" includes="${app.name}*.jar" />
+        </delete>
+
+        <jar destfile="build/${app.jar.name}">
+            <fileset dir="../js4ms-api-build-jse/bin" />
+            <fileset dir="bin" />
+            <zipfileset excludes="META-INF/*.SF" src="../jain-sdp/jain-sdp-1.0.100.jar"/>
+            <manifest>
+                <attribute name="Main-Class" value="${app.package}.${app.class}" />
+                <attribute name="Built-By" value="${user.name}" />
+                <attribute name="Implementation-Vendor" value="${app.vendor}" />
+                <attribute name="Implementation-Title" value="${app.name}" />
+                <attribute name="Implementation-Version" value="${app.version}" />
+            </manifest>
+        </jar>
+
+    </target>
+
+    <target name="prompt-for-obfuscation">
+        <input message="Obfuscate Java Bytecode (y/n)?" validargs="y,n" defaultvalue="n" addproperty="do.obfuscate"/>
+		<condition property="dont.obfuscate" value="-dontobfuscate" else="">
+            <equals arg1="n" arg2="${do.obfuscate}"/>
+        </condition>
+    </target>
+
+    <available property="proguard-installed" resource="proguard/ant/task.properties" classpath="proguard.jar" />
+
+    <target name="run-proguard" depends="build-jar-file,prompt-for-obfuscation" if="proguard-installed">
+
+        <taskdef resource="proguard/ant/task.properties" classpath="proguard.jar" />
+
+        <condition property="rtlibjars" value="/System/Library/Frameworks/JavaVM.framework/Classes/classes.jar">
+            <os family="mac"/>
+        </condition>
+
+        <condition property="rtlibjars" value="${java.home}/lib/rt.jar">
+            <os family="windows"/>
+        </condition>
+
+        <echo message="${rtlibjars}"/>
+
+        <proguard printusage="true">
+            <![CDATA[
+
+            ${dont.obfuscate}
+
+            -verbose
+
+            -injars WebContent/${app.jar.name}
+            -outjars WebContent/${app.jar.file}
+
+            -libraryjars ${rtlibjars}
+            -libraryjars ${java.home}/lib/javaws.jar
+            -libraryjars WebContent/jain-sdp-1.0.100.jar
+
+            -printmapping ./build/proguard.mapping
+
+            -flattenpackagehierarchy ''
+
+            -keep public class org.js4ms.util.logging.LogFormatter
+            -keep public class org.js4ms.util.logging.JsonLogFormatter
+
+            -keepclasseswithmembers public class * {
+                public static void main(java.lang.String[]);
+            }
+
+            -keepclassmembers enum  * {
+                public static **[] values();
+                public static ** valueOf(java.lang.String);
+            }
+
+            -keepclasseswithmembers,allowshrinking class * {
+                native <methods>;
+            }
+
+            ]]>
+        </proguard>
+
+        <delete>
+            <fileset dir="build" includes="${app.jar.name}" />
+        </delete>
+
+    </target>
+
+    <target name="rename-jar-file" depends="build-jar-file" unless="proguard-installed">
+        <move file="build/${app.jar.name}" toFile="build/${app.jar.file}"/>
+    </target>
+
+    <target name="build" depends="run-proguard,rename-jar-file" />
+
+    <target name="clean">
+        <delete>
+            <fileset dir="build" includes="*.jar" />
+        </delete>
+    </target>
+
+</project>
