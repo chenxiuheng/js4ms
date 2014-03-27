@@ -3,7 +3,7 @@
  * 
  * File: ServiceLauncherApplet.java (org.js4ms.jws.applet)
  * 
- * Copyright © 2011-2012 Cisco Systems, Inc.
+ * Copyright Â© 2011-2012 Cisco Systems, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -124,21 +124,30 @@ public class ServiceLauncherApplet extends Applet {
     public String[][] getParameterInfo() {
         return PARAMETER_INFO;
     }
+    
+    public String getParameterInfoJson() {
+    	String result = "[";
+    	for (int index = 0; index < PARAMETER_INFO.length; index++) {
+    		String[] entry = PARAMETER_INFO[index];
+    		if (index > 0) result += ',';
+    		result += "{ \"name\":\""+entry[0]+"\",";
+    		result += "\"type\":\""+entry[1]+"\",";
+    		result += "\"description\":\""+entry[2]+"\" }";
+    	}
+    	result += ']';
+    	return result;
+    }
 
     @Override
     public void init() {
 
-        String loggingPropertiesUrlParam = getParameter(LOGGING_PROPERTIES_URL_PARAM);
+    	URI loggingPropertiesUri = getLoggingPropertiesUrl();
 
-        System.out.println("logging properties "+loggingPropertiesUrlParam);
-
-        if (loggingPropertiesUrlParam != null) {
+        if (loggingPropertiesUri != null) {
             try {
-                Logging.configureLogging(new URL(loggingPropertiesUrlParam).toURI());
+                Logging.configureLogging(loggingPropertiesUri);
             }
             catch (MalformedURLException e) {
-            }
-            catch (URISyntaxException e) {
             }
             catch (IOException e) {
             }
@@ -186,6 +195,7 @@ public class ServiceLauncherApplet extends Applet {
 
                 @Override
                 public void onConnect() {
+                    logger.finer(log.entry("onConnect"));
                     if (onConnect != null) {
                         getAppletContext().showDocument(onConnect);
                     }
@@ -193,6 +203,7 @@ public class ServiceLauncherApplet extends Applet {
 
                 @Override
                 public void onDisconnect() {
+                    logger.finer(log.entry("onDisconnect"));
                     if (onDisconnect != null) {
                         getAppletContext().showDocument(onDisconnect);
                     }
@@ -200,6 +211,7 @@ public class ServiceLauncherApplet extends Applet {
 
                 @Override
                 public void onExit(int exitCode) {
+                    logger.finer(log.entry("onExit"));
                     if (onTermination != null) {
                         getAppletContext().showDocument(onTermination);
                     }
@@ -413,6 +425,78 @@ public class ServiceLauncherApplet extends Applet {
             String message = "required applet parameter '" + SERVICE_JNLP_URL_PARAM + "' is missing";
             logger.warning(log.msg(message));
             throw new IllegalArgumentException(message);
+        }
+    }
+
+    /**
+     * @return
+     * @throws IllegalArgumentException
+     */
+    URI getLoggingPropertiesUrl() throws IllegalArgumentException {
+
+        String propertyValue = getParameter(LOGGING_PROPERTIES_URL_PARAM);
+        if (propertyValue != null) {
+
+            // Trim spaces and quotes - quotes may be required when running in the applet viewer.
+            propertyValue = propertyValue.trim( );
+            if (propertyValue.startsWith( "\"" ) && propertyValue.endsWith( "\"" ) ) {
+              propertyValue = propertyValue.substring( 1, propertyValue.length( ) - 1 );
+            }
+            else if (propertyValue.startsWith( "'" ) && propertyValue.endsWith( "'" ) ) {
+                propertyValue = propertyValue.substring( 1, propertyValue.length( ) - 1 );
+            }
+
+            try {
+                URI codebase = getCodeBase().toURI();
+                logger.finer(log.msg("applet code base: " + codebase.toString()));
+                URI propertiesUri = new URI(propertyValue);
+                logger.finer(log.msg("properties URI: " + propertiesUri.toString()));
+                URI resolvedUri = codebase.resolve(propertiesUri);
+                logger.finer(log.msg("resolved URI: " + resolvedUri));
+                String scheme = resolvedUri.getScheme();
+
+                // Check for existence of properties file so we can report an error in the applet process
+                if (scheme.equalsIgnoreCase("http") || scheme.equalsIgnoreCase("https")) {
+                    try {
+                        HttpURLConnection connection = (HttpURLConnection)resolvedUri.toURL().openConnection();
+                        connection.connect();
+                        int code = connection.getResponseCode();
+                        connection.disconnect();
+                        if (code != HttpURLConnection.HTTP_OK && code != HttpURLConnection.HTTP_NOT_MODIFIED) {
+                            String message = "logging properties '"+resolvedUri.toString() + "' does not exist.";
+                            logger.warning(log.msg(message));
+                            throw new IllegalArgumentException(message);
+                        }
+                    }
+                    catch (MalformedURLException e) {
+                        String message = "applet parameter '" + LOGGING_PROPERTIES_URL_PARAM + "' is not a valid URL.";
+                        logger.warning(log.msg(message));
+                        throw new IllegalArgumentException(message, e);
+                    }
+                    catch (IOException e) {
+                        String message = "connection attempt for logging properties URL '"+resolvedUri.toString() + "' failed.";
+                        logger.warning(log.msg(message));
+                        throw new IllegalArgumentException(message, e);
+                    }
+                }
+                else if (scheme.equalsIgnoreCase("file")) {
+                    File file = new File(resolvedUri);
+                    if (!file.exists()) {
+                        String message = "logging properties '"+resolvedUri.toString() + "' does not exist.";
+                        logger.warning(log.msg(message));
+                        throw new IllegalArgumentException(message);
+                    }
+                }
+                return resolvedUri;
+            }
+            catch (URISyntaxException e) {
+                String message = "applet parameter '" + LOGGING_PROPERTIES_URL_PARAM + "' is not a valid URL";
+                logger.warning(log.msg(message));
+                throw new IllegalArgumentException(message, e);
+            }
+        }
+        else {
+        	return null;
         }
     }
 
