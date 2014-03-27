@@ -13,6 +13,11 @@
     <property name="java.util.logging.config.file" value="WEB-INF/gae-logging.properties"/>
   </system-properties>
 
+  <static-files>
+      <exclude path="*.jar" />
+      <exclude path="*.jnlp" />
+  </static-files>
+
   <!--
     HTTP Sessions are disabled by default. To enable HTTP sessions specify:
 
