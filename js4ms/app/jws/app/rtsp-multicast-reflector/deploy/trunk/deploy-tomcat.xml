@@ -41,46 +41,46 @@
         <input message="Please enter Tomcat host:" addproperty="host" defaultvalue="localhost:8080"/>
         <input message="Please enter manager user name:" addproperty="username" defaultvalue="manager"/>
         <input message="Please enter manager password:" addproperty="password" defaultvalue="manager"/>
-        <undeploy url="http://${host}/manager/text" username="${username}" password="${password}" path="${applet.context.path}" failonerror="false"/>
-        <deploy url="http://${host}/manager/text" username="${username}" password="${password}" path="${applet.context.path}" war="build/${war.file}" />
+        <undeploy url="http://${host}/manager/text" username="${username}" password="${password}" path="${app.context.path}" failonerror="false"/>
+        <deploy url="http://${host}/manager/text" username="${username}" password="${password}" path="${app.context.path}" war="build/${war.file}" />
     </target>
 
     <target name="deploy-war-file-only-tomcat7" if="do.tomcat7">
         <input message="Please enter Tomcat host:" addproperty="host" defaultvalue="localhost:8080"/>
         <input message="Please enter manager user name:" addproperty="username" defaultvalue="manager"/>
         <input message="Please enter manager password:" addproperty="password" defaultvalue="manager"/>
-        <undeploy url="http://${url}/manager/text" username="${username}" password="${password}" path="${applet.context.path}" failonerror="false"/>
-        <deploy url="http://${host}/manager/text" username="${username}" password="${password}" path="${applet.context.path}" war="build/${war.file}" />
+        <undeploy url="http://${url}/manager/text" username="${username}" password="${password}" path="${app.context.path}" failonerror="false"/>
+        <deploy url="http://${host}/manager/text" username="${username}" password="${password}" path="${app.context.path}" war="build/${war.file}" />
     </target>
 
 	<target name="undeploy-war-file-tomcat7" if="do.tomcat7">
         <input message="Please enter Tomcat host:" addproperty="host" defaultvalue="localhost:8080"/>
         <input message="Please enter manager user name:" addproperty="username" defaultvalue="manager"/>
         <input message="Please enter manager password:" addproperty="password" defaultvalue="manager"/>
-        <undeploy url="http://${host}/manager/text" username="${username}" password="${password}" path="${applet.context.path}" failonerror="false" />
+        <undeploy url="http://${host}/manager/text" username="${username}" password="${password}" path="${app.context.path}" failonerror="false" />
     </target>
 
     <target name="deploy-war-file-tomcat6" if="do.tomcat6">
         <input message="Please enter Tomcat host:" addproperty="host" defaultvalue="localhost:8080"/>
         <input message="Please enter manager user name:" addproperty="username" defaultvalue="admin"/>
         <input message="Please enter manager password:" addproperty="password" defaultvalue="admin"/>
-        <undeploy url="http://${host}/manager" username="${username}" password="${password}" path="${applet.context.path}" failonerror="false"/>
-        <deploy url="http://${host}/manager" username="${username}" password="${password}" path="${applet.context.path}" war="build/${war.file}" />
+        <undeploy url="http://${host}/manager" username="${username}" password="${password}" path="${app.context.path}" failonerror="false"/>
+        <deploy url="http://${host}/manager" username="${username}" password="${password}" path="${app.context.path}" war="build/${war.file}" />
     </target>
 
     <target name="deploy-war-file-only-tomcat6" if="do.tomcat6">
         <input message="Please enter Tomcat host:" addproperty="host" defaultvalue="localhost:8080"/>
         <input message="Please enter manager user name:" addproperty="username" defaultvalue="admin"/>
         <input message="Please enter manager password:" addproperty="password" defaultvalue="admin"/>
-        <undeploy url="http://${host}/manager" username="${username}" password="${password}" path="${applet.context.path}" failonerror="false"/>
-        <deploy url="http://${host}/manager" username="${username}" password="${password}" path="${applet.context.path}" war="build/${war.file}" />
+        <undeploy url="http://${host}/manager" username="${username}" password="${password}" path="${app.context.path}" failonerror="false"/>
+        <deploy url="http://${host}/manager" username="${username}" password="${password}" path="${app.context.path}" war="build/${war.file}" />
     </target>
 
     <target name="undeploy-war-file-tomcat6" if="do.tomcat6">
         <input message="Please enter Tomcat host:" addproperty="host" defaultvalue="localhost:8080"/>
         <input message="Please enter manager user name:" addproperty="username" defaultvalue="admin"/>
         <input message="Please enter manager password:" addproperty="password" defaultvalue="admin"/>
-        <undeploy url="http://${host}/manager" username="${username}" password="${password}" path="${applet.context.path}" failonerror="false" />
+        <undeploy url="http://${host}/manager" username="${username}" password="${password}" path="${app.context.path}" failonerror="false" />
     </target>
 
     <target name="deploy-war-file-other" if="do.other">
