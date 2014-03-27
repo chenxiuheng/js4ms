@@ -19,10 +19,7 @@
  -->
 <project>
 
-    <import file="build-jar.xml" />
-    <import file="build-jnlp.xml" />
-    <import file="build-version.xml" />
-    <import file="build-descriptor.xml" />
+	<property file="app.properties" />
 
     <property name="war.file" value="${app.name}.war" />
 
