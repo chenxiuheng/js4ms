@@ -115,9 +115,7 @@ public class ServiceLauncher {
         if (!isServiceRunning()) {
             return launchProcess();
         }
-        else {
-            return isServiceListening();
-        }
+        return true;
     }
 
     public void stop() {
@@ -131,23 +129,23 @@ public class ServiceLauncher {
         }
     }
 
-    public boolean isServiceRunning() {
+    public boolean isServiceRunning() throws InterruptedException {
         if (this.process != null) {
             try {
                 this.process.exitValue();
                 return false;
             }
             catch (IllegalThreadStateException e) {
-                return true;
+                return isServiceListening();
             }
         }
-        return false;
+        return isServiceListening();
     }
 
     public boolean isServiceListening() throws InterruptedException {
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.finer(log.entry("isServiceStarted"));
+            logger.finer(log.entry("isServiceListening"));
         }
 
         if (connect(1,0)) {
