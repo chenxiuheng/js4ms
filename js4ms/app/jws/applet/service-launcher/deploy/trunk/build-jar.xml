@@ -51,12 +51,15 @@
                 <exclude name="**/test/*.class" />
             </fileset>
             <manifest>
+                <attribute name="Application-Name" value="${applet.name}" />
+                <attribute name="Codebase" value="127.0.0.1:8080 localhost:8080 http://js4ms-service-launcher.appspot.com" />
                 <attribute name="Main-Class" value="${applet.class}" />
                 <attribute name="Built-By" value="${user.name}" />
                 <attribute name="Implementation-Vendor" value="${applet.vendor}" />
                 <attribute name="Implementation-Title" value="${applet.name}" />
                 <attribute name="Implementation-Version" value="${applet.version}" />
                 <attribute name="Trusted-Library" value="true" />
+                <attribute name="Permissions" value="all-permissions" />
             </manifest>
         </jar>
 
