@@ -52,4 +52,19 @@
     	<appcfg action="rollback" war="WebContent" />
   	</target>
 
+    <target name="deploy-app" description="Uploads and deploys the application to App Engine.">
+	    <input message="Enter email" addproperty="gae-email"/>
+	    <input message="Enter password" addproperty="gae-password" />
+		
+	    <java classname="com.google.appengine.tools.admin.AppCfg"
+	          inputstring="${gae-password}"
+	          classpath="${appengine.sdk}/lib/appengine-tools-api.jar"
+	          fork="true"
+	          failonerror="true">
+	        <arg value="--email=${gae-email}" />
+	        <arg value="--passin" />
+	        <arg value="update" />
+	        <arg value="WebContent" />
+	    </java>
+	</target>
 </project>
