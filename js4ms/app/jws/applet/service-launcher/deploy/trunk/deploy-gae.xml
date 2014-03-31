@@ -29,13 +29,13 @@
     <target name="copy-gae-jars"
             description="Copies the App Engine JARs">
       <copy todir="WebContent/WEB-INF/lib" flatten="true">
-      <fileset dir="${appengine.sdk}/lib/user">
+        <fileset dir="${appengine.sdk}/lib/user">
           <include name="**/*.jar" />
-      </fileset>
-    </copy>
-  </target>
+        </fileset>
+      </copy>
+    </target>
 
-    <target name="runserver" description="Starts the development server." depends="copy-gae-jars">
+    <target name="runserver" description="Starts the development server.">
       <dev_appserver war="WebContent" port="8888" address="localhost">
         <options>
         </options>
