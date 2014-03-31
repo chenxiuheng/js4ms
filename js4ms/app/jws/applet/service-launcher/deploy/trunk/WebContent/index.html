@@ -60,8 +60,13 @@ function enableKeepAliveFormElements(enable) {
 
 	<h2>Description</h2>
 
- 	<p>The service launcher applet is used to launch a Java Web Start application in a separate process.
-	The service is run by invoking javaws to run an application defined by a .jnlp file.</p>
+ 	<p>The service launcher applet is used to launch a Java Web Start (JWS) application in a separate process.
+	The application is described using a JNLP document. The applet is passed a URL that specifies the location
+	of the application JNLP document.
+	The applet invokes <code>javaws</code> to run the application.
+	The applet passes the JNLP URL to <code>javaws</code>, which in-turn, fetches the JNLP document, uses
+	the JNLP description to determine what resources must be downloaded, and after retrieving the necessary resources,
+	starts the application.</p>
 
 	<p>The applet is intended for use with applications that accept TCP client connections.
 	The applet will attempt to connect to the service on a specified TCP port to determine whether the service
