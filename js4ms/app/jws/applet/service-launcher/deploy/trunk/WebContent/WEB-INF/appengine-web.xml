@@ -18,6 +18,10 @@
       <exclude path="*.jar" />
       <exclude path="*.jnlp" />
   </static-files>
+  
+  <resource-files>
+      <include path="version.xml" />
+  </resource-files>
 
   <!--
     HTTP Sessions are disabled by default. To enable HTTP sessions specify:
