@@ -3,7 +3,7 @@
  * 
  * File: InterfaceMembershipManager.java (org.js4ms.net.amt.gateway)
  * 
- * Copyright © 2009-2012 Cisco Systems, Inc.
+ * Copyright (C) 2009-2012 Cisco Systems, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,9 +34,9 @@ import org.js4ms.net.amt.GroupMembershipRecord;
 import org.js4ms.net.amt.MembershipQuery;
 import org.js4ms.net.amt.MembershipReport;
 import org.js4ms.net.amt.SourceFilter;
-import org.js4ms.util.logging.Log;
-import org.js4ms.util.logging.LoggableBase;
-import org.js4ms.util.logging.Logging;
+import org.js4ms.util.logging.java.Log;
+import org.js4ms.util.logging.java.LoggableBase;
+import org.js4ms.util.logging.java.Logging;
 
 
 

@@ -3,7 +3,7 @@
  * 
  * File: AmtMembershipUpdateMessage.java (org.js4ms.net.amt)
  * 
- * Copyright © 2010-2012 Cisco Systems, Inc.
+ * Copyright (C) 2010-2012 Cisco Systems, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ import org.js4ms.net.ip.protocol.mld.MLDv1ReportMessage;
 import org.js4ms.util.buffer.fields.ByteArrayField;
 import org.js4ms.util.buffer.fields.ByteField;
 import org.js4ms.util.buffer.fields.IntegerField;
-import org.js4ms.util.logging.Logging;
+import org.js4ms.util.logging.java.Logging;
 
 
 

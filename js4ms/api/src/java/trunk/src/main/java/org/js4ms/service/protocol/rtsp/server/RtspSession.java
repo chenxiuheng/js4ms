@@ -13,7 +13,7 @@ import org.js4ms.service.protocol.rtsp.RtspMessageHeaders;
 import org.js4ms.service.protocol.rtsp.RtspMethods;
 import org.js4ms.service.protocol.rtsp.presentation.Presentation;
 import org.js4ms.service.server.Server;
-import org.js4ms.util.logging.Log;
+import org.js4ms.util.logging.java.Log;
 
 
 

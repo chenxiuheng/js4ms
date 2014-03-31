@@ -17,8 +17,8 @@ import org.js4ms.service.protocol.rest.handler.TransactionHandler;
 import org.js4ms.service.protocol.rest.headers.SimpleMessageHeader;
 import org.js4ms.service.protocol.rest.message.Request;
 import org.js4ms.service.protocol.rest.message.Response;
-import org.js4ms.util.logging.JsonLogFormatter;
-import org.js4ms.util.logging.LogFormatter;
+import org.js4ms.util.logging.java.JsonLogFormatter;
+import org.js4ms.util.logging.java.LogFormatter;
 
 
 

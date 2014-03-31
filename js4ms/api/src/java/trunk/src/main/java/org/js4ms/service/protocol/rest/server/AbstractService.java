@@ -17,8 +17,8 @@ import org.js4ms.service.protocol.rest.message.Response;
 import org.js4ms.service.protocol.rest.message.StatusLine;
 import org.js4ms.service.server.Connection;
 import org.js4ms.service.server.Service;
-import org.js4ms.util.logging.Log;
-import org.js4ms.util.logging.Loggable;
+import org.js4ms.util.logging.java.Log;
+import org.js4ms.util.logging.java.Loggable;
 
 
 

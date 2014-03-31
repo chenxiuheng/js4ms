@@ -3,7 +3,7 @@
  * 
  * File: IPMessage.java (org.js4ms.net.ip)
  * 
- * Copyright © 2009-2012 Cisco Systems, Inc.
+ * Copyright (C) 2009-2012 Cisco Systems, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import org.js4ms.exceptions.ParseException;
 import org.js4ms.util.buffer.parser.BufferParserMap;
 import org.js4ms.util.buffer.parser.KeyedBufferParser;
 import org.js4ms.util.buffer.parser.MissingParserException;
-import org.js4ms.util.logging.Loggable;
+import org.js4ms.util.logging.java.Loggable;
 
 
 

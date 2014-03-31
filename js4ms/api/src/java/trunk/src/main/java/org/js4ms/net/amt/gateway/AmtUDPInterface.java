@@ -16,8 +16,8 @@ import org.js4ms.net.ip.ipv4.IPv4Packet;
 import org.js4ms.net.ip.ipv6.IPv6Packet;
 import org.js4ms.net.udp.UdpDatagram;
 import org.js4ms.net.util.Precondition;
-import org.js4ms.util.logging.Log;
-import org.js4ms.util.logging.Logging;
+import org.js4ms.util.logging.java.Log;
+import org.js4ms.util.logging.java.Logging;
 
 
 

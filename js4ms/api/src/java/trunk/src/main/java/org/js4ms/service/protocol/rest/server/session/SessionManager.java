@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.js4ms.util.logging.Log;
+import org.js4ms.util.logging.java.Log;
 
 
 

@@ -22,7 +22,7 @@ import org.js4ms.net.amt.gateway.AmtPseudoInterfaceManager;
 import org.js4ms.service.protocol.rtsp.TransportDescription;
 import org.js4ms.service.protocol.rtsp.presentation.MediaStream;
 import org.js4ms.service.protocol.rtsp.presentation.Presentation;
-import org.js4ms.util.logging.Logging;
+import org.js4ms.util.logging.java.Logging;
 
 
 

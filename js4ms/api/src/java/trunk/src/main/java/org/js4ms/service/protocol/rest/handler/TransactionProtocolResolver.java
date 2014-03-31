@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 import org.js4ms.service.protocol.rest.RequestException;
 import org.js4ms.service.protocol.rest.message.ProtocolName;
 import org.js4ms.service.protocol.rest.message.Request;
-import org.js4ms.util.logging.Log;
+import org.js4ms.util.logging.java.Log;
 
 
 

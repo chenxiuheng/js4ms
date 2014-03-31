@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2010 Larkwood Labs Software.
+ * Copyright (C) 2009-2010 Larkwood Labs Software.
  *
  * Licensed under the Larkwood Labs Software Source Code License, Version 1.0.
  * You may not use this file except in compliance with this License.
@@ -22,7 +22,7 @@ import java.util.LinkedList;
 import java.util.logging.Logger;
 
 import org.js4ms.service.protocol.rest.RequestException;
-import org.js4ms.util.logging.Logging;
+import org.js4ms.util.logging.java.Logging;
 
 
 

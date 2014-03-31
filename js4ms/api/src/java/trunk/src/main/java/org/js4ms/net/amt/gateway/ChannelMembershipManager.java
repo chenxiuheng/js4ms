@@ -34,9 +34,9 @@ import org.js4ms.exceptions.BoundException;
 import org.js4ms.exceptions.MultiIOException;
 import org.js4ms.net.udp.UdpDatagram;
 import org.js4ms.net.util.Precondition;
-import org.js4ms.util.logging.Log;
-import org.js4ms.util.logging.LoggableBase;
-import org.js4ms.util.logging.Logging;
+import org.js4ms.util.logging.java.Log;
+import org.js4ms.util.logging.java.LoggableBase;
+import org.js4ms.util.logging.java.Logging;
 
 
 

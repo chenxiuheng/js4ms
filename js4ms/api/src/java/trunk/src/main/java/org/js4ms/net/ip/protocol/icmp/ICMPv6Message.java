@@ -3,7 +3,7 @@
  * 
  * File: ICMPv6Message.java (org.js4ms.net.ip.icmp)
  * 
- * Copyright © 2009-2012 Cisco Systems, Inc.
+ * Copyright (C) 2009-2012 Cisco Systems, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ import org.js4ms.util.buffer.fields.ShortField;
 import org.js4ms.util.buffer.parser.BufferParserSelector;
 import org.js4ms.util.buffer.parser.KeyedBufferParser;
 import org.js4ms.util.buffer.parser.MissingParserException;
-import org.js4ms.util.logging.Logging;
+import org.js4ms.util.logging.java.Logging;
 
 
 

@@ -3,7 +3,7 @@
  * 
  * File: BoundException.java (org.js4ms.common)
  * 
- * Copyright © 2009-2012 Cisco Systems, Inc.
+ * Copyright (C) 2009-2012 Cisco Systems, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

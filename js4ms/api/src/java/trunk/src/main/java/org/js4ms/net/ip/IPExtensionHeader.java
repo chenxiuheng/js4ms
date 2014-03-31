@@ -3,7 +3,7 @@
  * 
  * File: IPExtensionHeader.java (org.js4ms.net.ip)
  * 
- * Copyright © 2009-2012 Cisco Systems, Inc.
+ * Copyright (C) 2009-2012 Cisco Systems, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import org.js4ms.exceptions.ParseException;
 import org.js4ms.util.buffer.BufferBackedObject;
 import org.js4ms.util.buffer.fields.ByteField;
 import org.js4ms.util.buffer.parser.MissingParserException;
-import org.js4ms.util.logging.Logging;
+import org.js4ms.util.logging.java.Logging;
 
 
 

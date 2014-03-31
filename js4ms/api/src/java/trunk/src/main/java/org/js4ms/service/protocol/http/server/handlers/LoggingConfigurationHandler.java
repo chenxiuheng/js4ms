@@ -15,7 +15,7 @@ import org.js4ms.service.protocol.rest.entity.StringEntity;
 import org.js4ms.service.protocol.rest.handler.TransactionHandler;
 import org.js4ms.service.protocol.rest.message.Request;
 import org.js4ms.service.protocol.rest.message.Response;
-import org.js4ms.util.logging.Logging;
+import org.js4ms.util.logging.java.Logging;
 
 
 

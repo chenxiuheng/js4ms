@@ -42,7 +42,7 @@ import org.js4ms.service.protocol.rtsp.RtspStatusCodes;
 import org.js4ms.service.protocol.rtsp.presentation.Presentation;
 import org.js4ms.service.protocol.rtsp.presentation.PresentationResolver;
 import org.js4ms.service.protocol.rtsp.server.RtspService;
-import org.js4ms.util.logging.Log;
+import org.js4ms.util.logging.java.Log;
 
 
 

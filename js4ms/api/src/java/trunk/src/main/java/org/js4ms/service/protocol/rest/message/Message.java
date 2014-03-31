@@ -12,7 +12,7 @@ import org.js4ms.service.protocol.rest.entity.CodecManager;
 import org.js4ms.service.protocol.rest.entity.Entity;
 import org.js4ms.service.protocol.rest.entity.RawEntity;
 import org.js4ms.service.server.Connection;
-import org.js4ms.util.logging.Log;
+import org.js4ms.util.logging.java.Log;
 
 
 
