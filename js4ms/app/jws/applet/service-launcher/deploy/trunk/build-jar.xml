@@ -17,7 +17,7 @@
   limitations under the License.
 
  -->
-<project default="build-jar-file">
+<project>
 
     <property file="applet.properties" />
 
@@ -46,7 +46,7 @@
                 <include name="org/js4ms/util/logging/swing/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
-            <fileset dir="../js4ms-jws-applet-service-launcher/bin">
+            <fileset dir="./bin">
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
