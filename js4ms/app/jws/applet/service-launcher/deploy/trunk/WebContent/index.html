@@ -1,11 +1,26 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Service Launcher Applet</title>
-<script src="http://java.com/js/deployJava.js" language="JavaScript" type="text/javascript"></script>
-<script src="./deployLauncher.js" language="JavaScript" type="text/javascript"></script>
-<script language="JavaScript" type="text/javascript">
+<title>Java Web Start Service Launcher Applet Usage</title>
+<style>
+	body {
+		font-size: 11pt;
+		font-family: arial;
+	}
+	td {
+	    padding: 5px;
+	}
+	.warning {
+		background-color:gold;
+		padding:5px
+	}
+	.info {
+		background-color:lightblue;
+		padding:5px
+	}
+</style>
+<script type="text/javascript">
 
 window.onerror = function(errorMessage, fileName, lineNumber) {
 	alert("error: "+errorMessage);
@@ -14,91 +29,105 @@ window.onerror = function(errorMessage, fileName, lineNumber) {
 
 var params = {};
 var isIE = navigator.userAgent.indexOf('MSIE') !=-1;
-var appletId = "launcher";
-var servicePort = "9999";
 
-function confirmRestart() {
-    if (confirm("The service has terminated.\nDo you wish to restart it?")) {
-        var applet = document.getElementById(appletId);
-        applet.start();
-    }
+function loadAppletPage() {
+
+	var useKeepAlive = document.getElementById('use-keep-alive').checked;
+
+	var href = 'applet.html?ServiceJnlpUrl='+document.getElementById('jnlp-url').value;
+
+	href += '&UseKeepAlive='+useKeepAlive;
+	
+	if (useKeepAlive) {
+	  href += '&ServicePort='+document.getElementById('service-port').value;
+	  href += '&ConnectionRetryCount='+document.getElementById('connection-retry-count').value;
+	  href += '&ConnectionRetryInterval='+document.getElementById('connection-retry-interval').value;
+	}
+
+	window.location.href = href;
 }
 
-function confirmRetry() {
-    var applet = document.getElementById(appletId);
-    while (confirm("Service launcher applet failed to connect to service.\nDo you wish to retry?")
-            && !applet.start()) {}
-}
-
-function confirmReconnect() {
-    var applet = document.getElementById(appletId);
-    while (confirm("Service launcher applet was disconnected from service.\nDo you wish to attempt to reconnect to the service?")
-            && !applet.start()) {}
-}
-
-function constructApplet() {
-
-    var parameters = {
-            ServiceJnlpUrl:"ServiceLauncherApplet.jnlp",
-            ServicePort:servicePort,
-            UseKeepAlive:true,
-            ConnectionRetryCount:10,
-            ConnectionRetryInterval:1000,
-            OnTerminationUrl:"javascript:confirmRestart()",
-            OnErrorUrl:"javascript:confirmRetry()",
-            OnDisconnectUrl:"javascript:confirmReconnect()",
-    }
-
-    deployLauncher(appletId,parameters);
-
-}
-
-function showAppletInfo() {
-    var applet = document.getElementById(appletId);
-    if (applet != null) {
-        var appletInfo = applet.getAppletInfo();
-        document.getElementById("info").innerHTML = appletInfo;
-        var parameterInfoArray = applet.getParameterInfo();
-        var tbody = document.getElementById("parameters");
-        for (var pindex = 0; pindex < parameterInfoArray.length; pindex++) {
-            var row = document.createElement("tr");
-            var parameterInfo = parameterInfoArray[pindex];
-            var parameterName = parameterInfo[0];
-            var col = document.createElement("td");
-            row.appendChild(col);
-            col.appendChild(document.createTextNode(parameterName));
-            var parameterType = parameterInfo[1];
-            var col = document.createElement("td");
-            col.appendChild(document.createTextNode(parameterType));
-            row.appendChild(col);
-            var parameterDescription = parameterInfo[2];
-            var col = document.createElement("td");
-            col.appendChild(document.createTextNode(parameterDescription));
-            row.appendChild(col);
-            tbody.appendChild(row);
-        }
-    }
+function enableKeepAliveFormElements(enable) {
+	document.getElementById('service-port').disabled=!enable;
+	document.getElementById('connection-retry-count').disabled=!enable;
+	document.getElementById('connection-retry-interval').disabled=!enable;
 }
 
 </script>
 </head>
-<body onload="constructApplet()" style="font-size:11pt">
-    <p id="info"></p>
-    <p>Applet Properties:</p>
-    <table border="1" cellpadding="5">
-    <thead style="background-color:#CCCCCC">
-    <tr><td>Name</td><td>Type</td><td>Description</td></tr>
-    </thead>
-    <tbody id="parameters"></tbody>
+<body>
+	<h1>Java Web Start Service Launcher Applet Instructions</h1>
+
+	<h2>Description</h2>
+
+ 	<p>The service launcher applet is used to launch a Java Web Start application in a separate process.
+	The service is run by invoking javaws to run an application defined by a .jnlp file.</p>
+
+	<p>The applet is intended for use with applications that accept TCP client connections.
+	The applet will attempt to connect to the service on a specified TCP port to determine whether the service
+	is currently running and to provide a keep-alive connection for the service. The keep-alive functionality is
+	used to allow for the service to automatically terminate after the applet is destroyed and no
+	other clients are connected.</p>
+
+	<blockquote class="warning">The applet may be used to launch malware via Java Web Start if 
+	the browser host has not been configured to prevent application execution without user intervention. Some Java
+	installations may prohibit any use of this applet, or applications it might launch, without white-listing the 
+	host serving the applet or application.</blockquote>
+
+	<blockquote class="info">The applet is currently signed using a self-signed certificate
+    and as such will require the user's explicit permission to execute each time a new version is downloaded.</blockquote>	
+
+	<h2>Demonstration</h2>
+
+	<p>Use the following form to construct an applet instance and launch a service:</p>
+	<form id="construct-applet-form" action="javascript:loadAppletPage()" style="background-color:#CCC;padding:3px;">
+	    <label for="jnlp-url">JNLP File URL:</label>
+		<input id="jnlp-url" type="text" required>
+	    <label for="use-keep-alive">Use Keep-Alive:</label>
+		<input id="use-keep-alive" type="checkbox" value="false" onclick="enableKeepAliveFormElements(this.checked)">
+	    <label for="service-port">Keep-Alive Port:</label>
+		<input id="service-port" type="number" min="1024" max="65535" value="9999" disabled>
+	    <label for="connection-retry-count">Connection Retry Count:</label>
+		<input id="connection-retry-count" type="number" min="1" max="255" value="10" disabled>
+	    <label for="connection-retry-interval">Connection Retry Interval (ms):</label>
+		<input id="connection-retry-interval" type="number" min="1000" value="1000" disabled>
+		<input type="submit" value="Launch Service"/>
+	</form>
+
+	<h2>Usage</h2>
+
+    <p>The service launcher applet is created using the <code>deployLauncher()</code> function provided by 
+    <a href="deployLauncher.js">deployLauncher.js</a>. The <code>deployLauncher</code>function calls the
+    <code>deployJava()</code> function defined in <a href="http://java.com/js/deployJava.js">http://java.com/js/deployJava.js</a>,
+    so both must be included in the web page. The <code>deployLauncher.js</code> file must be fetched from the applet server
+    as it is dynamically generated to handle JNLP versioning of the applet.</p>
+
+    <p>The applet is configured by passing an object containing one or more of the following property values
+    to the deployLauncher() function:</p>
+
+    <table border="1">
+      <thead style="background-color:#CCCCCC">
+        <tr><td>Name</td><td>Type</td><td>Description</td></tr>
+      </thead>
+      <tbody>
+        <tr><td>ServiceJnlpUrl</td><td>URL</td><td>The Java Web Start service .jnlp file URL (required)</td></tr>
+        <tr><td>ServicePort</td><td>Integer</td><td>The service port number. Passed to the service as property 'org.js4ms.service.socket.port'</td></tr>
+        <tr><td>UseKeepAlive</td><td>Boolean</td><td>Indicates whether the applet should open a keep-alive connection. Passed to the service as property 'org.js4ms.service.keepalive.enabled'</td></tr>
+        <tr><td>ConnectionRetryCount</td><td>Integer</td><td>The number of attempts the applet should make to open a keep-alive connection to a service instance.</td></tr>
+        <tr><td>ConnectionRetryInterval</td><td>Integer</td><td>The time delay to use between connection attempts (in milliseconds).</td></tr>
+        <tr><td>ServiceProperties</td><td>comma-delimited list of name=value pairs</td><td>Property values that will be passed to the service.</td></tr>
+        <tr><td>LoggingPropertiesUrl</td><td>URL</td><td>A URL that identifies a source of java.logging properties for the applet</td></tr>
+        <tr><td>OnErrorUrl</td><td>URL</td><td>The URL that the applet will use to set the document location to should an error occur.</td></tr>
+        <tr><td>OnTerminationUrl</td><td>URL</td><td>The URL that the applet will use to set the document location when the service terminates.</td></tr>
+        <tr><td>OnConnectUrl</td><td>URL</td><td>The URL that the applet will use to set the document location when the applet successfully opens a keep-alive connection to the service.</td></tr>
+        <tr><td>OnDisconnectUrl</td><td>URL</td><td>The URL that the applet will use to set the document location when the service has stopped accepting connections.</td></tr>
+      </tbody>
     </table>
-    <script language="JavaScript" type="text/javascript">
-        constructApplet();
-    </script>
-    <p>
-    View the source for this page to see usage.
-    <p>
-    The following code demonstrates the use of the deployLauncher() function contained in deployLauncher.js.
-    The deployLauncher.js code requires functions contained in deployJava.js, so both must be included.
+
+    <h2>Example</h2>
+
+    <p>The following code demonstrates how the applet might be used:</p>
+
     <pre style="font-family:courier;font-size:10pt;color:#006600">
 &lt;html&gt;
   &lt;head&gt;
@@ -110,7 +139,7 @@ function showAppletInfo() {
       function constructApplet() {
 
           var parameters = {
-              ServiceJnlpUrl : "MyService.jnlp",
+              ServiceJnlpUrl : "service.jnlp",
               ServicePort : 9999,
               UseKeepAlive : true,
               ConnectionRetryCount : 10,
@@ -125,15 +154,37 @@ function showAppletInfo() {
 
       }
 
-      function onConnect() {...}
-      function onDisconnect() {...}
-      function onTermination() {...}
-      function onError() {...}
+      function onConnect() {/*...*/}
+
+      function onDisconnect() {
+        var applet = document.getElementById("launcher");
+        if (confirm("Service launcher applet was disconnected from service.\nDo you wish to attempt to reconnect to the service?")) {
+    	  applet.start();
+        }
+      }
+
+      function onTermination() {
+        if (confirm("The service has terminated.\nDo you wish to restart it?")) {
+          var applet = document.getElementById("launcher");
+          applet.start();
+        }
+      }
+
+      function onError() {
+        var applet = document.getElementById("launcher");
+        if (confirm("Service launcher applet failed to connect to service.\nDo you wish to retry?")) {
+    	  applet.start();
+        }
+      }
+
 
     &lt;/script&gt;
   &lt;/head&gt;
   &lt;body&gt;
     ...
+    &lt;script language="JavaScript" type="text/javascript"&gt;
+        constructApplet();
+    &lt;/script&gt;
   &lt;/body&gt;
 &lt;/html&gt;
     </pre>
