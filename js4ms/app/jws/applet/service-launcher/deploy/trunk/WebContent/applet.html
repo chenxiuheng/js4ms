@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Java Web Start Service Launcher Applet</title>
+<style>
+	Body {
+		font-size: 11pt;
+		color: white;
+		background-color: black;
+	}
+</style>
+<script src="http://java.com/js/deployJava.js" language="JavaScript" type="text/javascript"></script>
+<script src="./deployLauncher.js" language="JavaScript" type="text/javascript"></script>
+<script language="JavaScript" type="text/javascript">
+
+var isIE = navigator.userAgent.indexOf('MSIE') !=-1;
+
+window.onerror = function(errorMessage, fileName, lineNumber) {
+	alert("error: "+errorMessage);
+	return true;
+}
+
+function parseQueryString() {
+
+	var params = {};
+	var url = window.location.toString();
+	url.match(/\?(.+)$/);
+
+	var queryParams = RegExp.$1;
+
+	// split up the query string and store in a associative array
+	queryParams = queryParams.split("&");
+
+	for(var i=0; i<queryParams.length; i++)
+	{
+	   var tmp = queryParams[i].split("=");
+	   params[tmp[0]] = unescape(tmp[1]);
+	}
+	return params;
+}
+
+var appletId = "launcher";
+
+function onConnect() {
+	var status = document.getElementById('status');
+	status.innerHTML = 'RUNNING';
+	status.style.color = 'green';
+	showAppletInfo();
+}
+
+function onTermination() {
+	var status = document.getElementById('status');
+	status.innerHTML = 'TERMINATED';
+	status.style.color = 'yellow';
+    if (confirm("The service has terminated.\nDo you wish to restart it?")) {
+        var applet = document.getElementById(appletId);
+        applet.start();
+    }
+}
+
+function onDisconnect() {
+	var status = document.getElementById('status');
+	status.innerHTML = 'DISCONNECTED';
+	status.style.color = 'yellow';
+    var applet = document.getElementById(appletId);
+    if (confirm("Service launcher applet was disconnected from service.\nDo you wish to attempt to reconnect to the service?")) {
+    	applet.start();
+    }
+}
+
+function onError() {
+	var status = document.getElementById('status');
+	status.innerHTML = 'ERROR';
+	status.style.color = 'red';
+    var applet = document.getElementById(appletId);
+    if (confirm("Service launcher applet failed to connect to service.\nDo you wish to retry?")) {
+    	applet.start();
+    }
+}
+
+function showAppletInfo() {
+    var applet = document.getElementById(appletId);
+    if (applet != null) {
+        var appletInfo = applet.getAppletInfo();
+        document.getElementById("info").innerHTML = appletInfo;
+    }
+}
+
+function constructApplet() {
+
+	var status = document.getElementById('status');
+
+	var params = parseQueryString();
+
+	console.log(params);
+
+	if (!params.hasOwnProperty('ServiceJnlpUrl')) {
+		status.innerHTML = "ServiceJnlpUrl query parameter missing!";
+		status.style.color = "orange";
+		return;
+	}
+
+	var useKeepAlive = Boolean(params.UseKeepAlive);
+
+	var parameters = {
+            ServiceJnlpUrl:params.ServiceJnlpUrl,
+            UseKeepAlive:useKeepAlive,
+            LoggingPropertiesUrl:'logging.properties',
+            OnConnectUrl:"javascript:onConnect()",
+            OnTerminationUrl:"javascript:onTermination()",
+            OnDisconnectUrl:"javascript:onDisconnect()",
+            OnErrorUrl:"javascript:onError()",
+    }
+
+	if (useKeepAlive) {
+	  if (params.hasOwnProperty('ServicePort')) parameters.ServicePort = params.ServicePort;
+	  if (params.hasOwnProperty('ConnectionRetryCount')) parameters.ConnectionRetryCount = params.ConnectionRetryCount;
+	  if (params.hasOwnProperty('ConnectionRetryInterval')) parameters.ConnectionRetryInterval = params.ConnectionRetryInterval;
+	}
+
+    document.getElementById('jnlp').innerHTML = params.ServiceJnlpUrl;
+	status.innerHTML = 'DEPLOYING...';
+
+	deployLauncher(appletId,parameters);
+}
+
+</script>
+</head>
+<body onload="showAppletInfo()">
+	<h1>Java Web Start Service Launcher Applet</h1>
+	<p id="info"/>
+	<p id="status">LOADING...</p>
+	<p id='jnlp'/>
+    <script type="text/javascript">
+        constructApplet();
+    </script>
+</body>
+</html>
