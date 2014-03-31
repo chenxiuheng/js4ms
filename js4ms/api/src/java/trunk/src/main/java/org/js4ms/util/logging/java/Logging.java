@@ -3,7 +3,7 @@
  * 
  * File: Logging.java (org.js4ms.util.logging)
  * 
- * Copyright © 2009-2012 Cisco Systems, Inc.
+ * Copyright (C) 2009-2012 Cisco Systems, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.util.logging;
+package org.js4ms.util.logging.java;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
