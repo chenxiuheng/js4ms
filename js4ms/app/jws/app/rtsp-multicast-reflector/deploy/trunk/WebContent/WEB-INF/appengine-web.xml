@@ -11,11 +11,8 @@
   </system-properties>
 
   <static-files>
-    <exclude path="/*.jnlp"/>
+      <exclude path="*.jar" />
+      <exclude path="*.jnlp" />
   </static-files>
-
-  <resource-files>
-    <include path="/*.jnlp" />
-  </resource-files>
 
 </appengine-web-app>
