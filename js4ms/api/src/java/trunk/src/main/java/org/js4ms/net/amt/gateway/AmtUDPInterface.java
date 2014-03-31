@@ -11,11 +11,11 @@ import org.js4ms.channels.MessageKeyExtractor;
 import org.js4ms.channels.OutputChannel;
 import org.js4ms.channels.OutputChannelMap;
 import org.js4ms.channels.OutputChannelTransform;
-import org.js4ms.net.Precondition;
 import org.js4ms.net.ip.IPPacket;
 import org.js4ms.net.ip.ipv4.IPv4Packet;
 import org.js4ms.net.ip.ipv6.IPv6Packet;
 import org.js4ms.net.udp.UdpDatagram;
+import org.js4ms.net.util.Precondition;
 import org.js4ms.util.logging.Log;
 import org.js4ms.util.logging.Logging;
 

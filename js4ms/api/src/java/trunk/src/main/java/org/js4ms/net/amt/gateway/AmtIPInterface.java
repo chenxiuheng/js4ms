@@ -12,7 +12,6 @@ import org.js4ms.channels.OutputChannel;
 import org.js4ms.channels.OutputChannelMap;
 import org.js4ms.channels.OutputChannelTee;
 import org.js4ms.channels.OutputChannelTransform;
-import org.js4ms.net.Precondition;
 import org.js4ms.net.amt.IPv4MembershipQueryTransform;
 import org.js4ms.net.amt.IPv4MembershipReportTransform;
 import org.js4ms.net.amt.IPv6MembershipQueryTransform;
@@ -25,6 +24,7 @@ import org.js4ms.net.ip.protocol.igmp.IGMPMessage;
 import org.js4ms.net.ip.ipv4.IPv4Packet;
 import org.js4ms.net.ip.ipv6.IPv6Packet;
 import org.js4ms.net.ip.protocol.mld.MLDMessage;
+import org.js4ms.net.util.Precondition;
 import org.js4ms.util.logging.Log;
 import org.js4ms.util.logging.Logging;
 

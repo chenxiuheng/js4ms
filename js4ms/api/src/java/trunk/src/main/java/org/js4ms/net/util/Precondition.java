@@ -3,7 +3,7 @@
  * 
  * File: Precondition.java (org.js4ms.net)
  * 
- * Copyright © 2010-2012 Cisco Systems, Inc.
+ * Copyright ? 2010-2012 Cisco Systems, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.net;
+package org.js4ms.net.util;
 
 import java.net.InetAddress;
 
