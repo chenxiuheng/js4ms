@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src-common"/>
+	<classpathentry kind="src" path="org.js4ms.util.task"/>
+	<classpathentry kind="src" path="org.js4ms.util.pool"/>
+	<classpathentry kind="src" path="org.js4ms.util.event"/>
+	<classpathentry kind="src" path="org.js4ms.util.logging.java"/>
+	<classpathentry kind="src" path="org.js4ms.util.buffer"/>
+	<classpathentry kind="src" path="org.js4ms.service.launcher.jvm"/>
+	<classpathentry kind="src" path="org.js4ms.service.protocol.rtsp"/>
+	<classpathentry kind="src" path="org.js4ms.service.protocol.http"/>
+	<classpathentry kind="src" path="org.js4ms.service.protocol.rest"/>
+	<classpathentry kind="src" path="org.js4ms.service.server"/>
+	<classpathentry kind="src" path="org.js4ms.net.udp"/>
+	<classpathentry kind="src" path="org.js4ms.net.amt"/>
+	<classpathentry kind="src" path="org.js4ms.net.util"/>
+	<classpathentry kind="src" path="org.js4ms.net.ip"/>
+	<classpathentry kind="src" path="org.js4ms.io"/>
+	<classpathentry kind="src" path="org.js4ms.exceptions"/>
+	<classpathentry kind="src" path="org.js4ms.channels"/>
 	<classpathentry kind="src" path="src-jse"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/jain-sdp/jain-sdp-1.0.100.jar"/>
