@@ -1,4 +1,4 @@
-package org.js4ms.service.launcher.java;
+package org.js4ms.service.launcher.jvm;
 
 import java.io.File;
 import java.io.IOException;
