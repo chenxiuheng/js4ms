@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+		<attributes>
+			<attribute name="owner.project.facets" value="java"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.util.buffer"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.exceptions"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.util.logging.java"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.net.util"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
