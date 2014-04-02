@@ -601,7 +601,8 @@ public abstract class MediaStream {
                     while (serverPortCount < destinationPortCount) {
                         int port = firstServerPort + serverPortCount;
                         try {
-                            DatagramSocket socket = new DatagramSocket(port);
+                            @SuppressWarnings("resource")
+							DatagramSocket socket = new DatagramSocket(port);
                             sockets[serverPortCount++] = socket;
                         }
                         catch(Exception e) {
