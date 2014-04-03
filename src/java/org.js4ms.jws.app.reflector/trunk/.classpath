@@ -9,6 +9,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.util.logging.java"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.util.logging.swing"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.app.reflector"/>
-	<classpathentry kind="lib" path="/System/Library/Java/Support/Deploy.bundle/Contents/Resources/Java/javaws.jar"/>
+	<classpathentry kind="lib" path="jnlp.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
