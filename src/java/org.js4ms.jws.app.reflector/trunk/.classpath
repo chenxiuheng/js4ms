@@ -6,9 +6,9 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.app.reflector"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.util.logging.java"/>
-	<classpathentry kind="lib" path="/System/Library/Java/Support/Deploy.bundle/Contents/Resources/Java/javaws.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.util.logging.swing"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.app.reflector"/>
+	<classpathentry kind="lib" path="/System/Library/Java/Support/Deploy.bundle/Contents/Resources/Java/javaws.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
