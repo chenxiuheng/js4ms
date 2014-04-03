@@ -1,4 +1,4 @@
-package org.js4ms.jws.app;
+package org.js4ms.jws.app.reflector;
 
 import java.io.IOException;
 import java.net.URL;
