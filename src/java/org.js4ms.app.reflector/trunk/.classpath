@@ -2,6 +2,10 @@
 <classpath>
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/js4ms-api-build-jse"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.service.protocol.http"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.service.protocol.rest"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.service.protocol.rtsp"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.service.server"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.util.logging.java"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
