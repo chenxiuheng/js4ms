@@ -6,19 +6,12 @@
 	</projects>
 	<buildSpec>
 		<buildCommand>
-			<name>org.eclipse.jdt.core.javabuilder</name>
+			<name>org.eclipse.wst.common.project.facet.core.builder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>
 	</buildSpec>
 	<natures>
-		<nature>org.eclipse.jdt.core.javanature</nature>
+		<nature>org.eclipse.wst.common.project.facet.core.nature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>src-reflector</name>
-			<type>2</type>
-			<location>/Users/gbumgard/Documents/workspace/js4ms-app-src-java-rtsp-multicast-reflector/src/main/java</location>
-		</link>
-	</linkedResources>
 </projectDescription>
