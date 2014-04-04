@@ -3,7 +3,7 @@
  * 
  * File: ServiceLauncherApplet.java (org.js4ms.jws.applet)
  * 
- * Copyright © 2011-2012 Cisco Systems, Inc.
+ * Copyright ?? 2011-2012 Cisco Systems, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.jws.applet;
+package org.js4ms.jws.applet.launcher;
 
 import java.applet.Applet;
 import java.io.File;
