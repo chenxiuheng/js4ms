@@ -40,13 +40,15 @@
         </delete>
 
         <jar destfile="WebContent/${applet.jar.name}">
-            <fileset dir="../js4ms-api-build-jse/bin">
-                <include name="org/js4ms/service/launcher/jws/**/*.class" />
-                <include name="org/js4ms/util/logging/*.class" />
-                <include name="org/js4ms/util/logging/swing/*.class" />
+            <fileset dir="../org.js4ms.jws.applet.launcher/bin">
+                <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
-            <fileset dir="../js4ms-jws-applet-service-launcher/bin">
+            <fileset dir="../org.js4ms.service.launcher.jws/bin">
+                <include name="**/*.class" />
+                <exclude name="**/test/*.class" />
+            </fileset>
+            <fileset dir="../org.js4ms.util.logging.java/bin">
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
