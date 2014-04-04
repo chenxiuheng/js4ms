@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.io"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.net.amt"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.service.protocol.rest"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.service.protocol.rtsp"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.util.logging.java"/>
+	<classpathentry kind="lib" path="/jain-sdp/jain-sdp-1.0.100.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.channels"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.net.udp"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
