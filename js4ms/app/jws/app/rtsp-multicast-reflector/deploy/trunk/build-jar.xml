@@ -40,19 +40,28 @@
         </delete>
 
         <jar destfile="WebContent/${app.jar.name}">
-            <fileset dir="../js4ms-api-build-jse/bin">
-                <include name="**/*.class" />
-                <exclude name="org/js4ms/service/launcher/**/*.class" />
-                <exclude name="**/test/*.class" />
-            </fileset>
-            <fileset dir="../js4ms-app-jse-rtsp-multicast-reflector/bin">
-                <include name="**/*.class" />
-                <exclude name="**/test/*.class" />
-            </fileset>
-            <fileset dir="../js4ms-app-jws-rtsp-multicast-reflector/bin">
-                <include name="**/*.class" />
-                <exclude name="**/test/*.class" />
-            </fileset>
+            <fileset dir="/Users/gbumgard/Documents/workspace-js4ms/org.js4ms.jws.app.reflector/bin" includes="**/*.class" excludes="**/test/*.class"/>
+            <fileset dir="/Users/gbumgard/Documents/workspace-js4ms/org.js4ms.util.logging.java/bin" includes="**/*.class" excludes="**/test/*.class"/>
+            <fileset dir="/Users/gbumgard/Documents/workspace-js4ms/org.js4ms.util.logging.swing/bin" includes="**/*.class" excludes="**/test/*.class"/>
+            <fileset dir="/Users/gbumgard/Documents/workspace-js4ms/org.js4ms.app.reflector/bin" includes="**/*.class" excludes="**/test/*.class"/>
+            <fileset dir="/Users/gbumgard/Documents/workspace-js4ms/org.js4ms.service.protocol.http/bin" includes="**/*.class" excludes="**/test/*.class"/>
+            <fileset dir="/Users/gbumgard/Documents/workspace-js4ms/org.js4ms.service.protocol.rest/bin" includes="**/*.class" excludes="**/test/*.class"/>
+            <fileset dir="/Users/gbumgard/Documents/workspace-js4ms/org.js4ms.service.server/bin" includes="**/*.class" excludes="**/test/*.class"/>
+            <fileset dir="/Users/gbumgard/Documents/workspace-js4ms/org.js4ms.exceptions/bin" includes="**/*.class" excludes="**/test/*.class"/>
+            <fileset dir="/Users/gbumgard/Documents/workspace-js4ms/org.js4ms.util.task/bin" includes="**/*.class" excludes="**/test/*.class"/>
+            <fileset dir="/Users/gbumgard/Documents/workspace-js4ms/org.js4ms.service.protocol.rtsp/bin" includes="**/*.class" excludes="**/test/*.class"/>
+            <fileset dir="/Users/gbumgard/Documents/workspace-js4ms/org.js4ms.io/bin" includes="**/*.class" excludes="**/test/*.class"/>
+            <fileset dir="/Users/gbumgard/Documents/workspace-js4ms/org.js4ms.net.amt/bin" includes="**/*.class" excludes="**/test/*.class"/>
+            <fileset dir="/Users/gbumgard/Documents/workspace-js4ms/org.js4ms.net.ip/bin" includes="**/*.class" excludes="**/test/*.class"/>
+            <fileset dir="/Users/gbumgard/Documents/workspace-js4ms/org.js4ms.util.buffer/bin" includes="**/*.class" excludes="**/test/*.class"/>
+            <fileset dir="/Users/gbumgard/Documents/workspace-js4ms/org.js4ms.net.util/bin" includes="**/*.class" excludes="**/test/*.class"/>
+            <fileset dir="/Users/gbumgard/Documents/workspace-js4ms/org.js4ms.channels/bin" includes="**/*.class" excludes="**/test/*.class"/>
+            <fileset dir="/Users/gbumgard/Documents/workspace-js4ms/org.js4ms.net.udp/bin" includes="**/*.class" excludes="**/test/*.class"/>
+            <fileset dir="/Users/gbumgard/Documents/workspace-js4ms/org.js4ms.service.protocol.rtsp.reflector/bin" includes="**/*.class" excludes="**/test/*.class"/>
+
+            <zipfileset excludes="META-INF/*.SF" src="/Users/gbumgard/Documents/workspace-js4ms/jain-sdp/jain-sdp-1.0.100.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="/Users/gbumgard/Documents/workspace-js4ms/jnlp/jnlp.jar"/>
+
             <manifest>
                 <attribute name="Main-Class" value="${app.package}.${app.class}" />
                 <attribute name="Built-By" value="${user.name}" />
