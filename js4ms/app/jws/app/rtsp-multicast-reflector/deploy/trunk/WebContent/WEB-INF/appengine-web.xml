@@ -15,4 +15,8 @@
       <exclude path="*.jnlp" />
   </static-files>
 
+  <resource-files>
+      <include path="version.xml" />
+  </resource-files>
+
 </appengine-web-app>
