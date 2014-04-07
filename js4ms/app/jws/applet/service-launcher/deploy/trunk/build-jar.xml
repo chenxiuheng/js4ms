@@ -76,7 +76,7 @@
 
     <available property="proguard-installed" resource="proguard/ant/task.properties" classpath="proguard.jar" />
 
-    <target name="run-proguard" depends="build-jar" if="proguard-installed">
+    <target name="run-proguard" depends="build-jar,prompt-for-obfuscation" if="proguard-installed">
 
         <taskdef resource="proguard/ant/task.properties" classpath="proguard.jar" />
 
