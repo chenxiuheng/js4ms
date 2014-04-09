@@ -15,7 +15,6 @@ import javax.jnlp.UnavailableServiceException;
 import org.js4ms.util.logging.java.Log;
 import org.js4ms.util.logging.java.Logging;
 import org.js4ms.util.logging.swing.Console;
-
 import org.js4ms.app.reflector.RtspMulticastReflector;
 
 
@@ -30,8 +29,10 @@ public class RtspMulticastReflectorApp implements SingleInstanceListener {
 
     public static final String  JAVAWS_PROPERTY_PREFIX = "javaws.org.js4ms.";
 
-    public static final String  CONSOLE_ENABLED_PROPERTY = "org.js4ms.service.console.enabled";
-    public static final String  CONSOLE_CLOSE_PROPERTY = "org.js4ms.service.console.close";
+    public static final String  SERVICE_PROPERTY_PREFIX = "org.js4ms.service.";
+
+    public static final String  CONSOLE_ENABLED_PROPERTY = SERVICE_PROPERTY_PREFIX + ".console.enabled";
+    public static final String  CONSOLE_CLOSE_PROPERTY = SERVICE_PROPERTY_PREFIX + ".console.close";
 
     static final Log slog = new Log(RtspMulticastReflectorApp.class);
 
