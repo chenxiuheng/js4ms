@@ -9,6 +9,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.util.logging.java"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.util.logging.swing"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.app.reflector"/>
-	<classpathentry kind="lib" path="jnlp.jar"/>
+	<classpathentry kind="lib" path="/jain-sdp/jain-sdp-1.0.100.jar"/>
+	<classpathentry kind="lib" path="/jnlp/jnlp.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
