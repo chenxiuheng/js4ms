@@ -70,7 +70,8 @@ public final class OutputChannelTee<MessageType>
      * 
      * @param channels
      */
-    public OutputChannelTee(final OutputChannel<MessageType>... channels) {
+    @SafeVarargs
+	public OutputChannelTee(final OutputChannel<MessageType>... channels) {
         for (OutputChannel<MessageType> channel : channels) {
             this.channels.add(channel);
         }
