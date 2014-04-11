@@ -21,11 +21,11 @@
 
     <import file="build-jar.xml" />
     <import file="sign-jars.xml" />
-    <import file="build-jnlp.xml" />
+    <import file="build-descriptor.xml" />
     <import file="build-version.xml" />
 
-    <target name="build-web-app" depends="sign-jars, build-jnlp-file, build-version-file" />
+    <target name="build-web-app" depends="sign-jars, build-descriptor-file, build-version-file" />
 
-    <target name="clean-web-app" depends="clean-jar-file, clean-jnlp-file, clean-version-file" />
+    <target name="clean-web-app" depends="clean-jar-file, clean-descriptor-file, clean-version-file" />
 
 </project>
