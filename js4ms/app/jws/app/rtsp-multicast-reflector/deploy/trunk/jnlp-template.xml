@@ -2,7 +2,7 @@
 <!--
   RtspMulticastReflector-JWS-App template.jnlp
 
-  Copyright © 2011 Cisco Systems, Inc.
+  Copyright (C) 2011 Cisco Systems, Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@
     <vendor>@VENDOR@</vendor>
     <description>@DESCRIPTION@</description>
   </information>
-  <offline-allowed/>
+  <!--  <offline-allowed/> -->
   <security>
     <all-permissions/>
   </security>

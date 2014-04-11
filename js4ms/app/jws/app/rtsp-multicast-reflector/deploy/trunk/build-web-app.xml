@@ -2,7 +2,7 @@
 <!--
   build-web-app.xml
 
-  Copyright © 2011 Cisco Systems, Inc.
+  Copyright (C) 2011 Cisco Systems, Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -23,10 +23,9 @@
     <import file="sign-jars.xml" />
     <import file="build-jnlp.xml" />
     <import file="build-version.xml" />
-    <import file="build-descriptor.xml" />
 
-    <target name="build-web-app" depends="sign-jars, build-jnlp-file, build-descriptor-file, build-version-file" />
+    <target name="build-web-app" depends="sign-jars, build-jnlp-file, build-version-file" />
 
-    <target name="clean-web-app" depends="clean-jar-file, clean-jnlp-file, clean-descriptor-file, clean-version-file" />
+    <target name="clean-web-app" depends="clean-jar-file, clean-jnlp-file, clean-version-file" />
 
 </project>
