@@ -37,6 +37,7 @@ function parseQueryString() {
 	   var tmp = queryParams[i].split("=");
 	   params[tmp[0]] = unescape(tmp[1]);
 	}
+	console.log(params);
 	return params;
 }
 
@@ -117,8 +118,11 @@ function constructApplet() {
 	  if (params.hasOwnProperty('ServicePort')) parameters.ServicePort = params.ServicePort;
 	  if (params.hasOwnProperty('ConnectionRetryCount')) parameters.ConnectionRetryCount = params.ConnectionRetryCount;
 	  if (params.hasOwnProperty('ConnectionRetryInterval')) parameters.ConnectionRetryInterval = params.ConnectionRetryInterval;
+	  if (params.hasOwnProperty('ServiceProperties')) parameters.ServiceProperties = params.ServiceProperties.replace(/^\"/g, "").replace(/\"$/g, "");
 	}
 
+	console.log(parameters);
+	
     document.getElementById('jnlp').innerHTML = params.ServiceJnlpUrl;
 	status.innerHTML = 'DEPLOYING...';
 
