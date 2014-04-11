@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="js4ms-jws-app-rtsp-multicast-reflector-deploy">
+        <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
+        <property name="context-root" value="js4ms-jws-app-rtsp-multicast-reflector-deploy"/>
+        <property name="java-output-path" value="/js4ms-jws-app-rtsp-multicast-reflector-deploy/WebContent/WEB-INF/classes"/>
+    </wb-module>
+</project-modules>
