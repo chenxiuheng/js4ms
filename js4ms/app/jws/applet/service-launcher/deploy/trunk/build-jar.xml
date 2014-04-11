@@ -2,7 +2,7 @@
 <!--
   ServiceLauncher-JWS-Applet build-jar.xml
 
-  Copyright © 2011 Cisco Systems, Inc.
+  Copyright (C) 2011 Cisco Systems, Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -67,16 +67,18 @@
 
     </target>
 
+    <!-- 
     <target name="prompt-for-obfuscation">
         <input message="Obfuscate Java Bytecode (y/n)?" validargs="y,n" defaultvalue="n" addproperty="do.obfuscate"/>
         <condition property="dont.obfuscate" value="-dontobfuscate" else="">
           <equals arg1="n" arg2="${do.obfuscate}"/>
         </condition>
     </target>
+     -->
 
     <available property="proguard-installed" resource="proguard/ant/task.properties" classpath="proguard.jar" />
 
-    <target name="run-proguard" depends="build-jar,prompt-for-obfuscation" if="proguard-installed">
+    <target name="run-proguard" depends="build-jar" if="proguard-installed">
 
         <taskdef resource="proguard/ant/task.properties" classpath="proguard.jar" />
 
@@ -101,14 +103,12 @@
             -outjars WebContent/${applet.jar.file}
 
             -libraryjars ${rtlibjars}
-            -libraryjars ${java.home}/lib/javaws.jar
 
             -printmapping ./proguard.mapping
 
             -flattenpackagehierarchy ''
 
             -keep public class org.js4ms.jws.applet.ServiceLauncherApplet
-            -keep public class org.js4ms.util.logging.swing.ConsoleWindowHandler
             -keep public class org.js4ms.util.logging.LogFormatter
             -keep public class org.js4ms.util.logging.JsonLogFormatter
 
