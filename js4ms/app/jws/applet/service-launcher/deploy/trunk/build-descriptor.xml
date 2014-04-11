@@ -2,7 +2,7 @@
 <!--
   ServiceLauncher-JWS-Applet build-descriptor.xml
 
-  Copyright © 2011 Cisco Systems, Inc.
+  Copyright (C) 2011 Cisco Systems, Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -26,7 +26,6 @@
 
         <delete>
             <fileset dir="WebContent/WEB-INF" includes="web.xml" />
-            <fileset dir="WebContent/WEB-INF" includes="jboss-web.xml" />
         </delete>
 
         <copy file="web-template.xml" toFile="WebContent/WEB-INF/web.xml">
@@ -39,18 +38,11 @@
             </filterset>
         </copy>
 
-        <copy file="jboss-web-template.xml" toFile="WebContent/WEB-INF/jboss-web.xml">
-            <filterset>
-                <filter token="CONTEXT_ROOT" value="${applet.context.path}" />
-            </filterset>
-        </copy>
-
     </target>
 
     <target name="clean-descriptor-file">
         <delete>
             <fileset dir="WebContent/WEB-INF" includes="web.xml" />
-            <fileset dir="WebContent/WEB-INF" includes="jboss-web.xml" />
         </delete>
     </target>
 
