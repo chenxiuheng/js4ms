@@ -38,8 +38,8 @@ public class ServiceLauncher {
     /**
      * 
      */
-    public static final String SERVICE_PORT_PROPERTY = "org.js4ms.service.socket.port";
-    public static final String SERVICE_KEEP_ALIVE_ENABLED_PROPERTY = "org.js4ms.service.keepalive.enabled";
+    public static final String DEFAULT_SERVICE_PORT_PROPERTY = "org.js4ms.service.socket.port";
+    public static final String DEFAULT_SERVICE_KEEP_ALIVE_ENABLED_PROPERTY = "org.js4ms.service.keepalive.enabled";
 
     public static final int DEFAULT_CONNECTION_RETRY_COUNT = 10;
     public static final int DEFAULT_CONNECTION_RETRY_INTERVAL = 1000;
@@ -167,18 +167,19 @@ public class ServiceLauncher {
 
         parameters.add(System.getProperty("java.home")+File.separator + "bin" + File.separator + "javaws");
 
-        parameters.add("-J-Djavaws."+SERVICE_PORT_PROPERTY+"="+this.servicePort);
+        //parameters.add("-J-Djavaws."+DEFAULT_SERVICE_PORT_PROPERTY+"="+this.servicePort);
 
         parameters.add("-wait");
 
         if (this.useKeepAlive) {
-            parameters.add("-J-Djavaws."+SERVICE_KEEP_ALIVE_ENABLED_PROPERTY+"=true");
+            // parameters.add("-J-Djavaws."+DEFAULT_SERVICE_KEEP_ALIVE_ENABLED_PROPERTY+"=true");
         }
 
         Set<Entry<Object, Object>> entries = this.serviceProperties.entrySet();
 
         for (Entry<Object,Object> entry : entries) {
-            parameters.add("-J-Djavaws."+(String)entry.getKey()+"="+(String)entry.getValue());
+            // parameters.add("-J-Djavaws."+(String)entry.getKey()+"="+(String)entry.getValue());
+            parameters.add("-J-D"+(String)entry.getKey()+"="+(String)entry.getValue());
         }
 
         parameters.add(this.serviceJnlpUri.toString());
