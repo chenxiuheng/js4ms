@@ -30,7 +30,6 @@
   <resources>
     <j2se version="1.6.0_10+" href="http://java.sun.com/products/autodl/j2se" />
     <jar href="@JAR_NAME@" version="@JAR_VERSION@" main="true"/>
-    <jar href="jain-sdp-1.0.100.jar"/>
     <property name="jnlp.versionEnabled" value="true"/>
     <property name="javaws.org.js4ms.service.socket.port" value="8554" />
     <property name="javaws.org.js4ms.service.socket.address" value="0.0.0.0" />
