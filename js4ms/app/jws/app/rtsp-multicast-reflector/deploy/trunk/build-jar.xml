@@ -2,7 +2,7 @@
 <!--
   RtspMulticastReflector-JWS-App build-jar.xml
 
-  Copyright © 2011 Cisco Systems, Inc.
+  Copyright (C) 2011 Cisco Systems, Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -60,7 +60,6 @@
             <fileset dir="/Users/gbumgard/Documents/workspace-js4ms/org.js4ms.service.protocol.rtsp.reflector/bin" includes="**/*.class" excludes="**/test/*.class"/>
 
             <zipfileset excludes="META-INF/*.SF" src="/Users/gbumgard/Documents/workspace-js4ms/jain-sdp/jain-sdp-1.0.100.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="/Users/gbumgard/Documents/workspace-js4ms/jnlp/jnlp.jar"/>
 
             <manifest>
                 <attribute name="Main-Class" value="${app.package}.${app.class}" />
