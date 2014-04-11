@@ -50,8 +50,8 @@ start() {
     echo $(ps aux | grep vlc | grep -v grep | head -n 1 | awk '{ print $2 }') > /var/vlm/vlm.pid
     ### Create the lock file ###
     touch /var/lock/vlm
-    logger -t vlm "VLC daemon running at pid $(cat /usr/share/tomcat7/tomcat7.pid). Use telnet port 4212 or http port 8088""
-    echo "VLC daemon running at pid $(cat /usr/share/tomcat7/tomcat7.pid). Use telnet port 4212 or http port 8088""
+    logger -t vlm "VLC daemon running at pid $(cat /var/vlm/vlm.pid). Use telnet port 4212 or http port 8088""
+    echo "VLC daemon running at pid $(cat /var/vlm/vlm.pid). Use telnet port 4212 or http port 8088""
 }
 # Restart VLC 
 stop() {
