@@ -1,6 +1,6 @@
 <?eclipse.ant.import?>
 <!--
-  RtspMulticastReflector-JWS-App gen-version.xml
+  gen-version.xml
 
   Copyright (C) 2011 Cisco Systems, Inc.
 
@@ -31,6 +31,7 @@
             <format property="app.timestamp.minute" timezone="GMT" pattern="mm" />
         </tstamp>
         <property name="app.version" value="${app.version.major}.${app.version.minor}.${app.version.maint}.v${app.timestamp}"/>
+        <property name="app.last-modified" value="${applet.timestamp.day-name}, ${applet.timestamp.day} ${applet.timestamp.month-name} ${applet.timestamp.year} ${applet.timestamp.hour}:${applet.timestamp.minute}:${applet.timestamp.second} GMT"/>
         <script language="javascript"><![CDATA[
             
             // |                       .                       .                       .                       |
