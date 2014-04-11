@@ -2,7 +2,7 @@
 <!--
   RtspMulticastReflector-JWS-App build-jnlp.xml
 
-  Copyright © 2011 Cisco Systems, Inc.
+  Copyright (C) 2011 Cisco Systems, Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@
     <import file="build-jar.xml" />
 
     <property name="app.jnlp.file" value="${app.name}.jnlp" />
+    <property name="app.jnlp.default.file" value="${app.name}-default.jnlp" />
     <property name="app.version.file" value="version.xml" />
 
 	<target name="build-jnlp-file" depends="gen-jar-name">
@@ -41,11 +42,23 @@
             </filterset>
         </copy>
 
+        <copy file="jnlp-template-default.xml" toFile="WebContent/${app.jnlp.default.file}">
+            <filterset>
+                <filter token="TITLE" value="${app.title}"/>
+                <filter token="VENDOR" value="${app.vendor}"/>
+                <filter token="DESCRIPTION" value="${app.description}"/>
+                <filter token="JAR_NAME" value="${app.jar.name}"/>
+                <filter token="JAR_VERSION" value="${app.version}"/>
+                <filter token="MAIN_CLASS" value="${app.package}.${app.class}"/>
+            </filterset>
+        </copy>
+        
     </target>
 
     <target name="clean-jnlp-file">
         <delete>
             <fileset dir="WebContent" includes="${app.jnlp.file}"/>
+            <fileset dir="WebContent" includes="${app.jnlp.default.file}"/>
         </delete>
     </target>
 
