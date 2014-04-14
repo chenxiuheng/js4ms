@@ -20,7 +20,6 @@
 <project>
 
     <import file="build-war.xml" />
-    <import file="${appengine.sdk}/config/user/ant-macros.xml" />
 
     <taskdef name="deploy" classname="org.apache.catalina.ant.DeployTask" />
     <taskdef name="undeploy" classname="org.apache.catalina.ant.UndeployTask" />
