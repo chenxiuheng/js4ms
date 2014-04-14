@@ -67,11 +67,12 @@ public class RtspService extends AbstractService {
      */
     public RtspService(final PresentationResolver resolver) {
         super(RTSP_PROTOCOL_VERSION);
-        this.parser = new RequestParser(new MessageHeaderParser(), this);
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(log.entry("RtspService", resolver));
         }
+
+        this.parser = new RequestParser(new MessageHeaderParser(), this);
 
         TransactionHandlerList transactionHandlers = getTransactionHandlers();
 
