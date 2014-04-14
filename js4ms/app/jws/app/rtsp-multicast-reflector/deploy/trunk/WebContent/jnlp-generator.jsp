@@ -19,27 +19,22 @@
 <%@ page contentType="application/x-java-jnlp-file" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <% response.setHeader("Last-Modified", config.getInitParameter("LastModified")); %>
-<%
-String requestUrl = request.getRequestURL().toString();
-String codebaseUrl = requestUrl.substring(0,requestUrl.lastIndexOf('/')+1);
-//String href = codebaseUrl + config.getInitParameter("JnlpName");
-%>
-<jnlp spec="1.0+" href="<%= requestUrl %>" codebase="<%= codebaseUrl %>">
+<jnlp spec="1.0+" href="<c:out value='${pageContext.request.requestURL}'/>?<c:out value='${pageContext.request.queryString}'/>">
   <information>
-    <title><%= config.getInitParameter("Title") %></title>
-    <vendor><%= config.getInitParameter("Vendor") %></vendor>
-    <description><%= config.getInitParameter("Description") %></description>
+    <title><%= config.getInitParameter("title") %></title>
+    <vendor><%= config.getInitParameter("vendor") %></vendor>
+    <description><%= config.getInitParameter("description") %></description>
   </information>
   <security>
     <all-permissions/>
   </security>
   <resources>
     <j2se version="1.6.0_10+" href="http://java.sun.com/products/autodl/j2se" />
-    <jar href="<%= config.getInitParameter("JarName") %>" version="<%= config.getInitParameter("JarVersion") %>" main="true"/>
+    <jar href="<%= config.getInitParameter("jarName") %>" version="<%= config.getInitParameter("jarVersion") %>" main="true"/>
     <property name="jnlp.versionEnabled" value="true"/>
     <c:forEach var="pageParameter" items="${param}">
-	  <property name="<c:out value='${pageParameter.key}'/>" value="<c:out value='${pageParameter.value}'/>" />
+	<property name="<c:out value='${pageParameter.key}'/>" value="<c:out value='${pageParameter.value}'/>" />
     </c:forEach>
   </resources>
-  <application-desc main-class="<%= config.getInitParameter("MainClass") %>" />
+  <application-desc main-class="<%= config.getInitParameter("mainClass") %>" />
 </jnlp>
