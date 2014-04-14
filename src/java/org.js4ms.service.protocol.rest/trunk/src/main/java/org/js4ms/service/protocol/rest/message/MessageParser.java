@@ -73,6 +73,10 @@ public abstract class MessageParser {
      */
     protected void parseMessage(final Connection connection, final InputStream inputStream) throws IOException, ParseException, MessageException {
 
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer(log.entry("parseMessage", connection, inputStream));
+        }
+
         // Get first character in next message 
         // Throws SocketException if the socket is closed by 
         // another thread while waiting in this call
