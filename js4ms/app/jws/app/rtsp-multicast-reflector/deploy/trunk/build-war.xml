@@ -28,7 +28,8 @@
             <fileset dir="WebContent">
                 <exclude name="WEB-INF/web.xml" />
                 <exclude name="WEB-INF/appengine-web.xml" />
-                <exclude name="WEB-INF/jboss-web.xml" />
+                <exclude name="WEB-INF/lib/jsr107*.jar" />
+                <exclude name="WEB-INF/lib/appengine*.jar" />
             </fileset>
             <lib dir="WebContent/WEB-INF/lib" />
         </war>
