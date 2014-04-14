@@ -1,8 +1,10 @@
 package org.js4ms.service.protocol.rtsp.reflector;
 
 import gov.nist.core.Host;
+import gov.nist.javax.sdp.fields.AttributeField;
 import gov.nist.javax.sdp.fields.ConnectionAddress;
 import gov.nist.javax.sdp.fields.ConnectionField;
+import gov.nist.javax.sdp.fields.OriginField;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -13,11 +15,15 @@ import java.io.InputStreamReader;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.Inet4Address;
+import java.net.Inet6Address;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.net.UnknownHostException;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -27,9 +33,9 @@ import javax.sdp.Attribute;
 import javax.sdp.Connection;
 import javax.sdp.Media;
 import javax.sdp.MediaDescription;
+import javax.sdp.Origin;
 import javax.sdp.SdpException;
 import javax.sdp.SdpFactory;
-import javax.sdp.SdpParseException;
 import javax.sdp.SessionDescription;
 
 import org.js4ms.io.FixedLengthInputStream;
@@ -65,6 +71,8 @@ public class MulticastReflectorFactory implements PresentationResolver {
 
     public static final String SOURCE_FILTER_SDP_ATTRIBUTE = "source-filter";
     public static final String AMT_RELAY_DISCOVERY_ADDRESS_SDP_ATTRIBUTE = "x-amt-relay-discovery-address";
+    public static final String SOURCE_ADDRESS_QUERY_PARAMETER = "source_address";
+    public static final String RELAY_ADDRESS_QUERY_PARAMETER = "relay_address";
 
     /*-- Member Variables ----------------------------------------------------*/
 
@@ -334,9 +342,10 @@ public class MulticastReflectorFactory implements PresentationResolver {
         }
 
         try {
-            return SdpFactory.getInstance().createSessionDescription(description);
+            SessionDescription sessionDescription = SdpFactory.getInstance().createSessionDescription(description);
+            return annotateSessionDescription(sdpUri, sessionDescription);
         }
-        catch (SdpParseException e) {
+        catch (SdpException e) {
             throw RequestException.create(RtspService.RTSP_PROTOCOL_VERSION,
                                           RtspStatusCodes.BadRequest,
                                           "cannot parse session description",
@@ -344,6 +353,322 @@ public class MulticastReflectorFactory implements PresentationResolver {
                                           log.getPrefix(),
                                           logger);
         }
+        
+    }
+
+    @SuppressWarnings("unchecked")
+    private SessionDescription annotateSessionDescription(final URI sdpUri, SessionDescription sessionDescription) throws RequestException, SdpException {
+
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer(log.entry("annotateSessionDescription", sdpUri.toString()));
+        }
+        
+        // Check request URL for query string parameters supply or override source and relay address attribute values
+        String query = sdpUri.getQuery();
+        InetAddress sourceAddress = null;
+        InetAddress relayAddress = null;
+        if (query != null && query.length() > 0) {
+            String[] parameters = query.split("&");
+            for (String parameter : parameters) {
+                String[] pair = parameter.split("=");
+                if (pair.length == 2) {
+                    String name = pair[0].toLowerCase();
+                    String value = pair[1];
+                    if (name.equals(SOURCE_ADDRESS_QUERY_PARAMETER)) {
+                        if (logger.isLoggable(Level.FINER)) {
+                            logger.finer(log.msg("resolving source address parameter: "+value));
+                        }
+                        try {
+                            sourceAddress = InetAddress.getByName(value);
+                            // Resolve to check validity of address
+                            sourceAddress.getHostAddress();
+                            if (logger.isLoggable(Level.FINER)) {
+                                logger.finer(log.msg("successfully resolved source address parameter: "+value));
+                            }
+                        }
+                        catch (Exception e) {
+                            throw RequestException.create(RtspService.RTSP_PROTOCOL_VERSION,
+                                    RtspStatusCodes.BadRequest,
+                                    "source address query parameter '" + value + "' is invalid",
+                                    e,
+                                    log.getPrefix(),
+                                    logger);
+                        }
+                    }
+                    else if (name.equals(RELAY_ADDRESS_QUERY_PARAMETER)) {
+                        if (logger.isLoggable(Level.FINER)) {
+                            logger.finer(log.msg("resolving relay address parameter: "+value));
+                        }
+                        try {
+                            relayAddress = InetAddress.getByName(value);
+                            // Resolve to check validity of address
+                            relayAddress.getHostAddress();
+                            if (logger.isLoggable(Level.FINER)) {
+                                logger.finer(log.msg("successfully resolved relay address parameter: "+value));
+                            }
+                        }
+                        catch (Exception e) {
+                            throw RequestException.create(RtspService.RTSP_PROTOCOL_VERSION,
+                                    RtspStatusCodes.BadRequest,
+                                    "relay address query parameter '" + value + "' is invalid",
+                                    e,
+                                    log.getPrefix(),
+                                    logger);
+                        }
+                    }
+                }
+            }
+        }
+
+
+        // Determine whether AMT relay discovery address attribute record must be added. 
+        if (sessionDescription.getAttribute(AMT_RELAY_DISCOVERY_ADDRESS_SDP_ATTRIBUTE) != null) {
+
+            if (logger.isLoggable(Level.FINER)) {
+                logger.finer(log.msg("update existing relay discovery address record"));
+            }
+
+            // Change attribute
+            try {
+                sessionDescription.setAttribute(AMT_RELAY_DISCOVERY_ADDRESS_SDP_ATTRIBUTE, relayAddress.getHostName());
+            }
+            catch (SdpException e) {
+                throw RequestException.create(RtspService.RTSP_PROTOCOL_VERSION,
+                        RtspStatusCodes.InternalServerError,
+                        e,
+                        log.getPrefix(),
+                        logger);
+            }
+        }
+        else if (relayAddress != null) {
+
+            String relayHostName = relayAddress.getHostAddress();
+
+            if (logger.isLoggable(Level.FINER)) {
+                logger.finer(log.msg("add relay discovery address record for relay "+relayHostName));
+            }
+
+            // Add attribute
+            AttributeField xAmtRelayDiscoveryAddress = new AttributeField();
+            try {
+                xAmtRelayDiscoveryAddress.setName(AMT_RELAY_DISCOVERY_ADDRESS_SDP_ATTRIBUTE);
+                xAmtRelayDiscoveryAddress.setValue(relayHostName);
+                @SuppressWarnings("rawtypes")
+                Vector attributes = sessionDescription.getAttributes(false);
+                attributes.add(xAmtRelayDiscoveryAddress);
+                sessionDescription.setAttributes(attributes);
+                if (logger.isLoggable(Level.FINER)) {
+                    logger.finer(log.msg("relay discovery address record added"));
+                }
+            }
+            catch (SdpException e) {
+                throw RequestException.create(RtspService.RTSP_PROTOCOL_VERSION,
+                        RtspStatusCodes.InternalServerError,
+                        e,
+                        log.getPrefix(),
+                        logger);
+            }
+        }
+        else {
+            throw RequestException.create(RtspService.RTSP_PROTOCOL_VERSION,
+                    RtspStatusCodes.BadRequest,
+                    "relay_address query parameter is required for this SDP",
+                    log.getPrefix(),
+                    logger);
+        }
+
+        // Determine whether source filter attribute record must be added. 
+        if (sessionDescription.getAttribute(SOURCE_FILTER_SDP_ATTRIBUTE) == null) {
+
+            if (logger.isLoggable(Level.FINER)) {
+                logger.finer(log.msg("construct source filter attribute record record"));
+            }
+
+            // Verify that a session or media-level connection record specifies a multicast destination address
+            Connection connection = sessionDescription.getConnection();
+            if (connection == null) {
+                Vector<?> descriptions = sessionDescription.getMediaDescriptions(false);
+                if (descriptions != null) {
+                    for (int i = 0; i < descriptions.size(); i++)
+                    {
+                        MediaDescription mediaDescription = (MediaDescription) descriptions.get(i);
+                        connection = mediaDescription.getConnection();
+                        if (connection != null) {
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (connection == null) {
+                throw RequestException.create(RtspService.RTSP_PROTOCOL_VERSION,
+                        RtspStatusCodes.BadRequest,
+                        "SDP does not specify a connection address",
+                        log.getPrefix(),
+                        logger);
+            }
+
+            ConnectionField connectionField = (ConnectionField) connection;
+            ConnectionAddress connectionAddress = connectionField.getConnectionAddress();
+
+            Host host = connectionAddress.getAddress();
+            InetAddress groupAddress;
+
+            
+            try {
+                groupAddress = host.getInetAddress();
+
+                if (logger.isLoggable(Level.FINER)) {
+                    logger.finer(log.msg("group address is "+groupAddress));
+                }
+
+            }
+            catch (UnknownHostException e) {
+                throw new SdpException("cannot resolve connection address in media description");
+            }
+
+            if (!groupAddress.isMulticastAddress()) {
+                throw new SdpException("input connection address must be a multicast address");
+            }
+
+            if (sourceAddress == null) {
+
+                if (logger.isLoggable(Level.FINER)) {
+                    logger.finer(log.msg("no source address specified - attempting to use origin host as source"));
+                }
+
+                Origin origin = sessionDescription.getOrigin();
+
+                if (origin == null) {
+                    throw RequestException.create(RtspService.RTSP_PROTOCOL_VERSION,
+                            RtspStatusCodes.BadRequest,
+                            "source_address query parameter is required for this SDP",
+                            log.getPrefix(),
+                            logger);
+                }
+
+                OriginField originField = (OriginField) origin;
+                String originHost = originField.getAddress();
+
+                if (logger.isLoggable(Level.FINER)) {
+                    logger.finer(log.msg("origin host: "+originHost));
+                }
+
+                try {
+                    sourceAddress = InetAddress.getByName(originHost);
+                }
+                catch (UnknownHostException e) {
+                    try {
+                        // Try it with .local, though that is of questionable use as it will/should
+                        // resolve to an address on the local net.
+                        sourceAddress = InetAddress.getByName(originHost + ".local");
+                    }
+                    catch (UnknownHostException e1) {
+                        throw RequestException.create(RtspService.RTSP_PROTOCOL_VERSION,
+                                RtspStatusCodes.BadRequest,
+                                "source_address query parameter is required because the SDP origin record does not specify valid source",
+                                e1,
+                                log.getPrefix(),
+                                logger);
+                    }
+                }
+            }
+
+            // Add some information attribute records to show what what we've done
+            if (logger.isLoggable(Level.FINER)) {
+                logger.finer(log.msg("add x-origin-source-address attribute"));
+            }
+
+            AttributeField originSource = new AttributeField();
+            originSource.setName("x-origin-source-address");
+            originSource.setValue(sourceAddress.getHostName()+" "+sourceAddress.getHostAddress());
+
+            if (sourceAddress.isLoopbackAddress() || sourceAddress.isLinkLocalAddress()) {
+                try {
+                    sourceAddress = getLocalHostIPAddress(sourceAddress instanceof Inet6Address);
+                }
+                catch (UnknownHostException e) {
+                    throw RequestException.create(RtspService.RTSP_PROTOCOL_VERSION,
+                            RtspStatusCodes.InternalServerError,
+                            e,
+                            log.getPrefix(),
+                            logger);
+                }
+                catch (SocketException e) {
+                    throw RequestException.create(RtspService.RTSP_PROTOCOL_VERSION,
+                            RtspStatusCodes.InternalServerError,
+                            e,
+                            log.getPrefix(),
+                            logger);
+                }
+            }
+
+            // Add some information attribute records to show what what we've done
+            if (logger.isLoggable(Level.FINER)) {
+                logger.finer(log.msg("add x-filter-source-address"));
+            }
+
+            AttributeField filterSource = new AttributeField();
+            filterSource.setName("x-filter-source-address");
+            filterSource.setValue(sourceAddress.getHostName()+" "+sourceAddress.getHostAddress());
+                
+
+            if (!groupAddress.getClass().equals(sourceAddress.getClass())) {
+                throw new SdpException("the IP address types of the source and group address in the SDP do not match");
+            }
+
+            // Add some information attribute records to show what what we've done
+
+            // Add source filter attribute that applies to all groups
+            String filterDesc = "incl IN " + ((sourceAddress instanceof Inet4Address) ? "IP4" : "IP6") + " * " + sourceAddress.getHostAddress();
+
+            if (logger.isLoggable(Level.FINER)) {
+                logger.finer(log.msg("add source filter record: "+filterDesc));
+            }
+
+            AttributeField sourceFilter = new AttributeField();
+            sourceFilter.setName(SOURCE_FILTER_SDP_ATTRIBUTE);
+            sourceFilter.setValue(filterDesc);
+            @SuppressWarnings("rawtypes")
+            Vector attributes = sessionDescription.getAttributes(false);
+            attributes.add(originSource);
+            attributes.add(filterSource);
+            attributes.add(sourceFilter);
+            sessionDescription.setAttributes(attributes);
+        }
+
+        return sessionDescription;
+    }
+
+    InetAddress getLocalHostIPAddress(boolean getIpv6) throws UnknownHostException, SocketException {
+
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer(log.entry("getLocalHostIPAddress"));
+        }
+
+        Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+
+        while (interfaces.hasMoreElements()) {
+            NetworkInterface intf = interfaces.nextElement();
+            System.out.println("checking interface " + intf.getDisplayName());
+            Enumeration<InetAddress> addresses = intf.getInetAddresses();
+            while (addresses.hasMoreElements()) {
+                InetAddress address = addresses.nextElement();
+                if (logger.isLoggable(Level.FINER)) {
+                    logger.finer(log.msg("checking interface address" + address.getHostAddress() +
+                            " loopback=" + address.isLoopbackAddress() +
+                            " link-local=" + address.isLinkLocalAddress() +
+                            " site-local=" + address.isSiteLocalAddress()));
+                }
+                ;
+                if ((getIpv6 ? address instanceof Inet6Address : address instanceof Inet4Address) &&
+                    !address.isLoopbackAddress() &&
+                    !address.isLinkLocalAddress()) {
+                    return address;
+                }
+            }
+        }
+        return InetAddress.getLocalHost();
     }
 
     /**
