@@ -19,6 +19,9 @@
  -->
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
   <display-name>RTSP Multicast Reflector</display-name>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
   <servlet>
     <servlet-name>JnlpDownloadServlet</servlet-name>
     <servlet-class>jnlp.sample.servlet.JnlpDownloadServlet</servlet-class>
@@ -38,23 +41,35 @@
     <servlet-name>jnlp-generator</servlet-name>
     <jsp-file>/jnlp-generator.jsp</jsp-file>
     <init-param>
-      <param-name>LastModified</param-name>
+      <param-name>title</param-name>
+      <param-value>@TITLE@</param-value>
+    </init-param>
+    <init-param>
+      <param-name>vendor</param-name>
+      <param-value>@VENDOR@</param-value>
+    </init-param>
+    <init-param>
+      <param-name>description</param-name>
+      <param-value>@DESCRIPTION@</param-value>
+    </init-param>
+    <init-param>
+      <param-name>lastModified</param-name>
       <param-value>@LAST_MODIFIED@</param-value>
     </init-param>
     <init-param>
-      <param-name>JnlpName</param-name>
+      <param-name>jnlpName</param-name>
       <param-value>@JNLP_NAME@</param-value>
     </init-param>
     <init-param>
-      <param-name>MainClass</param-name>
+      <param-name>mainClass</param-name>
       <param-value>@MAIN_CLASS@</param-value>
     </init-param>
     <init-param>
-      <param-name>JarName</param-name>
+      <param-name>jarName</param-name>
       <param-value>@JAR_NAME@</param-value>
     </init-param>
     <init-param>
-      <param-name>JarVersion</param-name>
+      <param-name>jarVersion</param-name>
       <param-value>@JAR_VERSION@</param-value>
     </init-param>
   </servlet>
