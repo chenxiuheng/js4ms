@@ -14,8 +14,8 @@ import javax.sdp.MediaDescription;
 import javax.sdp.SdpException;
 import javax.sdp.SessionDescription;
 
-import org.js4ms.channels.MessageSource;
-import org.js4ms.channels.OutputChannel;
+import org.js4ms.io.channels.MessageSource;
+import org.js4ms.io.channels.OutputChannel;
 import org.js4ms.net.udp.UdpDatagramPayloadSource;
 import org.js4ms.net.udp.UdpEndpoint;
 import org.js4ms.net.udp.UdpPacketOutputChannel;
