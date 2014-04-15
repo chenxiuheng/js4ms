@@ -24,8 +24,8 @@ import java.nio.ByteBuffer;
 import java.util.logging.Level;
 
 import org.js4ms.exceptions.ParseException;
+import org.js4ms.logging.java.Logging;
 import org.js4ms.util.buffer.parser.MissingParserException;
-import org.js4ms.util.logging.java.Logging;
 
 
 

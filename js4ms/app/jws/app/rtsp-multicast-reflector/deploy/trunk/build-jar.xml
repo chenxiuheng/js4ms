@@ -37,7 +37,7 @@
 
         <jar destfile="WebContent/${app.jar.name}">
             <fileset dir="../org.js4ms.jws.app.reflector/bin" includes="**/*.class" excludes="**/test/*.class"/>
-            <fileset dir="../org.js4ms.util.logging.java/bin" includes="**/*.class" excludes="**/test/*.class"/>
+            <fileset dir="../org.js4ms.logging.java/bin" includes="**/*.class" excludes="**/test/*.class"/>
             <fileset dir="../org.js4ms.util.logging.swing/bin" includes="**/*.class" excludes="**/test/*.class"/>
             <fileset dir="../org.js4ms.app.reflector/bin" includes="**/*.class" excludes="**/test/*.class"/>
             <fileset dir="../org.js4ms.service.protocol.http/bin" includes="**/*.class" excludes="**/test/*.class"/>
@@ -51,7 +51,6 @@
             <fileset dir="../org.js4ms.net.ip/bin" includes="**/*.class" excludes="**/test/*.class"/>
             <fileset dir="../org.js4ms.util.buffer/bin" includes="**/*.class" excludes="**/test/*.class"/>
             <fileset dir="../org.js4ms.net.util/bin" includes="**/*.class" excludes="**/test/*.class"/>
-            <fileset dir="../org.js4ms.channels/bin" includes="**/*.class" excludes="**/test/*.class"/>
             <fileset dir="../org.js4ms.net.udp/bin" includes="**/*.class" excludes="**/test/*.class"/>
             <fileset dir="../org.js4ms.service.protocol.rtsp.reflector/bin" includes="**/*.class" excludes="**/test/*.class"/>
 
@@ -109,8 +108,8 @@
 
             -flattenpackagehierarchy ''
 
-            -keep public class org.js4ms.util.logging.LogFormatter
-            -keep public class org.js4ms.util.logging.JsonLogFormatter
+            -keep public class org.js4ms.logging.LogFormatter
+            -keep public class org.js4ms.logging.JsonLogFormatter
 
             -keepclasseswithmembers public class * {
                 public static void main(java.lang.String[]);

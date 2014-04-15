@@ -26,6 +26,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.js4ms.exceptions.ParseException;
+import org.js4ms.logging.java.Logging;
 import org.js4ms.util.buffer.BufferBackedObject;
 import org.js4ms.util.buffer.fields.ByteBitField;
 import org.js4ms.util.buffer.fields.Field;
@@ -35,7 +36,6 @@ import org.js4ms.util.buffer.parser.KeyedBufferParser;
 import org.js4ms.util.buffer.parser.KeyedStreamParser;
 import org.js4ms.util.buffer.parser.MissingParserException;
 import org.js4ms.util.buffer.parser.StreamParserSelector;
-import org.js4ms.util.logging.java.Logging;
 
 
 

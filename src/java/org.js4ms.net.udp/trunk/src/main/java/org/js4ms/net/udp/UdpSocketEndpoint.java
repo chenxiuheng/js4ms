@@ -29,7 +29,7 @@ import java.nio.ByteBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.js4ms.util.logging.java.Logging;
+import org.js4ms.logging.java.Logging;
 
 
 /**
@@ -159,8 +159,8 @@ public final class UdpSocketEndpoint
 
         // TODO max size really is 65507 for UDP over IP
         byte[] buffer = new byte[8192];
-        if (logger.isLoggable(Level.FINE)) {
-            logger.fine(ObjectId + " waiting to receive datagram");
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer(ObjectId + " waiting to receive datagram");
         }
 
         DatagramPacket packet = new DatagramPacket(buffer, buffer.length);

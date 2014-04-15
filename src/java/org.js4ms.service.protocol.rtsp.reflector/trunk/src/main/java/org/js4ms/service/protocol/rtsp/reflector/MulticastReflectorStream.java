@@ -17,12 +17,12 @@ import javax.sdp.SessionDescription;
 
 import org.js4ms.io.channels.MessageSource;
 import org.js4ms.io.channels.OutputChannel;
+import org.js4ms.logging.java.Logging;
 import org.js4ms.net.amt.SourceFilter;
 import org.js4ms.net.amt.gateway.AmtPseudoInterfaceManager;
 import org.js4ms.service.protocol.rtsp.TransportDescription;
 import org.js4ms.service.protocol.rtsp.presentation.MediaStream;
 import org.js4ms.service.protocol.rtsp.presentation.Presentation;
-import org.js4ms.util.logging.java.Logging;
 
 
 

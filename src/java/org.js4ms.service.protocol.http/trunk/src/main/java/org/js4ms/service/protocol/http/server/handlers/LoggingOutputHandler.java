@@ -9,6 +9,8 @@ import java.util.logging.Logger;
 import java.util.logging.StreamHandler;
 import java.util.logging.XMLFormatter;
 
+import org.js4ms.logging.java.JsonLogFormatter;
+import org.js4ms.logging.java.LogFormatter;
 import org.js4ms.service.protocol.http.HttpMessageHeaders;
 import org.js4ms.service.protocol.http.HttpStatusCodes;
 import org.js4ms.service.protocol.rest.entity.Entity;
@@ -17,8 +19,6 @@ import org.js4ms.service.protocol.rest.handler.TransactionHandler;
 import org.js4ms.service.protocol.rest.headers.SimpleMessageHeader;
 import org.js4ms.service.protocol.rest.message.Request;
 import org.js4ms.service.protocol.rest.message.Response;
-import org.js4ms.util.logging.java.JsonLogFormatter;
-import org.js4ms.util.logging.java.LogFormatter;
 
 
 

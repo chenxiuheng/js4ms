@@ -8,7 +8,7 @@
 	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.util.buffer"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.exceptions"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.util.logging.java"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.net.util"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.logging.java"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

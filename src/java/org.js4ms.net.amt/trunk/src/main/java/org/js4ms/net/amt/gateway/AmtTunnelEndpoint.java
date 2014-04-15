@@ -35,6 +35,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.js4ms.io.channels.OutputChannel;
+import org.js4ms.logging.java.Log;
+import org.js4ms.logging.java.Logging;
 import org.js4ms.net.amt.AmtMembershipQueryMessage;
 import org.js4ms.net.amt.AmtMembershipUpdateMessage;
 import org.js4ms.net.amt.AmtMessage;
@@ -61,8 +63,6 @@ import org.js4ms.net.udp.UdpDatagram;
 import org.js4ms.net.udp.UdpInputChannel;
 import org.js4ms.net.udp.UdpOutputChannel;
 import org.js4ms.net.udp.UdpSocketEndpoint;
-import org.js4ms.util.logging.java.Log;
-import org.js4ms.util.logging.java.Logging;
 
 
 

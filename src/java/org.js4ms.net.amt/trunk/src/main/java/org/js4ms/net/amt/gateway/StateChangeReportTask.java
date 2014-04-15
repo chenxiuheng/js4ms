@@ -26,9 +26,9 @@ import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.js4ms.logging.java.Log;
+import org.js4ms.logging.java.Logging;
 import org.js4ms.net.amt.SourceFilter;
-import org.js4ms.util.logging.java.Log;
-import org.js4ms.util.logging.java.Logging;
 import org.js4ms.util.task.ReschedulableTask;
 
 

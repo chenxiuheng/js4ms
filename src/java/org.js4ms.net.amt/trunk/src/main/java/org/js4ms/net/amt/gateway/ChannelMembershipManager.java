@@ -32,11 +32,11 @@ import org.js4ms.io.channels.MessageKeyExtractor;
 import org.js4ms.io.channels.OutputChannel;
 import org.js4ms.io.channels.OutputChannelMap;
 import org.js4ms.io.channels.OutputChannelTee;
+import org.js4ms.logging.java.Log;
+import org.js4ms.logging.java.LoggableBase;
+import org.js4ms.logging.java.Logging;
 import org.js4ms.net.udp.UdpDatagram;
 import org.js4ms.net.util.Precondition;
-import org.js4ms.util.logging.java.Log;
-import org.js4ms.util.logging.java.LoggableBase;
-import org.js4ms.util.logging.java.Logging;
 
 
 

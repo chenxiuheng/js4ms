@@ -27,12 +27,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.js4ms.exceptions.ParseException;
+import org.js4ms.logging.java.Logging;
 import org.js4ms.net.ip.IPMessage;
 import org.js4ms.net.ip.IPPacket;
 import org.js4ms.net.ip.ipv4.IPv4Packet;
 import org.js4ms.util.buffer.fields.ShortField;
 import org.js4ms.util.buffer.parser.MissingParserException;
-import org.js4ms.util.logging.java.Logging;
 
 
 

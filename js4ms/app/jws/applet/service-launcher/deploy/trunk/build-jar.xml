@@ -109,8 +109,8 @@
             -flattenpackagehierarchy ''
 
             -keep public class org.js4ms.jws.applet.ServiceLauncherApplet
-            -keep public class org.js4ms.util.logging.LogFormatter
-            -keep public class org.js4ms.util.logging.JsonLogFormatter
+            -keep public class org.js4ms.logging.LogFormatter
+            -keep public class org.js4ms.logging.JsonLogFormatter
 
             -keepclasseswithmembers public class * {
                 public static void main(java.lang.String[]);

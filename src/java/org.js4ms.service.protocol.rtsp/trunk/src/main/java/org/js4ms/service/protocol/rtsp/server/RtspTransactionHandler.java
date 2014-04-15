@@ -9,6 +9,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.js4ms.io.Base64InputStream;
+import org.js4ms.logging.java.Log;
+import org.js4ms.logging.java.Logging;
 import org.js4ms.service.protocol.http.HttpMessageHeaders;
 import org.js4ms.service.protocol.rest.RequestException;
 import org.js4ms.service.protocol.rest.entity.Entity;
@@ -26,8 +28,6 @@ import org.js4ms.service.protocol.rtsp.RtspStatusCodes;
 import org.js4ms.service.protocol.rtsp.presentation.Presentation;
 import org.js4ms.service.protocol.rtsp.presentation.PresentationResolver;
 import org.js4ms.service.server.Connection;
-import org.js4ms.util.logging.java.Log;
-import org.js4ms.util.logging.java.Logging;
 
 
 

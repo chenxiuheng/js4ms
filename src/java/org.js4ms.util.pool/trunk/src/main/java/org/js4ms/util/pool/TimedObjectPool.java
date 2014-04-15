@@ -25,7 +25,7 @@ import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.js4ms.util.logging.java.Logging;
+import org.js4ms.logging.java.Logging;
 import org.js4ms.util.task.TimerService;
 
 

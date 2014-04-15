@@ -39,6 +39,7 @@ import javax.sdp.SdpFactory;
 import javax.sdp.SessionDescription;
 
 import org.js4ms.io.FixedLengthInputStream;
+import org.js4ms.logging.java.Log;
 import org.js4ms.service.protocol.rest.RequestException;
 import org.js4ms.service.protocol.rest.message.Method;
 import org.js4ms.service.protocol.rest.message.Request;
@@ -48,7 +49,6 @@ import org.js4ms.service.protocol.rtsp.RtspStatusCodes;
 import org.js4ms.service.protocol.rtsp.presentation.Presentation;
 import org.js4ms.service.protocol.rtsp.presentation.PresentationResolver;
 import org.js4ms.service.protocol.rtsp.server.RtspService;
-import org.js4ms.util.logging.java.Log;
 
 
 
