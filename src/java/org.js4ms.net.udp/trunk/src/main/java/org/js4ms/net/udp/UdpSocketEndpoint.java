@@ -177,19 +177,19 @@ public final class UdpSocketEndpoint
                 this.socket.receive(packet);
             }
             catch (IOException e) {
-                logger.info(ObjectId + " socket receive failed with an IO exception - " + e.getClass().getSimpleName() + ":"
+                logger.warning(ObjectId + " socket receive failed with an IO exception - " + e.getClass().getSimpleName() + ":"
                             + e.getMessage());
                 throw e;
             }
             catch (Exception e) {
-                logger.info(ObjectId + " socket receive failed with an unexpected exception - " + e.getClass().getSimpleName()
+                logger.severe(ObjectId + " socket receive failed with an unexpected exception - " + e.getClass().getSimpleName()
                             + ":" + e.getMessage());
                 throw new Error(e);
             }
         }
 
-        if (logger.isLoggable(Level.FINE)) {
-            logger.fine(ObjectId +
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer(ObjectId +
                         " received datagram packet from " +
                         Logging.address(packet.getSocketAddress()) +
                         " length=" + packet.getLength());
@@ -239,7 +239,7 @@ public final class UdpSocketEndpoint
                                                    payload.limit(),
                                                    datagram.getDestinationSocketAddress());
 
-        if (logger.isLoggable(Level.FINE)) {
+        if (logger.isLoggable(Level.FINER)) {
             logger.finer(ObjectId + " datagram payload buffer=" + payload.array() + " offset=" + payload.arrayOffset() + " limit="
                          + payload.limit() + " remaining=" + payload.remaining());
             logger.fine(ObjectId + " sending DatagramPacket to " + Logging.address(datagram.getDestinationSocketAddress())
