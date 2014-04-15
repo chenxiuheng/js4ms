@@ -23,7 +23,7 @@
 
 	<import file="gen-version.xml" />
 	
-	<target name="build-jar" description="builds jar file" depends="gen-version">
+	<target name="build-jar-file" description="builds jar file" depends="gen-version">
 
         <property name="servlet.jar.name" value="${servlet.name}.jar"/>
         <property name="servlet.jar.file" value="${servlet.name}__V${servlet.version}.jar"/>
@@ -34,10 +34,10 @@
      	</delete>
   
 		<jar destfile="WebContent/WEB-INF/lib/${servlet.jar.file}">
-			<fileset dir="./build/classes">
-				<include name="**/*.class" />
-			</fileset>
-            <manifest>
+			<fileset dir="./bin" includes="**/*.class"/>
+            <zipfileset excludes="META-INF/*.SF" src="../jain-sdp/jain-sdp-1.0.100.jar"/>
+
+       		<manifest>
                 <attribute name="Built-By" value="${user.name}"/>
                 <attribute name="Implementation-Vendor" value="${servlet.vendor}"/>
                 <attribute name="Implementation-Title" value="${servlet.name}"/>
@@ -47,7 +47,7 @@
 
     </target>
 
-	<target name="clean-jar">
+	<target name="clean-jar-file">
         <delete>
             <fileset dir="WebContent/WEB-INF/lib" includes="*.jar"/>
         </delete>

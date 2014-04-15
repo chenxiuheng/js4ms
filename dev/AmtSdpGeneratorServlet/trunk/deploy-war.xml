@@ -100,7 +100,7 @@
         <undeploy url="${url}" username="${username}" password="${password}" path="${context.path}" failonerror="false" />
     </target>
 
-    <target name="deploy-war" depends="build-war,prompt-for-tomcat-version,deploy-war-file-tomcat6,deploy-war-file-tomcat7,deploy-war-file-other" />
+    <target name="deploy-war-file" depends="build-war-file,prompt-for-tomcat-version,deploy-war-file-tomcat6,deploy-war-file-tomcat7,deploy-war-file-other" />
 
     <target name="deploy-war-only" depends="prompt-for-tomcat-version,deploy-war-file-tomcat6,deploy-war-file-tomcat7,deploy-war-file-other" />
 

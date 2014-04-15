@@ -3,7 +3,7 @@
  * 
  * File: AmtSdpGeneratorServlet.java (org.js4ms.channels)
  * 
- * Copyright © 2009-2012 Cisco Systems, Inc.
+ * Copyright ? 2009-2012 Cisco Systems, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.servlet;
+package org.js4ms.servlet.sdpgenerator;
 
 import gov.nist.core.Host;
 import gov.nist.javax.sdp.fields.AttributeField;
@@ -262,7 +262,6 @@ public class AmtSdpGeneratorServlet
                     return;
                 }
 
-                // Add or update the relay discovery attribute record
                 Origin origin = sessionDescription.getOrigin();
                 if (origin == null) {
                     response.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, "SDP file does not specify an origin");
