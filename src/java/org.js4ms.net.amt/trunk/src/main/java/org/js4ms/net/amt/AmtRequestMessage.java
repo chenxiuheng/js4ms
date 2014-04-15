@@ -190,7 +190,7 @@ public final class AmtRequestMessage
         setRequestNonce(requestNonce);
         this.setProtocolFlag(requestMLD);
         if (logger.isLoggable(Level.FINER)) {
-            logState(logger);
+            logState(logger,Level.FINER);
         }
     }
 
@@ -207,14 +207,14 @@ public final class AmtRequestMessage
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("AmtRequestMessage.AmtRequestMessage", buffer));
-            logState(logger);
+            logState(logger,Level.FINER);
         }
     }
 
     @Override
-    public void log(Logger logger) {
-        super.log(logger);
-        logState(logger);
+    public void log(final Logger logger, final Level level) {
+        super.log(logger, level);
+        logState(logger, level);
     }
 
     /**
@@ -223,8 +223,8 @@ public final class AmtRequestMessage
      * @param logger
      *            The logger to use when generating log messages.
      */
-    private void logState(Logger logger) {
-        logger.info(this.log.msg("request-nonce=" + getRequestNonce()));
+    private void logState(final Logger logger, final Level level) {
+        logger.log(level,this.log.msg("request-nonce=" + getRequestNonce()));
     }
 
     @Override

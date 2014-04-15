@@ -236,7 +236,7 @@ public final class AmtTeardownMessage
         setGatewayAddress(gatewayAddress);
 
         if (logger.isLoggable(Level.FINER)) {
-            logState(logger);
+            logState(logger,Level.FINER);
         }
     }
 
@@ -254,14 +254,14 @@ public final class AmtTeardownMessage
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("AmtTeardownMessage.AmtTeardownMessage", buffer));
-            logState(logger);
+            logState(logger,Level.FINER);
         }
     }
 
     @Override
-    public void log(final Logger logger) {
-        super.log(logger);
-        logState(logger);
+    public void log(final Logger logger, final Level level) {
+        super.log(logger, level);
+        logState(logger, level);
     }
 
     /**
@@ -270,10 +270,10 @@ public final class AmtTeardownMessage
      * @param logger
      *            The logger that will be used to generate the log messages.
      */
-    private void logState(final Logger logger) {
-        logger.info(this.log.msg(": response-MAC=" + Logging.mac(getResponseMac())));
-        logger.info(this.log.msg(": request-nonce=" + getRequestNonce()));
-        logger.info(this.log.msg(": gateway-address=" + Logging.address(getGatewayAddress())));
+    private void logState(final Logger logger, final Level level) {
+        logger.log(level,this.log.msg(": response-MAC=" + Logging.mac(getResponseMac())));
+        logger.log(level,this.log.msg(": request-nonce=" + getRequestNonce()));
+        logger.log(level,this.log.msg(": gateway-address=" + Logging.address(getGatewayAddress())));
     }
 
     @Override

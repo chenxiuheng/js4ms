@@ -83,8 +83,7 @@ public class HttpTransactionHandler
     private boolean doDefaultResponse(final Request request, final Response response) throws IOException {
         response.setStatus(HttpStatusCodes.MethodNotAllowed);
         response.setEntity(new StringEntity(HttpStatusCodes.MethodNotAllowed.toString()));
-        response.send();
-        return true;
+        return false;
     }
 
     static void parseQueryParameters(final Request request, Map<String, String> map) {
@@ -101,8 +100,7 @@ public class HttpTransactionHandler
                     response.setStatus(HttpStatusCodes.BadRequest);
                     response.setEntity(new StringEntity(HttpStatusCodes.BadRequest.toString()
                                                         + " - multipart content type missing boundary parameter"));
-                    response.send();
-                    return true;
+                    return false;
                 }
 
                 return parseMultipartFormParameters((new BufferedReader(
@@ -125,8 +123,7 @@ public class HttpTransactionHandler
             else {
                 response.setStatus(HttpStatusCodes.UnsupportedMediaType);
                 response.setEntity(new StringEntity(HttpStatusCodes.UnsupportedMediaType.toString()));
-                response.send();
-                return true;
+                return false;
             }
         }
         parseParameterString(request.getEntity().toString(), map);

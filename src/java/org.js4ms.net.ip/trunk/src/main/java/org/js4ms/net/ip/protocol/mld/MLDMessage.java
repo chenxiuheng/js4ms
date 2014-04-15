@@ -368,7 +368,7 @@ public abstract class MLDMessage
         MLDMessage.Reserved.set(getBufferInternal(), (short) 0);
 
         if (logger.isLoggable(Level.FINER)) {
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
@@ -381,7 +381,7 @@ public abstract class MLDMessage
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("MLDMessage.MLDMessage", buffer));
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
@@ -391,9 +391,9 @@ public abstract class MLDMessage
     }
 
     @Override
-    public void log(final Logger logger) {
-        super.log(logger);
-        logState(logger);
+    public void log(final Logger logger, final Level level) {
+        super.log(logger, level);
+        logState(logger, level);
     }
 
     /**
@@ -401,8 +401,8 @@ public abstract class MLDMessage
      * 
      * @param logger
      */
-    private void logState(final Logger logger) {
-        logger.info(this.log.msg(": message-length=" + getTotalLength()));
+    private void logState(final Logger logger, final Level level) {
+        logger.log(level,this.log.msg(": message-length=" + getTotalLength()));
     }
 
     /**

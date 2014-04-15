@@ -119,7 +119,7 @@ abstract class AmtEncapsulationMessage
         setPacket(packet);
 
         if (logger.isLoggable(Level.FINER)) {
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
@@ -137,14 +137,14 @@ abstract class AmtEncapsulationMessage
         this.unparsedPacket = consume(buffer, buffer.remaining());
 
         if (logger.isLoggable(Level.FINER)) {
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
     @Override
-    public void log(final Logger logger) {
-        super.log(logger);
-        logState(logger);
+    public void log(final Logger logger, final Level level) {
+        super.log(logger, level);
+        logState(logger, level);
     }
 
     /**
@@ -153,12 +153,12 @@ abstract class AmtEncapsulationMessage
      * @param logger
      *            The logger that will be used to generate the log messages.
      */
-    private void logState(final Logger logger) {
-        logger.info(this.log.msg("----> start encapsulated IP packet"));
+    private void logState(final Logger logger, final Level level) {
+        logger.log(level,this.log.msg("----> start encapsulated IP packet"));
         if (this.packet != null) {
-            this.packet.log(logger);
+            this.packet.log(logger, level);
         }
-        logger.info(this.log.msg("<---- end encapsulated IP packet"));
+        logger.log(level,this.log.msg("<---- end encapsulated IP packet"));
     }
 
     @Override

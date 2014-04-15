@@ -182,7 +182,7 @@ public class IPv6RoutingHeader
         setSegmentsLeft(segmentsLeft);
 
         if (logger.isLoggable(Level.FINER)) {
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
@@ -195,14 +195,14 @@ public class IPv6RoutingHeader
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("IPv6RoutingHeader.IPv6RoutingHeader", buffer));
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
     @Override
-    public void log(final Logger logger) {
-        super.log(logger);
-        logState(logger);
+    public void log(final Logger logger, final Level level) {
+        super.log(logger, level);
+        logState(logger, level);
     }
 
     /**
@@ -210,9 +210,9 @@ public class IPv6RoutingHeader
      * 
      * @param logger
      */
-    private void logState(final Logger logger) {
-        logger.info(this.log.msg(": routing-type=" + getRoutingType()));
-        logger.info(this.log.msg(": segments-left=" + getSegmentsLeft()));
+    private void logState(final Logger logger, final Level level) {
+        logger.log(level,this.log.msg(": routing-type=" + getRoutingType()));
+        logger.log(level,this.log.msg(": segments-left=" + getSegmentsLeft()));
     }
 
     /**

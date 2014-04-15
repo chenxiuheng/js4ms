@@ -92,10 +92,13 @@ public abstract class AbstractService implements Service, RequestHandler, Loggab
 
         if (getLogger().isLoggable(Level.FINE)) {
             getLogger().fine(log.msg("received request:"));
-            request.log(getLogger());
+            request.log(getLogger(), Level.FINE);
         }
 
         try {
+
+            getLogger().info(log.msg(request.getConnection().getRemoteAddress().getAddress().toString()+" "+request.getRequestLine().toString()));
+
             // Pre-process request (i.e. check request validity and server support)
             this.requestHandlers.handleRequest(request);
     
@@ -136,8 +139,10 @@ public abstract class AbstractService implements Service, RequestHandler, Loggab
 
         if (getLogger().isLoggable(Level.FINE)) {
             getLogger().fine(log.msg("sending response:"));
-            response.log(getLogger());
+            response.log(getLogger(), Level.FINE);
         }
+
+        getLogger().info(log.msg(response.getConnection().getRemoteAddress().getAddress().toString()+" "+response.getStatusLine().toString()));
 
         response.send();
 

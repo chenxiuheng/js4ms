@@ -242,8 +242,10 @@ public abstract class Presentation implements TransactionHandler {
 
                 if (logger.isLoggable(Level.FINE)) {
                     logger.fine(log.msg("sending response:"));
-                    response.log(logger);
+                    response.log(logger, Level.FINE);
                 }
+
+                logger.info(log.msg(response.getConnection().getRemoteAddress().getAddress().toString()+" "+response.getStatusLine().toString()));
 
                 response.send();
             }

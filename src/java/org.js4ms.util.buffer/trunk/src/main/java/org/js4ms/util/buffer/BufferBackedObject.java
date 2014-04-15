@@ -19,6 +19,7 @@ package org.js4ms.util.buffer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.js4ms.util.logging.java.LoggableBase;
@@ -115,9 +116,9 @@ public abstract class BufferBackedObject
     }
 
     @Override
-    public void log(final Logger logger) {
-        super.log(logger);
-        logState(logger);
+    public void log(final Logger logger, final Level level) {
+        super.log(logger, level);
+        logState(logger, level);
     }
 
     /**
@@ -125,11 +126,11 @@ public abstract class BufferBackedObject
      * 
      * @param logger
      */
-    private void logState(final Logger logger) {
-        logger.info(this.log.msg(": buffer array-offset=" + this.buffer.arrayOffset() +
-                                 ", position=" + this.buffer.position() +
-                                 ", remaining=" + this.buffer.remaining() +
-                                 ", limit=" + this.buffer.limit() +
-                                 ", capacity=" + this.buffer.capacity()));
+    private void logState(final Logger logger, final Level level) {
+        logger.log(level,this.log.msg(": buffer array-offset=" + this.buffer.arrayOffset() +
+                                      ", position=" + this.buffer.position() +
+                                      ", remaining=" + this.buffer.remaining() +
+                                      ", limit=" + this.buffer.limit() +
+                                      ", capacity=" + this.buffer.capacity()));
     }
 }

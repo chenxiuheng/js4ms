@@ -101,10 +101,6 @@ public class TransactionHeaderResolver implements TransactionHandlerResolver {
             return null;
         }
 
-        if (logger.isLoggable(Level.FINE)) {
-            logger.fine(log.msg("attempting to locate handler resolver for message with header '"+this.headerName+"'"));
-        }
-
         String value = request.getHeader(this.headerName).getValue();
 
         for (TransactionHandlerResolver resolver : this.resolvers.values()) {

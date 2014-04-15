@@ -135,7 +135,7 @@ public abstract class AmtMessage
         setType(type);
 
         if (logger.isLoggable(Level.FINER)) {
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
@@ -146,7 +146,7 @@ public abstract class AmtMessage
         super(buffer);
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("AmtMessage.AmtMessage", buffer));
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
@@ -156,9 +156,9 @@ public abstract class AmtMessage
     }
 
     @Override
-    public void log(final Logger logger) {
-        super.log(logger);
-        logState(logger);
+    public void log(final Logger logger, final Level level) {
+        super.log(logger,level);
+        logState(logger,level);
     }
 
     /**
@@ -166,9 +166,9 @@ public abstract class AmtMessage
      * 
      * @param logger
      */
-    private void logState(final Logger logger) {
-        logger.info(this.log.msg(": message-length=" + getTotalLength()));
-        logger.info(this.log.msg(": type=" + getType()));
+    private void logState(final Logger logger, final Level level) {
+        logger.log(level, this.log.msg(": message-length=" + getTotalLength()));
+        logger.log(level,this.log.msg(": type=" + getType()));
     }
 
     @Override

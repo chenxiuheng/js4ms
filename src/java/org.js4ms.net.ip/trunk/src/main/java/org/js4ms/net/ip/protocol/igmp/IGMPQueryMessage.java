@@ -139,9 +139,9 @@ public abstract class IGMPQueryMessage
     protected IGMPQueryMessage(final int size, final short maximumResponseTime) {
         super(size, MESSAGE_TYPE, maximumResponseTime, GENERAL_QUERY_GROUP);
 
-        if (logger.isLoggable(Level.FINE)) {
+        if (logger.isLoggable(Level.FINER)) {
             logger.fine(this.log.entry("IGMPQueryMessage.IGMPQueryMessage", size, maximumResponseTime));
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
@@ -155,10 +155,10 @@ public abstract class IGMPQueryMessage
                                final byte[] groupAddress) {
         super(size, MESSAGE_TYPE, maximumResponseTime, groupAddress);
 
-        if (logger.isLoggable(Level.FINE)) {
+        if (logger.isLoggable(Level.FINER)) {
             logger.fine(this.log.entry("IGMPQueryMessage.IGMPQueryMessage", size, maximumResponseTime,
                                        Logging.address(groupAddress)));
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
@@ -169,23 +169,23 @@ public abstract class IGMPQueryMessage
     protected IGMPQueryMessage(final ByteBuffer buffer) throws ParseException {
         super(buffer);
 
-        if (logger.isLoggable(Level.FINE)) {
+        if (logger.isLoggable(Level.FINER)) {
             logger.fine(this.log.entry("IGMPQueryMessage.IGMPQueryMessage", buffer));
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
     @Override
-    public void log(final Logger logger) {
-        super.log(logger);
-        logState(logger);
+    public void log(final Logger logger, final Level level) {
+        super.log(logger, level);
+        logState(logger, level);
     }
 
     /**
      * @param logger
      */
-    private void logState(final Logger logger) {
-        logger.info(this.log.msg(" : max-resp-code=" + String.format("%02X", getMaxRespCode()) + " max-response-time="
+    private void logState(final Logger logger, final Level level) {
+        logger.log(level,this.log.msg(" : max-resp-code=" + String.format("%02X", getMaxRespCode()) + " max-response-time="
                                  + getMaximumResponseTime() + "ms"));
     }
 

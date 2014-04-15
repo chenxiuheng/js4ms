@@ -5,6 +5,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -54,6 +55,8 @@ import org.js4ms.util.logging.java.Logging;
  */
 public class LoggingConfigurationHandler implements TransactionHandler {
 
+    private HashMap<String,Logger> loggers = new HashMap<String, Logger>();
+
     @Override
     public boolean handleTransaction(Request request, Response response) throws IOException {
         StringBuffer buffer = new StringBuffer();
@@ -90,26 +93,31 @@ public class LoggingConfigurationHandler implements TransactionHandler {
                          }
                      }
                      else if (pair[0].endsWith(".level")) {
+                         String loggerName = pair[0].substring(0,pair[0].lastIndexOf('.'));
+                         Level level = null;
                          if (pair.length == 2) {
-                            String loggerName = pair[0].substring(0,pair[0].lastIndexOf('.'));
-                            Logger logger = Logger.getLogger(loggerName);
-                            try {
-                                logger.setLevel(Level.parse(pair[1]));
-                                buffer.append("logger '"+loggerName+"' level set to "+pair[1]+"\n\n");
-                            }
-                            catch (IllegalArgumentException e) {
-                                response.setStatus(HttpStatusCodes.BadRequest);
-                                response.setEntity(new StringEntity("logger level parameter value is invalid - "+e.getMessage()));
-                                return true;
-                            }
+                             try {
+                                 level = Level.parse(pair[1]);
+                             }
+                             catch (IllegalArgumentException e) {
+                                 response.setStatus(HttpStatusCodes.BadRequest);
+                                 response.setEntity(new StringEntity("logger level parameter value is invalid - "+e.getMessage()));
+                                 return true;
+                             }
+                         }
+                         Logger logger;
+                         if (this.loggers.containsKey(loggerName)) {
+                             logger = this.loggers.get(loggerName);
                          }
                          else {
-                             response.setStatus(HttpStatusCodes.BadRequest);
-                             response.setEntity(new StringEntity("logger level parameter value is missing"));
-                             return true;
+                             logger = Logger.getLogger(loggerName);
+                             this.loggers.put(loggerName,logger);
                          }
+                         logger.setLevel(level);
+                         buffer.append("logger '"+loggerName+"' level set to "+level+"\n\n");
                      }
                      else if (pair[0].equalsIgnoreCase("reset")) {
+                         this.loggers.clear();
                          LogManager.getLogManager().readConfiguration();
                      }
                      else {
@@ -120,6 +128,8 @@ public class LoggingConfigurationHandler implements TransactionHandler {
                 }
             }
         }
+
+        buffer.append("Intantiated Loggers:\n");
 
         LinkedList<String> loggers = new LinkedList<String>();
         Enumeration<String> iter = LogManager.getLogManager().getLoggerNames();

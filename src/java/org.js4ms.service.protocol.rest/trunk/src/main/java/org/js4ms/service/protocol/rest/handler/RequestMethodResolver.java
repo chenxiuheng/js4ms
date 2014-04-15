@@ -63,10 +63,6 @@ public final class RequestMethodResolver implements RequestHandlerResolver {
 
         Method method = request.getRequestLine().getMethod();
         
-        if (logger.isLoggable(Level.FINE)) {
-            logger.fine(log.msg("attempting to locate handler resolver for "+method.getName()+" method"));
-        }
-
         RequestHandlerResolver resolver = this.resolvers.get(method);
         if (resolver != null) {
             if (logger.isLoggable(Level.FINE)) {

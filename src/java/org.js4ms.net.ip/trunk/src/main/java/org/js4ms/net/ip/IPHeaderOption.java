@@ -181,7 +181,7 @@ public abstract class IPHeaderOption
 
         setOption(option);
         if (logger.isLoggable(Level.FINER)) {
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
@@ -220,7 +220,7 @@ public abstract class IPHeaderOption
         setOptionClass(optionClass);
         setOptionNumber(optionNumber);
         if (logger.isLoggable(Level.FINER)) {
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
@@ -232,7 +232,7 @@ public abstract class IPHeaderOption
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("IPHeaderOption.IPHeaderOption", buffer));
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
@@ -242,9 +242,9 @@ public abstract class IPHeaderOption
     }
 
     @Override
-    public void log(final Logger logger) {
-        super.log(logger);
-        logState(logger);
+    public void log(final Logger logger, final Level level) {
+        super.log(logger, level);
+        logState(logger, level);
     }
 
     /**
@@ -252,9 +252,9 @@ public abstract class IPHeaderOption
      * 
      * @param logger
      */
-    private void logState(final Logger logger) {
-        logger.info(this.log.msg(": copy-flag=" + getCopyFlag()));
-        logger.info(this.log.msg(": option-class=" + getOptionClass()));
+    private void logState(final Logger logger, final Level level) {
+        logger.log(level,this.log.msg(": copy-flag=" + getCopyFlag()));
+        logger.log(level,this.log.msg(": option-class=" + getOptionClass()));
     }
 
     /**

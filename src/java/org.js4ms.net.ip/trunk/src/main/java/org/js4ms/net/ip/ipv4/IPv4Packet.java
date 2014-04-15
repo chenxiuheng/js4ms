@@ -551,7 +551,7 @@ public final class IPv4Packet
         setDestinationAddress(destinationAddress);
         setFirstProtocolMessage(firstProtocolHeader);
         if (logger.isLoggable(Level.FINER)) {
-            logState(logger);
+            logState(logger,Level.FINER);
         }
     }
 
@@ -599,8 +599,8 @@ public final class IPv4Packet
         setDestinationAddress(destinationAddress);
         setFirstProtocolMessage(firstProtocolHeader);
 
-        if (logger.isLoggable(Level.FINE)) {
-            logState(logger);
+        if (logger.isLoggable(Level.FINER)) {
+            logState(logger,Level.FINER);
         }
     }
 
@@ -621,8 +621,8 @@ public final class IPv4Packet
         this.unparsedOptions = consume(buffer, getHeaderLength() - BASE_HEADER_LENGTH);
         this.unparsedPayload = consume(buffer, getTotalLength() - getHeaderLength());
 
-        if (logger.isLoggable(Level.FINE)) {
-            logState(logger);
+        if (logger.isLoggable(Level.FINER)) {
+            logState(logger,Level.FINER);
         }
     }
 
@@ -643,8 +643,8 @@ public final class IPv4Packet
         this.unparsedOptions = consume(is, getHeaderLength() - BASE_HEADER_LENGTH);
         this.unparsedPayload = consume(is, getTotalLength() - getHeaderLength());
 
-        if (logger.isLoggable(Level.FINE)) {
-            logState(logger);
+        if (logger.isLoggable(Level.FINER)) {
+            logState(logger, Level.FINER);
         }
     }
 
@@ -654,58 +654,58 @@ public final class IPv4Packet
     }
 
     @Override
-    public void log(final Logger logger) {
-        super.log(logger);
-        logState(logger);
+    public void log(final Logger logger, final Level level) {
+        super.log(logger, level);
+        logState(logger, level);
     }
 
     /**
      * @param logger
      */
-    private void logState(final Logger logger) {
+    private void logState(final Logger logger, final Level level) {
         if (getFragmentOffset() != 0 || getMoreFragments()) {
-            logger.info(this.log.msg(": *** Fragmented Packet ***"));
+            logger.log(level,this.log.msg(": *** Fragmented Packet ***"));
         }
-        logger.info(this.log.msg(": total-length=" + getTotalLength()));
-        logger.info(this.log.msg(": header-length=" + getHeaderLength()));
-        logger.info(this.log.msg(": payload-length=" + getPayloadLength()));
-        logger.info(this.log.msg(": precedence=" + getPrecedence()));
-        logger.info(this.log.msg(": minimize-delay=" + getMinimizeDelay()));
-        logger.info(this.log.msg(": maximize-throughput=" + getMaximizeThroughput()));
-        logger.info(this.log.msg(": maximize-reliability=" + getMaximizeReliability()));
-        logger.info(this.log.msg(": minimize-cost=" + getMinimizeMonetaryCost()));
-        logger.info(this.log.msg(": identification=" + getIdentification()));
-        logger.info(this.log.msg(": don't-fragment=" + getDoNotFragment()));
-        logger.info(this.log.msg(": more-fragments=" + getMoreFragments()));
-        logger.info(this.log.msg(": fragment-offset=" + getFragmentOffset()));
-        logger.info(this.log.msg(": TTL=" + getTTL()));
-        logger.info(this.log.msg(": protocol=" + getProtocol()));
-        logger.info(this.log.msg(": checksum=" + getHeaderChecksum()));
-        logger.info(this.log.msg(": source-address=" + Logging.address(getSourceAddress())));
-        logger.info(this.log.msg(": destination-address=" + Logging.address(getDestinationAddress())));
+        logger.log(level,this.log.msg(": total-length=" + getTotalLength()));
+        logger.log(level,this.log.msg(": header-length=" + getHeaderLength()));
+        logger.log(level,this.log.msg(": payload-length=" + getPayloadLength()));
+        logger.log(level,this.log.msg(": precedence=" + getPrecedence()));
+        logger.log(level,this.log.msg(": minimize-delay=" + getMinimizeDelay()));
+        logger.log(level,this.log.msg(": maximize-throughput=" + getMaximizeThroughput()));
+        logger.log(level,this.log.msg(": maximize-reliability=" + getMaximizeReliability()));
+        logger.log(level,this.log.msg(": minimize-cost=" + getMinimizeMonetaryCost()));
+        logger.log(level,this.log.msg(": identification=" + getIdentification()));
+        logger.log(level,this.log.msg(": don't-fragment=" + getDoNotFragment()));
+        logger.log(level,this.log.msg(": more-fragments=" + getMoreFragments()));
+        logger.log(level,this.log.msg(": fragment-offset=" + getFragmentOffset()));
+        logger.log(level,this.log.msg(": TTL=" + getTTL()));
+        logger.log(level,this.log.msg(": protocol=" + getProtocol()));
+        logger.log(level,this.log.msg(": checksum=" + getHeaderChecksum()));
+        logger.log(level,this.log.msg(": source-address=" + Logging.address(getSourceAddress())));
+        logger.log(level,this.log.msg(": destination-address=" + Logging.address(getDestinationAddress())));
         if (this.unparsedOptions != null) {
-            logger.info(this.log.msg(": unparsed options offset=" + this.unparsedOptions.arrayOffset() + " limit="
+            logger.log(level,this.log.msg(": unparsed options offset=" + this.unparsedOptions.arrayOffset() + " limit="
                                      + this.unparsedOptions.limit()));
         }
         if (this.options != null && this.options.size() > 0) {
-            logger.info(this.log.msg("----> header options"));
+            logger.log(level,this.log.msg("----> header options"));
             Iterator<IPHeaderOption> iter = this.options.iterator();
             while (iter.hasNext()) {
-                iter.next().log(logger);
+                iter.next().log(logger,level);
             }
-            logger.info(this.log.msg("<---- header options"));
+            logger.log(level,this.log.msg("<---- header options"));
         }
         if (this.unparsedPayload != null) {
-            logger.info(this.log.msg(": unparsed payload offset=" + this.unparsedPayload.arrayOffset() + " limit="
+            logger.log(level,this.log.msg(": unparsed payload offset=" + this.unparsedPayload.arrayOffset() + " limit="
                                      + this.unparsedPayload.limit()));
         }
-        logger.info(this.log.msg("----> protocol messages"));
+        logger.log(level,this.log.msg("----> protocol messages"));
         IPMessage nextMessage = getFirstProtocolMessage();
         while (nextMessage != null) {
-            nextMessage.log(logger);
+            nextMessage.log(logger,level);
             nextMessage = nextMessage.getNextMessage();
         }
-        logger.info(this.log.msg("<---- protocol messages"));
+        logger.log(level,this.log.msg("<---- protocol messages"));
     }
 
     @Override
@@ -1682,8 +1682,8 @@ public final class IPv4Packet
             // Check checksum before we consume the payload
             if (!protocolParser.verifyChecksum(this.unparsedPayload, lastProtocolNumber, getSourceAddress(),
                                                getDestinationAddress())) {
-                if (logger.isLoggable(Level.INFO)) {
-                    logger.info(this.log.msg("invalid checksum detected in IP protocol packet"));
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine(this.log.msg("invalid checksum detected in IP protocol packet"));
                 }
                 throw new ParseException("invalid checksum detected in IP protocol packet");
             }
@@ -1698,8 +1698,8 @@ public final class IPv4Packet
                     lastProtocolNumber = nextHeader.getNextProtocolNumber();
                     if (!protocolParser.verifyChecksum(this.unparsedPayload, lastProtocolNumber, getSourceAddress(),
                                                        getDestinationAddress())) {
-                        if (logger.isLoggable(Level.INFO)) {
-                            logger.info(this.log.msg("invalid checksum detected in IP protocol packet"));
+                        if (logger.isLoggable(Level.FINE)) {
+                            logger.fine(this.log.msg("invalid checksum detected in IP protocol packet"));
                         }
                         throw new ParseException("invalid checksum detected in IP protocol packet");
                     }

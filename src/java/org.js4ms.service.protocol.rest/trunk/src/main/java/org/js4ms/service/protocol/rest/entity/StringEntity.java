@@ -19,6 +19,7 @@ package org.js4ms.service.protocol.rest.entity;
 import java.io.ByteArrayInputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
@@ -148,15 +149,15 @@ public class StringEntity extends RawEntity {
     }
 
     @Override
-    public void log(Logger logger) {
-        super.log(logger);
-        logState(logger);
+    public void log(final Logger logger, final Level level) {
+        super.log(logger, level);
+        logState(logger, level);
     }
     
-    private void logState(Logger logger) {
-        logger.info(log.msg(": ----> Content"));
-        logger.info(log.msg("\n"+this.source.toString()));
-        logger.info(log.msg(": <---- Content "));
+    private void logState(final Logger logger, final Level level) {
+        logger.log(level,log.msg(": ----> Content"));
+        logger.log(level,log.msg("\n"+this.source.toString()));
+        logger.log(level,log.msg(": <---- Content "));
     }
 
     void prepareContentStream() {

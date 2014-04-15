@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.js4ms.service.protocol.rest.entity.Codec;
@@ -192,14 +193,14 @@ public abstract class Message {
         }
     }
 
-    public void log(Logger logger) {
-        logger.info(log.msg("+ logging [" + getClass().getSimpleName() + "]"));
-        logger.info(log.msg(this.startLine.toString()));
+    public void log(Logger logger, final Level level) {
+        logger.log(level,log.msg("+ logging [" + getClass().getSimpleName() + "]"));
+        logger.log(level,log.msg(this.startLine.toString()));
         for (Map.Entry<String, MessageHeader> entry : this.headers.entrySet()) {
-            logger.info(log.msg(entry.getValue().toString()));
+            logger.log(level,log.msg(entry.getValue().toString()));
         }
         if (this.entity != null) {
-            this.entity.log(logger);
+            this.entity.log(logger, level);
         }
     }
 

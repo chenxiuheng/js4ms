@@ -89,10 +89,6 @@ public final class TransactionUriPathResolver implements TransactionHandlerResol
 
         String path = request.getRequestLine().getUri().getPath();
 
-        if (logger.isLoggable(Level.FINE)) {
-            logger.fine(log.msg("attempting to locate handler resolver for URI path '"+path+"'"));
-        }
-
         String bestMatchPattern = "";
         TransactionHandlerResolver bestMatchResolver = null;
         for (Map.Entry<String,TransactionHandlerResolver> entry : this.resolvers.entrySet()) {
@@ -107,8 +103,8 @@ public final class TransactionUriPathResolver implements TransactionHandlerResol
                     (pattern.startsWith("*") && path.endsWith(pattern.substring(1))) ||
                     (pattern.endsWith("*") && path.startsWith(pattern.substring(0,pattern.length()-1)))) {
                     if (pattern.length() > bestMatchPattern.length()) { 
-                        if (logger.isLoggable(Level.FINE)) {
-                            logger.fine(log.msg("found candidate handler resolver for URI path '"+path+"' using pattern '"+pattern+"'"));
+                        if (logger.isLoggable(Level.FINER)) {
+                            logger.finer(log.msg("found candidate handler resolver for URI path '"+path+"' using pattern '"+pattern+"'"));
                         }
                         bestMatchPattern = pattern;
                         bestMatchResolver = entry.getValue();

@@ -74,20 +74,16 @@ public class TransactionProtocolResolver implements TransactionHandlerResolver {
     @Override
     public TransactionHandler getHandler(final Request request) throws RequestException {
 
-        if (logger.isLoggable(Level.FINER)) {
-            logger.finer(log.entry("getHandler", request));
+        if (logger.isLoggable(Level.FINEST)) {
+            logger.finest(log.entry("getHandler", request));
         }
 
         String protocolName = request.getRequestLine().getProtocolVersion().getProtocolName().getName();
         
-        if (logger.isLoggable(Level.FINE)) {
-            logger.fine(log.msg("attempting to locate handler resolver for "+protocolName+" protocol"));
-        }
-
         TransactionHandlerResolver resolver = this.resolvers.get(protocolName);
         if (resolver != null) {
-            if (logger.isLoggable(Level.FINE)) {
-                logger.fine(log.msg("found handler resolver for "+protocolName+" protocol"));
+            if (logger.isLoggable(Level.FINER)) {
+                logger.finer(log.msg("found handler resolver for "+protocolName+" protocol"));
             }
             return resolver.getHandler(request);
         }

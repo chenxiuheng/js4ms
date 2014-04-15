@@ -93,7 +93,7 @@ public final class IPDatagram
         this.destinationInetAddress = destinationInetAddress;
 
         if (logger.isLoggable(Level.FINER)) {
-            logState(logger);
+            logState(logger,Level.FINER);
         }
     }
 
@@ -126,7 +126,7 @@ public final class IPDatagram
         this.payload = payload;
 
         if (logger.isLoggable(Level.FINER)) {
-            logState(logger);
+            logState(logger,Level.FINER);
         }
     }
 
@@ -136,9 +136,9 @@ public final class IPDatagram
     }
 
     @Override
-    public void log(final Logger logger) {
-        super.log(logger);
-        logState(logger);
+    public void log(final Logger logger,final Level level) {
+        super.log(logger,level);
+        logState(logger,level);
     }
 
     /**
@@ -146,12 +146,12 @@ public final class IPDatagram
      * 
      * @param logger
      */
-    private void logState(final Logger logger) {
-        logger.info(this.log.msg(": source=" + Logging.address(getSourceAddress())));
-        logger.info(this.log.msg(": destination=" + Logging.address(getDestinationAddress())));
-        logger.info(this.log.msg("----> payload"));
-        this.payload.log(logger);
-        logger.info(this.log.msg("<---- payload"));
+    private void logState(final Logger logger, final Level level) {
+        logger.log(level,this.log.msg(": source=" + Logging.address(getSourceAddress())));
+        logger.log(level,this.log.msg(": destination=" + Logging.address(getDestinationAddress())));
+        logger.log(level,this.log.msg("----> payload"));
+        this.payload.log(logger,level);
+        logger.log(level,this.log.msg("<---- payload"));
     }
 
     /**

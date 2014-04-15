@@ -117,7 +117,7 @@ public class IPinIPHeader
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entering(ObjectId, "IPinIPHeader.IPinIPHeader", encapsulatedHeader));
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
@@ -127,20 +127,20 @@ public class IPinIPHeader
     }
 
     @Override
-    public void log(final Logger logger) {
-        super.log(logger);
-        logState(logger);
+    public void log(final Logger logger, final Level level) {
+        super.log(logger, level);
+        logState(logger, level);
     }
 
     /**
      * @param logger
      */
-    private void logState(final Logger logger) {
-        logger.info(ObjectId + " : protocol=" + getProtocolNumber());
+    private void logState(final Logger logger, final Level level) {
+        logger.log(level,ObjectId + " : protocol=" + getProtocolNumber());
         if (this.encapsulatedHeader != null) {
-            logger.info(ObjectId + " ----> start encapsulated header");
-            this.encapsulatedHeader.log(logger);
-            logger.info(ObjectId + " <---- end encapsulated header");
+            logger.log(level,ObjectId + " ----> start encapsulated header");
+            this.encapsulatedHeader.log(logger,level);
+            logger.log(level,ObjectId + " <---- end encapsulated header");
         }
     }
 

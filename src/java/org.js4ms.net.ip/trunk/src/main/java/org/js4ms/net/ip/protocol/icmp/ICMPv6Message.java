@@ -287,7 +287,7 @@ public class ICMPv6Message
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("ICMPv6Message.ICMPv6Message", size));
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
@@ -299,7 +299,7 @@ public class ICMPv6Message
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("ICMPv6Message.ICMPv6Message", buffer));
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
@@ -309,9 +309,9 @@ public class ICMPv6Message
     }
 
     @Override
-    public void log(final Logger logger) {
-        super.log(logger);
-        logState(logger);
+    public void log(final Logger logger, final Level level) {
+        super.log(logger, level);
+        logState(logger, level);
     }
 
     /**
@@ -319,11 +319,11 @@ public class ICMPv6Message
      * 
      * @param logger
      */
-    private void logState(final Logger logger) {
-        logger.info(this.log.msg(": protocol=" + getProtocolNumber()));
-        logger.fine(this.log.msg(": protocol-number=" + getProtocolNumber()));
-        logger.fine(this.log.msg(": header-length=" + getHeaderLength()));
-        logger.fine(this.log.msg(": next-header=" + getNextProtocolNumber()));
+    private void logState(final Logger logger, final Level level) {
+        logger.log(level,this.log.msg(": protocol=" + getProtocolNumber()));
+        logger.log(level,this.log.msg(": protocol-number=" + getProtocolNumber()));
+        logger.log(level,this.log.msg(": header-length=" + getHeaderLength()));
+        logger.log(level,this.log.msg(": next-header=" + getNextProtocolNumber()));
     }
 
     /**

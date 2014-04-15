@@ -184,7 +184,7 @@ public final class AmtRelayAdvertisementMessage
         setRelayAddress(relayAddress);
 
         if (logger.isLoggable(Level.FINER)) {
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
@@ -203,14 +203,14 @@ public final class AmtRelayAdvertisementMessage
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("AmtRelayAdvertisementMessage.AmtRelayAdvertisementMessage", buffer));
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
     @Override
-    public void log(Logger logger) {
-        super.log(logger);
-        logState(logger);
+    public void log(final Logger logger, final Level level) {
+        super.log(logger, level);
+        logState(logger, level);
     }
 
     /**
@@ -218,9 +218,9 @@ public final class AmtRelayAdvertisementMessage
      * 
      * @param logger
      */
-    private void logState(Logger logger) {
-        logger.info(this.log.msg(": discovery-nonce=" + getDiscoveryNonce()));
-        logger.info(this.log.msg(": relay-address=" + Logging.address(getRelayAddress())));
+    private void logState(final Logger logger, final Level level) {
+        logger.log(level,this.log.msg(": discovery-nonce=" + getDiscoveryNonce()));
+        logger.log(level,this.log.msg(": relay-address=" + Logging.address(getRelayAddress())));
     }
 
     @Override

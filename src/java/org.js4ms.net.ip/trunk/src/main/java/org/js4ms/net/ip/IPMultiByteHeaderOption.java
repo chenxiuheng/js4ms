@@ -83,7 +83,7 @@ public class IPMultiByteHeaderOption
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("IPMultiByteHeaderOption.IPMultiByteHeaderOption", option, optionLength));
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
@@ -95,14 +95,14 @@ public class IPMultiByteHeaderOption
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("IPMultiByteHeaderOption.IPMultiByteHeaderOption", buffer));
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
     @Override
-    public void log(final Logger logger) {
-        super.log(logger);
-        logState(logger);
+    public void log(final Logger logger, final Level level) {
+        super.log(logger, level);
+        logState(logger, level);
     }
 
     /**
@@ -110,8 +110,8 @@ public class IPMultiByteHeaderOption
      * 
      * @param logger
      */
-    private void logState(final Logger logger) {
-        logger.info(this.log.msg(": length=" + getOptionLength()));
+    private void logState(final Logger logger, final Level level) {
+        logger.log(level,this.log.msg(": length=" + getOptionLength()));
     }
 
     /**

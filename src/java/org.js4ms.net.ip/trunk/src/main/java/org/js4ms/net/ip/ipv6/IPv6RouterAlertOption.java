@@ -147,7 +147,7 @@ public final class IPv6RouterAlertOption
         setRouterAlertValue(routerAlertValue);
 
         if (logger.isLoggable(Level.FINER)) {
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
@@ -158,14 +158,14 @@ public final class IPv6RouterAlertOption
         super(buffer);
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entry(this, "IPv6RouterAlertOption.IPv6RouterAlertOption", buffer));
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
     @Override
-    public void log(final Logger logger) {
-        super.log(logger);
-        logState(logger);
+    public void log(final Logger logger, final Level level) {
+        super.log(logger, level);
+        logState(logger, level);
     }
 
     /**
@@ -173,8 +173,8 @@ public final class IPv6RouterAlertOption
      * 
      * @param logger
      */
-    private void logState(final Logger logger) {
-        logger.info(this.log.msg(": router-alert-value=" + getRouterAlertValue()));
+    private void logState(final Logger logger, final Level level) {
+        logger.log(level,this.log.msg(": router-alert-value=" + getRouterAlertValue()));
     }
 
     /**

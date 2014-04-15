@@ -129,7 +129,7 @@ public class LoggingOutputHandler implements TransactionHandler {
             }
         };
 
-        handler.setLevel(Level.FINEST);
+        handler.setLevel(Level.ALL);
 
         handler.setErrorManager(new ErrorManager() {
             @Override

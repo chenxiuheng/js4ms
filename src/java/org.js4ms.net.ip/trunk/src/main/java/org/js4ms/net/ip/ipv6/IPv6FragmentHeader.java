@@ -174,7 +174,7 @@ public final class IPv6FragmentHeader
         setIdentification(identification);
 
         if (logger.isLoggable(Level.FINER)) {
-            logState(logger);
+            logState(logger,Level.FINER);
         }
     }
 
@@ -192,14 +192,14 @@ public final class IPv6FragmentHeader
         this.fragment = consume(buffer, buffer.remaining());
 
         if (logger.isLoggable(Level.FINER)) {
-            logState(logger);
+            logState(logger,Level.FINER);
         }
     }
 
     @Override
-    public void log(final Logger logger) {
-        super.log(logger);
-        logState(logger);
+    public void log(final Logger logger, final Level level) {
+        super.log(logger, level);
+        logState(logger, level);
     }
 
     /**
@@ -207,11 +207,11 @@ public final class IPv6FragmentHeader
      * 
      * @param logger
      */
-    private void logState(final Logger logger) {
-        logger.fine(this.log.msg(": more-fragments=" + getMoreFragments()));
-        logger.fine(this.log.msg(": fragment-offset=" + getFragmentOffset()));
-        logger.fine(this.log.msg(": identification=" + getIdentification()));
-        logger.fine(this.log.msg(": fragment array=" + this.fragment.array() +
+    private void logState(final Logger logger, final Level level) {
+        logger.log(level,this.log.msg(": more-fragments=" + getMoreFragments()));
+        logger.log(level,this.log.msg(": fragment-offset=" + getFragmentOffset()));
+        logger.log(level,this.log.msg(": identification=" + getIdentification()));
+        logger.log(level,this.log.msg(": fragment array=" + this.fragment.array() +
                                  " offset=" + this.fragment.arrayOffset() +
                                  " limit=" + this.fragment.limit()));
     }

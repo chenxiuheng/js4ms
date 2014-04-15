@@ -117,7 +117,7 @@ public abstract class IGMPGroupMessage
         setGroupAddress(groupAddress);
 
         if (logger.isLoggable(Level.FINER)) {
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
@@ -130,14 +130,14 @@ public abstract class IGMPGroupMessage
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("IGMPGroupMessage.IGMPGroupMessage", buffer));
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
     @Override
-    public void log(final Logger logger) {
-        super.log(logger);
-        logState(logger);
+    public void log(final Logger logger, final Level level) {
+        super.log(logger, level);
+        logState(logger, level);
     }
 
     /**
@@ -145,8 +145,8 @@ public abstract class IGMPGroupMessage
      * 
      * @param logger
      */
-    private void logState(final Logger logger) {
-        logger.info(this.log.msg(": group-address=" + Logging.address(getGroupAddress())));
+    private void logState(final Logger logger, final Level level) {
+        logger.log(level,this.log.msg(": group-address=" + Logging.address(getGroupAddress())));
     }
 
     /**

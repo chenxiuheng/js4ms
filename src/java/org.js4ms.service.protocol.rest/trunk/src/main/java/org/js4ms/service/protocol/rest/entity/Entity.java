@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.js4ms.service.protocol.rest.message.MessageHeader;
@@ -53,5 +54,5 @@ public interface Entity {
 
     public void ignoreContent();
 
-    public void log(final Logger log);
+    public void log(final Logger log, final Level level);
 }

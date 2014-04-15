@@ -21,6 +21,7 @@
 
 package org.js4ms.util.logging.java;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -39,6 +40,6 @@ public interface Loggable {
      * Logs internal state of object using specified logger for output.
      * @param logger The logger object to use when generating log messages.
      */
-    public void log(Logger logger);
+    public void log(Logger logger, Level level);
 
 }

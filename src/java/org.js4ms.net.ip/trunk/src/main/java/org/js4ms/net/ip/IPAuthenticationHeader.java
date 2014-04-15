@@ -189,17 +189,17 @@ public final class IPAuthenticationHeader
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("IPAuthenticationHeader.IPAuthenticationHeader", buffer));
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
     @Override
-    public void log(final Logger logger) {
-        super.log(logger);
-        logState(logger);
+    public void log(final Logger logger, final Level level) {
+        super.log(logger,level);
+        logState(logger,level);
     }
 
-    private void logState(final Logger logger) {
+    private void logState(final Logger logger, final Level level) {
     }
 
     @Override

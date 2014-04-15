@@ -128,7 +128,7 @@ public class IPExtensionHeader
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("IPExtensionHeader.IPv6ExtensionHeader", protocolNumber));
-            logState(logger);
+            logState(logger,Level.FINER);
         }
     }
 
@@ -142,7 +142,7 @@ public class IPExtensionHeader
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("IPExtensionHeader.IPv6ExtensionHeader", size, protocolNumber));
-            logState(logger);
+            logState(logger,Level.FINER);
         }
     }
 
@@ -157,7 +157,7 @@ public class IPExtensionHeader
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("IPExtensionHeader.IPv6ExtensionHeader", buffer));
-            logState(logger);
+            logState(logger,Level.FINER);
         }
     }
 
@@ -173,7 +173,7 @@ public class IPExtensionHeader
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("IPExtensionHeader.IPv6ExtensionHeader", buffer));
-            logState(logger);
+            logState(logger,Level.FINER);
         }
     }
 
@@ -183,9 +183,9 @@ public class IPExtensionHeader
     }
 
     @Override
-    public void log(final Logger logger) {
-        super.log(logger);
-        logState(logger);
+    public void log(final Logger logger, final Level level) {
+        super.log(logger, level);
+        logState(logger, level);
     }
 
     /**
@@ -193,10 +193,10 @@ public class IPExtensionHeader
      * 
      * @param logger
      */
-    private void logState(final Logger logger) {
-        logger.info(this.log.msg(": protocol=" + getProtocolNumber()));
-        logger.info(this.log.msg(": next-header=" + getNextProtocolNumber()));
-        logger.info(this.log.msg(": header-length=" + getHeaderLength()));
+    private void logState(final Logger logger, final Level level) {
+        logger.log(level,this.log.msg(": protocol=" + getProtocolNumber()));
+        logger.log(level,this.log.msg(": next-header=" + getNextProtocolNumber()));
+        logger.log(level,this.log.msg(": header-length=" + getHeaderLength()));
     }
 
     @Override

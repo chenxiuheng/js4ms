@@ -20,6 +20,7 @@
 
 package org.js4ms.util.logging.java;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -40,13 +41,13 @@ public abstract class LoggableBase
      * Logs the internal state of this object using the logger returned by
      * {@link #getLogger()}.
      */
-    public final void log() {
-        log(getLogger());
+    public final void log(Level level) {
+        log(getLogger(), level);
     }
 
     @Override
-    public void log(final Logger logger) {
-        logger.info(this.log.msg(" + logging [" + ClassId + "]"));
+    public void log(final Logger logger, final Level level) {
+        logger.log(level,this.log.msg(" + logging [" + ClassId + "]"));
     }
 
 }

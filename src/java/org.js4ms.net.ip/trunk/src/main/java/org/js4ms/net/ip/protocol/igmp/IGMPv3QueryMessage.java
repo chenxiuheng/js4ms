@@ -361,7 +361,7 @@ public final class IGMPv3QueryMessage
         setQuerierRobustnessVariable((byte) DEFAULT_ROBUSTNESS_VALUE);
         setQuerierQueryIntervalCode((byte) DEFAULT_QUERY_INTERVAL_VALUE);
         if (logger.isLoggable(Level.FINER)) {
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
@@ -381,7 +381,7 @@ public final class IGMPv3QueryMessage
         setQuerierRobustnessVariable((byte) DEFAULT_ROBUSTNESS_VALUE);
         setQuerierQueryIntervalCode((byte) DEFAULT_QUERY_INTERVAL_VALUE);
         if (logger.isLoggable(Level.FINER)) {
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
@@ -405,30 +405,30 @@ public final class IGMPv3QueryMessage
             }
         }
         if (logger.isLoggable(Level.FINER)) {
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
     @Override
-    public void log(final Logger logger) {
-        super.log(logger);
-        logState(logger);
+    public void log(final Logger logger, final Level level) {
+        super.log(logger, level);
+        logState(logger, level);
     }
 
     /**
      * @param logger
      */
-    private void logState(final Logger logger) {
-        logger.info(this.log.msg(": suppress-router-side-processing=" + getSuppressRouterSideProcessing()));
-        logger.info(this.log.msg(": querier-robustness-variable=" + getQuerierRobustnessVariable()));
-        logger.info(this.log.msg(": querier-query-interval-code=" + getQuerierQueryIntervalCode() + " " + getQueryIntervalTime()
+    private void logState(final Logger logger, final Level level) {
+        logger.log(level,this.log.msg(": suppress-router-side-processing=" + getSuppressRouterSideProcessing()));
+        logger.log(level,this.log.msg(": querier-robustness-variable=" + getQuerierRobustnessVariable()));
+        logger.log(level,this.log.msg(": querier-query-interval-code=" + getQuerierQueryIntervalCode() + " " + getQueryIntervalTime()
                                  + "s"));
-        logger.info(this.log.msg(": number-of-sources=" + getNumberOfSources()));
-        logger.info(this.log.msg("----> sources"));
+        logger.log(level,this.log.msg(": number-of-sources=" + getNumberOfSources()));
+        logger.log(level,this.log.msg("----> sources"));
         for (int i = 0; i < getNumberOfSources(); i++) {
-            logger.info(this.log.msg(": source[" + i + "]=" + Logging.address(getSource(i))));
+            logger.log(level,this.log.msg(": source[" + i + "]=" + Logging.address(getSource(i))));
         }
-        logger.info(this.log.msg("<---- sources"));
+        logger.log(level,this.log.msg("<---- sources"));
     }
 
     @Override

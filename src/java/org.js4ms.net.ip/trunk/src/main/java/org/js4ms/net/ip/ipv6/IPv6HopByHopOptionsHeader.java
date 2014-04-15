@@ -71,7 +71,7 @@ public final class IPv6HopByHopOptionsHeader extends IPv6OptionsHeader {
         super(IP_PROTOCOL_NUMBER);
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entry(this));
-            log();
+            log(Level.FINER);
         }
     }
 
@@ -84,7 +84,7 @@ public final class IPv6HopByHopOptionsHeader extends IPv6OptionsHeader {
         super(buffer, IP_PROTOCOL_NUMBER);
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(Logging.entry(this, buffer));
-            log();
+            log(Level.FINER);
         }
     }
 

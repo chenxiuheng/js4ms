@@ -354,7 +354,7 @@ class AmtTunnelEndpoint
         if (logger.isLoggable(Level.FINE)) {
             logger.fine(this.log.msg("sending AMT Membership Update Message"));
             if (logger.isLoggable(Level.FINEST)) {
-                message.log();
+                message.log(Level.FINEST);
             }
         }
 
@@ -404,7 +404,7 @@ class AmtTunnelEndpoint
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("AmtTunnelEndpoint.send", datagram));
             if (logger.isLoggable(Level.FINEST)) {
-                datagram.log(logger);
+                datagram.log(logger,Level.FINEST);
             }
         }
 
@@ -519,7 +519,7 @@ class AmtTunnelEndpoint
                 logger.fine(this.log.msg("sending AMT Relay Discovery Message: relay-discovery-address="
                                          + Logging.address(this.relayDiscoveryAddress)));
                 if (logger.isLoggable(Level.FINEST)) {
-                    this.lastDiscoveryMessageSent.log();
+                    this.lastDiscoveryMessageSent.log(Level.FINEST);
                 }
             }
 
@@ -616,7 +616,7 @@ class AmtTunnelEndpoint
             if (logger.isLoggable(Level.FINE)) {
                 logger.fine(this.log.msg("sending AMT Request Message"));
                 if (logger.isLoggable(Level.FINEST)) {
-                    this.lastRequestMessageSent.log();
+                    this.lastRequestMessageSent.log(Level.FINEST);
                 }
             }
 
@@ -788,7 +788,7 @@ class AmtTunnelEndpoint
                         if (logger.isLoggable(Level.FINE)) {
                             logger.fine(this.log.msg("sending AMT Teardown Message"));
                             if (logger.isLoggable(Level.FINEST)) {
-                                message.log();
+                                message.log(Level.FINEST);
                             }
                         }
 
@@ -896,16 +896,19 @@ class AmtTunnelEndpoint
                 inputDatagram = this.udpInputChannel.receive(Integer.MAX_VALUE);
             }
             catch (InterruptedIOException e) {
-                logger.info(this.log.msg("I/O operation interrupted - exiting message hander thread"));
+                logger.fine(this.log.msg("I/O operation interrupted - exiting message hander thread"));
+                break;
+            }
+            catch (InterruptedException e) {
+                logger.fine(this.log.msg("thread interrupted - exiting message hander thread"));
                 break;
             }
             catch (SocketException e) {
-                logger.info(this.log.msg("receive operation interrupted - exiting message hander thread"));
+                logger.warning(this.log.msg("receive operation failed - " + e.getClass().getSimpleName() + ":" + e.getMessage()));
                 break;
             }
             catch (Exception e) {
-                logger.severe(this.log.msg("receive operation failed unexpectedly - " + e.getClass().getSimpleName() + ":"
-                                           + e.getMessage()));
+                logger.severe(this.log.msg("receive operation failed unexpectedly - " + e.getClass().getSimpleName() + ":" + e.getMessage()));
                 e.printStackTrace();
                 throw new Error(e);
             }
@@ -922,7 +925,7 @@ class AmtTunnelEndpoint
                         if (logger.isLoggable(Level.FINER)) {
                             logger.fine(this.log.msg("received AMT message AmtMulticastDataMessage"));
                             if (logger.isLoggable(Level.FINEST)) {
-                                message.log();
+                                message.log(Level.FINEST);
                             }
                         }
                     }
@@ -930,7 +933,7 @@ class AmtTunnelEndpoint
                         if (logger.isLoggable(Level.FINE)) {
                             logger.fine(this.log.msg("received AMT message " + message.getClass().getSimpleName()));
                             if (logger.isLoggable(Level.FINEST)) {
-                                message.log();
+                                message.log(Level.FINEST);
                             }
                         }
                     }
@@ -950,8 +953,8 @@ class AmtTunnelEndpoint
                             break;
 
                         default:
-                            if (logger.isLoggable(Level.INFO)) {
-                                logger.info(this.log.msg("ignoring AMT message " + message.getClass().getSimpleName()));
+                            if (logger.isLoggable(Level.FINE)) {
+                                logger.fine(this.log.msg("ignoring AMT message " + message.getClass().getSimpleName()));
                             }
                             break;
                     }

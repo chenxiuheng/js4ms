@@ -334,8 +334,8 @@ public final class UdpPacket
         setDestinationPort(destinationPort);
         setChecksum((short) 0);
 
-        if (logger.isLoggable(Level.FINE)) {
-            logState(logger);
+        if (logger.isLoggable(Level.FINER)) {
+            logState(logger, Level.FINER);
         }
     }
 
@@ -370,7 +370,7 @@ public final class UdpPacket
         this.payload = consume(buffer, Length.get(getBufferInternal()) - BASE_HEADER_LENGTH);
 
         if (logger.isLoggable(Level.FINER)) {
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
@@ -380,9 +380,9 @@ public final class UdpPacket
     }
 
     @Override
-    public final void log(final Logger logger) {
-        super.log(logger);
-        logState(logger);
+    public final void log(final Logger logger, final Level level) {
+        super.log(logger, level);
+        logState(logger, level);
     }
 
     /**
@@ -390,20 +390,20 @@ public final class UdpPacket
      * 
      * @param logger
      */
-    private final void logState(final Logger logger) {
-        logger.info(this.log.msg(": source-port=" + getSourcePort()));
-        logger.info(this.log.msg(": destination-port=" + getDestinationPort()));
-        logger.info(this.log.msg(": total-length=" + getTotalLength()));
-        logger.info(this.log.msg(": payload-length=" + getPayloadLength()));
-        logger.info(this.log.msg(": checksum=" + getChecksum()));
+    private final void logState(final Logger logger, final Level level) {
+        logger.log(level,this.log.msg(": source-port=" + getSourcePort()));
+        logger.log(level,this.log.msg(": destination-port=" + getDestinationPort()));
+        logger.log(level,this.log.msg(": total-length=" + getTotalLength()));
+        logger.log(level,this.log.msg(": payload-length=" + getPayloadLength()));
+        logger.log(level,this.log.msg(": checksum=" + getChecksum()));
         if (this.payload != null) {
-            logger.info(this.log.msg("----> payload"));
-            logger.info(this.log.msg(": buffer array-offset=" + this.payload.arrayOffset() +
+            logger.log(level,this.log.msg("----> payload"));
+            logger.log(level,this.log.msg(": buffer array-offset=" + this.payload.arrayOffset() +
                                      ", position=" + this.payload.position() +
                                      ", remaining=" + this.payload.remaining() +
                                      ", limit=" + this.payload.limit() +
                                      ", capacity=" + this.payload.capacity()));
-            logger.info(this.log.msg("<---- payload"));
+            logger.log(level,this.log.msg("<---- payload"));
         }
     }
 

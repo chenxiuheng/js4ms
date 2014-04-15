@@ -307,7 +307,7 @@ public final class UdpDatagram
         this.payload = payload.slice();
 
         if (logger.isLoggable(Level.FINER)) {
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
@@ -317,9 +317,9 @@ public final class UdpDatagram
     }
 
     @Override
-    public void log(final Logger logger) {
-        super.log(logger);
-        logState(logger);
+    public void log(final Logger logger, final Level level) {
+        super.log(logger, level);
+        logState(logger, level);
     }
 
     /**
@@ -327,10 +327,10 @@ public final class UdpDatagram
      * 
      * @param logger
      */
-    private void logState(final Logger logger) {
-        logger.info(this.log.msg(": source=" + Logging.address(getSourceAddress()) + ":" + getSourcePort()));
-        logger.info(this.log.msg(": destination=" + Logging.address(getDestinationAddress()) + ":" + getDestinationPort()));
-        logger.info(this.log.msg(": payload buffer=" + this.payload.array() +
+    private void logState(final Logger logger, final Level level) {
+        logger.log(level,this.log.msg(": source=" + Logging.address(getSourceAddress()) + ":" + getSourcePort()));
+        logger.log(level,this.log.msg(": destination=" + Logging.address(getDestinationAddress()) + ":" + getDestinationPort()));
+        logger.log(level,this.log.msg(": payload buffer=" + this.payload.array() +
                                  " offset=" + this.payload.arrayOffset() +
                                  " limit=" + this.payload.limit()));
     }

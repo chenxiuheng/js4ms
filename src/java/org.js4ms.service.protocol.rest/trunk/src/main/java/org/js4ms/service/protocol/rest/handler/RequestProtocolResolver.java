@@ -105,10 +105,6 @@ public final class RequestProtocolResolver implements RequestHandlerResolver {
 
         String protocolName = request.getRequestLine().getProtocolVersion().getProtocolName().getName();
         
-        if (logger.isLoggable(Level.FINE)) {
-            logger.fine(log.msg("attempting to locate handler resolver for "+protocolName+" protocol"));
-        }
-
         RequestHandlerResolver resolver = this.resolvers.get(protocolName);
         if (resolver != null) {
             if (logger.isLoggable(Level.FINE)) {

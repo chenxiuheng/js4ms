@@ -358,7 +358,7 @@ public final class MLDGroupRecord
         setAuxData(auxData);
 
         if (MLDMessage.logger.isLoggable(Level.FINER)) {
-            logState(MLDMessage.logger);
+            logState(MLDMessage.logger, Level.FINER);
         }
     }
 
@@ -369,8 +369,8 @@ public final class MLDGroupRecord
     public MLDGroupRecord(final ByteBuffer buffer) throws ParseException {
         super(consume(buffer, BASE_RECORD_LENGTH));
 
-        if (MLDMessage.logger.isLoggable(Level.FINE)) {
-            MLDMessage.logger.fine(this.log.entry("MLDGroupRecord.MLDGroupRecord", buffer));
+        if (MLDMessage.logger.isLoggable(Level.FINER)) {
+            MLDMessage.logger.finer(this.log.entry("MLDGroupRecord.MLDGroupRecord", buffer));
         }
 
         int count = getNumberOfSources();
@@ -382,8 +382,8 @@ public final class MLDGroupRecord
 
         this.auxData = consume(buffer, getAuxDataLength() * 4);
 
-        if (MLDMessage.logger.isLoggable(Level.FINE)) {
-            logState(MLDMessage.logger);
+        if (MLDMessage.logger.isLoggable(Level.FINER)) {
+            logState(MLDMessage.logger, Level.FINER);
         }
     }
 
@@ -393,9 +393,9 @@ public final class MLDGroupRecord
     }
 
     @Override
-    public void log(final Logger logger) {
-        super.log(logger);
-        logState(logger);
+    public void log(final Logger logger, final Level level) {
+        super.log(logger, level);
+        logState(logger, level);
     }
 
     /**
@@ -403,17 +403,17 @@ public final class MLDGroupRecord
      * 
      * @param logger
      */
-    private void logState(final Logger logger) {
-        logger.info(this.log.msg(": record-type=" + getType() + " " + getTypeName(getType())));
-        logger.info(this.log.msg(": aux-data-length=" + getAuxDataLength()));
-        logger.info(this.log.msg(": number-of-sources=" + getNumberOfSources()));
-        logger.info(this.log.msg(": group-address=" + Logging.address(getGroupAddress())));
-        logger.info(this.log.msg("----> start sources"));
+    private void logState(final Logger logger, final Level level) {
+        logger.log(level,this.log.msg(": record-type=" + getType() + " " + getTypeName(getType())));
+        logger.log(level,this.log.msg(": aux-data-length=" + getAuxDataLength()));
+        logger.log(level,this.log.msg(": number-of-sources=" + getNumberOfSources()));
+        logger.log(level,this.log.msg(": group-address=" + Logging.address(getGroupAddress())));
+        logger.log(level,this.log.msg("----> start sources"));
         for (int i = 0; i < getNumberOfSources(); i++) {
-            logger.info(this.log.msg(": source[" + i + "]=" + Logging.address(getSource(i))));
+            logger.log(level,this.log.msg(": source[" + i + "]=" + Logging.address(getSource(i))));
         }
-        logger.info(this.log.msg("<---- end sources"));
-        logger.info(this.log.msg(": aux-data=" + getAuxData()));
+        logger.log(level,this.log.msg("<---- end sources"));
+        logger.log(level,this.log.msg(": aux-data=" + getAuxData()));
     }
 
     @Override

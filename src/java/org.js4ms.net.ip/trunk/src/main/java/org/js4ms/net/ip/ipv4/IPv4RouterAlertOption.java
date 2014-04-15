@@ -148,7 +148,7 @@ public final class IPv4RouterAlertOption
         setRouterAlertValue(routerAlertValue);
 
         if (logger.isLoggable(Level.FINER)) {
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
@@ -160,21 +160,21 @@ public final class IPv4RouterAlertOption
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("IPv4RouterAlertOption.IPv4RouterAlertOption", buffer));
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
     @Override
-    public void log(final Logger logger) {
-        super.log(logger);
-        logState(logger);
+    public void log(final Logger logger, final Level level) {
+        super.log(logger, level);
+        logState(logger, level);
     }
 
     /**
      * @param logger
      */
-    private void logState(final Logger logger) {
-        logger.info(this.log.msg(": router-alert-value=" + getRouterAlertValue()));
+    private void logState(final Logger logger, final Level level) {
+        logger.log(level,this.log.msg(": router-alert-value=" + getRouterAlertValue()));
     }
 
     /**

@@ -94,21 +94,21 @@ public final class IPv6RoutingType0Header extends IPv6RoutingHeader {
         }
 
         if (logger.isLoggable(Level.FINER)) {
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
     @Override
-    public void log(final Logger logger) {
-        super.log(logger);
-        logState(logger);
+    public void log(final Logger logger, final Level level) {
+        super.log(logger, level);
+        logState(logger, level);
     }
 
     /**
      * 
      * @param logger
      */
-    private void logState(final Logger logger) {
+    private void logState(final Logger logger, final Level level) {
         
     }
 

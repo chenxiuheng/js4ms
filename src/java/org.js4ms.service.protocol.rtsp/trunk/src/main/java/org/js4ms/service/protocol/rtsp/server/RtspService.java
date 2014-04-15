@@ -127,7 +127,7 @@ public class RtspService extends AbstractService {
     }
 
     @Override
-    public void log(Logger logger) {
+    public void log(final Logger logger, final Level level) {
     }
     
 }

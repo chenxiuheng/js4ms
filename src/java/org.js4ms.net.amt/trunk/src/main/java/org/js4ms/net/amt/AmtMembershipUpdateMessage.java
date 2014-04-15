@@ -272,7 +272,7 @@ public final class AmtMembershipUpdateMessage
         setRequestNonce(requestNonce);
 
         if (logger.isLoggable(Level.FINER)) {
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
@@ -290,14 +290,14 @@ public final class AmtMembershipUpdateMessage
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("AmtMembershipUpdateMessage.AmtMembershipUpdateMessage", buffer));
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
     @Override
-    public void log(final Logger logger) {
-        super.log(logger);
-        logState(logger);
+    public void log(final Logger logger, final Level level) {
+        super.log(logger, level);
+        logState(logger, level);
     }
 
     /**
@@ -306,9 +306,9 @@ public final class AmtMembershipUpdateMessage
      * @param logger
      *            The logger to use when generating log messages.
      */
-    private void logState(final Logger logger) {
-        logger.info(this.log.msg(": response-MAC=" + Logging.mac(getResponseMac())));
-        logger.info(this.log.msg(": request-nonce=" + getRequestNonce()));
+    private void logState(final Logger logger, final Level level) {
+        logger.log(level,this.log.msg(": response-MAC=" + Logging.mac(getResponseMac())));
+        logger.log(level,this.log.msg(": request-nonce=" + getRequestNonce()));
     }
 
     @Override

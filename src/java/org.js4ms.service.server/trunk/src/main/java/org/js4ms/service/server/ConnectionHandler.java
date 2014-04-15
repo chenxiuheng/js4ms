@@ -158,6 +158,8 @@ public class ConnectionHandler
             e.printStackTrace();
         }
 
+        logger.info(log.msg(connection.getRemoteAddress().getAddress().toString() + " disconnected"));
+
         this.manager.removeConnection(connection);
 
     }

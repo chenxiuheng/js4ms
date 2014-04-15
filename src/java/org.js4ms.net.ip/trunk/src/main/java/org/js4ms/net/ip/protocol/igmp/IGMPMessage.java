@@ -346,7 +346,7 @@ public abstract class IGMPMessage
         setChecksum((short) 0);
 
         if (logger.isLoggable(Level.FINER)) {
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
@@ -358,7 +358,7 @@ public abstract class IGMPMessage
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("IGMPMessage.IGMPMessage", buffer));
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
@@ -368,9 +368,9 @@ public abstract class IGMPMessage
     }
 
     @Override
-    public void log(final Logger logger) {
-        super.log(logger);
-        logState(logger);
+    public void log(final Logger logger, final Level level) {
+        super.log(logger, level);
+        logState(logger, level);
     }
 
     /**
@@ -378,10 +378,10 @@ public abstract class IGMPMessage
      * 
      * @param logger
      */
-    private void logState(final Logger logger) {
-        logger.info(this.log.msg(" : message-length=" + getTotalLength()));
-        logger.info(this.log.msg(" : type=" + getType()));
-        logger.info(this.log.msg(" : checksum=" + getChecksum()));
+    private void logState(final Logger logger, final Level level) {
+        logger.log(level,this.log.msg(" : message-length=" + getTotalLength()));
+        logger.log(level,this.log.msg(" : type=" + getType()));
+        logger.log(level,this.log.msg(" : checksum=" + getChecksum()));
     }
 
     @Override

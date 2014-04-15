@@ -324,8 +324,8 @@ public final class IPv6Packet
         setSourceAddress(sourceAddress);
         setDestinationAddress(destinationAddress);
         setFirstProtocolMessage(firstProtocolHeader);
-        if (logger.isLoggable(Level.FINE)) {
-            logState(logger);
+        if (logger.isLoggable(Level.FINER)) {
+            logState(logger, Level.FINER);
         }
     }
 
@@ -349,7 +349,7 @@ public final class IPv6Packet
         parseExtensionHeaders(NextHeader.get(getBufferInternal()), payload);
 
         if (logger.isLoggable(Level.FINER)) {
-            logState(logger);
+            logState(logger,Level.FINER);
         }
     }
 
@@ -373,7 +373,7 @@ public final class IPv6Packet
         parseExtensionHeaders(NextHeader.get(getBufferInternal()), payload);
 
         if (logger.isLoggable(Level.FINER)) {
-            logState(logger);
+            logState(logger,Level.FINER);
         }
     }
 
@@ -383,28 +383,28 @@ public final class IPv6Packet
     }
 
     @Override
-    public void log(final Logger logger) {
-        super.log(logger);
-        logState(logger);
+    public void log(final Logger logger, final Level level) {
+        super.log(logger, level);
+        logState(logger, level);
     }
 
     /**
      * @param logger
      */
-    private void logState(final Logger logger) {
-        logger.info(this.log.msg(": length=" + getTotalLength()));
-        logger.info(this.log.msg(": version=" + getVersion()));
-        logger.info(this.log.msg(": priority=" + getTrafficClass()));
-        logger.info(this.log.msg(": flow-label=" + getFlowLabel()));
-        logger.info(this.log.msg(": hop-limit=" + getHopLimit()));
-        logger.info(this.log.msg(": payload-length=" + getPayloadLength()));
-        logger.fine(this.log.msg(": source-address=" + Logging.address(getSourceAddress())));
-        logger.fine(this.log.msg(": destination-address=" + Logging.address(getDestinationAddress())));
-        logger.info(this.log.msg("----> protocol messages"));
+    private void logState(final Logger logger, final Level level) {
+        logger.log(level,this.log.msg(": length=" + getTotalLength()));
+        logger.log(level,this.log.msg(": version=" + getVersion()));
+        logger.log(level,this.log.msg(": priority=" + getTrafficClass()));
+        logger.log(level,this.log.msg(": flow-label=" + getFlowLabel()));
+        logger.log(level,this.log.msg(": hop-limit=" + getHopLimit()));
+        logger.log(level,this.log.msg(": payload-length=" + getPayloadLength()));
+        logger.log(level,this.log.msg(": source-address=" + Logging.address(getSourceAddress())));
+        logger.log(level,this.log.msg(": destination-address=" + Logging.address(getDestinationAddress())));
+        logger.log(level,this.log.msg("----> protocol messages"));
         if (getFirstProtocolMessage() != null) {
-            getFirstProtocolMessage().log(logger);
+            getFirstProtocolMessage().log(logger, level);
         }
-        logger.info(this.log.msg("<---- protocol messages"));
+        logger.log(level,this.log.msg("<---- protocol messages"));
     }
 
     @Override
@@ -872,8 +872,8 @@ public final class IPv6Packet
         byte lastProtocolNumber = getLastProtocolNumber();
         // Check checksum before we consume the payload
         if (!protocolParser.verifyChecksum(this.unparsedPayload, lastProtocolNumber, getSourceAddress(), getDestinationAddress())) {
-            if (logger.isLoggable(Level.INFO)) {
-                logger.info(this.log.msg("invalid checksum detected in IP payload"));
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine(this.log.msg("invalid checksum detected in IP payload"));
             }
             throw new ParseException("invalid checksum detected in IP protocol packet");
         }
@@ -883,8 +883,8 @@ public final class IPv6Packet
             lastProtocolNumber = nextHeader.getNextProtocolNumber();
             if (!protocolParser.verifyChecksum(this.unparsedPayload, lastProtocolNumber, getSourceAddress(),
                                                getDestinationAddress())) {
-                if (logger.isLoggable(Level.INFO)) {
-                    logger.info(this.log.msg("invalid checksum detected in IP payload"));
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine(this.log.msg("invalid checksum detected in IP payload"));
                 }
                 throw new ParseException("invalid checksum detected in IP payload");
             }

@@ -178,7 +178,7 @@ public final class AmtRelayDiscoveryMessage
         setDiscoveryNonce(discoveryNonce);
 
         if (logger.isLoggable(Level.FINE)) {
-            logState(logger);
+            logState(logger, Level.FINE);
         }
     }
 
@@ -196,21 +196,22 @@ public final class AmtRelayDiscoveryMessage
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer(this.log.entry("AmtRelayDiscoveryMessage.AmtRelayDiscoveryMessage", buffer));
-            logState(logger);
+            logState(logger, null);
         }
     }
 
     @Override
-    public void log(Logger logger) {
-        super.log(logger);
-        logState(logger);
+    public void log(final Logger logger, final Level level) {
+        super.log(logger, level);
+        logState(logger, level);
     }
 
     /**
      * @param logger
+     * @param level TODO
      */
-    private void logState(Logger logger) {
-        logger.info(this.log.msg(": discovery-nonce=" + getDiscoveryNonce()));
+    private void logState(final Logger logger, final Level level) {
+        logger.log(level,this.log.msg(": discovery-nonce=" + getDiscoveryNonce()));
     }
 
     @Override

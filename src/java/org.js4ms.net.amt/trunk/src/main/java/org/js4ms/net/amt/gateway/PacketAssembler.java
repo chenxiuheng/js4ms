@@ -845,8 +845,8 @@ final class PacketAssembler
                             reap(false);
                         }
                         catch (Exception e) {
-                            if (logger.isLoggable(Level.FINER)) {
-                                logger.info(PacketAssembler.this.log.msg("exception thrown in packet reassembly timer task - " +
+                            if (logger.isLoggable(Level.FINE)) {
+                                logger.fine(PacketAssembler.this.log.msg("exception thrown in packet reassembly timer task - " +
                                                                          e.getClass().getName() + ":" + e.getMessage()));
                             }
                         }

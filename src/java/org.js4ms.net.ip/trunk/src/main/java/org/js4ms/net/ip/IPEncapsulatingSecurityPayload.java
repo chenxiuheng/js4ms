@@ -261,7 +261,7 @@ public class IPEncapsulatingSecurityPayload
         this.payload = consume(buffer, buffer.remaining());
 
         if (logger.isLoggable(Level.FINER)) {
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
@@ -271,9 +271,9 @@ public class IPEncapsulatingSecurityPayload
     }
 
     @Override
-    public void log(Logger logger) {
-        super.log(logger);
-        logState(logger);
+    public void log(final Logger logger, final Level level) {
+        super.log(logger,level);
+        logState(logger,level);
     }
 
     /**
@@ -281,10 +281,10 @@ public class IPEncapsulatingSecurityPayload
      * 
      * @param logger
      */
-    private void logState(final Logger logger) {
-        logger.info(this.log.msg(": payload array=" + this.payload.array() +
-                                 " offset=" + this.payload.arrayOffset() +
-                                 " limit=" + this.payload.limit()));
+    private void logState(final Logger logger, final Level level) {
+        logger.log(level, this.log.msg(": payload array=" + this.payload.array() +
+                                       " offset=" + this.payload.arrayOffset() +
+                                       " limit=" + this.payload.limit()));
     }
 
     @Override

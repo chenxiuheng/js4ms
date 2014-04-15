@@ -278,7 +278,7 @@ public final class IGMPv3ReportMessage
         getBufferInternal().put(5, (byte) 0); // Reserved
 
         if (logger.isLoggable(Level.FINER)) {
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
@@ -290,7 +290,7 @@ public final class IGMPv3ReportMessage
         super(consume(buffer, BASE_MESSAGE_LENGTH));
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.fine(this.log.entry("IGMPv3ReportMessage.IGMPv3ReportMessage", buffer));
+            logger.finer(this.log.entry("IGMPv3ReportMessage.IGMPv3ReportMessage", buffer));
         }
 
         int numberOfGroupRecords = getNumberOfGroupRecords();
@@ -302,30 +302,30 @@ public final class IGMPv3ReportMessage
         }
 
         if (logger.isLoggable(Level.FINER)) {
-            logState(logger);
+            logState(logger, Level.FINER);
         }
     }
 
     @Override
-    public void log(final Logger logger) {
-        super.log(logger);
-        logState(logger);
+    public void log(final Logger logger, final Level level) {
+        super.log(logger, level);
+        logState(logger, level);
     }
 
     /**
      * @param logger
      */
-    private void logState(final Logger logger) {
-        logger.info(this.log.msg(": number-of-group-records=" + getNumberOfGroupRecords()));
-        logger.info(this.log.msg(": ----> group records"));
+    private void logState(final Logger logger, final Level level) {
+        logger.log(level,this.log.msg(": number-of-group-records=" + getNumberOfGroupRecords()));
+        logger.log(level,this.log.msg(": ----> group records"));
         int numberOfGroupRecords = getNumberOfGroupRecords();
         if (numberOfGroupRecords > 0) {
             for (int i = 0; i < numberOfGroupRecords; i++) {
-                logger.info(this.log.msg(": group record[" + i + "]:"));
-                this.groupRecords.get(i).log(logger);
+                logger.log(level,this.log.msg(": group record[" + i + "]:"));
+                this.groupRecords.get(i).log(logger,level);
             }
         }
-        logger.info(this.log.msg("<---- end group records"));
+        logger.log(level,this.log.msg("<---- end group records"));
     }
 
     @Override

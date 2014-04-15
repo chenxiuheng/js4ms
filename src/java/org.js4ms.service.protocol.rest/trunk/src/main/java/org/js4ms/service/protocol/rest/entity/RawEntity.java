@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.js4ms.service.protocol.rest.MessageException;
@@ -210,34 +211,34 @@ public class RawEntity implements Entity {
         this.isConsumed = false;
     }
 
-    public void log(final Logger logger) {
-        logger.info(log.msg("+ logging [" + getClass().getSimpleName() + "]"));
-        logState(logger);
+    public void log(final Logger logger, final Level level) {
+        logger.log(level,log.msg("+ logging [" + getClass().getSimpleName() + "]"));
+        logState(logger,level);
     }
 
-    private void logState(final Logger logger) {
-        logger.info(log.msg(Entity.CONTENT_LENGTH+": " + this.contentLength));
-        logger.info(log.msg(Entity.CONTENT_TYPE+": " + this.contentType));
+    private void logState(final Logger logger, final Level level) {
+        logger.log(level,log.msg(Entity.CONTENT_LENGTH+": " + this.contentLength));
+        logger.log(level,log.msg(Entity.CONTENT_TYPE+": " + this.contentType));
         if (this.contentEncoding != null) {
-            logger.info(log.msg(Entity.CONTENT_ENCODING+": " + this.contentEncoding));
+            logger.log(level,log.msg(Entity.CONTENT_ENCODING+": " + this.contentEncoding));
         }
         if (this.contentLanguage != null) {
-            logger.info(log.msg(Entity.CONTENT_LANGUAGE+": " + this.contentLanguage));
+            logger.log(level,log.msg(Entity.CONTENT_LANGUAGE+": " + this.contentLanguage));
         }
         if (this.contentBase != null) {
-            logger.info(log.msg(Entity.CONTENT_BASE+": " + this.contentBase));
+            logger.log(level,log.msg(Entity.CONTENT_BASE+": " + this.contentBase));
         }
         if (this.contentLocation != null) {
-            logger.info(log.msg(Entity.CONTENT_LOCATION+": " + this.contentLocation));
+            logger.log(level,log.msg(Entity.CONTENT_LOCATION+": " + this.contentLocation));
         }
         if (this.contentDisposition != null) {
-            logger.info(log.msg(Entity.CONTENT_DISPOSITION+": " + this.contentDisposition));
+            logger.log(level,log.msg(Entity.CONTENT_DISPOSITION+": " + this.contentDisposition));
         }
         if (this.expires != null) {
-            logger.info(log.msg(Entity.EXPIRES+": " + DateUtil.toString(this.expires)));
+            logger.log(level,log.msg(Entity.EXPIRES+": " + DateUtil.toString(this.expires)));
         }
         if (this.lastModified != null) {
-            logger.info(log.msg(Entity.LAST_MODIFIED+": " + DateUtil.toString(this.lastModified)));
+            logger.log(level,log.msg(Entity.LAST_MODIFIED+": " + DateUtil.toString(this.lastModified)));
         }
     }
 

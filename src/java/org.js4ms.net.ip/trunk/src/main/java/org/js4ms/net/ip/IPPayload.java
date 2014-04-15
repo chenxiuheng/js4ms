@@ -92,16 +92,16 @@ public class IPPayload
         super(buffer);
         this.protocolNumber = protocolNumber;
 
-        if (logger.isLoggable(Level.FINE)) {
+        if (logger.isLoggable(Level.FINER)) {
             logger.fine(this.log.entry("IPPayload.IPPayload", protocolNumber, buffer));
-            logState(logger);
+            logState(logger,Level.FINER);
         }
     }
 
     @Override
-    public void log(final Logger logger) {
-        super.log(logger);
-        logState(logger);
+    public void log(final Logger logger, final Level level) {
+        super.log(logger, level);
+        logState(logger, level);
     }
 
     /**
@@ -109,8 +109,8 @@ public class IPPayload
      * 
      * @param logger
      */
-    private void logState(final Logger logger) {
-        logger.info(this.log.msg(": protocol=" + getProtocolNumber()));
+    private void logState(final Logger logger, final Level level) {
+        logger.log(level,this.log.msg(": protocol=" + getProtocolNumber()));
     }
 
     @Override

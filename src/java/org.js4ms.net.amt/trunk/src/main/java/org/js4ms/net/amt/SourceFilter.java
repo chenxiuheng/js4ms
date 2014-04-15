@@ -23,6 +23,7 @@ package org.js4ms.net.amt;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.HashSet;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.js4ms.util.logging.java.Logging;
@@ -102,14 +103,14 @@ final public class SourceFilter {
      * 
      * @param logger
      */
-    public void log(final Logger logger) {
-        logger.info(" : group-address=" + Logging.address(groupAddress));
-        logger.info(" : filter-mode=" + (this.mode == Mode.INCLUDE ? "INCLUDE" : "EXCLUDE"));
-        logger.info(" : ----> sources");
+    public void log(final Logger logger, final Level level) {
+        logger.log(level," : group-address=" + Logging.address(groupAddress));
+        logger.log(level," : filter-mode=" + (this.mode == Mode.INCLUDE ? "INCLUDE" : "EXCLUDE"));
+        logger.log(level," : ----> sources");
         for (InetAddress address : this.sources) {
-            logger.info(" : " + Logging.address(address));
+            logger.log(level," : " + Logging.address(address));
         }
-        logger.info(" : <---- sources");
+        logger.log(level," : <---- sources");
     }
 
     /**
