@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.util.logging.java;
+package org.js4ms.logging.java;
 
 public final class Log {
 

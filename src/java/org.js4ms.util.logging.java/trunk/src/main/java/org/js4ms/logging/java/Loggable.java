@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: LoggableBase.java (org.js4ms.util.logging)
+ * File: Loggable.java (org.js4ms.util.logging)
  * 
  * Copyright (C) 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,36 +18,28 @@
  * limitations under the License.
  */
 
-package org.js4ms.util.logging.java;
+
+package org.js4ms.logging.java;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Abstract base class for classes that support logging.
- * 
+ * Interface exposed by objects whose internal state can be logged.
+ *
  * @author Gregory Bumgardner
  */
-public abstract class LoggableBase
-                implements Loggable {
-
-    protected static final String STATIC = "[ static ]";
-
-    public final String ClassId = this.getClass().getName();
-
-    public final Log log = new Log(this);
+public interface Loggable {
 
     /**
-     * Logs the internal state of this object using the logger returned by
-     * {@link #getLogger()}.
+     * Returns the Logger instance used by this object to generate log messages.
      */
-    public final void log(Level level) {
-        log(getLogger(), level);
-    }
+    public Logger getLogger();
 
-    @Override
-    public void log(final Logger logger, final Level level) {
-        logger.log(level,this.log.msg(" + logging [" + ClassId + "]"));
-    }
+    /**
+     * Logs internal state of object using specified logger for output.
+     * @param logger The logger object to use when generating log messages.
+     */
+    public void log(Logger logger, Level level);
 
 }
