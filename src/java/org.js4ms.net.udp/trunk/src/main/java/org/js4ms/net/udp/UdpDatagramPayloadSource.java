@@ -23,11 +23,11 @@ package org.js4ms.net.udp;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import org.js4ms.channels.ChannelPump;
-import org.js4ms.channels.MessageSource;
-import org.js4ms.channels.MessageTransform;
-import org.js4ms.channels.OutputChannel;
-import org.js4ms.channels.OutputChannelTransform;
+import org.js4ms.io.channels.ChannelPump;
+import org.js4ms.io.channels.MessageSource;
+import org.js4ms.io.channels.MessageTransform;
+import org.js4ms.io.channels.OutputChannel;
+import org.js4ms.io.channels.OutputChannelTransform;
 
 
 

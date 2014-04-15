@@ -28,7 +28,7 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.util.logging.Logger;
 
-import org.js4ms.channels.OutputChannel;
+import org.js4ms.io.channels.OutputChannel;
 import org.js4ms.util.logging.java.Log;
 
 

@@ -23,7 +23,7 @@ package org.js4ms.net.udp;
 import java.io.IOException;
 import java.net.InetAddress;
 
-import org.js4ms.channels.MessageInput;
+import org.js4ms.io.channels.MessageInput;
 
 
 
