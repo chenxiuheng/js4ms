@@ -15,6 +15,5 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.net.amt"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.net.udp"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.net.ip"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.io.channels"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
