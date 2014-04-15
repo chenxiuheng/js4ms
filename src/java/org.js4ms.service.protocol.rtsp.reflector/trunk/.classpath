@@ -8,7 +8,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.service.protocol.rtsp"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.util.logging.java"/>
 	<classpathentry kind="lib" path="/jain-sdp/jain-sdp-1.0.100.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.channels"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.net.udp"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.io.channels"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
