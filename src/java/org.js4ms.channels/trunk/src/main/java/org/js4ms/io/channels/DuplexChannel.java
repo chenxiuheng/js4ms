@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: InputChannel.java (org.js4ms.channels)
+ * File: DuplexChannel.java (org.js4ms.channels)
  * 
  * Copyright (C) 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,29 +18,31 @@
  * limitations under the License.
  */
 
-package org.js4ms.channels;
+package org.js4ms.io.channels;
 
 import java.io.IOException;
 
 /**
- * Interface exposed by all message input channel objects.
- * A message input channel provides the means for retrieving a message
- * from a message source via the {@link MessageInput#receive(int)} method.
+ * Interface exposed by all duplex message channel objects.
+ * A duplex channel provides the means for both sending message to and
+ * receiving messages from a single endpoint.
  * 
  * @param <MessageType>
  *            The message object type.
  * @author Greg Bumgardner (gbumgard)
  */
-public interface InputChannel<MessageType>
-                extends MessageInput<MessageType> {
+public interface DuplexChannel<MessageType>
+                extends MessageInput<MessageType>, MessageOutput<MessageType> {
 
     /**
      * Closes this channel and optionally closes any channels wrapped or attached to this
      * channel.
      * 
+     * @param isCloseAll
+     *            Indicates whether attached channels should also be closed.
      * @throws IOException
      *             The close operation has failed.
      */
-    public void close() throws IOException;
+    public void close(boolean isCloseAll) throws IOException;
 
 }

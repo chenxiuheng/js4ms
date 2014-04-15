@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.channels;
+package org.js4ms.io.channels;
 
 import java.io.IOException;
 

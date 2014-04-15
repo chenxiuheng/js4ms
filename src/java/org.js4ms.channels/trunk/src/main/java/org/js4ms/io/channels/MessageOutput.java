@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: MessageInput.java (org.js4ms.channels)
+ * File: MessageOutput.java (org.js4ms.channels)
  * 
  * Copyright (C) 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,45 +18,47 @@
  * limitations under the License.
  */
 
-package org.js4ms.channels;
+package org.js4ms.io.channels;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
 
 /**
- * Interface exposed by objects that can be used to receive a message from a message
- * source.
+ * Interface exposed by objects that may be used to send a message to a message sink.
  * 
  * @param <MessageType>
  *            The message object type.
  * @author Greg Bumgardner (gbumgard)
  */
-public interface MessageInput<MessageType> {
+public interface MessageOutput<MessageType> {
 
     /**
      * Special message object used to indicate that the
      * source has stopped producing messages.
      */
-    public static final Object EOM = new Object();
+    public static final Object EOM = MessageInput.EOM;
 
     /**
-     * Attempts to retrieve a message from a message source and if necessary,
-     * waits the specified amount of time until a message becomes available.
+     * Attempts to send a message to a message sink within a specified amount of time.
      * <p>
-     * Some implementations may choose to return the static Object {@link #EOM} to
-     * indicate that the source has stopped producing messages.
+     * Some channel implementations may choose to accept the static object {@link #EOM
+     * EOM} to indicate that the caller has stopped producing messages.
      * 
+     * @param message
+     *            A <code>MessageType</code> object or the static object {@link #EOM EOM}
+     *            (if supported).
      * @param milliseconds
      *            The amount of time allotted to complete the operation.
-     * @return A <code>MessageType</code> object or the object {@link #EOM}.
      * @throws IOException
-     *             The receive operation has failed.
+     *             The send operation has failed.
      * @throws InterruptedIOException
-     *             The receive operation was interrupted or timed out.
+     *             The send operation was interrupted or timed out.
      * @throws InterruptedException
-     *             The calling thread was interrupted before the receive operation could
+     *             The calling thread was interrupted before the send operation could
      *             complete.
      */
-    MessageType receive(int milliseconds) throws IOException, InterruptedIOException, InterruptedException;
+    void send(MessageType message, int milliseconds) throws IOException,
+                                                    InterruptedIOException,
+                                                    InterruptedException;
 
 }

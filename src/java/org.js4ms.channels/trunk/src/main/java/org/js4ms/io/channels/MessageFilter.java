@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: MessagePipe.java (org.js4ms.channels)
+ * File: MessageFilter.java (org.js4ms.channels)
  * 
  * Copyright (C) 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,16 +18,25 @@
  * limitations under the License.
  */
 
-package org.js4ms.channels;
+package org.js4ms.io.channels;
 
 /**
- * Interface exposed by objects that accept messages from a message sender
- * source and make those messages available to a message receiver.
+ * Interface exposed by objects used to filter messages based on some
+ * form of selection criteria.
  * 
  * @param <MessageType>
+ *            The message object type.
  * @author Greg Bumgardner (gbumgard)
  */
-public interface MessagePipe<MessageType>
-                extends MessageInput<MessageType>, MessageOutput<MessageType> {
+public interface MessageFilter<MessageType> {
+
+    /**
+     * Tests the message to see if it matches filter criteria.
+     * 
+     * @param message
+     *            The message to be tested.
+     * @return A boolean value indicating whether the message matched.
+     */
+    boolean isMatch(MessageType message);
 
 }

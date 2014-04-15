@@ -18,14 +18,14 @@
  * limitations under the License.
  */
 
-package org.js4ms.channels;
+package org.js4ms.io.channels;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.util.LinkedHashSet;
 
 import org.js4ms.exceptions.BoundException;
-import org.js4ms.exceptions.MultiIOException;
+import org.js4ms.io.MultiIOException;
 
 
 

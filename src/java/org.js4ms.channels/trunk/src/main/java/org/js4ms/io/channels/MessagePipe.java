@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: MessageKeyExtractor.java (org.js4ms.channels)
+ * File: MessagePipe.java (org.js4ms.channels)
  * 
  * Copyright (C) 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,25 +18,16 @@
  * limitations under the License.
  */
 
-package org.js4ms.channels;
+package org.js4ms.io.channels;
 
 /**
- * Interface exposed by objects that extract a key value from a message.
- * Key extractors are used to select message channels, handlers and parsers.
+ * Interface exposed by objects that accept messages from a message sender
+ * source and make those messages available to a message receiver.
  * 
  * @param <MessageType>
- *            The message object type.
  * @author Greg Bumgardner (gbumgard)
  */
-public interface MessageKeyExtractor<MessageType> {
-
-    /**
-     * Returns a value derived from one or more attributes of a message.
-     * 
-     * @param message
-     *            The message from which to extract a key value.
-     * @return An Object representing a key value.
-     */
-    public Object getKey(MessageType message);
+public interface MessagePipe<MessageType>
+                extends MessageInput<MessageType>, MessageOutput<MessageType> {
 
 }
