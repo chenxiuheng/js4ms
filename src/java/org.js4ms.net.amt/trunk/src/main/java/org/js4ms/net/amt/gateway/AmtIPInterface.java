@@ -7,11 +7,11 @@ import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.js4ms.channels.MessageKeyExtractor;
-import org.js4ms.channels.OutputChannel;
-import org.js4ms.channels.OutputChannelMap;
-import org.js4ms.channels.OutputChannelTee;
-import org.js4ms.channels.OutputChannelTransform;
+import org.js4ms.io.channels.MessageKeyExtractor;
+import org.js4ms.io.channels.OutputChannel;
+import org.js4ms.io.channels.OutputChannelMap;
+import org.js4ms.io.channels.OutputChannelTee;
+import org.js4ms.io.channels.OutputChannelTransform;
 import org.js4ms.net.amt.IPv4MembershipQueryTransform;
 import org.js4ms.net.amt.IPv4MembershipReportTransform;
 import org.js4ms.net.amt.IPv6MembershipQueryTransform;

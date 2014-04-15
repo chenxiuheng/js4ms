@@ -25,8 +25,8 @@ import java.net.InetAddress;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.js4ms.channels.OutputChannel;
-import org.js4ms.channels.OutputChannelTee;
+import org.js4ms.io.channels.OutputChannel;
+import org.js4ms.io.channels.OutputChannelTee;
 import org.js4ms.net.ip.IPPacket;
 import org.js4ms.net.ip.ipv4.IPv4Packet;
 import org.js4ms.util.logging.java.Log;

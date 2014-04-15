@@ -34,7 +34,7 @@ import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.js4ms.channels.OutputChannel;
+import org.js4ms.io.channels.OutputChannel;
 import org.js4ms.net.amt.AmtMembershipQueryMessage;
 import org.js4ms.net.amt.AmtMembershipUpdateMessage;
 import org.js4ms.net.amt.AmtMessage;

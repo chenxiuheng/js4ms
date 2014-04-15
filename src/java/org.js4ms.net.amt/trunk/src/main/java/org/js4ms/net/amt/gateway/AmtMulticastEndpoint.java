@@ -26,9 +26,9 @@ import java.net.InetAddress;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.js4ms.channels.MessageQueue;
-import org.js4ms.channels.OutputChannel;
-import org.js4ms.channels.OutputChannelPipe;
+import org.js4ms.io.channels.MessageQueue;
+import org.js4ms.io.channels.OutputChannel;
+import org.js4ms.io.channels.OutputChannelPipe;
 import org.js4ms.net.udp.MulticastEndpoint;
 import org.js4ms.net.udp.UdpDatagram;
 import org.js4ms.util.logging.java.Log;

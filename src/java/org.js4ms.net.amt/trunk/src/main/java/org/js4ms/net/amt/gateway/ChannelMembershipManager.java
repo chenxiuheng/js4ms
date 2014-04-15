@@ -26,12 +26,12 @@ import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.js4ms.channels.MessageKeyExtractor;
-import org.js4ms.channels.OutputChannel;
-import org.js4ms.channels.OutputChannelMap;
-import org.js4ms.channels.OutputChannelTee;
 import org.js4ms.exceptions.BoundException;
-import org.js4ms.exceptions.MultiIOException;
+import org.js4ms.io.MultiIOException;
+import org.js4ms.io.channels.MessageKeyExtractor;
+import org.js4ms.io.channels.OutputChannel;
+import org.js4ms.io.channels.OutputChannelMap;
+import org.js4ms.io.channels.OutputChannelTee;
 import org.js4ms.net.udp.UdpDatagram;
 import org.js4ms.net.util.Precondition;
 import org.js4ms.util.logging.java.Log;

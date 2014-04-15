@@ -29,7 +29,7 @@ import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.js4ms.channels.OutputChannel;
+import org.js4ms.io.channels.OutputChannel;
 import org.js4ms.net.amt.GroupMembershipRecord;
 import org.js4ms.net.amt.MembershipQuery;
 import org.js4ms.net.amt.MembershipReport;

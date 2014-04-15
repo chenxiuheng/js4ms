@@ -26,7 +26,7 @@ import java.net.ProtocolException;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import org.js4ms.channels.MessageTransform;
+import org.js4ms.io.channels.MessageTransform;
 import org.js4ms.net.ip.IPMessage;
 import org.js4ms.net.ip.IPPacket;
 import org.js4ms.net.ip.protocol.igmp.IGMPMessage;

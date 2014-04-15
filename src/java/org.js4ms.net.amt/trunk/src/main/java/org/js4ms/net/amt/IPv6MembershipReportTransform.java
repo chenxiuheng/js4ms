@@ -23,7 +23,7 @@ package org.js4ms.net.amt;
 import java.io.IOException;
 import java.net.InetAddress;
 
-import org.js4ms.channels.MessageTransform;
+import org.js4ms.io.channels.MessageTransform;
 import org.js4ms.net.ip.IPPacket;
 import org.js4ms.net.ip.protocol.mld.MLDGroupRecord;
 import org.js4ms.net.ip.protocol.mld.MLDMessage;
