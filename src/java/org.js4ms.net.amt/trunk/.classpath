@@ -13,7 +13,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.net.udp"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.net.util"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.util.task"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.io.channels"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.io"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
