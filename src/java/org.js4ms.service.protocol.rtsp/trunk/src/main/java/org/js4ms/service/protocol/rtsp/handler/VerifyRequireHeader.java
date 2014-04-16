@@ -1,4 +1,4 @@
-package org.js4ms.service.protocol.rtsp.handlers;
+package org.js4ms.service.protocol.rtsp.handler;
 
 import java.io.IOException;
 import java.util.HashSet;
