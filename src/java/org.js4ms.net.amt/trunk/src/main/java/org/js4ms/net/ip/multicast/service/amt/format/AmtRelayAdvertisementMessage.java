@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.net.ip.multicast.service.amt;
+package org.js4ms.net.ip.multicast.service.amt.format;
 
 import java.net.InetAddress;
 import java.nio.ByteBuffer;

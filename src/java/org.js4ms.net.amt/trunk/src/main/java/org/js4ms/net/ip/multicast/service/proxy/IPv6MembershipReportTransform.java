@@ -28,7 +28,7 @@ import org.js4ms.net.ip.format.IPPacket;
 import org.js4ms.net.ip.format.protocol.mld.MLDGroupRecord;
 import org.js4ms.net.ip.format.protocol.mld.MLDMessage;
 import org.js4ms.net.ip.format.protocol.mld.MLDv2ReportMessage;
-import org.js4ms.net.ip.multicast.service.amt.GroupMembershipRecord;
+import org.js4ms.net.ip.multicast.service.amt.format.GroupMembershipRecord;
 
 
 

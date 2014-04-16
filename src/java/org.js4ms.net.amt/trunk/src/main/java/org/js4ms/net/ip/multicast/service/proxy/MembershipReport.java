@@ -23,7 +23,7 @@ package org.js4ms.net.ip.multicast.service.proxy;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import org.js4ms.net.ip.multicast.service.amt.GroupMembershipRecord;
+import org.js4ms.net.ip.multicast.service.amt.format.GroupMembershipRecord;
 
 /**
  * A protocol-independent representation of an IGMPv3 or MLDv2 report message.
