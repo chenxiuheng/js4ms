@@ -32,7 +32,7 @@ import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.js4ms.common.exceptions.ParseException;
+import org.js4ms.common.exception.ParseException;
 import org.js4ms.io.channels.OutputChannel;
 import org.js4ms.net.ip.IPPacket;
 import org.js4ms.net.ip.Precondition;

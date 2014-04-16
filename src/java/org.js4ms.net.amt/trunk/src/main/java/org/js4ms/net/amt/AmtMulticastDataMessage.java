@@ -23,7 +23,7 @@ package org.js4ms.net.amt;
 import java.nio.ByteBuffer;
 import java.util.logging.Level;
 
-import org.js4ms.common.exceptions.ParseException;
+import org.js4ms.common.exception.ParseException;
 import org.js4ms.net.ip.IPPacket;
 import org.js4ms.net.ip.ipv4.IPv4Packet;
 import org.js4ms.net.ip.ipv6.IPv6Packet;

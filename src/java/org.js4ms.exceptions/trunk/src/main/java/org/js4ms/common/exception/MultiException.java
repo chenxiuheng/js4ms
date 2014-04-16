@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: ParseException.java (org.js4ms.common)
+ * File: MultiException.java (org.js4ms.common)
  * 
  * Copyright (C) 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,42 +18,50 @@
  * limitations under the License.
  */
 
-package org.js4ms.common.exceptions;
+package org.js4ms.common.exception;
+
+import java.util.Iterator;
+import java.util.LinkedList;
 
 /**
  * @author Greg Bumgardner (gbumgard)
  */
-public class ParseException
+public class MultiException
                 extends Exception {
 
-    private static final long serialVersionUID = -8100180238203347845L;
+    private static final long serialVersionUID = 4050769134360179803L;
+
+    private LinkedList<Throwable> throwables;
 
     /**
      * 
      */
-    public ParseException() {
-        super();
+    public MultiException() {
     }
 
     /**
-     * @param message
+     * @param t
      */
-    public ParseException(String message) {
-        super(message);
+    public void add(Throwable t) {
+        if (this.throwables == null) {
+            this.throwables = new LinkedList<Throwable>();
+        }
+        this.throwables.add(t);
     }
 
     /**
-     * @param message
-     * @param throwable
+     * @return
      */
-    public ParseException(String message, Throwable throwable) {
-        super(message, throwable);
+    public Iterator<Throwable> iterator() {
+        return this.throwables.iterator();
     }
 
     /**
-     * @param throwable
+     * @throws MultiException
      */
-    public ParseException(Throwable throwable) {
-        super(throwable);
+    public void rethrow() throws MultiException {
+        if (!this.throwables.isEmpty()) {
+            throw this;
+        }
     }
 }

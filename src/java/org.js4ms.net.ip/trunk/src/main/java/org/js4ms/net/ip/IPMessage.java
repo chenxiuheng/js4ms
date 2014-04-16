@@ -22,7 +22,7 @@ package org.js4ms.net.ip;
 
 import java.nio.ByteBuffer;
 
-import org.js4ms.common.exceptions.ParseException;
+import org.js4ms.common.exception.ParseException;
 import org.js4ms.util.buffer.parser.BufferParserMap;
 import org.js4ms.util.buffer.parser.KeyedBufferParser;
 import org.js4ms.util.buffer.parser.MissingParserException;

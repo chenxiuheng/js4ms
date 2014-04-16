@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: BoundException.java (org.js4ms.common)
+ * File: ParseException.java (org.js4ms.common)
  * 
  * Copyright (C) 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,47 +18,42 @@
  * limitations under the License.
  */
 
-package org.js4ms.common.exceptions;
+package org.js4ms.common.exception;
 
 /**
  * @author Greg Bumgardner (gbumgard)
  */
-public class BoundException
+public class ParseException
                 extends Exception {
 
-    private static final long serialVersionUID = -5587197699181393667L;
-
-    protected final Object object;
-
-    protected final Throwable throwable;
+    private static final long serialVersionUID = -8100180238203347845L;
 
     /**
-     * @param object
+     * 
+     */
+    public ParseException() {
+        super();
+    }
+
+    /**
+     * @param message
+     */
+    public ParseException(String message) {
+        super(message);
+    }
+
+    /**
+     * @param message
      * @param throwable
      */
-    public BoundException(final Object object, final Throwable throwable) {
-        this.object = object;
-        this.throwable = throwable;
+    public ParseException(String message, Throwable throwable) {
+        super(message, throwable);
     }
 
     /**
-     * @return
+     * @param throwable
      */
-    public Object getObject() {
-        return this.object;
-    }
-
-    /**
-     * @return
-     */
-    public Throwable getThrowable() {
-        return this.throwable;
-    }
-
-    /**
-     * @throws Throwable
-     */
-    public void rethrow() throws Throwable {
-        throw this.throwable;
+    public ParseException(Throwable throwable) {
+        super(throwable);
     }
 }

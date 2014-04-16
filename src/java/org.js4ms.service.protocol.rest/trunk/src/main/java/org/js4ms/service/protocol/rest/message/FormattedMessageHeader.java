@@ -1,6 +1,6 @@
 package org.js4ms.service.protocol.rest.message;
 
-import org.js4ms.common.exceptions.ParseException;
+import org.js4ms.common.exception.ParseException;
 
 public abstract class FormattedMessageHeader extends MessageHeaderBase {
 

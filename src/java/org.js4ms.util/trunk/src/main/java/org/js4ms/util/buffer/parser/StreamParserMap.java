@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 
-import org.js4ms.common.exceptions.ParseException;
+import org.js4ms.common.exception.ParseException;
 
 
 

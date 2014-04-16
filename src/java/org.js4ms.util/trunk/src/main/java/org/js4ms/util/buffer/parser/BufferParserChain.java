@@ -20,7 +20,7 @@ import java.nio.ByteBuffer;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import org.js4ms.common.exceptions.ParseException;
+import org.js4ms.common.exception.ParseException;
 
 
 

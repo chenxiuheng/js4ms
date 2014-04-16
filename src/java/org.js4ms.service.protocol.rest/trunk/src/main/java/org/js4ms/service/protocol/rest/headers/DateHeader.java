@@ -2,7 +2,7 @@ package org.js4ms.service.protocol.rest.headers;
 
 import java.util.Date;
 
-import org.js4ms.common.exceptions.ParseException;
+import org.js4ms.common.exception.ParseException;
 import org.js4ms.service.protocol.rest.message.FormattedMessageHeader;
 import org.js4ms.service.protocol.rest.message.MessageHeader;
 import org.js4ms.service.protocol.rest.util.DateUtil;
