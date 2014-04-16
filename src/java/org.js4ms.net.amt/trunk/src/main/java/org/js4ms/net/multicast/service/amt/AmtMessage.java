@@ -24,10 +24,10 @@ import java.nio.ByteBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.js4ms.util.buffer.BufferBackedObject;
-import org.js4ms.util.buffer.field.ByteField;
-import org.js4ms.util.buffer.field.SelectorField;
-import org.js4ms.util.buffer.parser.KeyedApplicationMessage;
+import org.js4ms.common.util.buffer.BufferBackedObject;
+import org.js4ms.common.util.buffer.field.ByteField;
+import org.js4ms.common.util.buffer.field.SelectorField;
+import org.js4ms.common.util.buffer.parser.KeyedApplicationMessage;
 
 
 

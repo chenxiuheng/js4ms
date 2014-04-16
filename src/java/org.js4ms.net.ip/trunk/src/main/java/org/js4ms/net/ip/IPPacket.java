@@ -26,16 +26,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.js4ms.common.exception.ParseException;
-import org.js4ms.util.buffer.BufferBackedObject;
-import org.js4ms.util.buffer.field.ByteBitField;
-import org.js4ms.util.buffer.field.Field;
-import org.js4ms.util.buffer.field.SelectorField;
-import org.js4ms.util.buffer.parser.BufferParserSelector;
-import org.js4ms.util.buffer.parser.KeyedBufferParser;
-import org.js4ms.util.buffer.parser.KeyedStreamParser;
-import org.js4ms.util.buffer.parser.MissingParserException;
-import org.js4ms.util.buffer.parser.StreamParserSelector;
-import org.js4ms.util.logging.Logging;
+import org.js4ms.common.util.buffer.BufferBackedObject;
+import org.js4ms.common.util.buffer.field.ByteBitField;
+import org.js4ms.common.util.buffer.field.Field;
+import org.js4ms.common.util.buffer.field.SelectorField;
+import org.js4ms.common.util.buffer.parser.BufferParserSelector;
+import org.js4ms.common.util.buffer.parser.KeyedBufferParser;
+import org.js4ms.common.util.buffer.parser.KeyedStreamParser;
+import org.js4ms.common.util.buffer.parser.MissingParserException;
+import org.js4ms.common.util.buffer.parser.StreamParserSelector;
+import org.js4ms.common.util.logging.Logging;
 
 
 

@@ -34,6 +34,8 @@ import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.js4ms.common.util.logging.Log;
+import org.js4ms.common.util.logging.Logging;
 import org.js4ms.io.channels.OutputChannel;
 import org.js4ms.net.io.udp.UdpDatagram;
 import org.js4ms.net.io.udp.UdpInputChannel;
@@ -61,8 +63,6 @@ import org.js4ms.net.multicast.service.amt.AmtRelayAdvertisementMessage;
 import org.js4ms.net.multicast.service.amt.AmtRelayDiscoveryMessage;
 import org.js4ms.net.multicast.service.amt.AmtRequestMessage;
 import org.js4ms.net.multicast.service.amt.AmtTeardownMessage;
-import org.js4ms.util.logging.Log;
-import org.js4ms.util.logging.Logging;
 
 
 

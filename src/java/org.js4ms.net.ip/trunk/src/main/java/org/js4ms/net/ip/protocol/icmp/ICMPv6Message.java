@@ -25,18 +25,18 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.js4ms.common.exception.ParseException;
+import org.js4ms.common.util.buffer.BufferBackedObject;
+import org.js4ms.common.util.buffer.field.ByteArrayField;
+import org.js4ms.common.util.buffer.field.ByteField;
+import org.js4ms.common.util.buffer.field.IntegerField;
+import org.js4ms.common.util.buffer.field.SelectorField;
+import org.js4ms.common.util.buffer.field.ShortField;
+import org.js4ms.common.util.buffer.parser.BufferParserSelector;
+import org.js4ms.common.util.buffer.parser.KeyedBufferParser;
+import org.js4ms.common.util.buffer.parser.MissingParserException;
+import org.js4ms.common.util.logging.Logging;
 import org.js4ms.net.ip.IPMessage;
 import org.js4ms.net.ip.IPPacket;
-import org.js4ms.util.buffer.BufferBackedObject;
-import org.js4ms.util.buffer.field.ByteArrayField;
-import org.js4ms.util.buffer.field.ByteField;
-import org.js4ms.util.buffer.field.IntegerField;
-import org.js4ms.util.buffer.field.SelectorField;
-import org.js4ms.util.buffer.field.ShortField;
-import org.js4ms.util.buffer.parser.BufferParserSelector;
-import org.js4ms.util.buffer.parser.KeyedBufferParser;
-import org.js4ms.util.buffer.parser.MissingParserException;
-import org.js4ms.util.logging.Logging;
 
 
 

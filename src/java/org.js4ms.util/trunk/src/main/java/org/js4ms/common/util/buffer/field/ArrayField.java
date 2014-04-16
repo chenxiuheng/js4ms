@@ -14,7 +14,7 @@
  * limitations under the license.
  */
 
-package org.js4ms.util.buffer.field;
+package org.js4ms.common.util.buffer.field;
 
 public abstract class ArrayField<Type> extends ByteAlignedField<Type> {
 

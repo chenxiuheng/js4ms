@@ -23,6 +23,7 @@ package org.js4ms.app.reflector;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.js4ms.common.util.logging.Logging;
 import org.js4ms.service.protocol.http.server.handler.LoggingConfigurationHandler;
 import org.js4ms.service.protocol.http.server.handler.LoggingOutputHandler;
 import org.js4ms.service.protocol.rest.entity.StringEntity;
@@ -44,7 +45,6 @@ import org.js4ms.service.server.ConnectionManager;
 import org.js4ms.service.server.Server;
 import org.js4ms.service.server.ServerFactory;
 import org.js4ms.service.server.Service;
-import org.js4ms.util.logging.Logging;
 
 /**
  * @author Greg Bumgardner (gbumgard)

@@ -12,10 +12,10 @@ import javax.jnlp.SingleInstanceListener;
 import javax.jnlp.SingleInstanceService;
 import javax.jnlp.UnavailableServiceException;
 
-import org.js4ms.util.logging.Log;
-import org.js4ms.util.logging.Logging;
 import org.js4ms.util.logging.swing.Console;
 import org.js4ms.app.reflector.RtspMulticastReflector;
+import org.js4ms.common.util.logging.Log;
+import org.js4ms.common.util.logging.Logging;
 
 
 public class RtspMulticastReflectorApp implements SingleInstanceListener {

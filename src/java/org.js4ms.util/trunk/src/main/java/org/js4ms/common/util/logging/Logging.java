@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.util.logging;
+package org.js4ms.common.util.logging;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

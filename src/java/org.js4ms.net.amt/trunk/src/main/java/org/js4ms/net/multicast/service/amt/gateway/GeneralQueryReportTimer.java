@@ -22,7 +22,7 @@ package org.js4ms.net.multicast.service.amt.gateway;
 
 import java.util.Timer;
 
-import org.js4ms.util.task.ReschedulableTask;
+import org.js4ms.common.util.task.ReschedulableTask;
 
 
 

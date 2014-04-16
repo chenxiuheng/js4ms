@@ -14,7 +14,7 @@
  * limitations under the license.
  */
 
-package org.js4ms.util.event;
+package org.js4ms.common.util.event;
 
 /**
  * Interface that must be implemented by event listeners that can be attached to an {@link Event}

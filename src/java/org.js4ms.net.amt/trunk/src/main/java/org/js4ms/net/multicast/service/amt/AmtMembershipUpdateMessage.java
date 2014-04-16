@@ -25,6 +25,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.js4ms.common.exception.ParseException;
+import org.js4ms.common.util.buffer.field.ByteArrayField;
+import org.js4ms.common.util.buffer.field.ByteField;
+import org.js4ms.common.util.buffer.field.IntegerField;
+import org.js4ms.common.util.logging.Logging;
 import org.js4ms.net.ip.IPMessage;
 import org.js4ms.net.ip.IPPacket;
 import org.js4ms.net.ip.protocol.igmp.IGMPMessage;
@@ -33,10 +37,6 @@ import org.js4ms.net.ip.protocol.igmp.IGMPv3ReportMessage;
 import org.js4ms.net.ip.protocol.mld.MLDMessage;
 import org.js4ms.net.ip.protocol.mld.MLDv1DoneMessage;
 import org.js4ms.net.ip.protocol.mld.MLDv1ReportMessage;
-import org.js4ms.util.buffer.field.ByteArrayField;
-import org.js4ms.util.buffer.field.ByteField;
-import org.js4ms.util.buffer.field.IntegerField;
-import org.js4ms.util.logging.Logging;
 
 
 

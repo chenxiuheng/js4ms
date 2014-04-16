@@ -27,11 +27,11 @@ import java.util.Vector;
 import java.util.logging.Level;
 
 import org.js4ms.common.exception.ParseException;
+import org.js4ms.common.util.buffer.parser.MissingParserException;
 import org.js4ms.net.ip.IPEndOfListOption;
 import org.js4ms.net.ip.IPExtensionHeader;
 import org.js4ms.net.ip.IPHeaderOption;
 import org.js4ms.net.ip.IPMessage;
-import org.js4ms.util.buffer.parser.MissingParserException;
 
 
 

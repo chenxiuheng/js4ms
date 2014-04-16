@@ -12,6 +12,7 @@ import javax.sdp.MediaDescription;
 import javax.sdp.SdpException;
 import javax.sdp.SessionDescription;
 
+import org.js4ms.common.util.logging.Log;
 import org.js4ms.io.channels.OutputChannel;
 import org.js4ms.service.protocol.rest.RequestException;
 import org.js4ms.service.protocol.rest.entity.Entity;
@@ -26,7 +27,6 @@ import org.js4ms.service.protocol.rtsp.RtspMessageHeaders;
 import org.js4ms.service.protocol.rtsp.RtspMethods;
 import org.js4ms.service.protocol.rtsp.RtspStatusCodes;
 import org.js4ms.service.protocol.rtsp.rtp.InterleavedPacketReader;
-import org.js4ms.util.logging.Log;
 
 
 

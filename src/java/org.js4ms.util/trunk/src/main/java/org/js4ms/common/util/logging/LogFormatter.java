@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.util.logging;
+package org.js4ms.common.util.logging;
 
 import java.text.MessageFormat;
 import java.util.Date;

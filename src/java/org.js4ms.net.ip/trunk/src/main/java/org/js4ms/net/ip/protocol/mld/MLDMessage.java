@@ -25,13 +25,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.js4ms.common.exception.ParseException;
+import org.js4ms.common.util.buffer.field.ShortField;
 import org.js4ms.net.ip.IPMessage;
 import org.js4ms.net.ip.IPPacket;
 import org.js4ms.net.ip.protocol.icmp.ICMPv6Message;
 import org.js4ms.net.ip.ipv6.IPv6HopByHopOptionsHeader;
 import org.js4ms.net.ip.ipv6.IPv6Packet;
 import org.js4ms.net.ip.ipv6.IPv6RouterAlertOption;
-import org.js4ms.util.buffer.field.ShortField;
 
 
 

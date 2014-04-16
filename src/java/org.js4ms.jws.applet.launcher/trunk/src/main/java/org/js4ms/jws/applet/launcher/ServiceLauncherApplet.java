@@ -37,9 +37,9 @@ import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.logging.Logger;
 
+import org.js4ms.common.util.logging.Log;
+import org.js4ms.common.util.logging.Logging;
 import org.js4ms.service.launcher.jws.ServiceLauncher;
-import org.js4ms.util.logging.Log;
-import org.js4ms.util.logging.Logging;
 
 /**
  * @author Greg Bumgardner (gbumgard)

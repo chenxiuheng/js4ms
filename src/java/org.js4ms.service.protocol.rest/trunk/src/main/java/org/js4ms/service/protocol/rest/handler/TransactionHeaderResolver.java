@@ -5,9 +5,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+import org.js4ms.common.util.logging.Log;
 import org.js4ms.service.protocol.rest.RequestException;
 import org.js4ms.service.protocol.rest.message.Request;
-import org.js4ms.util.logging.Log;
 
 
 

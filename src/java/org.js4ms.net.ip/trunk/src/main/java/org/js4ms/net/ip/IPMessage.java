@@ -23,10 +23,10 @@ package org.js4ms.net.ip;
 import java.nio.ByteBuffer;
 
 import org.js4ms.common.exception.ParseException;
-import org.js4ms.util.buffer.parser.BufferParserMap;
-import org.js4ms.util.buffer.parser.KeyedBufferParser;
-import org.js4ms.util.buffer.parser.MissingParserException;
-import org.js4ms.util.logging.Loggable;
+import org.js4ms.common.util.buffer.parser.BufferParserMap;
+import org.js4ms.common.util.buffer.parser.KeyedBufferParser;
+import org.js4ms.common.util.buffer.parser.MissingParserException;
+import org.js4ms.common.util.logging.Loggable;
 
 
 

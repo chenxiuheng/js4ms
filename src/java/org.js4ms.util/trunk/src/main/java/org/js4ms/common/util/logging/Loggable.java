@@ -19,7 +19,7 @@
  */
 
 
-package org.js4ms.util.logging;
+package org.js4ms.common.util.logging;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

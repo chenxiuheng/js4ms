@@ -29,13 +29,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.js4ms.common.exception.ParseException;
+import org.js4ms.common.util.buffer.field.BooleanField;
+import org.js4ms.common.util.buffer.field.ByteBitField;
+import org.js4ms.common.util.buffer.field.ByteField;
+import org.js4ms.common.util.buffer.field.ShortField;
+import org.js4ms.common.util.buffer.parser.MissingParserException;
+import org.js4ms.common.util.logging.Logging;
 import org.js4ms.net.ip.protocol.igmp.IGMPMessage;
-import org.js4ms.util.buffer.field.BooleanField;
-import org.js4ms.util.buffer.field.ByteBitField;
-import org.js4ms.util.buffer.field.ByteField;
-import org.js4ms.util.buffer.field.ShortField;
-import org.js4ms.util.buffer.parser.MissingParserException;
-import org.js4ms.util.logging.Logging;
 
 
 

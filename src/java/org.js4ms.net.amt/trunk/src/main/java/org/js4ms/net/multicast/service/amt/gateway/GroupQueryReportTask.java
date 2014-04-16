@@ -24,7 +24,7 @@ import java.net.InetAddress;
 import java.util.HashSet;
 import java.util.Timer;
 
-import org.js4ms.util.task.ReschedulableTask;
+import org.js4ms.common.util.task.ReschedulableTask;
 
 
 final class GroupQueryReportTask

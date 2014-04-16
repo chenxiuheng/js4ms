@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.js4ms.common.util.logging.Log;
 import org.js4ms.service.protocol.rest.MessageException;
 import org.js4ms.service.protocol.rest.RequestException;
 import org.js4ms.service.protocol.rest.StatusCodes;
@@ -16,7 +17,6 @@ import org.js4ms.service.protocol.rest.header.SimpleMessageHeader;
 import org.js4ms.service.protocol.rest.message.Message;
 import org.js4ms.service.protocol.rest.message.MessageHeader;
 import org.js4ms.service.protocol.rest.util.DateUtil;
-import org.js4ms.util.logging.Log;
 
 
 

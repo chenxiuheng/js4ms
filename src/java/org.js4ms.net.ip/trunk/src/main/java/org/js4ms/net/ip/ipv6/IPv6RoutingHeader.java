@@ -25,14 +25,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.js4ms.common.exception.ParseException;
+import org.js4ms.common.util.buffer.field.ByteField;
+import org.js4ms.common.util.buffer.field.IntegerField;
+import org.js4ms.common.util.buffer.field.SelectorField;
+import org.js4ms.common.util.buffer.parser.BufferParserSelector;
+import org.js4ms.common.util.buffer.parser.KeyedBufferParser;
+import org.js4ms.common.util.buffer.parser.MissingParserException;
 import org.js4ms.net.ip.IPExtensionHeader;
 import org.js4ms.net.ip.IPMessage;
-import org.js4ms.util.buffer.field.ByteField;
-import org.js4ms.util.buffer.field.IntegerField;
-import org.js4ms.util.buffer.field.SelectorField;
-import org.js4ms.util.buffer.parser.BufferParserSelector;
-import org.js4ms.util.buffer.parser.KeyedBufferParser;
-import org.js4ms.util.buffer.parser.MissingParserException;
 
 
 

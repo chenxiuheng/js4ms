@@ -21,8 +21,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.logging.Logger;
 
+import org.js4ms.common.util.logging.Logging;
 import org.js4ms.service.protocol.rest.RequestException;
-import org.js4ms.util.logging.Logging;
 
 
 

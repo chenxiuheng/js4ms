@@ -25,10 +25,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.js4ms.common.exception.ParseException;
+import org.js4ms.common.util.buffer.field.ShortField;
+import org.js4ms.common.util.logging.Logging;
 import org.js4ms.net.ip.IPHeaderOption;
 import org.js4ms.net.ip.IPMultiByteHeaderOption;
-import org.js4ms.util.buffer.field.ShortField;
-import org.js4ms.util.logging.Logging;
 
 
 
