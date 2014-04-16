@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.net.udp;
+package org.js4ms.net.io.udp;
 
 import java.io.IOException;
 import java.net.InetAddress;
