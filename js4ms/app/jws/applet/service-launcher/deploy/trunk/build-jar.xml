@@ -48,7 +48,7 @@
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
-            <fileset dir="../org.js4ms.util.logging.java/bin">
+            <fileset dir="../org.js4ms.util/bin">
                 <include name="**/*.class" />
                 <exclude name="**/test/*.class" />
             </fileset>
