@@ -1,4 +1,4 @@
-package org.js4ms.net.amt.service.gateway;
+package org.js4ms.net.multicast.service.amt.gateway;
 
 import java.io.IOException;
 import java.net.Inet4Address;
@@ -12,12 +12,6 @@ import org.js4ms.io.channels.OutputChannel;
 import org.js4ms.io.channels.OutputChannelMap;
 import org.js4ms.io.channels.OutputChannelTee;
 import org.js4ms.io.channels.OutputChannelTransform;
-import org.js4ms.net.amt.service.IPv4MembershipQueryTransform;
-import org.js4ms.net.amt.service.IPv4MembershipReportTransform;
-import org.js4ms.net.amt.service.IPv6MembershipQueryTransform;
-import org.js4ms.net.amt.service.IPv6MembershipReportTransform;
-import org.js4ms.net.amt.service.MembershipQuery;
-import org.js4ms.net.amt.service.MembershipReport;
 import org.js4ms.net.ip.IPMessage;
 import org.js4ms.net.ip.IPPacket;
 import org.js4ms.net.ip.Precondition;
@@ -25,6 +19,12 @@ import org.js4ms.net.ip.protocol.igmp.IGMPMessage;
 import org.js4ms.net.ip.ipv4.IPv4Packet;
 import org.js4ms.net.ip.ipv6.IPv6Packet;
 import org.js4ms.net.ip.protocol.mld.MLDMessage;
+import org.js4ms.net.multicast.service.proxy.IPv4MembershipQueryTransform;
+import org.js4ms.net.multicast.service.proxy.IPv4MembershipReportTransform;
+import org.js4ms.net.multicast.service.proxy.IPv6MembershipQueryTransform;
+import org.js4ms.net.multicast.service.proxy.IPv6MembershipReportTransform;
+import org.js4ms.net.multicast.service.proxy.MembershipQuery;
+import org.js4ms.net.multicast.service.proxy.MembershipReport;
 import org.js4ms.util.logging.Log;
 import org.js4ms.util.logging.Logging;
 

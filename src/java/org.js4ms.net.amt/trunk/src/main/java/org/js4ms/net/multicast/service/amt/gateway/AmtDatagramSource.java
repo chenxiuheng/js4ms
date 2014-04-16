@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.net.amt.service.gateway;
+package org.js4ms.net.multicast.service.amt.gateway;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -28,8 +28,8 @@ import java.util.logging.Logger;
 
 import org.js4ms.io.channels.MessageSource;
 import org.js4ms.io.channels.OutputChannel;
-import org.js4ms.net.amt.service.SourceFilter;
 import org.js4ms.net.io.udp.UdpDatagram;
+import org.js4ms.net.multicast.service.proxy.SourceFilter;
 import org.js4ms.util.logging.Log;
 
 

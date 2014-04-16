@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.net.amt.service.gateway;
+package org.js4ms.net.multicast.service.amt.gateway;
 
 import java.net.InetAddress;
 import java.util.HashSet;
@@ -26,7 +26,7 @@ import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.js4ms.net.amt.service.SourceFilter;
+import org.js4ms.net.multicast.service.proxy.SourceFilter;
 import org.js4ms.util.logging.Log;
 import org.js4ms.util.logging.Logging;
 import org.js4ms.util.task.ReschedulableTask;
