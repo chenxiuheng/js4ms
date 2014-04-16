@@ -35,7 +35,7 @@ import org.js4ms.io.channels.MessageKeyExtractor;
 import org.js4ms.io.channels.OutputChannel;
 import org.js4ms.io.channels.OutputChannelMap;
 import org.js4ms.io.channels.OutputChannelTee;
-import org.js4ms.net.io.udp.UdpDatagram;
+import org.js4ms.io.net.udp.UdpDatagram;
 import org.js4ms.net.ip.format.Precondition;
 
 

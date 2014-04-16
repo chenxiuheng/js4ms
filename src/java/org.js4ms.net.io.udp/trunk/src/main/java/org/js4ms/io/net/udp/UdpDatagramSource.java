@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: UdpDatagramPayloadSource.java (org.js4ms.net.udp)
+ * File: UdpDatagramSource.java (org.js4ms.net.udp)
  * 
  * Copyright (C) 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,44 +18,24 @@
  * limitations under the License.
  */
 
-package org.js4ms.net.io.udp;
+package org.js4ms.io.net.udp;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 
 import org.js4ms.io.channels.ChannelPump;
 import org.js4ms.io.channels.MessageSource;
-import org.js4ms.io.channels.MessageTransform;
 import org.js4ms.io.channels.OutputChannel;
-import org.js4ms.io.channels.OutputChannelTransform;
 
 
 
 /**
- * A {@link MessageSource} that receives UDP packets via a {@link UdpEndpoint} and
- * sends the datagram payload to an {@link OutputChannel}.
+ * A {@link MessageSource} that receives UDP datagrams via a {@link UdpEndpoint} and
+ * sends the datagram to an {@link OutputChannel}.
  * 
  * @author Gregory Bumgardner (gbumgard)
  */
-public class UdpDatagramPayloadSource
-                extends MessageSource<ByteBuffer> {
-
-    /*-- Inner Classes -------------------------------------------------------*/
-
-    /**
-     * Transform used to extract the datagram payload from a {@link UdpDatagram}.
-     */
-    final static class Transform
-                    implements MessageTransform<UdpDatagram, ByteBuffer> {
-
-        public Transform() {
-        }
-
-        @Override
-        public ByteBuffer transform(final UdpDatagram message) throws IOException {
-            return message.getPayload();
-        }
-    }
+public class UdpDatagramSource
+                extends MessageSource<UdpDatagram> {
 
     /*-- Member Variables ----------------------------------------------------*/
 
@@ -67,16 +47,14 @@ public class UdpDatagramPayloadSource
     /*-- Member Functions ----------------------------------------------------*/
 
     /**
-     * Constructs a packet source that will receive UDP datagrams from a UDP endpoint
+     * Constructs a UDP datagram source that will receive datagrams from a UDP endpoint
      * and send them to an {@link OutputChannel}.
      */
-    public UdpDatagramPayloadSource(final UdpEndpoint udpEndpoint,
-                                    final OutputChannel<ByteBuffer> outputChannel) throws IOException {
+    public UdpDatagramSource(final UdpEndpoint udpEndpoint,
+                             final OutputChannel<UdpDatagram> outputChannel) throws IOException {
         super(outputChannel);
 
-        this.pump = new ChannelPump<UdpDatagram>(new UdpInputChannel(udpEndpoint),
-                                                 new OutputChannelTransform<UdpDatagram, ByteBuffer>(outputChannel,
-                                                                                                     new Transform()));
+        this.pump = new ChannelPump<UdpDatagram>(new UdpInputChannel(udpEndpoint), outputChannel);
     }
 
     @Override
