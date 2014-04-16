@@ -37,10 +37,10 @@ import org.js4ms.common.util.logging.Log;
 import org.js4ms.common.util.logging.LoggableBase;
 import org.js4ms.common.util.logging.Logging;
 import org.js4ms.io.channels.OutputChannel;
-import org.js4ms.net.ip.IPPacket;
-import org.js4ms.net.ip.Precondition;
-import org.js4ms.net.ip.ipv4.IPv4Packet;
-import org.js4ms.net.ip.ipv6.IPv6Packet;
+import org.js4ms.net.ip.format.IPPacket;
+import org.js4ms.net.ip.format.Precondition;
+import org.js4ms.net.ip.format.ipv4.IPv4Packet;
+import org.js4ms.net.ip.format.ipv6.IPv6Packet;
 
 
 

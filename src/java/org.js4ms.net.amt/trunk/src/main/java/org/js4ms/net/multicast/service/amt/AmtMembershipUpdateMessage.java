@@ -29,14 +29,14 @@ import org.js4ms.common.util.buffer.field.ByteArrayField;
 import org.js4ms.common.util.buffer.field.ByteField;
 import org.js4ms.common.util.buffer.field.IntegerField;
 import org.js4ms.common.util.logging.Logging;
-import org.js4ms.net.ip.IPMessage;
-import org.js4ms.net.ip.IPPacket;
-import org.js4ms.net.ip.protocol.igmp.IGMPMessage;
-import org.js4ms.net.ip.protocol.igmp.IGMPv2LeaveMessage;
-import org.js4ms.net.ip.protocol.igmp.IGMPv3ReportMessage;
-import org.js4ms.net.ip.protocol.mld.MLDMessage;
-import org.js4ms.net.ip.protocol.mld.MLDv1DoneMessage;
-import org.js4ms.net.ip.protocol.mld.MLDv1ReportMessage;
+import org.js4ms.net.ip.format.IPMessage;
+import org.js4ms.net.ip.format.IPPacket;
+import org.js4ms.net.ip.format.protocol.igmp.IGMPMessage;
+import org.js4ms.net.ip.format.protocol.igmp.IGMPv2LeaveMessage;
+import org.js4ms.net.ip.format.protocol.igmp.IGMPv3ReportMessage;
+import org.js4ms.net.ip.format.protocol.mld.MLDMessage;
+import org.js4ms.net.ip.format.protocol.mld.MLDv1DoneMessage;
+import org.js4ms.net.ip.format.protocol.mld.MLDv1ReportMessage;
 
 
 

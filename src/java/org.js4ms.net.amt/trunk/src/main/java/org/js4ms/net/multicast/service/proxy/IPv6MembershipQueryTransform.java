@@ -27,12 +27,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import org.js4ms.io.channels.MessageTransform;
-import org.js4ms.net.ip.IPMessage;
-import org.js4ms.net.ip.IPPacket;
-import org.js4ms.net.ip.ipv6.IPv6Packet;
-import org.js4ms.net.ip.protocol.mld.MLDMessage;
-import org.js4ms.net.ip.protocol.mld.MLDQueryMessage;
-import org.js4ms.net.ip.protocol.mld.MLDv2QueryMessage;
+import org.js4ms.net.ip.format.IPMessage;
+import org.js4ms.net.ip.format.IPPacket;
+import org.js4ms.net.ip.format.ipv6.IPv6Packet;
+import org.js4ms.net.ip.format.protocol.mld.MLDMessage;
+import org.js4ms.net.ip.format.protocol.mld.MLDQueryMessage;
+import org.js4ms.net.ip.format.protocol.mld.MLDv2QueryMessage;
 
 
 

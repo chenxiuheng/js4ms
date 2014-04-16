@@ -36,7 +36,7 @@ import org.js4ms.io.channels.OutputChannel;
 import org.js4ms.io.channels.OutputChannelMap;
 import org.js4ms.io.channels.OutputChannelTee;
 import org.js4ms.net.io.udp.UdpDatagram;
-import org.js4ms.net.ip.Precondition;
+import org.js4ms.net.ip.format.Precondition;
 
 
 
