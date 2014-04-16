@@ -55,14 +55,14 @@ import org.js4ms.net.ip.format.protocol.mld.MLDQueryMessage;
 import org.js4ms.net.ip.format.protocol.mld.MLDv1ReportMessage;
 import org.js4ms.net.ip.format.protocol.mld.MLDv2QueryMessage;
 import org.js4ms.net.ip.format.protocol.mld.MLDv2ReportMessage;
-import org.js4ms.net.ip.multicast.service.amt.format.AmtMembershipQueryMessage;
-import org.js4ms.net.ip.multicast.service.amt.format.AmtMembershipUpdateMessage;
-import org.js4ms.net.ip.multicast.service.amt.format.AmtMessage;
-import org.js4ms.net.ip.multicast.service.amt.format.AmtMulticastDataMessage;
-import org.js4ms.net.ip.multicast.service.amt.format.AmtRelayAdvertisementMessage;
-import org.js4ms.net.ip.multicast.service.amt.format.AmtRelayDiscoveryMessage;
-import org.js4ms.net.ip.multicast.service.amt.format.AmtRequestMessage;
-import org.js4ms.net.ip.multicast.service.amt.format.AmtTeardownMessage;
+import org.js4ms.net.ip.multicast.service.amt.message.AmtMembershipQueryMessage;
+import org.js4ms.net.ip.multicast.service.amt.message.AmtMembershipUpdateMessage;
+import org.js4ms.net.ip.multicast.service.amt.message.AmtMessage;
+import org.js4ms.net.ip.multicast.service.amt.message.AmtMulticastDataMessage;
+import org.js4ms.net.ip.multicast.service.amt.message.AmtRelayAdvertisementMessage;
+import org.js4ms.net.ip.multicast.service.amt.message.AmtRelayDiscoveryMessage;
+import org.js4ms.net.ip.multicast.service.amt.message.AmtRequestMessage;
+import org.js4ms.net.ip.multicast.service.amt.message.AmtTeardownMessage;
 
 
 

@@ -28,7 +28,7 @@ import org.js4ms.net.ip.format.IPPacket;
 import org.js4ms.net.ip.format.protocol.igmp.IGMPGroupRecord;
 import org.js4ms.net.ip.format.protocol.igmp.IGMPMessage;
 import org.js4ms.net.ip.format.protocol.igmp.IGMPv3ReportMessage;
-import org.js4ms.net.ip.multicast.service.amt.format.GroupMembershipRecord;
+import org.js4ms.net.ip.multicast.service.amt.message.GroupMembershipRecord;
 
 
 
