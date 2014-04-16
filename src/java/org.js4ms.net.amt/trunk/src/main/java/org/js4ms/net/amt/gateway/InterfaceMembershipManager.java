@@ -31,9 +31,9 @@ import java.util.logging.Logger;
 
 import org.js4ms.io.channels.OutputChannel;
 import org.js4ms.net.amt.GroupMembershipRecord;
-import org.js4ms.net.amt.MembershipQuery;
-import org.js4ms.net.amt.MembershipReport;
-import org.js4ms.net.amt.SourceFilter;
+import org.js4ms.net.amt.service.MembershipQuery;
+import org.js4ms.net.amt.service.MembershipReport;
+import org.js4ms.net.amt.service.SourceFilter;
 import org.js4ms.util.logging.Log;
 import org.js4ms.util.logging.LoggableBase;
 import org.js4ms.util.logging.Logging;

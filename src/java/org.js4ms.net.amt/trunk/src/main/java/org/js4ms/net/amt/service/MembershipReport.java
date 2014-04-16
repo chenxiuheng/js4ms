@@ -18,10 +18,12 @@
  * limitations under the License.
  */
 
-package org.js4ms.net.amt;
+package org.js4ms.net.amt.service;
 
 import java.util.HashSet;
 import java.util.Iterator;
+
+import org.js4ms.net.amt.GroupMembershipRecord;
 
 /**
  * A protocol-independent representation of an IGMPv3 or MLDv2 report message.

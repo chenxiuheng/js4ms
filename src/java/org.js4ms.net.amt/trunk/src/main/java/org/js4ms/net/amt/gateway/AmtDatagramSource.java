@@ -28,7 +28,7 @@ import java.util.logging.Logger;
 
 import org.js4ms.io.channels.MessageSource;
 import org.js4ms.io.channels.OutputChannel;
-import org.js4ms.net.amt.SourceFilter;
+import org.js4ms.net.amt.service.SourceFilter;
 import org.js4ms.net.io.udp.UdpDatagram;
 import org.js4ms.util.logging.Log;
 

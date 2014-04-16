@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.net.amt;
+package org.js4ms.net.amt.service;
 
 import java.net.InetAddress;
 import java.util.HashSet;
