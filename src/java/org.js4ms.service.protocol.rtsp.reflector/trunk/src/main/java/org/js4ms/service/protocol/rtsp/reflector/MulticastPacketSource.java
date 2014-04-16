@@ -10,7 +10,7 @@ import org.js4ms.io.channels.OutputChannel;
 import org.js4ms.io.channels.OutputChannelTransform;
 import org.js4ms.net.amt.SourceFilter;
 import org.js4ms.net.amt.gateway.AmtDatagramSource;
-import org.js4ms.net.udp.UdpDatagram;
+import org.js4ms.net.io.udp.UdpDatagram;
 
 
 

@@ -31,8 +31,8 @@ import org.js4ms.io.channels.OutputChannel;
 import org.js4ms.io.channels.OutputChannelPipe;
 import org.js4ms.logging.java.Log;
 import org.js4ms.logging.java.Logging;
-import org.js4ms.net.udp.MulticastEndpoint;
-import org.js4ms.net.udp.UdpDatagram;
+import org.js4ms.net.io.udp.MulticastEndpoint;
+import org.js4ms.net.io.udp.UdpDatagram;
 
 
 

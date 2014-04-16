@@ -8,7 +8,7 @@ import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.js4ms.io.Base64InputStream;
+import org.js4ms.io.streams.Base64InputStream;
 import org.js4ms.logging.java.Log;
 import org.js4ms.logging.java.Logging;
 import org.js4ms.service.protocol.http.HttpMessageHeaders;
