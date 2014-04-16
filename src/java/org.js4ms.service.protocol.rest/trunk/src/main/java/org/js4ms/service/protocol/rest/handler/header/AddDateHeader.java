@@ -1,4 +1,4 @@
-package org.js4ms.service.protocol.rest.handlers;
+package org.js4ms.service.protocol.rest.handler.header;
 
 import java.util.Date;
 

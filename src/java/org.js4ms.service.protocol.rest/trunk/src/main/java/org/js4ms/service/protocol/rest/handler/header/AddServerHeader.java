@@ -1,4 +1,4 @@
-package org.js4ms.service.protocol.rest.server.handlers;
+package org.js4ms.service.protocol.rest.handler.header;
 
 import org.js4ms.service.protocol.rest.MessageHeaders;
 import org.js4ms.service.protocol.rest.handler.ResponseHandler;
