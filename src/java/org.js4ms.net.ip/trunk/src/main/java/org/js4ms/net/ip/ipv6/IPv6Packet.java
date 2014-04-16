@@ -29,7 +29,7 @@ import java.nio.ByteBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.js4ms.exceptions.ParseException;
+import org.js4ms.common.exceptions.ParseException;
 import org.js4ms.net.ip.IPAuthenticationHeader;
 import org.js4ms.net.ip.IPExtensionHeader;
 import org.js4ms.net.ip.IPMessage;

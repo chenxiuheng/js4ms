@@ -26,7 +26,7 @@ import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.js4ms.exceptions.BoundException;
+import org.js4ms.common.exceptions.BoundException;
 import org.js4ms.io.MultiIOException;
 import org.js4ms.io.channels.MessageKeyExtractor;
 import org.js4ms.io.channels.OutputChannel;

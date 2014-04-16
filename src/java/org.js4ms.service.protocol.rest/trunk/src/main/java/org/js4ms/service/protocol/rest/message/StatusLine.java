@@ -6,7 +6,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.js4ms.exceptions.ParseException;
+import org.js4ms.common.exceptions.ParseException;
 
 
 

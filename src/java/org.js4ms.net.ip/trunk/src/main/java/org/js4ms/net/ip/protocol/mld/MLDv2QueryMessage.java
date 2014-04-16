@@ -28,7 +28,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.js4ms.exceptions.ParseException;
+import org.js4ms.common.exceptions.ParseException;
 import org.js4ms.net.ip.protocol.igmp.IGMPMessage;
 import org.js4ms.util.buffer.fields.BooleanField;
 import org.js4ms.util.buffer.fields.ByteBitField;

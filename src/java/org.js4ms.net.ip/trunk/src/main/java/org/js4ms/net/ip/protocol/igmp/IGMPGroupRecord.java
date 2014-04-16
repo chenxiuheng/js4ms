@@ -27,7 +27,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.js4ms.exceptions.ParseException;
+import org.js4ms.common.exceptions.ParseException;
 import org.js4ms.util.buffer.BufferBackedObject;
 import org.js4ms.util.buffer.fields.ByteArrayField;
 import org.js4ms.util.buffer.fields.ByteField;

@@ -3,7 +3,7 @@ package org.js4ms.service.protocol.rest.server;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 
-import org.js4ms.exceptions.ParseException;
+import org.js4ms.common.exceptions.ParseException;
 import org.js4ms.service.protocol.rest.RequestException;
 import org.js4ms.service.protocol.rest.entity.Entity;
 import org.js4ms.service.protocol.rest.handler.RequestHandler;

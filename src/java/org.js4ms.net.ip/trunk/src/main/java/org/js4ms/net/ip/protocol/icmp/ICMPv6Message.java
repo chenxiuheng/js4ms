@@ -24,7 +24,7 @@ import java.nio.ByteBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.js4ms.exceptions.ParseException;
+import org.js4ms.common.exceptions.ParseException;
 import org.js4ms.net.ip.IPMessage;
 import org.js4ms.net.ip.IPPacket;
 import org.js4ms.util.buffer.BufferBackedObject;

@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.exceptions;
+package org.js4ms.common.exceptions;
 
 import java.util.Iterator;
 import java.util.LinkedList;

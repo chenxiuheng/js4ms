@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.util.LinkedHashSet;
 
-import org.js4ms.exceptions.BoundException;
+import org.js4ms.common.exceptions.BoundException;
 import org.js4ms.io.MultiIOException;
 
 
