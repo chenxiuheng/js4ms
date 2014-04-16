@@ -1,4 +1,4 @@
-package org.js4ms.service.protocol.http.server.handlers;
+package org.js4ms.service.protocol.http.server.handler;
 
 import java.io.IOException;
 import java.net.URI;
