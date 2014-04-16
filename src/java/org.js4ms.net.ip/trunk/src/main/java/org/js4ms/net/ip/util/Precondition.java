@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.net.util;
+package org.js4ms.net.ip.util;
 
 import java.net.InetAddress;
 
