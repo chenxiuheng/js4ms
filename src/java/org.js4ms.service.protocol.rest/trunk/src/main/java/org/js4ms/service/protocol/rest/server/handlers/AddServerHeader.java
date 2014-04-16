@@ -2,7 +2,7 @@ package org.js4ms.service.protocol.rest.server.handlers;
 
 import org.js4ms.service.protocol.rest.MessageHeaders;
 import org.js4ms.service.protocol.rest.handler.ResponseHandler;
-import org.js4ms.service.protocol.rest.headers.SimpleMessageHeader;
+import org.js4ms.service.protocol.rest.header.SimpleMessageHeader;
 import org.js4ms.service.protocol.rest.message.Response;
 
 public class AddServerHeader implements ResponseHandler {

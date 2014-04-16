@@ -5,7 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.js4ms.common.exception.ParseException;
-import org.js4ms.service.protocol.rest.headers.SimpleMessageHeader;
+import org.js4ms.service.protocol.rest.header.SimpleMessageHeader;
 
 
 

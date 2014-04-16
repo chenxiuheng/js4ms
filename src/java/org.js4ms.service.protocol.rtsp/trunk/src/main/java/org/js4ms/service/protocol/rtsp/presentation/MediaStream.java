@@ -22,7 +22,7 @@ import org.js4ms.net.io.udp.UdpPacketOutputChannel;
 import org.js4ms.net.io.udp.UdpSocketEndpoint;
 import org.js4ms.service.protocol.rest.RequestException;
 import org.js4ms.service.protocol.rest.entity.Entity;
-import org.js4ms.service.protocol.rest.headers.SimpleMessageHeader;
+import org.js4ms.service.protocol.rest.header.SimpleMessageHeader;
 import org.js4ms.service.protocol.rest.message.MessageHeader;
 import org.js4ms.service.protocol.rest.message.Request;
 import org.js4ms.service.protocol.rest.message.Response;

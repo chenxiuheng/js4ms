@@ -1,4 +1,4 @@
-package org.js4ms.service.protocol.rest.headers;
+package org.js4ms.service.protocol.rest.header;
 
 import org.js4ms.service.protocol.rest.entity.Entity;
 import org.js4ms.service.protocol.rest.entity.MediaType;

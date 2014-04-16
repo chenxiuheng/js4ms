@@ -1,4 +1,4 @@
-package org.js4ms.service.protocol.rest.headers;
+package org.js4ms.service.protocol.rest.header;
 
 import org.js4ms.service.protocol.rest.message.MessageHeader;
 import org.js4ms.service.protocol.rest.message.MessageHeaderBase;
