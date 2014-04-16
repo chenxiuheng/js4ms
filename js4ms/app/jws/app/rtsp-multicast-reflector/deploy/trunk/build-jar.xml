@@ -37,23 +37,19 @@
 
         <jar destfile="WebContent/${app.jar.name}">
             <fileset dir="../org.js4ms.jws.app.reflector/bin" includes="**/*.class" excludes="**/test/*.class"/>
-            <fileset dir="../org.js4ms.logging.java/bin" includes="**/*.class" excludes="**/test/*.class"/>
-            <fileset dir="../org.js4ms.util.logging.swing/bin" includes="**/*.class" excludes="**/test/*.class"/>
             <fileset dir="../org.js4ms.app.reflector/bin" includes="**/*.class" excludes="**/test/*.class"/>
+            <fileset dir="../org.js4ms.service.server/bin" includes="**/*.class" excludes="**/test/*.class"/>
             <fileset dir="../org.js4ms.service.protocol.http/bin" includes="**/*.class" excludes="**/test/*.class"/>
             <fileset dir="../org.js4ms.service.protocol.rest/bin" includes="**/*.class" excludes="**/test/*.class"/>
-            <fileset dir="../org.js4ms.service.server/bin" includes="**/*.class" excludes="**/test/*.class"/>
-            <fileset dir="../org.js4ms.exceptions/bin" includes="**/*.class" excludes="**/test/*.class"/>
-            <fileset dir="../org.js4ms.util.task/bin" includes="**/*.class" excludes="**/test/*.class"/>
             <fileset dir="../org.js4ms.service.protocol.rtsp/bin" includes="**/*.class" excludes="**/test/*.class"/>
+            <fileset dir="../org.js4ms.common/bin" includes="**/*.class" excludes="**/test/*.class"/>
+            <fileset dir="../org.js4ms.util/bin" includes="**/*.class" excludes="**/test/*.class"/>
             <fileset dir="../org.js4ms.io/bin" includes="**/*.class" excludes="**/test/*.class"/>
-            <fileset dir="../org.js4ms.net.amt/bin" includes="**/*.class" excludes="**/test/*.class"/>
             <fileset dir="../org.js4ms.net.ip/bin" includes="**/*.class" excludes="**/test/*.class"/>
-            <fileset dir="../org.js4ms.util.buffer/bin" includes="**/*.class" excludes="**/test/*.class"/>
-            <fileset dir="../org.js4ms.net.util/bin" includes="**/*.class" excludes="**/test/*.class"/>
-            <fileset dir="../org.js4ms.net.udp/bin" includes="**/*.class" excludes="**/test/*.class"/>
-            <fileset dir="../org.js4ms.service.protocol.rtsp.reflector/bin" includes="**/*.class" excludes="**/test/*.class"/>
-
+            <fileset dir="../org.js4ms.net.amt/bin" includes="**/*.class" excludes="**/test/*.class"/>
+            <fileset dir="../org.js4ms.net.io.udp/bin" includes="**/*.class" excludes="**/test/*.class"/>
+            <fileset dir="../org.js4ms.util.logging.swing/bin" includes="**/*.class" excludes="**/test/*.class"/>
+            
             <zipfileset excludes="META-INF/*.SF" src="../jain-sdp/jain-sdp-1.0.100.jar"/>
 
             <manifest>
