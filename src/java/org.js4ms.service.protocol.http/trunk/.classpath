@@ -8,6 +8,6 @@
 	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.service.protocol.rest"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.service.server"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.logging.java"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.util"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

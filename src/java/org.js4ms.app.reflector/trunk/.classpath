@@ -7,6 +7,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.service.protocol.rtsp"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.service.server"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.service.protocol.rtsp.reflector"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.logging.java"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.util"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
