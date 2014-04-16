@@ -1,4 +1,4 @@
-package org.js4ms.service.protocol.rtsp.reflector;
+package org.js4ms.app.reflector;
 
 import gov.nist.javax.sdp.fields.AttributeField;
 
