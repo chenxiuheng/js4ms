@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 
 import org.js4ms.exceptions.ParseException;
 import org.js4ms.logging.java.Logging;
-import org.js4ms.net.ip.util.Precondition;
+import org.js4ms.net.ip.Precondition;
 
 
 
