@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.net.multicast.service.amt.gateway;
+package org.js4ms.net.ip.multicast.service.amt.gateway;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -33,10 +33,10 @@ import org.js4ms.common.util.logging.Log;
 import org.js4ms.common.util.logging.LoggableBase;
 import org.js4ms.common.util.logging.Logging;
 import org.js4ms.io.channels.OutputChannel;
-import org.js4ms.net.multicast.service.amt.GroupMembershipRecord;
-import org.js4ms.net.multicast.service.proxy.MembershipQuery;
-import org.js4ms.net.multicast.service.proxy.MembershipReport;
-import org.js4ms.net.multicast.service.proxy.SourceFilter;
+import org.js4ms.net.ip.multicast.service.amt.GroupMembershipRecord;
+import org.js4ms.net.ip.multicast.service.proxy.MembershipQuery;
+import org.js4ms.net.ip.multicast.service.proxy.MembershipReport;
+import org.js4ms.net.ip.multicast.service.proxy.SourceFilter;
 
 
 

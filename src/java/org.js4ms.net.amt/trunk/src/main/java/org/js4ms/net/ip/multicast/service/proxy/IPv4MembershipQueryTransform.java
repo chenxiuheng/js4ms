@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: IPv6MembershipQueryTransform.java (org.js4ms.net.amt)
+ * File: IPv4MembershipQueryTransform.java (org.js4ms.net.amt)
  * 
  * Copyright (C) 2010-2012 Cisco Systems, Inc.
  * 
@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.net.multicast.service.proxy;
+package org.js4ms.net.ip.multicast.service.proxy;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -29,56 +29,55 @@ import java.util.Iterator;
 import org.js4ms.io.channels.MessageTransform;
 import org.js4ms.net.ip.format.IPMessage;
 import org.js4ms.net.ip.format.IPPacket;
-import org.js4ms.net.ip.format.ipv6.IPv6Packet;
-import org.js4ms.net.ip.format.protocol.mld.MLDMessage;
-import org.js4ms.net.ip.format.protocol.mld.MLDQueryMessage;
-import org.js4ms.net.ip.format.protocol.mld.MLDv2QueryMessage;
+import org.js4ms.net.ip.format.ipv4.IPv4Packet;
+import org.js4ms.net.ip.format.protocol.igmp.IGMPMessage;
+import org.js4ms.net.ip.format.protocol.igmp.IGMPQueryMessage;
+import org.js4ms.net.ip.format.protocol.igmp.IGMPv3QueryMessage;
 
 
 
 /**
- * Transforms an IPPacket object containing an MLDv2 query message into a
+ * Transforms an IPPacket object containing an IGMPv3 query message into a 
  * protocol-independent MembershipQuery object.
- * 
+ *
  * @author Greg Bumgardner (gbumgard)
  */
-public final class IPv6MembershipQueryTransform
-                implements MessageTransform<IPPacket, MembershipQuery> {
+public final class IPv4MembershipQueryTransform implements MessageTransform<IPPacket, MembershipQuery> {
 
     /**
      * Default constructor.
      */
-    public IPv6MembershipQueryTransform() {
+    public IPv4MembershipQueryTransform() {
     }
 
     @Override
     public MembershipQuery transform(final IPPacket packet) throws IOException {
-
+        
         MembershipQuery membershipQuery = null;
-
-        if (packet.getVersion() == IPv6Packet.INTERNET_PROTOCOL_VERSION) {
-
-            IPMessage ipMessage = packet.getProtocolMessage(MLDMessage.IP_PROTOCOL_NUMBER);
-
-            if (ipMessage == null || !(ipMessage instanceof MLDQueryMessage)) {
-                throw new ProtocolException("IP packet does not contain an MLD Membership Query Message");
+        
+        if (packet.getVersion() == IPv4Packet.INTERNET_PROTOCOL_VERSION) {
+        
+            IPMessage ipMessage = packet.getProtocolMessage(IGMPMessage.IP_PROTOCOL_NUMBER);
+    
+            if (ipMessage == null || !(ipMessage instanceof IGMPQueryMessage)) {
+                throw new ProtocolException("IP packet does not contain an IGMP Membership Query Message");
             }
-
-            MLDQueryMessage queryMessage = (MLDQueryMessage) ipMessage;
-
+    
+            IGMPQueryMessage queryMessage = (IGMPQueryMessage)ipMessage;
+    
             InetAddress groupAddress = InetAddress.getByAddress(queryMessage.getGroupAddress());
-
-            int maximumResponseTime = queryMessage.getMaximumResponseDelay();
+        
+            int maximumResponseTime = queryMessage.getMaximumResponseTime();
             int robustnessVariable = 2;
             int queryInterval = 125000; // Default query interval
             HashSet<InetAddress> sourceSet = null;
-            if (queryMessage instanceof MLDv2QueryMessage) {
-                MLDv2QueryMessage v2QueryMessage = (MLDv2QueryMessage) queryMessage;
-                robustnessVariable = v2QueryMessage.getQuerierRobustnessVariable();
-                queryInterval = v2QueryMessage.getQueryIntervalTime() * 1000;
-                if (v2QueryMessage.getNumberOfSources() > 0) {
+            if (queryMessage instanceof IGMPv3QueryMessage) {
+                IGMPv3QueryMessage v3QueryMessage = (IGMPv3QueryMessage)queryMessage;
+                robustnessVariable = v3QueryMessage.getQuerierRobustnessVariable();
+                queryInterval = v3QueryMessage.getQueryIntervalTime() * 1000;
+                if (v3QueryMessage.getNumberOfSources() > 0) {
                     sourceSet = new HashSet<InetAddress>();
-                    Iterator<byte[]> iter = v2QueryMessage.getSourceIterator();
+                    Iterator<byte[]> iter = v3QueryMessage.getSourceIterator();
                     InetAddress sourceAddress = InetAddress.getByAddress(iter.next());
                     while (iter.hasNext()) {
                         sourceSet.add(sourceAddress);
@@ -93,7 +92,7 @@ public final class IPv6MembershipQueryTransform
                                                   queryInterval);
         }
         else {
-            throw new ProtocolException("IP packet does not contain an MLD Membership Query Message");
+            throw new ProtocolException("IP packet does not contain an IGMP Membership Query Message");
         }
 
         return membershipQuery;
