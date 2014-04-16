@@ -8,9 +8,9 @@ import org.js4ms.io.channels.MessageSource;
 import org.js4ms.io.channels.MessageTransform;
 import org.js4ms.io.channels.OutputChannel;
 import org.js4ms.io.channels.OutputChannelTransform;
-import org.js4ms.net.amt.SourceFilter;
-import org.js4ms.net.amt.gateway.AmtDatagramSource;
 import org.js4ms.net.io.udp.UdpDatagram;
+import org.js4ms.net.multicast.service.amt.gateway.AmtDatagramSource;
+import org.js4ms.net.multicast.service.proxy.SourceFilter;
 
 
 
