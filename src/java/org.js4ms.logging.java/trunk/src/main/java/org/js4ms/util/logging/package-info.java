@@ -5,4 +5,4 @@
  * @author gbumgard
  *
  */
-package org.js4ms.logging.java;
+package org.js4ms.util.logging;

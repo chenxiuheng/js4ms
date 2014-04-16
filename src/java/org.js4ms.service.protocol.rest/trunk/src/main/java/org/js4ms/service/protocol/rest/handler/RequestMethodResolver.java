@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.js4ms.logging.java.Log;
 import org.js4ms.service.protocol.rest.RequestException;
 import org.js4ms.service.protocol.rest.message.Method;
 import org.js4ms.service.protocol.rest.message.Request;
+import org.js4ms.util.logging.Log;
 
 
 

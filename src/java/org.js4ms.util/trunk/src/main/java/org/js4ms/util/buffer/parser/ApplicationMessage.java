@@ -22,7 +22,7 @@ package org.js4ms.util.buffer.parser;
 
 import java.nio.ByteBuffer;
 
-import org.js4ms.logging.java.Loggable;
+import org.js4ms.util.logging.Loggable;
 
 
 

@@ -22,7 +22,7 @@ package org.js4ms.net.ip;
 
 import java.net.InetAddress;
 
-import org.js4ms.logging.java.Logging;
+import org.js4ms.util.logging.Logging;
 
 
 /**

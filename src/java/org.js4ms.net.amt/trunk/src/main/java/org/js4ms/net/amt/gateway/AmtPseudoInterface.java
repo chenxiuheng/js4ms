@@ -27,10 +27,10 @@ import java.util.logging.Logger;
 
 import org.js4ms.io.channels.OutputChannel;
 import org.js4ms.io.channels.OutputChannelTee;
-import org.js4ms.logging.java.Log;
-import org.js4ms.logging.java.Logging;
 import org.js4ms.net.ip.IPPacket;
 import org.js4ms.net.ip.ipv4.IPv4Packet;
+import org.js4ms.util.logging.Log;
+import org.js4ms.util.logging.Logging;
 
 
 

@@ -3,7 +3,7 @@ package org.js4ms.service.protocol.rest.server.session;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.js4ms.logging.java.Log;
+import org.js4ms.util.logging.Log;
 
 
 

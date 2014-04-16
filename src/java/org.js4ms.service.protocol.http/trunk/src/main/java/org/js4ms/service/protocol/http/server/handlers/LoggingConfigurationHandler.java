@@ -11,12 +11,12 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
-import org.js4ms.logging.java.Logging;
 import org.js4ms.service.protocol.http.HttpStatusCodes;
 import org.js4ms.service.protocol.rest.entity.StringEntity;
 import org.js4ms.service.protocol.rest.handler.TransactionHandler;
 import org.js4ms.service.protocol.rest.message.Request;
 import org.js4ms.service.protocol.rest.message.Response;
+import org.js4ms.util.logging.Logging;
 
 
 

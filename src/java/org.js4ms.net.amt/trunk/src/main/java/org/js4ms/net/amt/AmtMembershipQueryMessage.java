@@ -28,7 +28,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.js4ms.exceptions.ParseException;
-import org.js4ms.logging.java.Logging;
 import org.js4ms.net.ip.IPPacket;
 import org.js4ms.net.ip.protocol.igmp.IGMPMessage;
 import org.js4ms.net.ip.protocol.igmp.IGMPv3QueryMessage;
@@ -39,6 +38,7 @@ import org.js4ms.net.ip.protocol.mld.MLDv2QueryMessage;
 import org.js4ms.util.buffer.fields.BooleanField;
 import org.js4ms.util.buffer.fields.ByteArrayField;
 import org.js4ms.util.buffer.fields.IntegerField;
+import org.js4ms.util.logging.Logging;
 
 
 

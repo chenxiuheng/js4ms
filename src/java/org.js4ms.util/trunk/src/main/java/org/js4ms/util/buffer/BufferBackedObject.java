@@ -22,7 +22,7 @@ import java.nio.ByteBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.js4ms.logging.java.LoggableBase;
+import org.js4ms.util.logging.LoggableBase;
 
 
 

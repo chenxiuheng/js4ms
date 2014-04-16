@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.logging.java;
+package org.js4ms.util.logging;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

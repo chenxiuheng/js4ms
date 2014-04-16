@@ -29,7 +29,7 @@ import javax.sdp.MediaDescription;
 import javax.sdp.SdpException;
 import javax.sdp.SessionDescription;
 
-import org.js4ms.logging.java.Logging;
+import org.js4ms.util.logging.Logging;
 
 
 /**

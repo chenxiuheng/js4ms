@@ -1,7 +1,7 @@
 package org.js4ms.service.protocol.rest;
 
-import org.js4ms.logging.java.Log;
 import org.js4ms.service.protocol.rest.message.ProtocolVersion;
+import org.js4ms.util.logging.Log;
 
 
 

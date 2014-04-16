@@ -30,7 +30,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.js4ms.exceptions.ParseException;
-import org.js4ms.logging.java.Logging;
 import org.js4ms.net.ip.IPAuthenticationHeader;
 import org.js4ms.net.ip.IPExtensionHeader;
 import org.js4ms.net.ip.IPMessage;
@@ -43,6 +42,7 @@ import org.js4ms.util.buffer.fields.IntegerBitField;
 import org.js4ms.util.buffer.fields.ShortBitField;
 import org.js4ms.util.buffer.fields.ShortField;
 import org.js4ms.util.buffer.parser.MissingParserException;
+import org.js4ms.util.logging.Logging;
 
 
 

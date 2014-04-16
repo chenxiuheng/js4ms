@@ -35,8 +35,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.js4ms.io.channels.OutputChannel;
-import org.js4ms.logging.java.Log;
-import org.js4ms.logging.java.Logging;
 import org.js4ms.net.amt.AmtMembershipQueryMessage;
 import org.js4ms.net.amt.AmtMembershipUpdateMessage;
 import org.js4ms.net.amt.AmtMessage;
@@ -63,6 +61,8 @@ import org.js4ms.net.ip.protocol.mld.MLDQueryMessage;
 import org.js4ms.net.ip.protocol.mld.MLDv1ReportMessage;
 import org.js4ms.net.ip.protocol.mld.MLDv2QueryMessage;
 import org.js4ms.net.ip.protocol.mld.MLDv2ReportMessage;
+import org.js4ms.util.logging.Log;
+import org.js4ms.util.logging.Logging;
 
 
 

@@ -26,7 +26,7 @@ import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.js4ms.logging.java.Logging;
+import org.js4ms.util.logging.Logging;
 
 
 /**
