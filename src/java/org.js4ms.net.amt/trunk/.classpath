@@ -10,7 +10,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.net.ip"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.util.buffer"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.net.udp"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.net.util"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.util.task"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.io"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.logging.java"/>
