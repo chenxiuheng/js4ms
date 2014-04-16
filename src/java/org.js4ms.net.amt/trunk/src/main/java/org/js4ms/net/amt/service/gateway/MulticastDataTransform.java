@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.net.amt.gateway;
+package org.js4ms.net.amt.service.gateway;
 
 import java.io.IOException;
 
