@@ -25,8 +25,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.js4ms.util.buffer.BufferBackedObject;
-import org.js4ms.util.buffer.fields.ByteField;
-import org.js4ms.util.buffer.fields.SelectorField;
+import org.js4ms.util.buffer.field.ByteField;
+import org.js4ms.util.buffer.field.SelectorField;
 import org.js4ms.util.buffer.parser.KeyedApplicationMessage;
 
 

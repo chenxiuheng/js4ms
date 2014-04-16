@@ -14,36 +14,42 @@
  * limitations under the license.
  */
 
-package org.js4ms.util.buffer.fields;
+package org.js4ms.util.buffer.field;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 
-public final class ByteField extends ByteAlignedField<Byte> {
+public final class LongField extends ByteAlignedField<Long> {
 
-    public ByteField(final int byteOffset) {
+    private final static int SIZE = (Long.SIZE >> 3);
+    
+    public LongField(final int byteOffset) {
         super(byteOffset);
     }
 
     @Override
-    public Byte get(final InputStream is) throws IOException {
-        is.mark(this.offset+1);
+    public Long get(InputStream is) throws IOException {
+        is.mark(this.offset + SIZE);
         is.skip(this.offset);
-        int b = (byte)is.read();
+        byte bytes[] = new byte[SIZE];
+        int count = is.read(bytes);
         is.reset();
-        if (b == -1) throw new java.io.EOFException();
-        return (byte)b;
+        if (count != 0) throw new EOFException();
+        BigInteger bigInt = new BigInteger(bytes);
+        return bigInt.longValue();
     }
 
     @Override
-    public Byte get(final ByteBuffer buffer) {
-        return buffer.get(this.offset);
+    public Long get(final ByteBuffer buffer) {
+        return buffer.getLong(this.offset);
     }
 
     @Override
-    public void set(final ByteBuffer buffer, final Byte value) {
-        buffer.put(this.offset, value);
+    public void set(final ByteBuffer buffer, final Long value) {
+        buffer.putLong(this.offset, value);
     }
 
 }

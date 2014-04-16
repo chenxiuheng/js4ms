@@ -14,45 +14,47 @@
  * limitations under the license.
  */
 
-package org.js4ms.util.buffer.fields;
+package org.js4ms.util.buffer.field;
 
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
-public final class ShortField extends ByteAlignedField<Short> {
+public final class IntegerBitField extends BitField<Integer> {
 
-    private final static int SIZE = (Short.SIZE >> 3);
+    final private static int SIZE = (Integer.SIZE >> 3);
 
-    public ShortField(final int byteOffset) {
-        super(byteOffset);
+    public IntegerBitField(final int byteOffset, final int bitOffset, final int bitWidth) {
+        super(byteOffset, bitOffset, bitWidth);
+        if ((bitOffset+bitWidth) > 32) {
+            throw new java.lang.IndexOutOfBoundsException();
+        }
     }
 
     @Override
-    public Short get(final InputStream is) throws IOException {
+    public Integer get(final InputStream is) throws IOException {
         is.mark(this.offset + SIZE);
         is.skip(this.offset);
         byte bytes[] = new byte[SIZE];
         int count = is.read(bytes);
-        is.reset();
         if (count != SIZE) throw new EOFException();
         long result = 0;
         for (int i = 0; i < SIZE; i++)
         {
            result = (result << 8) | (bytes[i] & 0xff);
         }
-        return (short)result;
+        is.reset();
+        return (int)(((int)result >> this.shift) & this.valueMask);
     }
 
     @Override
-    public Short get(final ByteBuffer buffer) {
-        return buffer.getShort(this.offset);
+    public Integer get(final ByteBuffer buffer) {
+        return (int)((buffer.getInt(this.offset) >> this.shift) & this.valueMask);
     }
 
     @Override
-    public void set(final ByteBuffer buffer, final Short value) {
-        buffer.putShort(this.offset, value);
+    public void set(final ByteBuffer buffer, final Integer value) {
+        buffer.putInt(this.offset,(int)((buffer.getInt(this.offset) & this.erasureMask) | ((value & this.valueMask) << this.offset)));
     }
-
 }

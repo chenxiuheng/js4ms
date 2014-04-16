@@ -27,9 +27,9 @@ import java.util.logging.Logger;
 
 import org.js4ms.common.exception.ParseException;
 import org.js4ms.util.buffer.BufferBackedObject;
-import org.js4ms.util.buffer.fields.ByteBitField;
-import org.js4ms.util.buffer.fields.Field;
-import org.js4ms.util.buffer.fields.SelectorField;
+import org.js4ms.util.buffer.field.ByteBitField;
+import org.js4ms.util.buffer.field.Field;
+import org.js4ms.util.buffer.field.SelectorField;
 import org.js4ms.util.buffer.parser.BufferParserSelector;
 import org.js4ms.util.buffer.parser.KeyedBufferParser;
 import org.js4ms.util.buffer.parser.KeyedStreamParser;

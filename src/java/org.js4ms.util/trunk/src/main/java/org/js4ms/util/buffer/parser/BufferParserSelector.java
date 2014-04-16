@@ -19,7 +19,7 @@ package org.js4ms.util.buffer.parser;
 import java.nio.ByteBuffer;
 
 import org.js4ms.common.exception.ParseException;
-import org.js4ms.util.buffer.fields.Field;
+import org.js4ms.util.buffer.field.Field;
 
 
 

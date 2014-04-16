@@ -14,46 +14,36 @@
  * limitations under the license.
  */
 
-package org.js4ms.util.buffer.fields;
+package org.js4ms.util.buffer.field;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
-public final class BooleanField extends ByteAlignedField<Boolean> {
+public final class ByteField extends ByteAlignedField<Byte> {
 
-    private final int mask;
-
-    protected BooleanField(final int bitOffset) {
-        this(bitOffset/8, bitOffset%8);
-    }
-
-    public BooleanField(final int byteOffset, final int bitOffset) {
+    public ByteField(final int byteOffset) {
         super(byteOffset);
-        this.mask = 0x1 << bitOffset;
-    }
-    
-    public int getMask() {
-        return this.mask;
     }
 
     @Override
-    public Boolean get(final InputStream is) throws IOException {
+    public Byte get(final InputStream is) throws IOException {
         is.mark(this.offset+1);
         is.skip(this.offset);
         int b = (byte)is.read();
         is.reset();
         if (b == -1) throw new java.io.EOFException();
-        return ((byte)b & this.mask) != 0;
+        return (byte)b;
     }
 
     @Override
-    public Boolean get(final ByteBuffer buffer) {
-        return (buffer.get(this.offset) & this.mask) != 0;
+    public Byte get(final ByteBuffer buffer) {
+        return buffer.get(this.offset);
     }
 
     @Override
-    public void set(final ByteBuffer buffer, final Boolean value) {
-        buffer.put(this.offset, (byte)((buffer.get(this.offset) & ~this.mask) | (value ? this.mask : 0)));
+    public void set(final ByteBuffer buffer, final Byte value) {
+        buffer.put(this.offset, value);
     }
+
 }

@@ -35,9 +35,9 @@ import org.js4ms.net.ip.ipv4.IPv4Packet;
 import org.js4ms.net.ip.ipv6.IPv6Packet;
 import org.js4ms.net.ip.protocol.mld.MLDMessage;
 import org.js4ms.net.ip.protocol.mld.MLDv2QueryMessage;
-import org.js4ms.util.buffer.fields.BooleanField;
-import org.js4ms.util.buffer.fields.ByteArrayField;
-import org.js4ms.util.buffer.fields.IntegerField;
+import org.js4ms.util.buffer.field.BooleanField;
+import org.js4ms.util.buffer.field.ByteArrayField;
+import org.js4ms.util.buffer.field.IntegerField;
 import org.js4ms.util.logging.Logging;
 
 

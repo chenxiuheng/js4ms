@@ -26,7 +26,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.js4ms.common.exception.ParseException;
-import org.js4ms.util.buffer.fields.ByteArrayField;
+import org.js4ms.util.buffer.field.ByteArrayField;
 import org.js4ms.util.logging.Logging;
 
 

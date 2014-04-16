@@ -20,7 +20,7 @@
 
 package org.js4ms.util.buffer.parser;
 
-import org.js4ms.util.buffer.fields.Field;
+import org.js4ms.util.buffer.field.Field;
 
 /**
  * Interface implemented by typed-message classes.

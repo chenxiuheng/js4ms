@@ -14,45 +14,46 @@
  * limitations under the license.
  */
 
-package org.js4ms.util.buffer.fields;
+package org.js4ms.util.buffer.field;
 
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
-public final class IntegerField extends ByteAlignedField<Integer> {
+public final class ByteArrayField extends ArrayField<byte[]> {
 
-    private final static int SIZE = (Integer.SIZE >> 3);
-
-    public IntegerField(final int byteOffset) {
-        super(byteOffset);
+    public ByteArrayField(final int offset, final int size) {
+        super(offset, size);
     }
 
     @Override
-    public Integer get(final InputStream is) throws IOException {
-        is.mark(this.offset+SIZE);
+    public byte[] get(final InputStream is) throws IOException {
+        byte[] bytes = new byte[this.size];
+        is.mark(this.offset+this.size);
         is.skip(this.offset);
-        byte bytes[] = new byte[SIZE];
         int count = is.read(bytes);
-        if (count != SIZE) throw new EOFException();
-        long result = 0;
-        for (int i = 0; i < SIZE; i++)
-        {
-           result = (result << 8) | (bytes[i] & 0xff);
-        }
         is.reset();
-        return (int)result;
+        if (count != this.size) throw new EOFException();
+        return bytes;
     }
 
     @Override
-    public Integer get(final ByteBuffer buffer) {
-        return buffer.getInt(this.offset);
+    public byte[] get(final ByteBuffer buffer) {
+        byte[] bytes = new byte[this.size];
+        int position = buffer.position();
+        buffer.position(this.offset);
+        buffer.get(bytes);
+        buffer.position(position);
+        return bytes;
     }
 
     @Override
-    public void set(final ByteBuffer buffer, final Integer value) {
-        buffer.putInt(this.offset, value);
+    public void set(final ByteBuffer buffer, final byte[] value) {
+        int position = buffer.position();
+        buffer.position(this.offset);
+        buffer.put(value, 0, this.size);
+        buffer.position(position);
     }
 
 }

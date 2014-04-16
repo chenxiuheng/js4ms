@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.js4ms.common.exception.ParseException;
-import org.js4ms.util.buffer.fields.Field;
+import org.js4ms.util.buffer.field.Field;
 
 
 

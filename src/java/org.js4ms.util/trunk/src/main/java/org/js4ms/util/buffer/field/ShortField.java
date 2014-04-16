@@ -14,46 +14,45 @@
  * limitations under the license.
  */
 
-package org.js4ms.util.buffer.fields;
+package org.js4ms.util.buffer.field;
 
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
-public final class ByteArrayField extends ArrayField<byte[]> {
+public final class ShortField extends ByteAlignedField<Short> {
 
-    public ByteArrayField(final int offset, final int size) {
-        super(offset, size);
+    private final static int SIZE = (Short.SIZE >> 3);
+
+    public ShortField(final int byteOffset) {
+        super(byteOffset);
     }
 
     @Override
-    public byte[] get(final InputStream is) throws IOException {
-        byte[] bytes = new byte[this.size];
-        is.mark(this.offset+this.size);
+    public Short get(final InputStream is) throws IOException {
+        is.mark(this.offset + SIZE);
         is.skip(this.offset);
+        byte bytes[] = new byte[SIZE];
         int count = is.read(bytes);
         is.reset();
-        if (count != this.size) throw new EOFException();
-        return bytes;
+        if (count != SIZE) throw new EOFException();
+        long result = 0;
+        for (int i = 0; i < SIZE; i++)
+        {
+           result = (result << 8) | (bytes[i] & 0xff);
+        }
+        return (short)result;
     }
 
     @Override
-    public byte[] get(final ByteBuffer buffer) {
-        byte[] bytes = new byte[this.size];
-        int position = buffer.position();
-        buffer.position(this.offset);
-        buffer.get(bytes);
-        buffer.position(position);
-        return bytes;
+    public Short get(final ByteBuffer buffer) {
+        return buffer.getShort(this.offset);
     }
 
     @Override
-    public void set(final ByteBuffer buffer, final byte[] value) {
-        int position = buffer.position();
-        buffer.position(this.offset);
-        buffer.put(value, 0, this.size);
-        buffer.position(position);
+    public void set(final ByteBuffer buffer, final Short value) {
+        buffer.putShort(this.offset, value);
     }
 
 }

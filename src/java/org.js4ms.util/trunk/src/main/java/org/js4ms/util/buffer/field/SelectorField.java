@@ -14,18 +14,32 @@
  * limitations under the license.
  */
 
-package org.js4ms.util.buffer.fields;
+package org.js4ms.util.buffer.field;
 
-public abstract class ByteAlignedField<Type> implements Field<Type> {
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
 
-    protected final int offset;
+public final class SelectorField<T> implements Field<Object> {
 
-    protected ByteAlignedField(final int offset) {
-        this.offset = offset;
+    private final Field<T> field;
+
+    public SelectorField(final Field<T> field) {
+        this.field = field;
     }
 
-    public final int getOffset() {
-        return this.offset;
+    @Override
+    public Object get(final InputStream is) throws IOException {
+        return (Object)field.get(is);
     }
 
+    @Override
+    public Object get(final ByteBuffer buffer) {
+        return (Object)field.get(buffer);
+    }
+
+    @Override
+    public void set(final ByteBuffer buffer, final Object value) {
+        // Ignored
+    }
 }

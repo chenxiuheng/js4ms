@@ -26,10 +26,10 @@ import java.util.logging.Logger;
 
 import org.js4ms.net.ip.ipv4.IPv4RouterAlertOption;
 import org.js4ms.util.buffer.BufferBackedObject;
-import org.js4ms.util.buffer.fields.BooleanField;
-import org.js4ms.util.buffer.fields.ByteBitField;
-import org.js4ms.util.buffer.fields.ByteField;
-import org.js4ms.util.buffer.fields.SelectorField;
+import org.js4ms.util.buffer.field.BooleanField;
+import org.js4ms.util.buffer.field.ByteBitField;
+import org.js4ms.util.buffer.field.ByteField;
+import org.js4ms.util.buffer.field.SelectorField;
 import org.js4ms.util.buffer.parser.BufferParserSelector;
 import org.js4ms.util.buffer.parser.KeyedBufferParser;
 

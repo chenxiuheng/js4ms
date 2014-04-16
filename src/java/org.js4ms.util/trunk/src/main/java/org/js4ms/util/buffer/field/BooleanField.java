@@ -14,39 +14,46 @@
  * limitations under the license.
  */
 
-package org.js4ms.util.buffer.fields;
+package org.js4ms.util.buffer.field;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
-public final class ByteBitField extends BitField<Byte> {
+public final class BooleanField extends ByteAlignedField<Boolean> {
 
-    public ByteBitField(final int byteOffset, final int bitOffset, final int bitWidth) {
-        super(byteOffset, bitOffset, bitWidth);
-        if ((bitOffset+bitWidth) > 8) {
-            throw new java.lang.IndexOutOfBoundsException();
-        }
+    private final int mask;
+
+    protected BooleanField(final int bitOffset) {
+        this(bitOffset/8, bitOffset%8);
+    }
+
+    public BooleanField(final int byteOffset, final int bitOffset) {
+        super(byteOffset);
+        this.mask = 0x1 << bitOffset;
+    }
+    
+    public int getMask() {
+        return this.mask;
     }
 
     @Override
-    public Byte get(final InputStream is) throws IOException {
+    public Boolean get(final InputStream is) throws IOException {
         is.mark(this.offset+1);
         is.skip(this.offset);
         int b = (byte)is.read();
         is.reset();
         if (b == -1) throw new java.io.EOFException();
-        return (byte)(((byte)b >> this.shift) & this.valueMask);
+        return ((byte)b & this.mask) != 0;
     }
 
     @Override
-    public Byte get(final ByteBuffer buffer) {
-        return (byte)((buffer.get(this.offset) >> this.shift) & this.valueMask);
+    public Boolean get(final ByteBuffer buffer) {
+        return (buffer.get(this.offset) & this.mask) != 0;
     }
 
     @Override
-    public void set(final ByteBuffer buffer, final Byte value) {
-        buffer.put(this.offset,(byte)((buffer.get(this.offset) & this.erasureMask) | ((value & this.valueMask) << this.shift)));
+    public void set(final ByteBuffer buffer, final Boolean value) {
+        buffer.put(this.offset, (byte)((buffer.get(this.offset) & ~this.mask) | (value ? this.mask : 0)));
     }
-
 }

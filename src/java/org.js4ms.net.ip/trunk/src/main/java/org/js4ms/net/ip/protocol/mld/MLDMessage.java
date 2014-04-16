@@ -31,7 +31,7 @@ import org.js4ms.net.ip.protocol.icmp.ICMPv6Message;
 import org.js4ms.net.ip.ipv6.IPv6HopByHopOptionsHeader;
 import org.js4ms.net.ip.ipv6.IPv6Packet;
 import org.js4ms.net.ip.ipv6.IPv6RouterAlertOption;
-import org.js4ms.util.buffer.fields.ShortField;
+import org.js4ms.util.buffer.field.ShortField;
 
 
 

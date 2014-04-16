@@ -14,19 +14,15 @@
  * limitations under the license.
  */
 
-package org.js4ms.util.buffer.fields;
+package org.js4ms.util.buffer.field;
 
-public abstract class ArrayField<Type> extends ByteAlignedField<Type> {
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
 
-    protected final int size;
-    
-    protected ArrayField(final int offset, final int size) {
-        super(offset);
-        this.size = size;
-    }
-    
-    public final int getSize() {
-        return this.size;
-    }
 
+public interface Field<Type> {
+    public Type get(final InputStream is) throws IOException;
+    public Type get(final ByteBuffer buffer);
+    public void set(final ByteBuffer buffer, final Type value);
 }
