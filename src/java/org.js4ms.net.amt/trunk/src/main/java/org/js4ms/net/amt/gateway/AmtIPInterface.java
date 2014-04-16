@@ -22,11 +22,11 @@ import org.js4ms.net.amt.MembershipQuery;
 import org.js4ms.net.amt.MembershipReport;
 import org.js4ms.net.ip.IPMessage;
 import org.js4ms.net.ip.IPPacket;
+import org.js4ms.net.ip.Precondition;
 import org.js4ms.net.ip.protocol.igmp.IGMPMessage;
 import org.js4ms.net.ip.ipv4.IPv4Packet;
 import org.js4ms.net.ip.ipv6.IPv6Packet;
 import org.js4ms.net.ip.protocol.mld.MLDMessage;
-import org.js4ms.net.util.Precondition;
 
 
 

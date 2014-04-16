@@ -38,9 +38,9 @@ import org.js4ms.logging.java.Log;
 import org.js4ms.logging.java.LoggableBase;
 import org.js4ms.logging.java.Logging;
 import org.js4ms.net.ip.IPPacket;
+import org.js4ms.net.ip.Precondition;
 import org.js4ms.net.ip.ipv4.IPv4Packet;
 import org.js4ms.net.ip.ipv6.IPv6Packet;
-import org.js4ms.net.util.Precondition;
 
 
 
