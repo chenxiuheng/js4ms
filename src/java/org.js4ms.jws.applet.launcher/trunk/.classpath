@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.service.launcher.jws"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.common"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.launcher"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
