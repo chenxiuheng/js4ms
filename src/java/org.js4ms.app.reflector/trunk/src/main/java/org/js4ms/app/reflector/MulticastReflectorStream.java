@@ -15,10 +15,10 @@ import javax.sdp.MediaDescription;
 import javax.sdp.SdpException;
 import javax.sdp.SessionDescription;
 
+import org.js4ms.amt.gateway.AmtPseudoInterfaceManager;
 import org.js4ms.common.util.logging.Logging;
 import org.js4ms.io.channel.MessageSource;
 import org.js4ms.io.channel.OutputChannel;
-import org.js4ms.net.ip.multicast.service.amt.gateway.AmtPseudoInterfaceManager;
 import org.js4ms.net.ip.multicast.service.proxy.SourceFilter;
 import org.js4ms.service.rtsp.presentation.MediaStream;
 import org.js4ms.service.rtsp.presentation.Presentation;
