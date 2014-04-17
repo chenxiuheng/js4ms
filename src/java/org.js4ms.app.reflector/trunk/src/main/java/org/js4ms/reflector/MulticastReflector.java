@@ -1,4 +1,4 @@
-package org.js4ms.app.reflector;
+package org.js4ms.reflector;
 
 
 import java.net.URI;

@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.app.reflector;
+package org.js4ms.reflector;
 
 import java.io.IOException;
 import java.util.Properties;
