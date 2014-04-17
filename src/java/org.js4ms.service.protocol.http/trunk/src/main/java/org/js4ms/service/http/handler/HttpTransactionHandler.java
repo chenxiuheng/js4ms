@@ -1,4 +1,4 @@
-package org.js4ms.service.protocol.http.handler;
+package org.js4ms.service.http.handler;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,16 +7,16 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Map;
 
-import org.js4ms.service.protocol.http.message.HttpMethod;
-import org.js4ms.service.protocol.http.message.HttpStatusCode;
-import org.js4ms.service.protocol.rest.entity.CodecManager;
-import org.js4ms.service.protocol.rest.entity.Entity;
-import org.js4ms.service.protocol.rest.entity.MediaType;
-import org.js4ms.service.protocol.rest.entity.StringEntity;
-import org.js4ms.service.protocol.rest.handler.TransactionHandler;
-import org.js4ms.service.protocol.rest.message.Method;
-import org.js4ms.service.protocol.rest.message.Request;
-import org.js4ms.service.protocol.rest.message.Response;
+import org.js4ms.service.http.message.HttpMethod;
+import org.js4ms.service.http.message.HttpStatusCode;
+import org.js4ms.service.rest.entity.CodecManager;
+import org.js4ms.service.rest.entity.Entity;
+import org.js4ms.service.rest.entity.MediaType;
+import org.js4ms.service.rest.entity.StringEntity;
+import org.js4ms.service.rest.handler.TransactionHandler;
+import org.js4ms.service.rest.message.Method;
+import org.js4ms.service.rest.message.Request;
+import org.js4ms.service.rest.message.Response;
 
 
 

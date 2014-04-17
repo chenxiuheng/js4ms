@@ -1,6 +1,6 @@
-package org.js4ms.service.protocol.http.message;
+package org.js4ms.service.http.message;
 
-import org.js4ms.service.protocol.rest.message.HeaderName;
+import org.js4ms.service.rest.message.HeaderName;
 
 public interface HttpHeaderName extends HeaderName {
 
