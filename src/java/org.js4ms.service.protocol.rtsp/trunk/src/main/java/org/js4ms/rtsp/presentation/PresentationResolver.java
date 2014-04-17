@@ -1,4 +1,4 @@
-package org.js4ms.service.rtsp.presentation;
+package org.js4ms.rtsp.presentation;
 
 import org.js4ms.service.rest.common.RequestException;
 import org.js4ms.service.rest.message.Request;

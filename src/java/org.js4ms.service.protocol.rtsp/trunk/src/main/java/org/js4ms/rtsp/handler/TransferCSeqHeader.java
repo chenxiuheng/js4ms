@@ -1,14 +1,14 @@
-package org.js4ms.service.rtsp.handler;
+package org.js4ms.rtsp.handler;
 
 import java.io.IOException;
 
+import org.js4ms.rtsp.message.RtspHeaderName;
 import org.js4ms.service.rest.entity.StringEntity;
 import org.js4ms.service.rest.handler.TransactionHandler;
 import org.js4ms.service.rest.message.MessageHeader;
 import org.js4ms.service.rest.message.Request;
 import org.js4ms.service.rest.message.Response;
 import org.js4ms.service.rest.message.StatusCode;
-import org.js4ms.service.rtsp.message.RtspHeaderName;
 
 
 

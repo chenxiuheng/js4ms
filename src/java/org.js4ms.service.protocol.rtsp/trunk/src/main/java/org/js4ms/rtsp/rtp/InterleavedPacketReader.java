@@ -1,4 +1,4 @@
-package org.js4ms.service.rtsp.rtp;
+package org.js4ms.rtsp.rtp;
 
 import java.io.EOFException;
 import java.io.IOException;

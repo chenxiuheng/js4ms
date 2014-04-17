@@ -14,7 +14,7 @@
  * limitations under the license.
  */
 
-package org.js4ms.service.rtsp.presentation;
+package org.js4ms.rtsp.presentation;
 
 import java.net.UnknownHostException;
 import java.util.Iterator;

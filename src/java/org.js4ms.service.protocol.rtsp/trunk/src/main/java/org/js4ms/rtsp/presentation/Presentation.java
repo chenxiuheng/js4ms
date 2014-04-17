@@ -1,4 +1,4 @@
-package org.js4ms.service.rtsp.presentation;
+package org.js4ms.rtsp.presentation;
 
 import java.io.IOException;
 import java.net.URI;
@@ -14,6 +14,10 @@ import javax.sdp.SessionDescription;
 
 import org.js4ms.common.util.logging.Log;
 import org.js4ms.io.channel.OutputChannel;
+import org.js4ms.rtsp.message.RtspHeaderName;
+import org.js4ms.rtsp.message.RtspMethod;
+import org.js4ms.rtsp.message.RtspStatusCode;
+import org.js4ms.rtsp.rtp.InterleavedPacketReader;
 import org.js4ms.service.rest.common.RequestException;
 import org.js4ms.service.rest.entity.Entity;
 import org.js4ms.service.rest.entity.StringEntity;
@@ -23,10 +27,6 @@ import org.js4ms.service.rest.message.MessageHeader;
 import org.js4ms.service.rest.message.Method;
 import org.js4ms.service.rest.message.Request;
 import org.js4ms.service.rest.message.Response;
-import org.js4ms.service.rtsp.message.RtspHeaderName;
-import org.js4ms.service.rtsp.message.RtspMethod;
-import org.js4ms.service.rtsp.message.RtspStatusCode;
-import org.js4ms.service.rtsp.rtp.InterleavedPacketReader;
 
 
 

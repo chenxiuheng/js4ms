@@ -1,4 +1,4 @@
-package org.js4ms.service.rtsp.presentation;
+package org.js4ms.rtsp.presentation;
 
 import java.util.HashMap;
 import java.util.Map;

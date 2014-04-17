@@ -1,4 +1,4 @@
-package org.js4ms.service.rtsp.message;
+package org.js4ms.rtsp.message;
 
 import org.js4ms.service.rest.message.HeaderName;
 
