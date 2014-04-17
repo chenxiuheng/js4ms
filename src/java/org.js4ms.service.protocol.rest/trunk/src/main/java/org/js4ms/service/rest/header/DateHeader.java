@@ -1,11 +1,11 @@
-package org.js4ms.service.protocol.rest.header;
+package org.js4ms.service.rest.header;
 
 import java.util.Date;
 
 import org.js4ms.common.exception.ParseException;
-import org.js4ms.service.protocol.rest.message.FormattedMessageHeader;
-import org.js4ms.service.protocol.rest.message.MessageHeader;
-import org.js4ms.service.protocol.rest.util.DateUtil;
+import org.js4ms.service.rest.message.FormattedMessageHeader;
+import org.js4ms.service.rest.message.MessageHeader;
+import org.js4ms.service.rest.util.DateUtil;
 
 
 

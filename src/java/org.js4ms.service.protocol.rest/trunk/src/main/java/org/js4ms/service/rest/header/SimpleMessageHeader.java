@@ -1,7 +1,7 @@
-package org.js4ms.service.protocol.rest.header;
+package org.js4ms.service.rest.header;
 
-import org.js4ms.service.protocol.rest.message.MessageHeader;
-import org.js4ms.service.protocol.rest.message.MessageHeaderBase;
+import org.js4ms.service.rest.message.MessageHeader;
+import org.js4ms.service.rest.message.MessageHeaderBase;
 
 
 public class SimpleMessageHeader extends MessageHeaderBase {
