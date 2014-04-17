@@ -9,7 +9,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.app.reflector"/>
 	<classpathentry kind="lib" path="/jain-sdp/jain-sdp-1.0.100.jar"/>
 	<classpathentry kind="lib" path="/jnlp/jnlp.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.util"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.util.logging.swing"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.common"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

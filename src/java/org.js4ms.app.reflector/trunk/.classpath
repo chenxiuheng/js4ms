@@ -6,10 +6,10 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.service.protocol.rest"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.service.protocol.rtsp"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.service.server"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.util"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.io"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.net.io.udp"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.net.amt"/>
 	<classpathentry kind="lib" path="/jain-sdp/jain-sdp-1.0.100.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.common"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
