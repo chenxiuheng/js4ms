@@ -1,4 +1,4 @@
-package org.js4ms.net.ip.multicast.service.amt.gateway;
+package org.js4ms.amt.gateway;
 
 import java.io.IOException;
 import java.net.InetAddress;

@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.net.ip.multicast.service.amt.message;
+package org.js4ms.amt.message;
 
 import java.net.InetAddress;
 import java.util.HashSet;

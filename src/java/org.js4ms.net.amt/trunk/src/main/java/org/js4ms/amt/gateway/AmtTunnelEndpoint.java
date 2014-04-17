@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.net.ip.multicast.service.amt.gateway;
+package org.js4ms.amt.gateway;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
@@ -34,6 +34,14 @@ import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.js4ms.amt.message.AmtMembershipQueryMessage;
+import org.js4ms.amt.message.AmtMembershipUpdateMessage;
+import org.js4ms.amt.message.AmtMessage;
+import org.js4ms.amt.message.AmtMulticastDataMessage;
+import org.js4ms.amt.message.AmtRelayAdvertisementMessage;
+import org.js4ms.amt.message.AmtRelayDiscoveryMessage;
+import org.js4ms.amt.message.AmtRequestMessage;
+import org.js4ms.amt.message.AmtTeardownMessage;
 import org.js4ms.common.util.logging.Log;
 import org.js4ms.common.util.logging.Logging;
 import org.js4ms.io.channel.OutputChannel;
@@ -55,14 +63,6 @@ import org.js4ms.net.ip.format.protocol.mld.MLDQueryMessage;
 import org.js4ms.net.ip.format.protocol.mld.MLDv1ReportMessage;
 import org.js4ms.net.ip.format.protocol.mld.MLDv2QueryMessage;
 import org.js4ms.net.ip.format.protocol.mld.MLDv2ReportMessage;
-import org.js4ms.net.ip.multicast.service.amt.message.AmtMembershipQueryMessage;
-import org.js4ms.net.ip.multicast.service.amt.message.AmtMembershipUpdateMessage;
-import org.js4ms.net.ip.multicast.service.amt.message.AmtMessage;
-import org.js4ms.net.ip.multicast.service.amt.message.AmtMulticastDataMessage;
-import org.js4ms.net.ip.multicast.service.amt.message.AmtRelayAdvertisementMessage;
-import org.js4ms.net.ip.multicast.service.amt.message.AmtRelayDiscoveryMessage;
-import org.js4ms.net.ip.multicast.service.amt.message.AmtRequestMessage;
-import org.js4ms.net.ip.multicast.service.amt.message.AmtTeardownMessage;
 
 
 
