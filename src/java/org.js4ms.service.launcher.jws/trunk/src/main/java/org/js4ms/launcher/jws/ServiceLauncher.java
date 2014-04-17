@@ -1,4 +1,4 @@
-package org.js4ms.service.launcher.jws;
+package org.js4ms.launcher.jws;
 
 import java.io.File;
 import java.io.IOException;
