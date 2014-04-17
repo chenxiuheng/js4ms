@@ -6,7 +6,7 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.service.server"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.common"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.server"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
