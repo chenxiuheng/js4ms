@@ -1,8 +1,8 @@
-package org.js4ms.service.rest.handler;
+package org.js4ms.rest.handler;
 
-import org.js4ms.service.rest.header.SimpleMessageHeader;
-import org.js4ms.service.rest.message.HeaderName;
-import org.js4ms.service.rest.message.Response;
+import org.js4ms.rest.header.SimpleMessageHeader;
+import org.js4ms.rest.message.HeaderName;
+import org.js4ms.rest.message.Response;
 
 public class AddServerHeader implements ResponseHandler {
 

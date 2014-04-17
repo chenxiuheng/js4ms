@@ -1,11 +1,11 @@
-package org.js4ms.service.rest.handler;
+package org.js4ms.rest.handler;
 
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import org.js4ms.service.rest.message.Request;
-import org.js4ms.service.rest.message.Response;
+import org.js4ms.rest.message.Request;
+import org.js4ms.rest.message.Response;
 
 
 

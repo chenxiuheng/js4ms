@@ -1,4 +1,4 @@
-package org.js4ms.service.rest.entity;
+package org.js4ms.rest.entity;
 
 import java.io.InputStream;
 import java.io.OutputStream;

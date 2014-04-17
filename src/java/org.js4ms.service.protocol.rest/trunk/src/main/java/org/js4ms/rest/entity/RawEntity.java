@@ -1,4 +1,4 @@
-package org.js4ms.service.rest.entity;
+package org.js4ms.rest.entity;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,14 +9,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.js4ms.common.util.logging.Log;
-import org.js4ms.service.rest.common.MessageException;
-import org.js4ms.service.rest.common.RequestException;
-import org.js4ms.service.rest.header.DateHeader;
-import org.js4ms.service.rest.header.SimpleMessageHeader;
-import org.js4ms.service.rest.message.Message;
-import org.js4ms.service.rest.message.MessageHeader;
-import org.js4ms.service.rest.message.StatusCode;
-import org.js4ms.service.rest.util.DateUtil;
+import org.js4ms.rest.common.MessageException;
+import org.js4ms.rest.common.RequestException;
+import org.js4ms.rest.header.DateHeader;
+import org.js4ms.rest.header.SimpleMessageHeader;
+import org.js4ms.rest.message.Message;
+import org.js4ms.rest.message.MessageHeader;
+import org.js4ms.rest.message.StatusCode;
+import org.js4ms.rest.util.DateUtil;
 
 
 

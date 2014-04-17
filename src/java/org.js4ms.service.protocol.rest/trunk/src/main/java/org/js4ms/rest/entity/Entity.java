@@ -1,4 +1,4 @@
-package org.js4ms.service.rest.entity;
+package org.js4ms.rest.entity;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.js4ms.service.rest.message.MessageHeader;
+import org.js4ms.rest.message.MessageHeader;
 
 
 

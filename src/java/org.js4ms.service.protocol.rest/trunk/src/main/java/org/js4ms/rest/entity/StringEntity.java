@@ -14,7 +14,7 @@
  * limitations under the license.
  */
 
-package org.js4ms.service.rest.entity;
+package org.js4ms.rest.entity;
 
 import java.io.ByteArrayInputStream;
 import java.nio.ByteBuffer;

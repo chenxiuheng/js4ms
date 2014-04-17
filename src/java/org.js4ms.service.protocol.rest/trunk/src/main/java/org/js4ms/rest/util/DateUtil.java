@@ -1,4 +1,4 @@
-package org.js4ms.service.rest.util;
+package org.js4ms.rest.util;
 
 import java.lang.ref.SoftReference;
 import java.text.DateFormat;

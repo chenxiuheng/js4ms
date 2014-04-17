@@ -1,8 +1,8 @@
-package org.js4ms.service.rest.handler;
+package org.js4ms.rest.handler;
 
 import java.io.IOException;
 
-import org.js4ms.service.rest.message.Response;
+import org.js4ms.rest.message.Response;
 
 
 

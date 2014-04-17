@@ -1,4 +1,4 @@
-package org.js4ms.service.rest.handler;
+package org.js4ms.rest.handler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,8 +6,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.js4ms.common.util.logging.Log;
-import org.js4ms.service.rest.common.RequestException;
-import org.js4ms.service.rest.message.Request;
+import org.js4ms.rest.common.RequestException;
+import org.js4ms.rest.message.Request;
 
 
 

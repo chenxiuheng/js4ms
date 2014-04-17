@@ -1,9 +1,9 @@
-package org.js4ms.service.rest.header;
+package org.js4ms.rest.header;
 
-import org.js4ms.service.rest.entity.Entity;
-import org.js4ms.service.rest.entity.MediaType;
-import org.js4ms.service.rest.message.FormattedMessageHeader;
-import org.js4ms.service.rest.message.MessageHeader;
+import org.js4ms.rest.entity.Entity;
+import org.js4ms.rest.entity.MediaType;
+import org.js4ms.rest.message.FormattedMessageHeader;
+import org.js4ms.rest.message.MessageHeader;
 
 public class ContentTypeHeader
                 extends FormattedMessageHeader {
