@@ -23,7 +23,7 @@ package org.js4ms.net.ip.multicast.service.proxy;
 import java.io.IOException;
 import java.net.InetAddress;
 
-import org.js4ms.io.channels.MessageTransform;
+import org.js4ms.io.channel.MessageTransform;
 import org.js4ms.net.ip.format.IPPacket;
 import org.js4ms.net.ip.format.protocol.mld.MLDGroupRecord;
 import org.js4ms.net.ip.format.protocol.mld.MLDMessage;

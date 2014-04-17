@@ -8,8 +8,8 @@ import javax.sdp.MediaDescription;
 import javax.sdp.SdpException;
 import javax.sdp.SessionDescription;
 
-import org.js4ms.service.protocol.rtsp.presentation.MediaStream;
-import org.js4ms.service.protocol.rtsp.presentation.Presentation;
+import org.js4ms.service.rtsp.presentation.MediaStream;
+import org.js4ms.service.rtsp.presentation.Presentation;
 
 
 

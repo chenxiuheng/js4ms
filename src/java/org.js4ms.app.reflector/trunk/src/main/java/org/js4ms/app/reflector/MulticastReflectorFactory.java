@@ -39,16 +39,16 @@ import javax.sdp.SdpFactory;
 import javax.sdp.SessionDescription;
 
 import org.js4ms.common.util.logging.Log;
-import org.js4ms.io.streams.FixedLengthInputStream;
-import org.js4ms.service.protocol.rest.RequestException;
-import org.js4ms.service.protocol.rest.message.Method;
-import org.js4ms.service.protocol.rest.message.Request;
-import org.js4ms.service.protocol.rest.message.Status;
-import org.js4ms.service.protocol.rtsp.RtspMethods;
-import org.js4ms.service.protocol.rtsp.RtspStatusCodes;
-import org.js4ms.service.protocol.rtsp.presentation.Presentation;
-import org.js4ms.service.protocol.rtsp.presentation.PresentationResolver;
-import org.js4ms.service.protocol.rtsp.server.RtspService;
+import org.js4ms.io.stream.FixedLengthInputStream;
+import org.js4ms.service.rest.common.RequestException;
+import org.js4ms.service.rest.message.Method;
+import org.js4ms.service.rest.message.Request;
+import org.js4ms.service.rest.message.Status;
+import org.js4ms.service.rtsp.message.RtspMethod;
+import org.js4ms.service.rtsp.message.RtspStatusCode;
+import org.js4ms.service.rtsp.presentation.Presentation;
+import org.js4ms.service.rtsp.presentation.PresentationResolver;
+import org.js4ms.service.rtsp.server.RtspService;
 
 
 
@@ -116,7 +116,7 @@ public class MulticastReflectorFactory implements PresentationResolver {
  
         if (sdpUrl == null || sdpUrl.length() == 0) {
             throw RequestException.create(request.getProtocolVersion(),
-                                          RtspStatusCodes.NotFound,
+                                          RtspStatusCode.NotFound,
                                           "the RTSP URL for a reflected presentation must include a query string containing an SDP URL",
                                           log.getPrefix(),
                                           logger);
@@ -124,7 +124,7 @@ public class MulticastReflectorFactory implements PresentationResolver {
 
         Method method = request.getRequestLine().getMethod();
 
-        if (method.equals(RtspMethods.SETUP)) {
+        if (method.equals(RtspMethod.SETUP)) {
             // The request URI is a stream control URI.
             // The control URI is the presentation URL (Content-Base) concatenated
             // to the stream control attribute as specified in the SDP.
@@ -141,7 +141,7 @@ public class MulticastReflectorFactory implements PresentationResolver {
         }
         catch(URISyntaxException e) {
             throw RequestException.create(request.getProtocolVersion(),
-                                          RtspStatusCodes.BadRequest,
+                                          RtspStatusCode.BadRequest,
                                           "invalid URI specified in request",
                                           e,
                                           log.getPrefix(),
@@ -157,7 +157,7 @@ public class MulticastReflectorFactory implements PresentationResolver {
             logger.finer(log.msg("current cached presentation is URI="+presentation.getUri().toString()));
             if (presentation.getUri().toString().equals(presentationUri)) {
                 logger.finer(log.msg("using cached presentation"));
-                if (method.equals(RtspMethods.SETUP)) {
+                if (method.equals(RtspMethod.SETUP)) {
                     // The presentation cannot be reused once referenced in a SETUP request.
                     // Remove the presentation from the cache
                     logger.finer(log.msg("removing presentation from cache"));
@@ -177,7 +177,7 @@ public class MulticastReflectorFactory implements PresentationResolver {
         }
         catch (SdpException e) {
             throw RequestException.create(request.getProtocolVersion(),
-                                          RtspStatusCodes.InvalidMedia,
+                                          RtspStatusCode.InvalidMedia,
                                           "invalid SDP description",
                                           e,
                                           log.getPrefix(),
@@ -189,7 +189,7 @@ public class MulticastReflectorFactory implements PresentationResolver {
         }
         catch (URISyntaxException e) {
             throw RequestException.create(request.getProtocolVersion(),
-                                          RtspStatusCodes.BadRequest,
+                                          RtspStatusCode.BadRequest,
                                           "invalid URI specified in request",
                                           e,
                                           log.getPrefix(),
@@ -197,14 +197,14 @@ public class MulticastReflectorFactory implements PresentationResolver {
         }
         catch (SdpException e) {
             throw RequestException.create(request.getProtocolVersion(),
-                                          RtspStatusCodes.InvalidMedia,
+                                          RtspStatusCode.InvalidMedia,
                                           "invalid SDP description",
                                           e,
                                           log.getPrefix(),
                                           logger);
         }
 
-        if (!method.equals(RtspMethods.SETUP)) {
+        if (!method.equals(RtspMethod.SETUP)) {
             // Cache the presentation if this is a OPTIONS or DESCRIBE request.
             this.lastPresentation.set(presentation);
         }
@@ -241,7 +241,7 @@ public class MulticastReflectorFactory implements PresentationResolver {
                         if (contentLength == -1) {
                             // TODO;
                             throw RequestException.create(RtspService.RTSP_PROTOCOL_VERSION,
-                                                          RtspStatusCodes.BadRequest,
+                                                          RtspStatusCode.BadRequest,
                                                           "fetch from URI specified in request returned an invalid SDP description",
                                                           log.getPrefix(),
                                                           logger);
@@ -270,7 +270,7 @@ public class MulticastReflectorFactory implements PresentationResolver {
                 }
                 catch (ConnectException e) {
                     throw RequestException.create(RtspService.RTSP_PROTOCOL_VERSION,
-                                                  RtspStatusCodes.Forbidden,
+                                                  RtspStatusCode.Forbidden,
                                                   "cannot fetch presentation description - HTTP connection refused",
                                                   e,
                                                   log.getPrefix(),
@@ -278,7 +278,7 @@ public class MulticastReflectorFactory implements PresentationResolver {
                 }
                 catch (IOException e) { 
                     throw RequestException.create(RtspService.RTSP_PROTOCOL_VERSION,
-                                                  RtspStatusCodes.InternalServerError,
+                                                  RtspStatusCode.InternalServerError,
                                                   "cannot fetch presentation description - HTTP GET failed with IO exception",
                                                   e,
                                                   log.getPrefix(),
@@ -292,7 +292,7 @@ public class MulticastReflectorFactory implements PresentationResolver {
                 }
                 catch (FileNotFoundException e) {
                     throw RequestException.create(RtspService.RTSP_PROTOCOL_VERSION,
-                                                  RtspStatusCodes.NotFound,
+                                                  RtspStatusCode.NotFound,
                                                   "cannot read presentation description - file not found",
                                                   e,
                                                   log.getPrefix(),
@@ -300,7 +300,7 @@ public class MulticastReflectorFactory implements PresentationResolver {
                 }
                 catch (IOException e) {
                     throw RequestException.create(RtspService.RTSP_PROTOCOL_VERSION,
-                                                  RtspStatusCodes.InternalServerError,
+                                                  RtspStatusCode.InternalServerError,
                                                   "cannot read presentation description - read failed with IO exception",
                                                   e,
                                                   log.getPrefix(),
@@ -312,7 +312,7 @@ public class MulticastReflectorFactory implements PresentationResolver {
 
         logger.fine(log.msg("the URI specified in the request cannot be used to fetch an SDP description"));
         throw RequestException.create(RtspService.RTSP_PROTOCOL_VERSION,
-                                      RtspStatusCodes.NotFound,
+                                      RtspStatusCode.NotFound,
                                       "cannot read presentation description - file not found",
                                       log.getPrefix(),
                                       logger);
@@ -347,7 +347,7 @@ public class MulticastReflectorFactory implements PresentationResolver {
         }
         catch (SdpException e) {
             throw RequestException.create(RtspService.RTSP_PROTOCOL_VERSION,
-                                          RtspStatusCodes.BadRequest,
+                                          RtspStatusCode.BadRequest,
                                           "cannot parse session description",
                                           e,
                                           log.getPrefix(),
@@ -388,7 +388,7 @@ public class MulticastReflectorFactory implements PresentationResolver {
                         }
                         catch (Exception e) {
                             throw RequestException.create(RtspService.RTSP_PROTOCOL_VERSION,
-                                    RtspStatusCodes.BadRequest,
+                                    RtspStatusCode.BadRequest,
                                     "source address query parameter '" + value + "' is invalid",
                                     e,
                                     log.getPrefix(),
@@ -409,7 +409,7 @@ public class MulticastReflectorFactory implements PresentationResolver {
                         }
                         catch (Exception e) {
                             throw RequestException.create(RtspService.RTSP_PROTOCOL_VERSION,
-                                    RtspStatusCodes.BadRequest,
+                                    RtspStatusCode.BadRequest,
                                     "relay address query parameter '" + value + "' is invalid",
                                     e,
                                     log.getPrefix(),
@@ -434,7 +434,7 @@ public class MulticastReflectorFactory implements PresentationResolver {
             }
             catch (SdpException e) {
                 throw RequestException.create(RtspService.RTSP_PROTOCOL_VERSION,
-                        RtspStatusCodes.InternalServerError,
+                        RtspStatusCode.InternalServerError,
                         e,
                         log.getPrefix(),
                         logger);
@@ -463,7 +463,7 @@ public class MulticastReflectorFactory implements PresentationResolver {
             }
             catch (SdpException e) {
                 throw RequestException.create(RtspService.RTSP_PROTOCOL_VERSION,
-                        RtspStatusCodes.InternalServerError,
+                        RtspStatusCode.InternalServerError,
                         e,
                         log.getPrefix(),
                         logger);
@@ -471,7 +471,7 @@ public class MulticastReflectorFactory implements PresentationResolver {
         }
         else {
             throw RequestException.create(RtspService.RTSP_PROTOCOL_VERSION,
-                    RtspStatusCodes.BadRequest,
+                    RtspStatusCode.BadRequest,
                     "relay_address query parameter is required for this SDP",
                     log.getPrefix(),
                     logger);
@@ -502,7 +502,7 @@ public class MulticastReflectorFactory implements PresentationResolver {
 
             if (connection == null) {
                 throw RequestException.create(RtspService.RTSP_PROTOCOL_VERSION,
-                        RtspStatusCodes.BadRequest,
+                        RtspStatusCode.BadRequest,
                         "SDP does not specify a connection address",
                         log.getPrefix(),
                         logger);
@@ -541,7 +541,7 @@ public class MulticastReflectorFactory implements PresentationResolver {
 
                 if (origin == null) {
                     throw RequestException.create(RtspService.RTSP_PROTOCOL_VERSION,
-                            RtspStatusCodes.BadRequest,
+                            RtspStatusCode.BadRequest,
                             "source_address query parameter is required for this SDP",
                             log.getPrefix(),
                             logger);
@@ -565,7 +565,7 @@ public class MulticastReflectorFactory implements PresentationResolver {
                     }
                     catch (UnknownHostException e1) {
                         throw RequestException.create(RtspService.RTSP_PROTOCOL_VERSION,
-                                RtspStatusCodes.BadRequest,
+                                RtspStatusCode.BadRequest,
                                 "source_address query parameter is required because the SDP origin record does not specify valid source",
                                 e1,
                                 log.getPrefix(),
@@ -589,14 +589,14 @@ public class MulticastReflectorFactory implements PresentationResolver {
                 }
                 catch (UnknownHostException e) {
                     throw RequestException.create(RtspService.RTSP_PROTOCOL_VERSION,
-                            RtspStatusCodes.InternalServerError,
+                            RtspStatusCode.InternalServerError,
                             e,
                             log.getPrefix(),
                             logger);
                 }
                 catch (SocketException e) {
                     throw RequestException.create(RtspService.RTSP_PROTOCOL_VERSION,
-                            RtspStatusCodes.InternalServerError,
+                            RtspStatusCode.InternalServerError,
                             e,
                             log.getPrefix(),
                             logger);

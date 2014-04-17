@@ -32,7 +32,7 @@ import java.util.logging.Logger;
 import org.js4ms.common.util.logging.Log;
 import org.js4ms.common.util.logging.LoggableBase;
 import org.js4ms.common.util.logging.Logging;
-import org.js4ms.io.channels.OutputChannel;
+import org.js4ms.io.channel.OutputChannel;
 import org.js4ms.net.ip.multicast.service.amt.message.GroupMembershipRecord;
 import org.js4ms.net.ip.multicast.service.proxy.MembershipQuery;
 import org.js4ms.net.ip.multicast.service.proxy.MembershipReport;

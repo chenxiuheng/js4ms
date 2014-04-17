@@ -28,9 +28,9 @@ import java.util.logging.Logger;
 
 import org.js4ms.common.util.logging.Log;
 import org.js4ms.common.util.logging.Logging;
-import org.js4ms.io.channels.MessageQueue;
-import org.js4ms.io.channels.OutputChannel;
-import org.js4ms.io.channels.OutputChannelPipe;
+import org.js4ms.io.channel.MessageQueue;
+import org.js4ms.io.channel.OutputChannel;
+import org.js4ms.io.channel.OutputChannelPipe;
 import org.js4ms.io.net.udp.MulticastEndpoint;
 import org.js4ms.io.net.udp.UdpDatagram;
 

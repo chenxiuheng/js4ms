@@ -22,7 +22,7 @@ package org.js4ms.io.net.udp;
 
 import java.net.InetSocketAddress;
 
-import org.js4ms.io.channels.DuplexChannel;
+import org.js4ms.io.channel.DuplexChannel;
 
 
 

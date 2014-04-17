@@ -22,7 +22,7 @@ package org.js4ms.net.ip.multicast.service.amt.gateway;
 
 import java.io.IOException;
 
-import org.js4ms.io.channels.MessageTransform;
+import org.js4ms.io.channel.MessageTransform;
 import org.js4ms.io.net.udp.UdpDatagram;
 import org.js4ms.net.ip.format.IPPacket;
 import org.js4ms.net.ip.format.protocol.udp.UdpPacket;

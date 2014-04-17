@@ -22,9 +22,9 @@ package org.js4ms.io.net.udp;
 
 import java.io.IOException;
 
-import org.js4ms.io.channels.ChannelPump;
-import org.js4ms.io.channels.MessageSource;
-import org.js4ms.io.channels.OutputChannel;
+import org.js4ms.io.channel.ChannelPump;
+import org.js4ms.io.channel.MessageSource;
+import org.js4ms.io.channel.OutputChannel;
 
 
 

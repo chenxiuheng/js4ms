@@ -9,10 +9,10 @@ import java.util.logging.Logger;
 
 import org.js4ms.common.util.logging.Log;
 import org.js4ms.common.util.logging.Logging;
-import org.js4ms.io.channels.MessageKeyExtractor;
-import org.js4ms.io.channels.OutputChannel;
-import org.js4ms.io.channels.OutputChannelMap;
-import org.js4ms.io.channels.OutputChannelTransform;
+import org.js4ms.io.channel.MessageKeyExtractor;
+import org.js4ms.io.channel.OutputChannel;
+import org.js4ms.io.channel.OutputChannelMap;
+import org.js4ms.io.channel.OutputChannelTransform;
 import org.js4ms.io.net.udp.UdpDatagram;
 import org.js4ms.net.ip.format.IPPacket;
 import org.js4ms.net.ip.format.Precondition;

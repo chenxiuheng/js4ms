@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
 
-import org.js4ms.io.channels.MessageSource;
-import org.js4ms.io.channels.MessageTransform;
-import org.js4ms.io.channels.OutputChannel;
-import org.js4ms.io.channels.OutputChannelTransform;
+import org.js4ms.io.channel.MessageSource;
+import org.js4ms.io.channel.MessageTransform;
+import org.js4ms.io.channel.OutputChannel;
+import org.js4ms.io.channel.OutputChannelTransform;
 import org.js4ms.io.net.udp.UdpDatagram;
 import org.js4ms.net.ip.multicast.service.amt.gateway.AmtDatagramSource;
 import org.js4ms.net.ip.multicast.service.proxy.SourceFilter;

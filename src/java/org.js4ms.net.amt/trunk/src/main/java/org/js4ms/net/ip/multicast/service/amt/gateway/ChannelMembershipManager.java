@@ -31,10 +31,10 @@ import org.js4ms.common.util.logging.Log;
 import org.js4ms.common.util.logging.LoggableBase;
 import org.js4ms.common.util.logging.Logging;
 import org.js4ms.io.MultiIOException;
-import org.js4ms.io.channels.MessageKeyExtractor;
-import org.js4ms.io.channels.OutputChannel;
-import org.js4ms.io.channels.OutputChannelMap;
-import org.js4ms.io.channels.OutputChannelTee;
+import org.js4ms.io.channel.MessageKeyExtractor;
+import org.js4ms.io.channel.OutputChannel;
+import org.js4ms.io.channel.OutputChannelMap;
+import org.js4ms.io.channel.OutputChannelTee;
 import org.js4ms.io.net.udp.UdpDatagram;
 import org.js4ms.net.ip.format.Precondition;
 

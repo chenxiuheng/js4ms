@@ -22,7 +22,7 @@ package org.js4ms.io.net.udp;
 
 import java.io.IOException;
 
-import org.js4ms.io.channels.InputChannel;
+import org.js4ms.io.channel.InputChannel;
 
 
 

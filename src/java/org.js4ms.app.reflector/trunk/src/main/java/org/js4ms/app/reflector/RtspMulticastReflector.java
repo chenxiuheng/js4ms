@@ -24,20 +24,20 @@ import java.io.IOException;
 import java.util.Properties;
 
 import org.js4ms.common.util.logging.Logging;
-import org.js4ms.service.protocol.http.server.handler.LoggingConfigurationHandler;
-import org.js4ms.service.protocol.http.server.handler.LoggingOutputHandler;
-import org.js4ms.service.protocol.rest.entity.StringEntity;
-import org.js4ms.service.protocol.rest.handler.ResponseHandlerList;
-import org.js4ms.service.protocol.rest.handler.TransactionDispatcher;
-import org.js4ms.service.protocol.rest.handler.TransactionHandler;
-import org.js4ms.service.protocol.rest.handler.TransactionProtocolResolver;
-import org.js4ms.service.protocol.rest.handler.TransactionUriPathResolver;
-import org.js4ms.service.protocol.rest.handler.header.AddServerHeader;
-import org.js4ms.service.protocol.rest.message.Request;
-import org.js4ms.service.protocol.rest.message.Response;
-import org.js4ms.service.protocol.rtsp.RtspStatusCodes;
-import org.js4ms.service.protocol.rtsp.presentation.PresentationUriPathResolver;
-import org.js4ms.service.protocol.rtsp.server.RtspService;
+import org.js4ms.service.http.handler.LoggingConfigurationHandler;
+import org.js4ms.service.http.handler.LoggingOutputHandler;
+import org.js4ms.service.rest.entity.StringEntity;
+import org.js4ms.service.rest.handler.AddServerHeader;
+import org.js4ms.service.rest.handler.ResponseHandlerList;
+import org.js4ms.service.rest.handler.TransactionDispatcher;
+import org.js4ms.service.rest.handler.TransactionHandler;
+import org.js4ms.service.rest.handler.TransactionProtocolResolver;
+import org.js4ms.service.rest.handler.TransactionUriPathResolver;
+import org.js4ms.service.rest.message.Request;
+import org.js4ms.service.rest.message.Response;
+import org.js4ms.service.rtsp.message.RtspStatusCode;
+import org.js4ms.service.rtsp.presentation.PresentationUriPathResolver;
+import org.js4ms.service.rtsp.server.RtspService;
 import org.js4ms.service.server.Connection;
 import org.js4ms.service.server.ConnectionHandler;
 import org.js4ms.service.server.ConnectionHandlerFactory;
@@ -91,7 +91,7 @@ public class RtspMulticastReflector {
                     adminResolver.put("/shutdown", new TransactionHandler() {
                         @Override
                         public boolean handleTransaction(Request request, Response response) throws IOException {
-                            response.setStatus(RtspStatusCodes.OK);
+                            response.setStatus(RtspStatusCode.OK);
                             response.setEntity(new StringEntity("stopping RTSP Multicast reflector..."));
                             new Thread(new Runnable() {
 
@@ -117,8 +117,8 @@ public class RtspMulticastReflector {
                     adminResolver.put("/*", new TransactionHandler() {
                         @Override
                         public boolean handleTransaction(Request request, Response response) throws IOException {
-                            response.setStatus(RtspStatusCodes.Forbidden);
-                            response.setEntity(new StringEntity(RtspStatusCodes.Forbidden.toString()));
+                            response.setStatus(RtspStatusCode.Forbidden);
+                            response.setEntity(new StringEntity(RtspStatusCode.Forbidden.toString()));
                             response.send();
                             return true;
                         }
