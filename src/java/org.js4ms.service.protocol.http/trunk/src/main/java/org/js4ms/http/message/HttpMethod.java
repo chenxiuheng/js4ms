@@ -1,6 +1,6 @@
-package org.js4ms.service.http.message;
+package org.js4ms.http.message;
 
-import org.js4ms.service.rest.message.Method;
+import org.js4ms.rest.message.Method;
 
 public interface HttpMethod {
     public static final Method GET = new Method("GET");

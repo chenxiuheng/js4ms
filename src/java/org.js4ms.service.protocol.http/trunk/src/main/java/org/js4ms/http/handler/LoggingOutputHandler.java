@@ -1,4 +1,4 @@
-package org.js4ms.service.http.handler;
+package org.js4ms.http.handler;
 
 import java.io.IOException;
 import java.util.logging.ErrorManager;
@@ -11,14 +11,14 @@ import java.util.logging.XMLFormatter;
 
 import org.js4ms.common.util.logging.JsonLogFormatter;
 import org.js4ms.common.util.logging.LogFormatter;
-import org.js4ms.service.http.message.HttpHeaderName;
-import org.js4ms.service.http.message.HttpStatusCode;
-import org.js4ms.service.rest.entity.Entity;
-import org.js4ms.service.rest.entity.StringEntity;
-import org.js4ms.service.rest.handler.TransactionHandler;
-import org.js4ms.service.rest.header.SimpleMessageHeader;
-import org.js4ms.service.rest.message.Request;
-import org.js4ms.service.rest.message.Response;
+import org.js4ms.http.message.HttpHeaderName;
+import org.js4ms.http.message.HttpStatusCode;
+import org.js4ms.rest.entity.Entity;
+import org.js4ms.rest.entity.StringEntity;
+import org.js4ms.rest.handler.TransactionHandler;
+import org.js4ms.rest.header.SimpleMessageHeader;
+import org.js4ms.rest.message.Request;
+import org.js4ms.rest.message.Response;
 
 
 

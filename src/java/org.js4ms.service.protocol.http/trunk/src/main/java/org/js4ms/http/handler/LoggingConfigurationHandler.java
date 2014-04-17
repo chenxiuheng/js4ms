@@ -1,4 +1,4 @@
-package org.js4ms.service.http.handler;
+package org.js4ms.http.handler;
 
 import java.io.IOException;
 import java.net.URI;
@@ -12,11 +12,11 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import org.js4ms.common.util.logging.Logging;
-import org.js4ms.service.http.message.HttpStatusCode;
-import org.js4ms.service.rest.entity.StringEntity;
-import org.js4ms.service.rest.handler.TransactionHandler;
-import org.js4ms.service.rest.message.Request;
-import org.js4ms.service.rest.message.Response;
+import org.js4ms.http.message.HttpStatusCode;
+import org.js4ms.rest.entity.StringEntity;
+import org.js4ms.rest.handler.TransactionHandler;
+import org.js4ms.rest.message.Request;
+import org.js4ms.rest.message.Response;
 
 
 
