@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: InputChannel.java (org.js4ms.channels)
+ * File: MessageKeyExtractor.java (org.js4ms.channels)
  * 
  * Copyright (C) 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,29 +18,25 @@
  * limitations under the License.
  */
 
-package org.js4ms.io.channels;
-
-import java.io.IOException;
+package org.js4ms.io.channel;
 
 /**
- * Interface exposed by all message input channel objects.
- * A message input channel provides the means for retrieving a message
- * from a message source via the {@link MessageInput#receive(int)} method.
+ * Interface exposed by objects that extract a key value from a message.
+ * Key extractors are used to select message channels, handlers and parsers.
  * 
  * @param <MessageType>
  *            The message object type.
  * @author Greg Bumgardner (gbumgard)
  */
-public interface InputChannel<MessageType>
-                extends MessageInput<MessageType> {
+public interface MessageKeyExtractor<MessageType> {
 
     /**
-     * Closes this channel and optionally closes any channels wrapped or attached to this
-     * channel.
+     * Returns a value derived from one or more attributes of a message.
      * 
-     * @throws IOException
-     *             The close operation has failed.
+     * @param message
+     *            The message from which to extract a key value.
+     * @return An Object representing a key value.
      */
-    public void close() throws IOException;
+    public Object getKey(MessageType message);
 
 }

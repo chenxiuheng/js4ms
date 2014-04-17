@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.io.streams;
+package org.js4ms.io.stream;
 
 import java.io.IOException;
 import java.io.InputStream;

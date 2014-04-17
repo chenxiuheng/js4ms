@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: MessageFilter.java (org.js4ms.channels)
+ * File: InputChannel.java (org.js4ms.channels)
  * 
  * Copyright (C) 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,25 +18,29 @@
  * limitations under the License.
  */
 
-package org.js4ms.io.channels;
+package org.js4ms.io.channel;
+
+import java.io.IOException;
 
 /**
- * Interface exposed by objects used to filter messages based on some
- * form of selection criteria.
+ * Interface exposed by all message input channel objects.
+ * A message input channel provides the means for retrieving a message
+ * from a message source via the {@link MessageInput#receive(int)} method.
  * 
  * @param <MessageType>
  *            The message object type.
  * @author Greg Bumgardner (gbumgard)
  */
-public interface MessageFilter<MessageType> {
+public interface InputChannel<MessageType>
+                extends MessageInput<MessageType> {
 
     /**
-     * Tests the message to see if it matches filter criteria.
+     * Closes this channel and optionally closes any channels wrapped or attached to this
+     * channel.
      * 
-     * @param message
-     *            The message to be tested.
-     * @return A boolean value indicating whether the message matched.
+     * @throws IOException
+     *             The close operation has failed.
      */
-    boolean isMatch(MessageType message);
+    public void close() throws IOException;
 
 }

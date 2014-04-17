@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: DuplexChannel.java (org.js4ms.channels)
+ * File: MessageFilter.java (org.js4ms.channels)
  * 
  * Copyright (C) 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,31 +18,25 @@
  * limitations under the License.
  */
 
-package org.js4ms.io.channels;
-
-import java.io.IOException;
+package org.js4ms.io.channel;
 
 /**
- * Interface exposed by all duplex message channel objects.
- * A duplex channel provides the means for both sending message to and
- * receiving messages from a single endpoint.
+ * Interface exposed by objects used to filter messages based on some
+ * form of selection criteria.
  * 
  * @param <MessageType>
  *            The message object type.
  * @author Greg Bumgardner (gbumgard)
  */
-public interface DuplexChannel<MessageType>
-                extends MessageInput<MessageType>, MessageOutput<MessageType> {
+public interface MessageFilter<MessageType> {
 
     /**
-     * Closes this channel and optionally closes any channels wrapped or attached to this
-     * channel.
+     * Tests the message to see if it matches filter criteria.
      * 
-     * @param isCloseAll
-     *            Indicates whether attached channels should also be closed.
-     * @throws IOException
-     *             The close operation has failed.
+     * @param message
+     *            The message to be tested.
+     * @return A boolean value indicating whether the message matched.
      */
-    public void close(boolean isCloseAll) throws IOException;
+    boolean isMatch(MessageType message);
 
 }

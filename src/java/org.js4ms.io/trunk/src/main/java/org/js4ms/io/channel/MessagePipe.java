@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.io.channels;
+package org.js4ms.io.channel;
 
 /**
  * Interface exposed by objects that accept messages from a message sender

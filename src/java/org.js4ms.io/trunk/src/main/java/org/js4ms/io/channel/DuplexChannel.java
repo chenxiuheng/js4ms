@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: MessageTransform.java (org.js4ms.channels)
+ * File: DuplexChannel.java (org.js4ms.channels)
  * 
  * Copyright (C) 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,30 +18,31 @@
  * limitations under the License.
  */
 
-package org.js4ms.io.channels;
+package org.js4ms.io.channel;
 
 import java.io.IOException;
 
 /**
- * Interface exposed by objects that transform or modify messages.
+ * Interface exposed by all duplex message channel objects.
+ * A duplex channel provides the means for both sending message to and
+ * receiving messages from a single endpoint.
  * 
- * @param <InputMessageType>
- *            The input or upstream message type.
- * @param <OutputMessageType>
- *            The output or downstream message type.
+ * @param <MessageType>
+ *            The message object type.
  * @author Greg Bumgardner (gbumgard)
  */
-public interface MessageTransform<InputMessageType, OutputMessageType> {
+public interface DuplexChannel<MessageType>
+                extends MessageInput<MessageType>, MessageOutput<MessageType> {
 
     /**
-     * Transforms or modifies the input message to produce an output message.
+     * Closes this channel and optionally closes any channels wrapped or attached to this
+     * channel.
      * 
-     * @param message
-     *            The message to transform or modify.
-     * @return The new or modified message.
-     * @throws Exception
-     *             The transformation failed.
+     * @param isCloseAll
+     *            Indicates whether attached channels should also be closed.
+     * @throws IOException
+     *             The close operation has failed.
      */
-    OutputMessageType transform(InputMessageType message) throws IOException;
+    public void close(boolean isCloseAll) throws IOException;
 
 }

@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * File: MessageKeyExtractor.java (org.js4ms.channels)
+ * File: MessageTransform.java (org.js4ms.channels)
  * 
  * Copyright (C) 2009-2012 Cisco Systems, Inc.
  * 
@@ -18,25 +18,30 @@
  * limitations under the License.
  */
 
-package org.js4ms.io.channels;
+package org.js4ms.io.channel;
+
+import java.io.IOException;
 
 /**
- * Interface exposed by objects that extract a key value from a message.
- * Key extractors are used to select message channels, handlers and parsers.
+ * Interface exposed by objects that transform or modify messages.
  * 
- * @param <MessageType>
- *            The message object type.
+ * @param <InputMessageType>
+ *            The input or upstream message type.
+ * @param <OutputMessageType>
+ *            The output or downstream message type.
  * @author Greg Bumgardner (gbumgard)
  */
-public interface MessageKeyExtractor<MessageType> {
+public interface MessageTransform<InputMessageType, OutputMessageType> {
 
     /**
-     * Returns a value derived from one or more attributes of a message.
+     * Transforms or modifies the input message to produce an output message.
      * 
      * @param message
-     *            The message from which to extract a key value.
-     * @return An Object representing a key value.
+     *            The message to transform or modify.
+     * @return The new or modified message.
+     * @throws Exception
+     *             The transformation failed.
      */
-    public Object getKey(MessageType message);
+    OutputMessageType transform(InputMessageType message) throws IOException;
 
 }
