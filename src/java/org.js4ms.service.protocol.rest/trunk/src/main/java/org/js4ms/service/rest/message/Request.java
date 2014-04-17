@@ -3,8 +3,8 @@ package org.js4ms.service.rest.message;
 import java.net.URI;
 import java.util.LinkedHashMap;
 
+import org.js4ms.server.Connection;
 import org.js4ms.service.rest.entity.Entity;
-import org.js4ms.service.server.Connection;
 
 
 

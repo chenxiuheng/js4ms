@@ -6,6 +6,8 @@ import java.util.logging.Level;
 import org.js4ms.common.exception.ParseException;
 import org.js4ms.common.util.logging.Log;
 import org.js4ms.common.util.logging.Loggable;
+import org.js4ms.server.Connection;
+import org.js4ms.server.Service;
 import org.js4ms.service.rest.common.MessageException;
 import org.js4ms.service.rest.common.RequestException;
 import org.js4ms.service.rest.message.StatusCode;
@@ -17,8 +19,6 @@ import org.js4ms.service.rest.message.ProtocolVersion;
 import org.js4ms.service.rest.message.Request;
 import org.js4ms.service.rest.message.Response;
 import org.js4ms.service.rest.message.StatusLine;
-import org.js4ms.service.server.Connection;
-import org.js4ms.service.server.Service;
 
 
 

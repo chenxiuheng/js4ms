@@ -9,11 +9,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.js4ms.common.util.logging.Log;
+import org.js4ms.server.Connection;
 import org.js4ms.service.rest.entity.Codec;
 import org.js4ms.service.rest.entity.CodecManager;
 import org.js4ms.service.rest.entity.Entity;
 import org.js4ms.service.rest.entity.RawEntity;
-import org.js4ms.service.server.Connection;
 
 
 

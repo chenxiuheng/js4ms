@@ -19,12 +19,12 @@ package org.js4ms.service.rest.common;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.js4ms.server.Connection;
 import org.js4ms.service.rest.entity.StringEntity;
 import org.js4ms.service.rest.message.ProtocolVersion;
 import org.js4ms.service.rest.message.Response;
 import org.js4ms.service.rest.message.Status;
 import org.js4ms.service.rest.message.StatusLine;
-import org.js4ms.service.server.Connection;
 
 
 

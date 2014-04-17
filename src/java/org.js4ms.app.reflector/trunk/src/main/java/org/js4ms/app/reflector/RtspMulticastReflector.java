@@ -24,6 +24,13 @@ import java.io.IOException;
 import java.util.Properties;
 
 import org.js4ms.common.util.logging.Logging;
+import org.js4ms.server.Connection;
+import org.js4ms.server.ConnectionHandler;
+import org.js4ms.server.ConnectionHandlerFactory;
+import org.js4ms.server.ConnectionManager;
+import org.js4ms.server.Server;
+import org.js4ms.server.ServerFactory;
+import org.js4ms.server.Service;
 import org.js4ms.service.http.handler.LoggingConfigurationHandler;
 import org.js4ms.service.http.handler.LoggingOutputHandler;
 import org.js4ms.service.rest.entity.StringEntity;
@@ -38,13 +45,6 @@ import org.js4ms.service.rest.message.Response;
 import org.js4ms.service.rtsp.message.RtspStatusCode;
 import org.js4ms.service.rtsp.presentation.PresentationUriPathResolver;
 import org.js4ms.service.rtsp.server.RtspService;
-import org.js4ms.service.server.Connection;
-import org.js4ms.service.server.ConnectionHandler;
-import org.js4ms.service.server.ConnectionHandlerFactory;
-import org.js4ms.service.server.ConnectionManager;
-import org.js4ms.service.server.Server;
-import org.js4ms.service.server.ServerFactory;
-import org.js4ms.service.server.Service;
 
 /**
  * @author Greg Bumgardner (gbumgard)
