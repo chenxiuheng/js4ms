@@ -3,13 +3,13 @@ package org.js4ms.service.protocol.rtsp.handler;
 import java.io.IOException;
 import java.util.HashSet;
 
-import org.js4ms.service.protocol.rest.MessageHeaders;
-import org.js4ms.service.protocol.rest.StatusCodes;
 import org.js4ms.service.protocol.rest.handler.TransactionHandler;
 import org.js4ms.service.protocol.rest.header.SimpleMessageHeader;
+import org.js4ms.service.protocol.rest.message.HeaderName;
 import org.js4ms.service.protocol.rest.message.MessageHeader;
 import org.js4ms.service.protocol.rest.message.Request;
 import org.js4ms.service.protocol.rest.message.Response;
+import org.js4ms.service.protocol.rest.message.StatusCode;
 
 
 
@@ -30,12 +30,12 @@ public class VerifyRequireHeader implements TransactionHandler {
 
     @Override
     public boolean handleTransaction(Request request, Response response) throws IOException {
-        if (request.containsHeader(MessageHeaders.REQUIRE)) {
+        if (request.containsHeader(HeaderName.REQUIRE)) {
             // Indicate that no special features are supported
-            MessageHeader header = request.getHeader(MessageHeaders.REQUIRE);
+            MessageHeader header = request.getHeader(HeaderName.REQUIRE);
             if (this.features == null || this.features.isEmpty()) {
-                response.setStatus(StatusCodes.OptionNotSupported);
-                response.setHeader(new SimpleMessageHeader(MessageHeaders.UNSUPPORTED, header.getValue()));
+                response.setStatus(StatusCode.OptionNotSupported);
+                response.setHeader(new SimpleMessageHeader(HeaderName.UNSUPPORTED, header.getValue()));
                 return true;
             }
             else {
@@ -53,8 +53,8 @@ public class VerifyRequireHeader implements TransactionHandler {
                     }
                 }
                 if (headerValue.length() != 0) {
-                    response.setStatus(StatusCodes.OptionNotSupported);
-                    response.setHeader(new SimpleMessageHeader(MessageHeaders.UNSUPPORTED,headerValue.toString()));
+                    response.setStatus(StatusCode.OptionNotSupported);
+                    response.setHeader(new SimpleMessageHeader(HeaderName.UNSUPPORTED,headerValue.toString()));
                     return true;
                 }
             }

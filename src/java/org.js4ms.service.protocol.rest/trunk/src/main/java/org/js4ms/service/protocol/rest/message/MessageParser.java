@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 
 import org.js4ms.common.exception.ParseException;
 import org.js4ms.common.util.logging.Log;
-import org.js4ms.service.protocol.rest.MessageException;
+import org.js4ms.service.protocol.rest.common.MessageException;
 import org.js4ms.service.protocol.rest.entity.Entity;
 import org.js4ms.service.protocol.rest.entity.RawEntity;
 import org.js4ms.service.server.Connection;

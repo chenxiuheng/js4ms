@@ -1,8 +1,7 @@
-package org.js4ms.service.protocol.rest.handler.header;
+package org.js4ms.service.protocol.rest.handler;
 
-import org.js4ms.service.protocol.rest.MessageHeaders;
-import org.js4ms.service.protocol.rest.handler.ResponseHandler;
 import org.js4ms.service.protocol.rest.header.SimpleMessageHeader;
+import org.js4ms.service.protocol.rest.message.HeaderName;
 import org.js4ms.service.protocol.rest.message.Response;
 
 public class AddServerHeader implements ResponseHandler {
@@ -15,7 +14,7 @@ public class AddServerHeader implements ResponseHandler {
 
     @Override
     public void handleResponse(Response response) {
-        response.setHeader(new SimpleMessageHeader(MessageHeaders.SERVER,this.serverName));
+        response.setHeader(new SimpleMessageHeader(HeaderName.SERVER,this.serverName));
     }
 
 }

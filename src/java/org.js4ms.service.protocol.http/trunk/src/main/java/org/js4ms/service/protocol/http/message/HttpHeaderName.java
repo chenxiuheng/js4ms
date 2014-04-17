@@ -1,8 +1,8 @@
-package org.js4ms.service.protocol.http;
+package org.js4ms.service.protocol.http.message;
 
-import org.js4ms.service.protocol.rest.MessageHeaders;
+import org.js4ms.service.protocol.rest.message.HeaderName;
 
-public interface HttpMessageHeaders extends MessageHeaders {
+public interface HttpHeaderName extends HeaderName {
 
     public static final String ACCEPT_CHARSET = "Accept-Charset"; // http(R)
     public static final String ACCEPT_RANGES = "Accept-Ranges"; // http(r)

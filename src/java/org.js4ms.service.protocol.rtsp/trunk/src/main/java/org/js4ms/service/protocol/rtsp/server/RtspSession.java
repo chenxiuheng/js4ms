@@ -8,10 +8,10 @@ import java.util.logging.Logger;
 import org.js4ms.common.util.logging.Log;
 import org.js4ms.service.protocol.rest.message.Request;
 import org.js4ms.service.protocol.rest.message.Response;
-import org.js4ms.service.protocol.rest.server.session.AbstractTimedSession;
-import org.js4ms.service.protocol.rest.server.session.SessionManager;
-import org.js4ms.service.protocol.rtsp.RtspMessageHeaders;
-import org.js4ms.service.protocol.rtsp.RtspMethods;
+import org.js4ms.service.protocol.rest.server.AbstractTimedSession;
+import org.js4ms.service.protocol.rest.server.SessionManager;
+import org.js4ms.service.protocol.rtsp.message.RtspHeaderName;
+import org.js4ms.service.protocol.rtsp.message.RtspMethod;
 import org.js4ms.service.protocol.rtsp.presentation.Presentation;
 import org.js4ms.service.server.Server;
 
@@ -80,8 +80,8 @@ public class RtspSession extends AbstractTimedSession {
 
             // If the response to TEARDOWN request carries a 'Connection: close' then terminate the session.
             // The 'close' indicates that the TEARDOWN request URI was an aggregate control URI.
-            if (request.getRequestLine().getMethod().equals(RtspMethods.TEARDOWN) &&
-                response.getHeader(RtspMessageHeaders.CONNECTION).getValue().equalsIgnoreCase("close")) {
+            if (request.getRequestLine().getMethod().equals(RtspMethod.TEARDOWN) &&
+                response.getHeader(RtspHeaderName.CONNECTION).getValue().equalsIgnoreCase("close")) {
                 if (logger.isLoggable(Level.FINER)) {
                     logger.finer(log.msg("terminating session "+this.identifier+" in response to an aggregate TEARDOWN request"));
                 }

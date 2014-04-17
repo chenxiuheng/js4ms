@@ -6,7 +6,7 @@ import org.js4ms.service.protocol.rest.handler.TransactionHandler;
 import org.js4ms.service.protocol.rest.message.MessageHeader;
 import org.js4ms.service.protocol.rest.message.Request;
 import org.js4ms.service.protocol.rest.message.Response;
-import org.js4ms.service.protocol.rtsp.RtspMessageHeaders;
+import org.js4ms.service.protocol.rtsp.message.RtspHeaderName;
 
 
 
@@ -19,8 +19,8 @@ public class TransferSessionHeader implements TransactionHandler {
     @Override
     public boolean handleTransaction(final Request request, final Response response) throws IOException {
         // Transfer Session header from request to response
-        if (request.containsHeader(RtspMessageHeaders.SESSION)) {
-            response.setHeader((MessageHeader)request.getHeader(RtspMessageHeaders.SESSION).clone());
+        if (request.containsHeader(RtspHeaderName.SESSION)) {
+            response.setHeader((MessageHeader)request.getHeader(RtspHeaderName.SESSION).clone());
         }
         return false;
     }

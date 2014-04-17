@@ -1,4 +1,4 @@
-package org.js4ms.service.protocol.rest;
+package org.js4ms.service.protocol.rest.common;
 
 import org.js4ms.common.util.logging.Log;
 import org.js4ms.service.protocol.rest.message.ProtocolVersion;

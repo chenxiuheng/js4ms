@@ -1,13 +1,12 @@
-package org.js4ms.service.protocol.rest.handler.header;
+package org.js4ms.service.protocol.rest.handler;
 
 import java.io.IOException;
 
-import org.js4ms.service.protocol.rest.MessageHeaders;
-import org.js4ms.service.protocol.rest.StatusCodes;
 import org.js4ms.service.protocol.rest.entity.CodecManager;
-import org.js4ms.service.protocol.rest.handler.TransactionHandler;
+import org.js4ms.service.protocol.rest.message.HeaderName;
 import org.js4ms.service.protocol.rest.message.Request;
 import org.js4ms.service.protocol.rest.message.Response;
+import org.js4ms.service.protocol.rest.message.StatusCode;
 
 
 
@@ -19,8 +18,8 @@ public class VerifyAcceptEncodingHeader implements TransactionHandler {
 
     @Override
     public boolean handleTransaction(Request request, Response response) throws IOException {
-        if (request.containsHeader(MessageHeaders.ACCEPT_ENCODING)) {
-            String value = request.getHeader(MessageHeaders.ACCEPT_ENCODING).getValue();
+        if (request.containsHeader(HeaderName.ACCEPT_ENCODING)) {
+            String value = request.getHeader(HeaderName.ACCEPT_ENCODING).getValue();
             // wildcard is always acceptable
             if (value.equals("*")) return false;
             String[] encodings = value.split(",[ ]*");
@@ -40,7 +39,7 @@ public class VerifyAcceptEncodingHeader implements TransactionHandler {
                 }
             }
             
-            response.setStatus(StatusCodes.NotAcceptable);
+            response.setStatus(StatusCode.NotAcceptable);
         }
         return false;
     }

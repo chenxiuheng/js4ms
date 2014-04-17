@@ -14,7 +14,7 @@
  * limitations under the license.
  */
 
-package org.js4ms.service.protocol.rest;
+package org.js4ms.service.protocol.rest.common;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

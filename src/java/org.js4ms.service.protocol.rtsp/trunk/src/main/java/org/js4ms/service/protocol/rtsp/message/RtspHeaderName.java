@@ -1,8 +1,8 @@
-package org.js4ms.service.protocol.rtsp;
+package org.js4ms.service.protocol.rtsp.message;
 
-import org.js4ms.service.protocol.rest.MessageHeaders;
+import org.js4ms.service.protocol.rest.message.HeaderName;
 
-public interface RtspMessageHeaders extends MessageHeaders {
+public interface RtspHeaderName extends HeaderName {
     public static final String BANDWIDTH = "Bandwidth"; // rtsp(R)
     public static final String BLOCKSIZE = "Blocksize"; // rtsp(R)
     public static final String CONFERENCE = "Conference"; // rtsp(R)

@@ -14,7 +14,7 @@
  * limitations under the license.
  */
 
-package org.js4ms.service.protocol.rtsp;
+package org.js4ms.service.protocol.rtsp.presentation;
 
 import java.net.UnknownHostException;
 import java.util.Iterator;
@@ -22,7 +22,7 @@ import java.util.LinkedList;
 import java.util.logging.Logger;
 
 import org.js4ms.common.util.logging.Logging;
-import org.js4ms.service.protocol.rest.RequestException;
+import org.js4ms.service.protocol.rest.common.RequestException;
 
 
 

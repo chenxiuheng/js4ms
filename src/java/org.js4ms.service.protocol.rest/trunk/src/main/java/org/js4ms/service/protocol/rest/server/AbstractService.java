@@ -6,9 +6,8 @@ import java.util.logging.Level;
 import org.js4ms.common.exception.ParseException;
 import org.js4ms.common.util.logging.Log;
 import org.js4ms.common.util.logging.Loggable;
-import org.js4ms.service.protocol.rest.MessageException;
-import org.js4ms.service.protocol.rest.RequestException;
-import org.js4ms.service.protocol.rest.StatusCodes;
+import org.js4ms.service.protocol.rest.common.MessageException;
+import org.js4ms.service.protocol.rest.common.RequestException;
 import org.js4ms.service.protocol.rest.handler.RequestHandler;
 import org.js4ms.service.protocol.rest.handler.RequestHandlerList;
 import org.js4ms.service.protocol.rest.handler.ResponseHandlerList;
@@ -16,6 +15,7 @@ import org.js4ms.service.protocol.rest.handler.TransactionHandlerList;
 import org.js4ms.service.protocol.rest.message.ProtocolVersion;
 import org.js4ms.service.protocol.rest.message.Request;
 import org.js4ms.service.protocol.rest.message.Response;
+import org.js4ms.service.protocol.rest.message.StatusCode;
 import org.js4ms.service.protocol.rest.message.StatusLine;
 import org.js4ms.service.server.Connection;
 import org.js4ms.service.server.Service;
@@ -66,7 +66,7 @@ public abstract class AbstractService implements Service, RequestHandler, Loggab
             }
             // The parsing operation failed after the start line
             // Send a response and close the connection.
-            sendResponse(new Response(connection, new StatusLine(e.getProtocolVersion(), StatusCodes.BadRequest)));
+            sendResponse(new Response(connection, new StatusLine(e.getProtocolVersion(), StatusCode.BadRequest)));
             connection.close();
         }
         catch (ParseException e) {
@@ -107,7 +107,7 @@ public abstract class AbstractService implements Service, RequestHandler, Loggab
             // that no transaction handler responded to the request.
 
             Response response = new Response(request.getConnection(),
-                                             new StatusLine(request.getRequestLine().getProtocolVersion(), StatusCodes.InternalServerError));
+                                             new StatusLine(request.getRequestLine().getProtocolVersion(), StatusCode.InternalServerError));
 
             // Decorate response (i.e. add common headers such as Date and Server).
             this.responseHandlers.handleResponse(response);

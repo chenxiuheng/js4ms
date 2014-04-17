@@ -4,13 +4,13 @@ import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.js4ms.service.protocol.rest.handler.AddDateHeader;
 import org.js4ms.service.protocol.rest.handler.ResponseHandlerList;
 import org.js4ms.service.protocol.rest.handler.TransactionDispatcher;
 import org.js4ms.service.protocol.rest.handler.TransactionHandlerList;
 import org.js4ms.service.protocol.rest.handler.TransactionHeaderResolver;
 import org.js4ms.service.protocol.rest.handler.TransactionProtocolResolver;
-import org.js4ms.service.protocol.rest.handler.header.AddDateHeader;
-import org.js4ms.service.protocol.rest.handler.header.VerifyAcceptEncodingHeader;
+import org.js4ms.service.protocol.rest.handler.VerifyAcceptEncodingHeader;
 import org.js4ms.service.protocol.rest.message.MessageHeaderParser;
 import org.js4ms.service.protocol.rest.message.ProtocolName;
 import org.js4ms.service.protocol.rest.message.ProtocolVersion;

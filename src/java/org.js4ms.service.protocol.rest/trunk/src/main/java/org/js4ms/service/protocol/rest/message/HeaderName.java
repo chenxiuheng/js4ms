@@ -1,6 +1,6 @@
-package org.js4ms.service.protocol.rest;
+package org.js4ms.service.protocol.rest.message;
 
-public interface MessageHeaders {
+public interface HeaderName {
 
     public static final String ACCEPT = "Accept"; // http(R), rtsp(R)
     public static final String ACCEPT_ENCODING = "Accept-Encoding"; // http(R), rtsp(R)

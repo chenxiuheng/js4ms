@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 
 import org.js4ms.common.exception.ParseException;
-import org.js4ms.service.protocol.rest.RequestException;
+import org.js4ms.service.protocol.rest.common.RequestException;
 import org.js4ms.service.protocol.rest.entity.Entity;
 import org.js4ms.service.protocol.rest.handler.RequestHandler;
 import org.js4ms.service.protocol.rest.message.Message;

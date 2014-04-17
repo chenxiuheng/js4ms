@@ -1,4 +1,4 @@
-package org.js4ms.service.protocol.http.server.handler;
+package org.js4ms.service.protocol.http.handler;
 
 import java.io.IOException;
 import java.util.logging.ErrorManager;
@@ -11,8 +11,8 @@ import java.util.logging.XMLFormatter;
 
 import org.js4ms.common.util.logging.JsonLogFormatter;
 import org.js4ms.common.util.logging.LogFormatter;
-import org.js4ms.service.protocol.http.HttpMessageHeaders;
-import org.js4ms.service.protocol.http.HttpStatusCodes;
+import org.js4ms.service.protocol.http.message.HttpHeaderName;
+import org.js4ms.service.protocol.http.message.HttpStatusCode;
 import org.js4ms.service.protocol.rest.entity.Entity;
 import org.js4ms.service.protocol.rest.entity.StringEntity;
 import org.js4ms.service.protocol.rest.handler.TransactionHandler;
@@ -57,7 +57,7 @@ public class LoggingOutputHandler implements TransactionHandler {
                              outputType = pair[1];
                          }
                          else {
-                             response.setStatus(HttpStatusCodes.BadRequest);
+                             response.setStatus(HttpStatusCode.BadRequest);
                              response.setEntity(new StringEntity("output parameter value is missing"));
                              return true;
                          }
@@ -67,7 +67,7 @@ public class LoggingOutputHandler implements TransactionHandler {
                              jsonpCallback= pair[1];
                          }
                          else {
-                             response.setStatus(HttpStatusCodes.BadRequest);
+                             response.setStatus(HttpStatusCode.BadRequest);
                              response.setEntity(new StringEntity("callback parameter value is missing"));
                              return true;
                          }
@@ -96,7 +96,7 @@ public class LoggingOutputHandler implements TransactionHandler {
         }
         else if (outputType.equals("jsonp")) {
             if (jsonpCallback == null) {
-                response.setStatus(HttpStatusCodes.BadRequest);
+                response.setStatus(HttpStatusCode.BadRequest);
                 response.setEntity(new StringEntity("callback parameter value is missing"));
                 return true;
             }
@@ -104,14 +104,14 @@ public class LoggingOutputHandler implements TransactionHandler {
             response.setHeader(new SimpleMessageHeader(Entity.CONTENT_TYPE,"application/javascript"));
         }
         else {
-            response.setStatus(HttpStatusCodes.BadRequest);
+            response.setStatus(HttpStatusCode.BadRequest);
             response.setEntity(new StringEntity("output parameter value is invalid"));
             return true;
         }
 
-        response.setStatus(HttpStatusCodes.OK);
+        response.setStatus(HttpStatusCode.OK);
         response.setHeader(new SimpleMessageHeader(Entity.CONTENT_LENGTH,String.valueOf(Long.MAX_VALUE)));
-        response.setHeader(new SimpleMessageHeader(HttpMessageHeaders.CONNECTION,"close"));
+        response.setHeader(new SimpleMessageHeader(HttpHeaderName.CONNECTION,"close"));
         response.send();
 
         final StreamHandler handler = new StreamHandler(response.getConnection().getOutputStream(), formatter) {

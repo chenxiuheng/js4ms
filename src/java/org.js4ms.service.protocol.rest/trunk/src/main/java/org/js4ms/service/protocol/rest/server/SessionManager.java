@@ -1,4 +1,4 @@
-package org.js4ms.service.protocol.rest.server.session;
+package org.js4ms.service.protocol.rest.server;
 
 import java.util.HashMap;
 import java.util.logging.Level;

@@ -1,9 +1,9 @@
-package org.js4ms.service.protocol.rtsp;
+package org.js4ms.service.protocol.rtsp.message;
 
-import org.js4ms.service.protocol.rest.StatusCodes;
 import org.js4ms.service.protocol.rest.message.Status;
+import org.js4ms.service.protocol.rest.message.StatusCode;
 
-public interface RtspStatusCodes extends StatusCodes {
+public interface RtspStatusCode extends StatusCode {
 
     public final Status InvalidMedia = new Status(415,"Invalid Media"); // Unsupported Media Type
     public final Status InvalidParameter = new Status(451,"Invalid Parameter");

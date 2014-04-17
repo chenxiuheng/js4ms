@@ -22,16 +22,14 @@ import org.js4ms.io.net.udp.UdpDatagramPayloadSource;
 import org.js4ms.io.net.udp.UdpEndpoint;
 import org.js4ms.io.net.udp.UdpPacketOutputChannel;
 import org.js4ms.io.net.udp.UdpSocketEndpoint;
-import org.js4ms.service.protocol.rest.RequestException;
+import org.js4ms.service.protocol.rest.common.RequestException;
 import org.js4ms.service.protocol.rest.entity.Entity;
 import org.js4ms.service.protocol.rest.header.SimpleMessageHeader;
 import org.js4ms.service.protocol.rest.message.MessageHeader;
 import org.js4ms.service.protocol.rest.message.Request;
 import org.js4ms.service.protocol.rest.message.Response;
-import org.js4ms.service.protocol.rtsp.RtspMessageHeaders;
-import org.js4ms.service.protocol.rtsp.RtspStatusCodes;
-import org.js4ms.service.protocol.rtsp.TransportDescription;
-import org.js4ms.service.protocol.rtsp.TransportPreferences;
+import org.js4ms.service.protocol.rtsp.message.RtspHeaderName;
+import org.js4ms.service.protocol.rtsp.message.RtspStatusCode;
 import org.js4ms.service.protocol.rtsp.presentation.Presentation.Source;
 import org.js4ms.service.protocol.rtsp.rtp.InterleavedPacketOutputChannel;
 
@@ -283,8 +281,8 @@ public abstract class MediaStream {
         if (isGetParameterSupported()) headerValue.append(",GET_PARAMETER");
         if (isSetParameterSupported()) headerValue.append(",SET_PARAMETER");
 
-        MessageHeader header = new SimpleMessageHeader(RtspMessageHeaders.PUBLIC, headerValue.toString());
-        response.setStatus(RtspStatusCodes.OK);
+        MessageHeader header = new SimpleMessageHeader(RtspHeaderName.PUBLIC, headerValue.toString());
+        response.setStatus(RtspStatusCode.OK);
         response.setHeader(header);
         return true;
     }
@@ -301,7 +299,7 @@ public abstract class MediaStream {
         }
 
         if (doHandleSetup(request, response)) {
-            if (response.getStatus().equals(RtspStatusCodes.OK)) {
+            if (response.getStatus().equals(RtspStatusCode.OK)) {
                 this.state = State.READY;
             }
             return true;
@@ -323,10 +321,10 @@ public abstract class MediaStream {
 
         // Media stream setup is governed by parameter values found in the Transport header carried by a request.
 
-        MessageHeader header = request.getHeader(RtspMessageHeaders.TRANSPORT);
+        MessageHeader header = request.getHeader(RtspHeaderName.TRANSPORT);
         if (header == null) {
             RequestException.create(request.getProtocolVersion(),
-                                    RtspStatusCodes.BadRequest,
+                                    RtspStatusCode.BadRequest,
                                     "required Transport header in SETUP request is missing",
                                     log.getPrefix(),
                                     logger).setResponse(response);
@@ -352,7 +350,7 @@ public abstract class MediaStream {
         }
         catch (UnknownHostException e) {
             RequestException.create(request.getProtocolVersion(),
-                                    RtspStatusCodes.BadRequest,
+                                    RtspStatusCode.BadRequest,
                                     "cannot resolve host address found in Transport header of a SETUP request",
                                     e,
                                     log.getPrefix(),
@@ -380,7 +378,7 @@ public abstract class MediaStream {
 
             if (preference.getMode() == TransportDescription.Mode.RECORD && !isRecordSupported()) {
                 RequestException.create(request.getProtocolVersion(),
-                                        RtspStatusCodes.UnsupportedTransport,
+                                        RtspStatusCode.UnsupportedTransport,
                                         "record mode is not supported for specified resource",
                                         log.getPrefix(),
                                         logger).setResponse(response);
@@ -388,7 +386,7 @@ public abstract class MediaStream {
             }
             else if (preference.getMode() == TransportDescription.Mode.PLAY && !isPlaySupported()) {
                 RequestException.create(request.getProtocolVersion(),
-                                        RtspStatusCodes.UnsupportedTransport,
+                                        RtspStatusCode.UnsupportedTransport,
                                         "play mode is not supported for specified resource",
                                         log.getPrefix(),
                                         logger).setResponse(response);
@@ -466,7 +464,7 @@ public abstract class MediaStream {
                         }
                         catch (UnknownHostException e) {
                             RequestException.create(request.getProtocolVersion(),
-                                                    RtspStatusCodes.InternalServerError,
+                                                    RtspStatusCode.InternalServerError,
                                                     e,
                                                     log.getPrefix(),
                                                     logger).setResponse(response);
@@ -543,7 +541,7 @@ public abstract class MediaStream {
                 // Can client port range be mapped to available port range?
                 if (destinationLayerCount > layerCount || (destinationPortCount % preference.getPortsPerLayer()) != 0) {
                     RequestException.create(request.getProtocolVersion(),
-                                            RtspStatusCodes.BadRequest,
+                                            RtspStatusCode.BadRequest,
                                             "client port range specified in SETUP Transport header cannot be mapped to media port range",
                                             log.getPrefix(),
                                             logger).setResponse(response);
@@ -630,7 +628,7 @@ public abstract class MediaStream {
 
                 if (retryCount > maxRetries) {
                     RequestException.create(request.getProtocolVersion(),
-                                            RtspStatusCodes.InternalServerError,
+                                            RtspStatusCode.InternalServerError,
                                             "cannot allocate ports required for sending or receiving media packets",
                                             log.getPrefix(),
                                             logger).setResponse(response);
@@ -667,7 +665,7 @@ public abstract class MediaStream {
                                 }
                                 catch (SdpException e) {
                                     RequestException.create(request.getProtocolVersion(),
-                                                            RtspStatusCodes.InvalidMedia,
+                                                            RtspStatusCode.InvalidMedia,
                                                             "cannot construct channel for sending media packets",
                                                             e,
                                                             log.getPrefix(),
@@ -676,7 +674,7 @@ public abstract class MediaStream {
                                 }
                                 catch (IOException e) {
                                     RequestException.create(request.getProtocolVersion(),
-                                                            RtspStatusCodes.InternalServerError,
+                                                            RtspStatusCode.InternalServerError,
                                                             "cannot construct channel for sending media packets",
                                                             e,
                                                             log.getPrefix(),
@@ -701,7 +699,7 @@ public abstract class MediaStream {
                                 }
                                 catch (SdpException e) {
                                     RequestException.create(request.getProtocolVersion(),
-                                                            RtspStatusCodes.InvalidMedia,
+                                                            RtspStatusCode.InvalidMedia,
                                                             "cannot construct channel for receiving media packets",
                                                             e,
                                                             log.getPrefix(),
@@ -710,7 +708,7 @@ public abstract class MediaStream {
                                 }
                                 catch (IOException e) {
                                     RequestException.create(request.getProtocolVersion(),
-                                                            RtspStatusCodes.InternalServerError,
+                                                            RtspStatusCode.InternalServerError,
                                                             "cannot construct channel for receiving media packets",
                                                             e,
                                                             log.getPrefix(),
@@ -811,7 +809,7 @@ public abstract class MediaStream {
                 // Can client port range be mapped to available port range?
                 if (destinationLayerCount > this.transportDescription.getLayers() || (destinationChannelCount % preference.getPortsPerLayer()) != 0) {
                     RequestException.create(request.getProtocolVersion(),
-                                            RtspStatusCodes.BadRequest,
+                                            RtspStatusCode.BadRequest,
                                             "interleaved channel range specified in SETUP Transport header cannot be mapped to media port range",
                                             log.getPrefix(),
                                             logger).setResponse(response);
@@ -839,7 +837,7 @@ public abstract class MediaStream {
                                 }
                                 catch (SdpException e) {
                                     RequestException.create(request.getProtocolVersion(),
-                                                            RtspStatusCodes.InvalidMedia,
+                                                            RtspStatusCode.InvalidMedia,
                                                             "cannot construct channel for sending media packets",
                                                             e,
                                                             log.getPrefix(),
@@ -848,7 +846,7 @@ public abstract class MediaStream {
                                 }
                                 catch (IOException e) {
                                     RequestException.create(request.getProtocolVersion(),
-                                                            RtspStatusCodes.InternalServerError,
+                                                            RtspStatusCode.InternalServerError,
                                                             "cannot construct channel for sending media packets",
                                                             e,
                                                             log.getPrefix(),
@@ -869,7 +867,7 @@ public abstract class MediaStream {
                                 }
                                 catch (SdpException e) {
                                     RequestException.create(request.getProtocolVersion(),
-                                                            RtspStatusCodes.InvalidMedia,
+                                                            RtspStatusCode.InvalidMedia,
                                                             "cannot construct channel for receiving media packets",
                                                             e,
                                                             log.getPrefix(),
@@ -878,7 +876,7 @@ public abstract class MediaStream {
                                 }
                                 catch (IOException e) {
                                     RequestException.create(request.getProtocolVersion(),
-                                                            RtspStatusCodes.InternalServerError,
+                                                            RtspStatusCode.InternalServerError,
                                                             "cannot construct channel for receiving media packets",
                                                             e,
                                                             log.getPrefix(),
@@ -939,12 +937,12 @@ public abstract class MediaStream {
         }
 
         if (setupComplete) {
-            response.setStatus(RtspStatusCodes.OK);
-            response.setHeader(new SimpleMessageHeader(RtspMessageHeaders.TRANSPORT, acceptedTransportDescription.toString()));
+            response.setStatus(RtspStatusCode.OK);
+            response.setHeader(new SimpleMessageHeader(RtspHeaderName.TRANSPORT, acceptedTransportDescription.toString()));
         }
         else {
             RequestException.create(request.getProtocolVersion(),
-                                    RtspStatusCodes.UnsupportedTransport,
+                                    RtspStatusCode.UnsupportedTransport,
                                     message,
                                     log.getPrefix(),
                                     logger).setResponse(response);
@@ -971,7 +969,7 @@ public abstract class MediaStream {
         }
 
         if (doHandlePlay(request, response)) {
-            if (response.getStatus().equals(RtspStatusCodes.OK)) {
+            if (response.getStatus().equals(RtspStatusCode.OK)) {
                 this.state = State.PLAYING;
             }
             return true;
@@ -1002,13 +1000,13 @@ public abstract class MediaStream {
             }
             catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
-                response.setStatus(RtspStatusCodes.ServiceUnavailable);
+                response.setStatus(RtspStatusCode.ServiceUnavailable);
                 startFailed=true;
                 break;
             }
             catch (IOException e) {
                 RequestException.create(request.getProtocolVersion(),
-                                        RtspStatusCodes.InternalServerError,
+                                        RtspStatusCode.InternalServerError,
                                         e,
                                         log.getPrefix(),
                                         logger).setResponse(response);
@@ -1043,13 +1041,13 @@ public abstract class MediaStream {
                     }
                     catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
-                        response.setStatus(RtspStatusCodes.ServiceUnavailable);
+                        response.setStatus(RtspStatusCode.ServiceUnavailable);
                         startFailed = true;
                         break;
                     }
                     catch (IOException e) {
                         RequestException.create(request.getProtocolVersion(),
-                                                RtspStatusCodes.InternalServerError,
+                                                RtspStatusCode.InternalServerError,
                                                 e,
                                                 log.getPrefix(),
                                                 logger).setResponse(response);
@@ -1081,7 +1079,7 @@ public abstract class MediaStream {
             }
         }
 
-        response.setStatus(RtspStatusCodes.OK);
+        response.setStatus(RtspStatusCode.OK);
         return true;
     }
 
@@ -1108,7 +1106,7 @@ public abstract class MediaStream {
         }
 
         if (doHandlePause(request, response)) {
-            if (response.getStatus().equals(RtspStatusCodes.OK)) {
+            if (response.getStatus().equals(RtspStatusCode.OK)) {
                 this.state = State.READY;
             }
             return true;
@@ -1135,16 +1133,16 @@ public abstract class MediaStream {
         while (channelIter.hasNext()) {
             try {
                 channelIter.next().stop();
-                response.setStatus(RtspStatusCodes.OK);
+                response.setStatus(RtspStatusCode.OK);
             }
             catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
-                response.setStatus(RtspStatusCodes.ServiceUnavailable);
+                response.setStatus(RtspStatusCode.ServiceUnavailable);
                 break;
             }
             catch (IOException e) {
                 RequestException.create(request.getProtocolVersion(),
-                                        RtspStatusCodes.InternalServerError,
+                                        RtspStatusCode.InternalServerError,
                                         e,
                                         log.getPrefix(),
                                         logger).setResponse(response);
@@ -1178,7 +1176,7 @@ public abstract class MediaStream {
         }
 
         if (doHandleRecord(request, response)) {
-            if (response.getStatus().equals(RtspStatusCodes.OK)) {
+            if (response.getStatus().equals(RtspStatusCode.OK)) {
                 this.state = State.RECORDING;
             }
             return true;
@@ -1218,7 +1216,7 @@ public abstract class MediaStream {
         }
 
         if (doHandleTeardown(request, response)) {
-            if (response.getStatus().equals(RtspStatusCodes.OK)) {
+            if (response.getStatus().equals(RtspStatusCode.OK)) {
                 this.state = State.INITIAL;
             }
             return true;
@@ -1261,7 +1259,7 @@ public abstract class MediaStream {
                 }
                 catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
-                    response.setStatus(RtspStatusCodes.ServiceUnavailable);
+                    response.setStatus(RtspStatusCode.ServiceUnavailable);
                     break;
                 }
             }
@@ -1275,12 +1273,12 @@ public abstract class MediaStream {
                 }
                 catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
-                    response.setStatus(RtspStatusCodes.ServiceUnavailable);
+                    response.setStatus(RtspStatusCode.ServiceUnavailable);
                     break;
                 }
                 catch (IOException e) {
                     RequestException.create(request.getProtocolVersion(),
-                                            RtspStatusCodes.InternalServerError,
+                                            RtspStatusCode.InternalServerError,
                                             e,
                                             log.getPrefix(),
                                             logger).setResponse(response);
@@ -1297,7 +1295,7 @@ public abstract class MediaStream {
             return false;
         }
 
-        response.setStatus(RtspStatusCodes.OK);
+        response.setStatus(RtspStatusCode.OK);
         return true;
     }
 
@@ -1345,7 +1343,7 @@ public abstract class MediaStream {
             logger.finer(log.entry("doHandleGetParameter", request, response));
         }
 
-        response.setStatus(RtspStatusCodes.ParameterNotUnderstood);
+        response.setStatus(RtspStatusCode.ParameterNotUnderstood);
         Entity entity = request.getEntity();
         if (entity != null && entity.getContentLength() > 0) {
             response.setEntity(entity);
@@ -1393,7 +1391,7 @@ public abstract class MediaStream {
             logger.finer(log.entry("doHandleSetParameter", request, response));
         }
 
-        response.setStatus(RtspStatusCodes.InvalidParameter);
+        response.setStatus(RtspStatusCode.InvalidParameter);
         Entity entity = request.getEntity();
         if (entity != null && entity.getContentLength() > 0) {
             response.setEntity(entity);
@@ -1461,7 +1459,7 @@ public abstract class MediaStream {
     }
 
     protected void setMethodNotAllowed(Request request, Response response) {
-        response.setStatus(RtspStatusCodes.MethodNotAllowed);
+        response.setStatus(RtspStatusCode.MethodNotAllowed);
         StringBuffer headerValue = new StringBuffer();
         headerValue.append("OPTIONS,SETUP,PLAY");
         if (isPauseSupported()) headerValue.append(",PAUSE,");
@@ -1469,12 +1467,12 @@ public abstract class MediaStream {
         headerValue.append(",TEARDOWN");
         if (isGetParameterSupported()) headerValue.append(",GET_PARAMETER,");
         if (isSetParameterSupported()) headerValue.append(",SET_PARAMETER,");
-        MessageHeader header = new SimpleMessageHeader(RtspMessageHeaders.ALLOW, headerValue.toString());
+        MessageHeader header = new SimpleMessageHeader(RtspHeaderName.ALLOW, headerValue.toString());
         response.setHeader(header);
     }
 
     protected void setMethodNotValidInThisState(Request request, Response response) {
-        response.setStatus(RtspStatusCodes.MethodNotValidInThisState);
+        response.setStatus(RtspStatusCode.MethodNotValidInThisState);
 
         StringBuffer headerValue = new StringBuffer();
         headerValue.append("OPTIONS");
@@ -1512,7 +1510,7 @@ public abstract class MediaStream {
         if (isGetParameterSupported()) headerValue.append("GET_PARAMETER");
         if (isSetParameterSupported()) headerValue.append("SET_PARAMETER");
 
-        MessageHeader header = new SimpleMessageHeader(RtspMessageHeaders.ALLOW, headerValue.toString());
+        MessageHeader header = new SimpleMessageHeader(RtspHeaderName.ALLOW, headerValue.toString());
 
         response.setHeader(header);
     }

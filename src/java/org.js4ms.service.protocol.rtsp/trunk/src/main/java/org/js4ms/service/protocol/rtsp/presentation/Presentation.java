@@ -14,7 +14,7 @@ import javax.sdp.SessionDescription;
 
 import org.js4ms.common.util.logging.Log;
 import org.js4ms.io.channels.OutputChannel;
-import org.js4ms.service.protocol.rest.RequestException;
+import org.js4ms.service.protocol.rest.common.RequestException;
 import org.js4ms.service.protocol.rest.entity.Entity;
 import org.js4ms.service.protocol.rest.entity.StringEntity;
 import org.js4ms.service.protocol.rest.handler.TransactionHandler;
@@ -23,9 +23,9 @@ import org.js4ms.service.protocol.rest.message.MessageHeader;
 import org.js4ms.service.protocol.rest.message.Method;
 import org.js4ms.service.protocol.rest.message.Request;
 import org.js4ms.service.protocol.rest.message.Response;
-import org.js4ms.service.protocol.rtsp.RtspMessageHeaders;
-import org.js4ms.service.protocol.rtsp.RtspMethods;
-import org.js4ms.service.protocol.rtsp.RtspStatusCodes;
+import org.js4ms.service.protocol.rtsp.message.RtspHeaderName;
+import org.js4ms.service.protocol.rtsp.message.RtspMethod;
+import org.js4ms.service.protocol.rtsp.message.RtspStatusCode;
 import org.js4ms.service.protocol.rtsp.rtp.InterleavedPacketReader;
 
 
@@ -203,31 +203,31 @@ public abstract class Presentation implements TransactionHandler {
 
         Method method = request.getRequestLine().getMethod();
 
-        if (method.equals(RtspMethods.OPTIONS)) {
+        if (method.equals(RtspMethod.OPTIONS)) {
             handled = handleOptions(request, response);
         }
-        else if (method.equals(RtspMethods.DESCRIBE)) {
+        else if (method.equals(RtspMethod.DESCRIBE)) {
             handled = handleDescribe(request, response);
         }
-        else if (method.equals(RtspMethods.SETUP)) {
+        else if (method.equals(RtspMethod.SETUP)) {
             handled = handleSetup(request, response);
         }
-        else if (method.equals(RtspMethods.PLAY)) {
+        else if (method.equals(RtspMethod.PLAY)) {
             handled = handlePlay(request, response);
         }
-        else if (method.equals(RtspMethods.PAUSE)) {
+        else if (method.equals(RtspMethod.PAUSE)) {
             handled = handlePause(request, response);
         }
-        else if (method.equals(RtspMethods.RECORD)) {
+        else if (method.equals(RtspMethod.RECORD)) {
             handled = handleRecord(request, response);
         }
-        else if (method.equals(RtspMethods.TEARDOWN)) {
+        else if (method.equals(RtspMethod.TEARDOWN)) {
             handled = handleTeardown(request, response);
         }
-        else if (method.equals(RtspMethods.GET_PARAMETER)) {
+        else if (method.equals(RtspMethod.GET_PARAMETER)) {
             handled = handleGetParameter(request, response);
         }
-        else if (method.equals(RtspMethods.SET_PARAMETER)) {
+        else if (method.equals(RtspMethod.SET_PARAMETER)) {
             handled = handleSetParameter(request, response);
         }
         else {
@@ -289,22 +289,22 @@ public abstract class Presentation implements TransactionHandler {
             if (isGetParameterSupported()) headerValue.append(",GET_PARAMETER");
             if (isSetParameterSupported()) headerValue.append(",SET_PARAMETER");
 
-            MessageHeader header = new SimpleMessageHeader(RtspMessageHeaders.PUBLIC,headerValue.toString());
-            response.setStatus(RtspStatusCodes.OK);
+            MessageHeader header = new SimpleMessageHeader(RtspHeaderName.PUBLIC,headerValue.toString());
+            response.setStatus(RtspStatusCode.OK);
             response.setHeader(header);
             return true;
         }
         else {
             // Request URI is a stream control URI
             if (!isAggregateControlRequired()) {
-                response.setStatus(RtspStatusCodes.OnlyAggregateOperationAllowed);
+                response.setStatus(RtspStatusCode.OnlyAggregateOperationAllowed);
                 return true;
             }
 
             MediaStream mediaStream = this.mediaStreams.get(streamIndex);
             if (mediaStream == null) {
                 RequestException.create(request.getProtocolVersion(),
-                                        RtspStatusCodes.BadRequest,
+                                        RtspStatusCode.BadRequest,
                                         "stream identified in PLAY request does not exist",
                                         log.getPrefix(),
                                         logger).setResponse(response);
@@ -337,7 +337,7 @@ public abstract class Presentation implements TransactionHandler {
             }
             catch (SdpException e) {
                 RequestException.create(request.getProtocolVersion(),
-                        RtspStatusCodes.UnsupportedMediaType,
+                        RtspStatusCode.UnsupportedMediaType,
                         "malformed SDP description detected",
                         e,
                         log.getPrefix(),
@@ -354,7 +354,7 @@ public abstract class Presentation implements TransactionHandler {
         // Set Content-Base header - clients should use this to generate control URIs.
         entity.setContentBase(request.getRequestLine().getUri().toString()+"/");
 
-        response.setStatus(RtspStatusCodes.OK);
+        response.setStatus(RtspStatusCode.OK);
         response.setEntity(entity);
 
         return true;
@@ -383,7 +383,7 @@ public abstract class Presentation implements TransactionHandler {
             try {
                 if (this.sessionDescription.getMediaDescriptions(false).size() > 1) {
                     RequestException.create(request.getProtocolVersion(),
-                                            RtspStatusCodes.AggregateOperationNotAllowed,
+                                            RtspStatusCode.AggregateOperationNotAllowed,
                                             "stream identifier in SETUP request is missing",
                                             log.getPrefix(),
                                             logger).setResponse(response);
@@ -395,7 +395,7 @@ public abstract class Presentation implements TransactionHandler {
             }
             catch (SdpException e) {
                 RequestException.create(request.getProtocolVersion(),
-                                        RtspStatusCodes.BadRequest,
+                                        RtspStatusCode.BadRequest,
                                         "SDP description is malformed",
                                         e,
                                         log.getPrefix(),
@@ -407,7 +407,7 @@ public abstract class Presentation implements TransactionHandler {
         MediaStream mediaStream = this.mediaStreams.get(streamIndex);
         if (mediaStream == null) {
             RequestException.create(request.getProtocolVersion(),
-                                    RtspStatusCodes.BadRequest,
+                                    RtspStatusCode.BadRequest,
                                     "stream identified in SETUP request does not exist",
                                     log.getPrefix(),
                                     logger).setResponse(response);
@@ -415,7 +415,7 @@ public abstract class Presentation implements TransactionHandler {
         }
 
         if (mediaStream.handleSetup(request, response)) {
-            if (response.getStatus().equals(RtspStatusCodes.OK)) {
+            if (response.getStatus().equals(RtspStatusCode.OK)) {
                 this.isTeardownRequired = true;
             }
 
@@ -449,7 +449,7 @@ public abstract class Presentation implements TransactionHandler {
         if (streamIndex == -1) {
             // Request URI is an aggregate control URI
             if (!isAggregateControlAllowed()) {
-                response.setStatus(RtspStatusCodes.AggregateOperationNotAllowed);
+                response.setStatus(RtspStatusCode.AggregateOperationNotAllowed);
                 return true;
             }
 
@@ -458,7 +458,7 @@ public abstract class Presentation implements TransactionHandler {
                 if (this.mediaStreams.get(i).handlePlay(request, response)) {
                     handled = true;
                     // Bail if one of the streams fails to play
-                    if (!response.getStatus().equals(RtspStatusCodes.OK)) {
+                    if (!response.getStatus().equals(RtspStatusCode.OK)) {
                         break;
                     }
                     if (i > 0) {
@@ -468,9 +468,9 @@ public abstract class Presentation implements TransactionHandler {
                 }
             }
 
-            if (response.getStatus().equals(RtspStatusCodes.OK)) {
+            if (response.getStatus().equals(RtspStatusCode.OK)) {
 
-                MessageHeader rtpInfo = new SimpleMessageHeader(RtspMessageHeaders.RTP_INFO, headerValue.toString());
+                MessageHeader rtpInfo = new SimpleMessageHeader(RtspHeaderName.RTP_INFO, headerValue.toString());
 
                 response.addHeader(rtpInfo);
             }
@@ -480,14 +480,14 @@ public abstract class Presentation implements TransactionHandler {
         else {
             // Request URI is a stream control URI
             if (!isAggregateControlRequired()) {
-                response.setStatus(RtspStatusCodes.OnlyAggregateOperationAllowed);
+                response.setStatus(RtspStatusCode.OnlyAggregateOperationAllowed);
                 return true;
             }
 
             MediaStream mediaStream = this.mediaStreams.get(streamIndex);
             if (mediaStream == null) {
                 RequestException.create(request.getProtocolVersion(),
-                                        RtspStatusCodes.BadRequest,
+                                        RtspStatusCode.BadRequest,
                                         "stream identified in PLAY request does not exist",
                                         log.getPrefix(),
                                         logger).setResponse(response);
@@ -495,8 +495,8 @@ public abstract class Presentation implements TransactionHandler {
             }
 
             if (mediaStream.handlePlay(request, response)) {
-                if (response.getStatus().equals(RtspStatusCodes.OK)) {
-                    MessageHeader rtpInfo = new SimpleMessageHeader(RtspMessageHeaders.RTP_INFO, 
+                if (response.getStatus().equals(RtspStatusCode.OK)) {
+                    MessageHeader rtpInfo = new SimpleMessageHeader(RtspHeaderName.RTP_INFO, 
                                                                     "url="+this.uri+"/"+STREAM_CONTROL_PREFIX+streamIndex);
                     response.addHeader(rtpInfo);
                 }
@@ -536,7 +536,7 @@ public abstract class Presentation implements TransactionHandler {
         if (streamIndex == -1) {
             // Request URI is an aggregate control URI
             if (!isAggregateControlAllowed()) {
-                response.setStatus(RtspStatusCodes.AggregateOperationNotAllowed);
+                response.setStatus(RtspStatusCode.AggregateOperationNotAllowed);
                 return true;
             }
 
@@ -545,7 +545,7 @@ public abstract class Presentation implements TransactionHandler {
                 if (this.mediaStreams.get(i).handlePause(request, response)) {
                     handled = true;
                     // Bail if one of the streams fails to pause
-                    if (!response.getStatus().equals(RtspStatusCodes.OK)) {
+                    if (!response.getStatus().equals(RtspStatusCode.OK)) {
                         break;
                     }
                 }
@@ -556,14 +556,14 @@ public abstract class Presentation implements TransactionHandler {
         else {
             // Request URI is a stream control URI
             if (!isAggregateControlRequired()) {
-                response.setStatus(RtspStatusCodes.OnlyAggregateOperationAllowed);
+                response.setStatus(RtspStatusCode.OnlyAggregateOperationAllowed);
                 return true;
             }
 
             MediaStream mediaStream = this.mediaStreams.get(streamIndex);
             if (mediaStream == null) {
                 RequestException.create(request.getProtocolVersion(),
-                                        RtspStatusCodes.BadRequest,
+                                        RtspStatusCode.BadRequest,
                                         "stream identified in PAUSE request does not exist",
                                         log.getPrefix(),
                                         logger).setResponse(response);
@@ -597,7 +597,7 @@ public abstract class Presentation implements TransactionHandler {
         if (streamIndex == -1) {
             // Request URI is an aggregate control URI
             if (!isAggregateControlAllowed()) {
-                response.setStatus(RtspStatusCodes.AggregateOperationNotAllowed);
+                response.setStatus(RtspStatusCode.AggregateOperationNotAllowed);
                 return true;
             }
 
@@ -606,7 +606,7 @@ public abstract class Presentation implements TransactionHandler {
                 if (this.mediaStreams.get(i).handleRecord(request, response)) {
                     handled = true;
                     // Bail if one of the streams fails to record
-                    if (!response.getStatus().equals(RtspStatusCodes.OK)) {
+                    if (!response.getStatus().equals(RtspStatusCode.OK)) {
                         break;
                     }
                 }
@@ -617,14 +617,14 @@ public abstract class Presentation implements TransactionHandler {
         else {
             // Request URI is a stream control URI
             if (!isAggregateControlRequired()) {
-                response.setStatus(RtspStatusCodes.OnlyAggregateOperationAllowed);
+                response.setStatus(RtspStatusCode.OnlyAggregateOperationAllowed);
                 return true;
             }
 
             MediaStream mediaStream = this.mediaStreams.get(streamIndex);
             if (mediaStream == null) {
                 RequestException.create(request.getProtocolVersion(),
-                                        RtspStatusCodes.BadRequest,
+                                        RtspStatusCode.BadRequest,
                                         "stream identified in RECORD request does not exist",
                                         log.getPrefix(),
                                         logger).setResponse(response);
@@ -658,14 +658,14 @@ public abstract class Presentation implements TransactionHandler {
                 if (this.mediaStreams.get(i).handleTeardown(request, response)) {
                     handled = true;
                     // Bail if one of the streams fails to teardown
-                    if (!response.getStatus().equals(RtspStatusCodes.OK)) {
+                    if (!response.getStatus().equals(RtspStatusCode.OK)) {
                         break;
                     }
                 }
             }
 
-            if (handled && response.getStatus().equals(RtspStatusCodes.OK)) {
-                response.setHeader(new SimpleMessageHeader(RtspMessageHeaders.CONNECTION,"close"));
+            if (handled && response.getStatus().equals(RtspStatusCode.OK)) {
+                response.setHeader(new SimpleMessageHeader(RtspHeaderName.CONNECTION,"close"));
             }
 
             return handled;
@@ -673,14 +673,14 @@ public abstract class Presentation implements TransactionHandler {
         else {
             // Request URI is a stream control URI
             if (!isAggregateControlRequired()) {
-                response.setStatus(RtspStatusCodes.OnlyAggregateOperationAllowed);
+                response.setStatus(RtspStatusCode.OnlyAggregateOperationAllowed);
                 return true;
             }
 
             MediaStream mediaStream = this.mediaStreams.get(streamIndex);
             if (mediaStream == null) {
                 RequestException.create(request.getProtocolVersion(),
-                                        RtspStatusCodes.BadRequest,
+                                        RtspStatusCode.BadRequest,
                                         "stream identified in PAUSE request does not exist",
                                         log.getPrefix(),
                                         logger).setResponse(response);
@@ -724,7 +724,7 @@ public abstract class Presentation implements TransactionHandler {
      * @return
      */
     protected boolean doHandleGetParameter(final Request request, final Response response) {
-        response.setStatus(RtspStatusCodes.ParameterNotUnderstood);
+        response.setStatus(RtspStatusCode.ParameterNotUnderstood);
         Entity entity = request.getEntity();
         if (entity != null && entity.getContentLength() > 0) {
             response.setEntity(entity);
@@ -767,7 +767,7 @@ public abstract class Presentation implements TransactionHandler {
      * @return
      */
     protected boolean doHandleSetParameter(final Request request, final Response response) {
-        response.setStatus(RtspStatusCodes.InvalidParameter);
+        response.setStatus(RtspStatusCode.InvalidParameter);
         Entity entity = request.getEntity();
         if (entity != null && entity.getContentLength() > 0) {
             response.setEntity(entity);
@@ -835,7 +835,7 @@ public abstract class Presentation implements TransactionHandler {
      * @param response
      */
     protected void setMethodNotAllowed(final Request request, final Response response) {
-        response.setStatus(RtspStatusCodes.MethodNotAllowed);
+        response.setStatus(RtspStatusCode.MethodNotAllowed);
         StringBuffer headerValue = new StringBuffer();
         headerValue.append("OPTIONS");
         if (isDescribeSupported()) headerValue.append(",DESCRIBE");
@@ -845,7 +845,7 @@ public abstract class Presentation implements TransactionHandler {
         headerValue.append(",TEARDOWN");
         if (isGetParameterSupported()) headerValue.append(",GET_PARAMETER");
         if (isSetParameterSupported()) headerValue.append(",SET_PARAMETER");
-        MessageHeader header = new SimpleMessageHeader(RtspMessageHeaders.ALLOW, headerValue.toString());
+        MessageHeader header = new SimpleMessageHeader(RtspHeaderName.ALLOW, headerValue.toString());
         response.setHeader(header);
     }
 
@@ -856,7 +856,7 @@ public abstract class Presentation implements TransactionHandler {
      * @param response
      */
     protected void setInvalidParameter(Request request, Response response){
-        response.setStatus(RtspStatusCodes.InvalidParameter);
+        response.setStatus(RtspStatusCode.InvalidParameter);
     }
 
     /**
@@ -899,7 +899,7 @@ public abstract class Presentation implements TransactionHandler {
                 }
                 catch (NumberFormatException e) {
                     throw RequestException.create(request.getProtocolVersion(),
-                                                  RtspStatusCodes.BadRequest,
+                                                  RtspStatusCode.BadRequest,
                                                   "stream control URI in "+request.getRequestLine().getMethod().getName()+" request is invalid",
                                                   e,
                                                   log.getPrefix(),

@@ -9,13 +9,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.js4ms.common.util.logging.Log;
-import org.js4ms.service.protocol.rest.MessageException;
-import org.js4ms.service.protocol.rest.RequestException;
-import org.js4ms.service.protocol.rest.StatusCodes;
+import org.js4ms.service.protocol.rest.common.MessageException;
+import org.js4ms.service.protocol.rest.common.RequestException;
 import org.js4ms.service.protocol.rest.header.DateHeader;
 import org.js4ms.service.protocol.rest.header.SimpleMessageHeader;
 import org.js4ms.service.protocol.rest.message.Message;
 import org.js4ms.service.protocol.rest.message.MessageHeader;
+import org.js4ms.service.protocol.rest.message.StatusCode;
 import org.js4ms.service.protocol.rest.util.DateUtil;
 
 
@@ -154,7 +154,7 @@ public class RawEntity implements Entity {
             this.contentType = header != null ? header.getValue() : null;
         }
         else if (this.contentLength > 0) {
-            throw RequestException.create(null, StatusCodes.BadRequest, "message with non-zero Content-Length is missing Content-Type header");
+            throw RequestException.create(null, StatusCode.BadRequest, "message with non-zero Content-Length is missing Content-Type header");
         }
 
         if (message.containsHeader(Entity.CONTENT_LANGUAGE)) {
@@ -189,7 +189,7 @@ public class RawEntity implements Entity {
             }
             catch (ParseException e) {
                 throw RequestException.create(message.getProtocolVersion(),
-                                              StatusCodes.BadRequest,
+                                              StatusCode.BadRequest,
                                               "Invalid Expires header value",
                                               e);
             }
@@ -202,7 +202,7 @@ public class RawEntity implements Entity {
             }
             catch (ParseException e) {
                 throw RequestException.create(message.getProtocolVersion(),
-                                              StatusCodes.BadRequest,
+                                              StatusCode.BadRequest,
                                               "Invalid Last-Modified header value",
                                               e);
             }

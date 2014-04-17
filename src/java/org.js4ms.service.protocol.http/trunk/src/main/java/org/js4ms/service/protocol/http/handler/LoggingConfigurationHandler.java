@@ -1,4 +1,4 @@
-package org.js4ms.service.protocol.http.server.handler;
+package org.js4ms.service.protocol.http.handler;
 
 import java.io.IOException;
 import java.net.URI;
@@ -12,7 +12,7 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import org.js4ms.common.util.logging.Logging;
-import org.js4ms.service.protocol.http.HttpStatusCodes;
+import org.js4ms.service.protocol.http.message.HttpStatusCode;
 import org.js4ms.service.protocol.rest.entity.StringEntity;
 import org.js4ms.service.protocol.rest.handler.TransactionHandler;
 import org.js4ms.service.protocol.rest.message.Request;
@@ -75,19 +75,19 @@ public class LoggingConfigurationHandler implements TransactionHandler {
                                     buffer.append("logging properties loaded from "+pair[1]+"\n\n");
                                 }
                                 catch (IOException e) {
-                                    response.setStatus(HttpStatusCodes.BadRequest);
+                                    response.setStatus(HttpStatusCode.BadRequest);
                                     response.setEntity(new StringEntity("cannot load logging properties from "+pair[1]+" - "+e.getMessage()));
                                     return true;
                                 }
                             }
                             catch (URISyntaxException e) {
-                                response.setStatus(HttpStatusCodes.BadRequest);
+                                response.setStatus(HttpStatusCode.BadRequest);
                                 response.setEntity(new StringEntity("properties parameter value is invalid - "+e.getMessage()));
                                 return true;
                             }
                          }
                          else {
-                             response.setStatus(HttpStatusCodes.BadRequest);
+                             response.setStatus(HttpStatusCode.BadRequest);
                              response.setEntity(new StringEntity("properties parameter value is missing"));
                              return true;
                          }
@@ -100,7 +100,7 @@ public class LoggingConfigurationHandler implements TransactionHandler {
                                  level = Level.parse(pair[1]);
                              }
                              catch (IllegalArgumentException e) {
-                                 response.setStatus(HttpStatusCodes.BadRequest);
+                                 response.setStatus(HttpStatusCode.BadRequest);
                                  response.setEntity(new StringEntity("logger level parameter value is invalid - "+e.getMessage()));
                                  return true;
                              }
@@ -121,7 +121,7 @@ public class LoggingConfigurationHandler implements TransactionHandler {
                          LogManager.getLogManager().readConfiguration();
                      }
                      else {
-                         response.setStatus(HttpStatusCodes.BadRequest);
+                         response.setStatus(HttpStatusCode.BadRequest);
                          response.setEntity(new StringEntity("query parameter '"+pair[0]+"' is not supported"));
                          return true;
                      }
@@ -144,7 +144,7 @@ public class LoggingConfigurationHandler implements TransactionHandler {
             buffer.append(loggerName+"="+(level != null ? level.getName() : "inherited")+"\n");
         }
 
-        response.setStatus(HttpStatusCodes.OK);
+        response.setStatus(HttpStatusCode.OK);
         response.setEntity(new StringEntity(buffer.toString()));
         return true;
     }

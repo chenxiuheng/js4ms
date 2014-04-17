@@ -1,8 +1,8 @@
-package org.js4ms.service.protocol.http;
+package org.js4ms.service.protocol.http.message;
 
 import org.js4ms.service.protocol.rest.message.Method;
 
-public interface HttpMethods {
+public interface HttpMethod {
     public static final Method GET = new Method("GET");
     public static final Method HEAD = new Method("HEAD");
     public static final Method POST = new Method("POST");

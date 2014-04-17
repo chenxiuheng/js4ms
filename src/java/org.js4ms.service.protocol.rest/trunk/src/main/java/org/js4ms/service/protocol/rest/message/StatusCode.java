@@ -1,8 +1,7 @@
-package org.js4ms.service.protocol.rest;
+package org.js4ms.service.protocol.rest.message;
 
-import org.js4ms.service.protocol.rest.message.Status;
 
-public interface StatusCodes {
+public interface StatusCode {
 
     public final Status Unrecognized = new Status(0, "Unrecognized");
 

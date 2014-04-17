@@ -2,13 +2,13 @@ package org.js4ms.service.protocol.rtsp.handler;
 
 import java.io.IOException;
 
-import org.js4ms.service.protocol.rest.StatusCodes;
 import org.js4ms.service.protocol.rest.entity.StringEntity;
 import org.js4ms.service.protocol.rest.handler.TransactionHandler;
 import org.js4ms.service.protocol.rest.message.MessageHeader;
 import org.js4ms.service.protocol.rest.message.Request;
 import org.js4ms.service.protocol.rest.message.Response;
-import org.js4ms.service.protocol.rtsp.RtspMessageHeaders;
+import org.js4ms.service.protocol.rest.message.StatusCode;
+import org.js4ms.service.protocol.rtsp.message.RtspHeaderName;
 
 
 
@@ -21,12 +21,12 @@ public class TransferCSeqHeader implements TransactionHandler {
     @Override
     public boolean handleTransaction(Request request, Response response) throws IOException {
         if (request.getProtocolVersion().getProtocolName().getName().equals("RTSP")) {
-            if (!request.containsHeader(RtspMessageHeaders.CSEQ)) {
-                response.setStatus(StatusCodes.BadRequest);
+            if (!request.containsHeader(RtspHeaderName.CSEQ)) {
+                response.setStatus(StatusCode.BadRequest);
                 response.setEntity(new StringEntity("missing CSEQ header"));
                 return true;
             }
-            response.setHeader((MessageHeader)request.getHeader(RtspMessageHeaders.CSEQ).clone());
+            response.setHeader((MessageHeader)request.getHeader(RtspHeaderName.CSEQ).clone());
         }
         return false;
     }

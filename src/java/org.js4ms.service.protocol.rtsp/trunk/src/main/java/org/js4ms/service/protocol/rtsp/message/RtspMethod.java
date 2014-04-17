@@ -1,8 +1,8 @@
-package org.js4ms.service.protocol.rtsp;
+package org.js4ms.service.protocol.rtsp.message;
 
 import org.js4ms.service.protocol.rest.message.Method;
 
-public interface RtspMethods {
+public interface RtspMethod {
 
     public static final Method GET = new Method("GET");
     public static final Method POST = new Method("POST");
