@@ -22,16 +22,16 @@ import org.js4ms.io.net.UdpDatagramPayloadSource;
 import org.js4ms.io.net.UdpEndpoint;
 import org.js4ms.io.net.UdpPacketOutputChannel;
 import org.js4ms.io.net.UdpSocketEndpoint;
+import org.js4ms.rest.common.RequestException;
+import org.js4ms.rest.entity.Entity;
+import org.js4ms.rest.header.SimpleMessageHeader;
+import org.js4ms.rest.message.MessageHeader;
+import org.js4ms.rest.message.Request;
+import org.js4ms.rest.message.Response;
 import org.js4ms.rtsp.message.RtspHeaderName;
 import org.js4ms.rtsp.message.RtspStatusCode;
 import org.js4ms.rtsp.presentation.Presentation.Source;
 import org.js4ms.rtsp.rtp.InterleavedPacketOutputChannel;
-import org.js4ms.service.rest.common.RequestException;
-import org.js4ms.service.rest.entity.Entity;
-import org.js4ms.service.rest.header.SimpleMessageHeader;
-import org.js4ms.service.rest.message.MessageHeader;
-import org.js4ms.service.rest.message.Request;
-import org.js4ms.service.rest.message.Response;
 
 
 

@@ -4,23 +4,23 @@ import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.js4ms.rest.handler.AddDateHeader;
+import org.js4ms.rest.handler.ResponseHandlerList;
+import org.js4ms.rest.handler.TransactionDispatcher;
+import org.js4ms.rest.handler.TransactionHandlerList;
+import org.js4ms.rest.handler.TransactionHeaderResolver;
+import org.js4ms.rest.handler.TransactionProtocolResolver;
+import org.js4ms.rest.handler.VerifyAcceptEncodingHeader;
+import org.js4ms.rest.message.MessageHeaderParser;
+import org.js4ms.rest.message.ProtocolName;
+import org.js4ms.rest.message.ProtocolVersion;
+import org.js4ms.rest.server.AbstractService;
+import org.js4ms.rest.server.RequestParser;
 import org.js4ms.rtsp.handler.TransferCSeqHeader;
 import org.js4ms.rtsp.handler.TransferSessionHeader;
 import org.js4ms.rtsp.handler.TransferTimestampHeader;
 import org.js4ms.rtsp.handler.VerifyRequireHeader;
 import org.js4ms.rtsp.presentation.PresentationResolver;
-import org.js4ms.service.rest.handler.AddDateHeader;
-import org.js4ms.service.rest.handler.ResponseHandlerList;
-import org.js4ms.service.rest.handler.TransactionDispatcher;
-import org.js4ms.service.rest.handler.TransactionHandlerList;
-import org.js4ms.service.rest.handler.TransactionHeaderResolver;
-import org.js4ms.service.rest.handler.TransactionProtocolResolver;
-import org.js4ms.service.rest.handler.VerifyAcceptEncodingHeader;
-import org.js4ms.service.rest.message.MessageHeaderParser;
-import org.js4ms.service.rest.message.ProtocolName;
-import org.js4ms.service.rest.message.ProtocolVersion;
-import org.js4ms.service.rest.server.AbstractService;
-import org.js4ms.service.rest.server.RequestParser;
 
 
 

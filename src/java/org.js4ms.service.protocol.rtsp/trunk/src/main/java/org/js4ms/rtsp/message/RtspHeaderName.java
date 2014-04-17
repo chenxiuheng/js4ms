@@ -1,6 +1,6 @@
 package org.js4ms.rtsp.message;
 
-import org.js4ms.service.rest.message.HeaderName;
+import org.js4ms.rest.message.HeaderName;
 
 public interface RtspHeaderName extends HeaderName {
     public static final String BANDWIDTH = "Bandwidth"; // rtsp(R)

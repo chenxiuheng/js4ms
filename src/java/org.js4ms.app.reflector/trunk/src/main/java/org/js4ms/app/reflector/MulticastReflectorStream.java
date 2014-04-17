@@ -20,9 +20,9 @@ import org.js4ms.common.util.logging.Logging;
 import org.js4ms.io.channel.MessageSource;
 import org.js4ms.io.channel.OutputChannel;
 import org.js4ms.net.ip.multicast.service.proxy.SourceFilter;
-import org.js4ms.service.rtsp.presentation.MediaStream;
-import org.js4ms.service.rtsp.presentation.Presentation;
-import org.js4ms.service.rtsp.presentation.TransportDescription;
+import org.js4ms.rtsp.presentation.MediaStream;
+import org.js4ms.rtsp.presentation.Presentation;
+import org.js4ms.rtsp.presentation.TransportDescription;
 
 
 

@@ -1,7 +1,7 @@
 package org.js4ms.rtsp.message;
 
-import org.js4ms.service.rest.message.Status;
-import org.js4ms.service.rest.message.StatusCode;
+import org.js4ms.rest.message.Status;
+import org.js4ms.rest.message.StatusCode;
 
 public interface RtspStatusCode extends StatusCode {
 

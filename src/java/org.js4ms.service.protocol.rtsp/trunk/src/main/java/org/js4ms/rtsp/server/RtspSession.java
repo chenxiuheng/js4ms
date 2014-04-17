@@ -6,14 +6,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.js4ms.common.util.logging.Log;
+import org.js4ms.rest.message.Request;
+import org.js4ms.rest.message.Response;
+import org.js4ms.rest.server.AbstractTimedSession;
+import org.js4ms.rest.server.SessionManager;
 import org.js4ms.rtsp.message.RtspHeaderName;
 import org.js4ms.rtsp.message.RtspMethod;
 import org.js4ms.rtsp.presentation.Presentation;
 import org.js4ms.server.Server;
-import org.js4ms.service.rest.message.Request;
-import org.js4ms.service.rest.message.Response;
-import org.js4ms.service.rest.server.AbstractTimedSession;
-import org.js4ms.service.rest.server.SessionManager;
 
 
 

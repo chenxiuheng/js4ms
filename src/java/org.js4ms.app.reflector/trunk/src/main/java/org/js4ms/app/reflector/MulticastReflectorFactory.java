@@ -40,15 +40,15 @@ import javax.sdp.SessionDescription;
 
 import org.js4ms.common.util.logging.Log;
 import org.js4ms.io.stream.FixedLengthInputStream;
-import org.js4ms.service.rest.common.RequestException;
-import org.js4ms.service.rest.message.Method;
-import org.js4ms.service.rest.message.Request;
-import org.js4ms.service.rest.message.Status;
-import org.js4ms.service.rtsp.message.RtspMethod;
-import org.js4ms.service.rtsp.message.RtspStatusCode;
-import org.js4ms.service.rtsp.presentation.Presentation;
-import org.js4ms.service.rtsp.presentation.PresentationResolver;
-import org.js4ms.service.rtsp.server.RtspService;
+import org.js4ms.rest.common.RequestException;
+import org.js4ms.rest.message.Method;
+import org.js4ms.rest.message.Request;
+import org.js4ms.rest.message.Status;
+import org.js4ms.rtsp.message.RtspMethod;
+import org.js4ms.rtsp.message.RtspStatusCode;
+import org.js4ms.rtsp.presentation.Presentation;
+import org.js4ms.rtsp.presentation.PresentationResolver;
+import org.js4ms.rtsp.server.RtspService;
 
 
 

@@ -3,13 +3,13 @@ package org.js4ms.rtsp.handler;
 import java.io.IOException;
 import java.util.HashSet;
 
-import org.js4ms.service.rest.handler.TransactionHandler;
-import org.js4ms.service.rest.header.SimpleMessageHeader;
-import org.js4ms.service.rest.message.HeaderName;
-import org.js4ms.service.rest.message.MessageHeader;
-import org.js4ms.service.rest.message.Request;
-import org.js4ms.service.rest.message.Response;
-import org.js4ms.service.rest.message.StatusCode;
+import org.js4ms.rest.handler.TransactionHandler;
+import org.js4ms.rest.header.SimpleMessageHeader;
+import org.js4ms.rest.message.HeaderName;
+import org.js4ms.rest.message.MessageHeader;
+import org.js4ms.rest.message.Request;
+import org.js4ms.rest.message.Response;
+import org.js4ms.rest.message.StatusCode;
 
 
 

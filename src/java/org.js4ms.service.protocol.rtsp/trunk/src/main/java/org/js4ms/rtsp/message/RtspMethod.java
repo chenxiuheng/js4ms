@@ -1,6 +1,6 @@
 package org.js4ms.rtsp.message;
 
-import org.js4ms.service.rest.message.Method;
+import org.js4ms.rest.message.Method;
 
 public interface RtspMethod {
 

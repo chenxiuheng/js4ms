@@ -22,7 +22,7 @@ import java.util.LinkedList;
 import java.util.logging.Logger;
 
 import org.js4ms.common.util.logging.Logging;
-import org.js4ms.service.rest.common.RequestException;
+import org.js4ms.rest.common.RequestException;
 
 
 

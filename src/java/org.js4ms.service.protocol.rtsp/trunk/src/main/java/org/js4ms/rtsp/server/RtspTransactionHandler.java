@@ -10,24 +10,24 @@ import java.util.logging.Logger;
 
 import org.js4ms.common.util.logging.Log;
 import org.js4ms.common.util.logging.Logging;
+import org.js4ms.http.message.HttpHeaderName;
 import org.js4ms.io.stream.Base64InputStream;
+import org.js4ms.rest.common.RequestException;
+import org.js4ms.rest.entity.Entity;
+import org.js4ms.rest.entity.StringEntity;
+import org.js4ms.rest.handler.TransactionHandler;
+import org.js4ms.rest.header.SimpleMessageHeader;
+import org.js4ms.rest.message.MessageHeader;
+import org.js4ms.rest.message.Method;
+import org.js4ms.rest.message.Request;
+import org.js4ms.rest.message.Response;
+import org.js4ms.rest.server.SessionManager;
 import org.js4ms.rtsp.message.RtspHeaderName;
 import org.js4ms.rtsp.message.RtspMethod;
 import org.js4ms.rtsp.message.RtspStatusCode;
 import org.js4ms.rtsp.presentation.Presentation;
 import org.js4ms.rtsp.presentation.PresentationResolver;
 import org.js4ms.server.Connection;
-import org.js4ms.service.http.message.HttpHeaderName;
-import org.js4ms.service.rest.common.RequestException;
-import org.js4ms.service.rest.entity.Entity;
-import org.js4ms.service.rest.entity.StringEntity;
-import org.js4ms.service.rest.handler.TransactionHandler;
-import org.js4ms.service.rest.header.SimpleMessageHeader;
-import org.js4ms.service.rest.message.MessageHeader;
-import org.js4ms.service.rest.message.Method;
-import org.js4ms.service.rest.message.Request;
-import org.js4ms.service.rest.message.Response;
-import org.js4ms.service.rest.server.SessionManager;
 
 
 
