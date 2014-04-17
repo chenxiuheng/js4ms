@@ -25,10 +25,10 @@ import java.net.InetAddress;
 
 import org.js4ms.amt.message.GroupMembershipRecord;
 import org.js4ms.io.channel.MessageTransform;
-import org.js4ms.net.ip.format.IPPacket;
-import org.js4ms.net.ip.format.protocol.igmp.IGMPGroupRecord;
-import org.js4ms.net.ip.format.protocol.igmp.IGMPMessage;
-import org.js4ms.net.ip.format.protocol.igmp.IGMPv3ReportMessage;
+import org.js4ms.ip.IPPacket;
+import org.js4ms.ip.protocol.igmp.IGMPGroupRecord;
+import org.js4ms.ip.protocol.igmp.IGMPMessage;
+import org.js4ms.ip.protocol.igmp.IGMPv3ReportMessage;
 
 
 

@@ -24,8 +24,8 @@ import java.io.IOException;
 
 import org.js4ms.io.channel.MessageTransform;
 import org.js4ms.io.net.UdpDatagram;
-import org.js4ms.net.ip.format.IPPacket;
-import org.js4ms.net.ip.format.protocol.udp.UdpPacket;
+import org.js4ms.ip.IPPacket;
+import org.js4ms.ip.protocol.udp.UdpPacket;
 
 
 

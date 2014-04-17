@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 
 import org.js4ms.common.exception.ParseException;
 import org.js4ms.common.util.buffer.parser.MissingParserException;
-import org.js4ms.net.ip.format.IPPacket;
+import org.js4ms.ip.IPPacket;
 
 
 

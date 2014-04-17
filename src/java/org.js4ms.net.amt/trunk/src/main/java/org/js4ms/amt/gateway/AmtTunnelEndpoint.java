@@ -49,20 +49,20 @@ import org.js4ms.io.net.UdpDatagram;
 import org.js4ms.io.net.UdpInputChannel;
 import org.js4ms.io.net.UdpOutputChannel;
 import org.js4ms.io.net.UdpSocketEndpoint;
-import org.js4ms.net.ip.format.IPMessage;
-import org.js4ms.net.ip.format.IPPacket;
-import org.js4ms.net.ip.format.ipv4.IPv4Packet;
-import org.js4ms.net.ip.format.ipv6.IPv6Packet;
-import org.js4ms.net.ip.format.protocol.igmp.IGMPMessage;
-import org.js4ms.net.ip.format.protocol.igmp.IGMPQueryMessage;
-import org.js4ms.net.ip.format.protocol.igmp.IGMPv2ReportMessage;
-import org.js4ms.net.ip.format.protocol.igmp.IGMPv3QueryMessage;
-import org.js4ms.net.ip.format.protocol.igmp.IGMPv3ReportMessage;
-import org.js4ms.net.ip.format.protocol.mld.MLDMessage;
-import org.js4ms.net.ip.format.protocol.mld.MLDQueryMessage;
-import org.js4ms.net.ip.format.protocol.mld.MLDv1ReportMessage;
-import org.js4ms.net.ip.format.protocol.mld.MLDv2QueryMessage;
-import org.js4ms.net.ip.format.protocol.mld.MLDv2ReportMessage;
+import org.js4ms.ip.IPMessage;
+import org.js4ms.ip.IPPacket;
+import org.js4ms.ip.ipv4.IPv4Packet;
+import org.js4ms.ip.ipv6.IPv6Packet;
+import org.js4ms.ip.protocol.igmp.IGMPMessage;
+import org.js4ms.ip.protocol.igmp.IGMPQueryMessage;
+import org.js4ms.ip.protocol.igmp.IGMPv2ReportMessage;
+import org.js4ms.ip.protocol.igmp.IGMPv3QueryMessage;
+import org.js4ms.ip.protocol.igmp.IGMPv3ReportMessage;
+import org.js4ms.ip.protocol.mld.MLDMessage;
+import org.js4ms.ip.protocol.mld.MLDQueryMessage;
+import org.js4ms.ip.protocol.mld.MLDv1ReportMessage;
+import org.js4ms.ip.protocol.mld.MLDv2QueryMessage;
+import org.js4ms.ip.protocol.mld.MLDv2ReportMessage;
 
 
 

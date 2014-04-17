@@ -27,12 +27,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import org.js4ms.io.channel.MessageTransform;
-import org.js4ms.net.ip.format.IPMessage;
-import org.js4ms.net.ip.format.IPPacket;
-import org.js4ms.net.ip.format.ipv4.IPv4Packet;
-import org.js4ms.net.ip.format.protocol.igmp.IGMPMessage;
-import org.js4ms.net.ip.format.protocol.igmp.IGMPQueryMessage;
-import org.js4ms.net.ip.format.protocol.igmp.IGMPv3QueryMessage;
+import org.js4ms.ip.IPMessage;
+import org.js4ms.ip.IPPacket;
+import org.js4ms.ip.ipv4.IPv4Packet;
+import org.js4ms.ip.protocol.igmp.IGMPMessage;
+import org.js4ms.ip.protocol.igmp.IGMPQueryMessage;
+import org.js4ms.ip.protocol.igmp.IGMPv3QueryMessage;
 
 
 

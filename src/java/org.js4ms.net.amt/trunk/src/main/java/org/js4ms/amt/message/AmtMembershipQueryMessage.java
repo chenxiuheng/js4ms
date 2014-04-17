@@ -32,13 +32,13 @@ import org.js4ms.common.util.buffer.field.BooleanField;
 import org.js4ms.common.util.buffer.field.ByteArrayField;
 import org.js4ms.common.util.buffer.field.IntegerField;
 import org.js4ms.common.util.logging.Logging;
-import org.js4ms.net.ip.format.IPPacket;
-import org.js4ms.net.ip.format.ipv4.IPv4Packet;
-import org.js4ms.net.ip.format.ipv6.IPv6Packet;
-import org.js4ms.net.ip.format.protocol.igmp.IGMPMessage;
-import org.js4ms.net.ip.format.protocol.igmp.IGMPv3QueryMessage;
-import org.js4ms.net.ip.format.protocol.mld.MLDMessage;
-import org.js4ms.net.ip.format.protocol.mld.MLDv2QueryMessage;
+import org.js4ms.ip.IPPacket;
+import org.js4ms.ip.ipv4.IPv4Packet;
+import org.js4ms.ip.ipv6.IPv6Packet;
+import org.js4ms.ip.protocol.igmp.IGMPMessage;
+import org.js4ms.ip.protocol.igmp.IGMPv3QueryMessage;
+import org.js4ms.ip.protocol.mld.MLDMessage;
+import org.js4ms.ip.protocol.mld.MLDv2QueryMessage;
 
 
 
