@@ -1,4 +1,4 @@
-package org.js4ms.service.protocol.rtsp.presentation;
+package org.js4ms.service.rtsp.presentation;
 
 import java.io.IOException;
 import java.net.URI;
@@ -13,20 +13,20 @@ import javax.sdp.SdpException;
 import javax.sdp.SessionDescription;
 
 import org.js4ms.common.util.logging.Log;
-import org.js4ms.io.channels.OutputChannel;
-import org.js4ms.service.protocol.rest.common.RequestException;
-import org.js4ms.service.protocol.rest.entity.Entity;
-import org.js4ms.service.protocol.rest.entity.StringEntity;
-import org.js4ms.service.protocol.rest.handler.TransactionHandler;
-import org.js4ms.service.protocol.rest.header.SimpleMessageHeader;
-import org.js4ms.service.protocol.rest.message.MessageHeader;
-import org.js4ms.service.protocol.rest.message.Method;
-import org.js4ms.service.protocol.rest.message.Request;
-import org.js4ms.service.protocol.rest.message.Response;
-import org.js4ms.service.protocol.rtsp.message.RtspHeaderName;
-import org.js4ms.service.protocol.rtsp.message.RtspMethod;
-import org.js4ms.service.protocol.rtsp.message.RtspStatusCode;
-import org.js4ms.service.protocol.rtsp.rtp.InterleavedPacketReader;
+import org.js4ms.io.channel.OutputChannel;
+import org.js4ms.service.rest.common.RequestException;
+import org.js4ms.service.rest.entity.Entity;
+import org.js4ms.service.rest.entity.StringEntity;
+import org.js4ms.service.rest.handler.TransactionHandler;
+import org.js4ms.service.rest.header.SimpleMessageHeader;
+import org.js4ms.service.rest.message.MessageHeader;
+import org.js4ms.service.rest.message.Method;
+import org.js4ms.service.rest.message.Request;
+import org.js4ms.service.rest.message.Response;
+import org.js4ms.service.rtsp.message.RtspHeaderName;
+import org.js4ms.service.rtsp.message.RtspMethod;
+import org.js4ms.service.rtsp.message.RtspStatusCode;
+import org.js4ms.service.rtsp.rtp.InterleavedPacketReader;
 
 
 

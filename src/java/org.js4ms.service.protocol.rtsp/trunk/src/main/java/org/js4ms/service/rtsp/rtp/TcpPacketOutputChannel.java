@@ -1,4 +1,4 @@
-package org.js4ms.service.protocol.rtsp.rtp;
+package org.js4ms.service.rtsp.rtp;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
@@ -7,7 +7,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 
-import org.js4ms.io.channels.OutputChannel;
+import org.js4ms.io.channel.OutputChannel;
 
 
 

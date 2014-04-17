@@ -1,4 +1,4 @@
-package org.js4ms.service.protocol.rtsp.server;
+package org.js4ms.service.rtsp.server;
 
 import java.io.IOException;
 import java.io.PushbackInputStream;
@@ -10,23 +10,23 @@ import java.util.logging.Logger;
 
 import org.js4ms.common.util.logging.Log;
 import org.js4ms.common.util.logging.Logging;
-import org.js4ms.io.streams.Base64InputStream;
-import org.js4ms.service.protocol.http.message.HttpHeaderName;
-import org.js4ms.service.protocol.rest.common.RequestException;
-import org.js4ms.service.protocol.rest.entity.Entity;
-import org.js4ms.service.protocol.rest.entity.StringEntity;
-import org.js4ms.service.protocol.rest.handler.TransactionHandler;
-import org.js4ms.service.protocol.rest.header.SimpleMessageHeader;
-import org.js4ms.service.protocol.rest.message.MessageHeader;
-import org.js4ms.service.protocol.rest.message.Method;
-import org.js4ms.service.protocol.rest.message.Request;
-import org.js4ms.service.protocol.rest.message.Response;
-import org.js4ms.service.protocol.rest.server.SessionManager;
-import org.js4ms.service.protocol.rtsp.message.RtspHeaderName;
-import org.js4ms.service.protocol.rtsp.message.RtspMethod;
-import org.js4ms.service.protocol.rtsp.message.RtspStatusCode;
-import org.js4ms.service.protocol.rtsp.presentation.Presentation;
-import org.js4ms.service.protocol.rtsp.presentation.PresentationResolver;
+import org.js4ms.io.stream.Base64InputStream;
+import org.js4ms.service.http.message.HttpHeaderName;
+import org.js4ms.service.rest.common.RequestException;
+import org.js4ms.service.rest.entity.Entity;
+import org.js4ms.service.rest.entity.StringEntity;
+import org.js4ms.service.rest.handler.TransactionHandler;
+import org.js4ms.service.rest.header.SimpleMessageHeader;
+import org.js4ms.service.rest.message.MessageHeader;
+import org.js4ms.service.rest.message.Method;
+import org.js4ms.service.rest.message.Request;
+import org.js4ms.service.rest.message.Response;
+import org.js4ms.service.rest.server.SessionManager;
+import org.js4ms.service.rtsp.message.RtspHeaderName;
+import org.js4ms.service.rtsp.message.RtspMethod;
+import org.js4ms.service.rtsp.message.RtspStatusCode;
+import org.js4ms.service.rtsp.presentation.Presentation;
+import org.js4ms.service.rtsp.presentation.PresentationResolver;
 import org.js4ms.service.server.Connection;
 
 
