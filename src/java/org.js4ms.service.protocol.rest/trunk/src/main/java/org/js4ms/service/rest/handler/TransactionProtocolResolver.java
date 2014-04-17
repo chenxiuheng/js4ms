@@ -5,9 +5,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.js4ms.common.util.logging.Log;
-import org.js4ms.service.protocol.rest.common.RequestException;
-import org.js4ms.service.protocol.rest.message.ProtocolName;
-import org.js4ms.service.protocol.rest.message.Request;
+import org.js4ms.service.rest.common.RequestException;
+import org.js4ms.service.rest.message.ProtocolName;
+import org.js4ms.service.rest.message.Request;
 
 
 

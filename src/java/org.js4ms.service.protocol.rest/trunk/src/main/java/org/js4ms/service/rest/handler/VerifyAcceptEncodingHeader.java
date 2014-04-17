@@ -2,11 +2,11 @@ package org.js4ms.service.rest.handler;
 
 import java.io.IOException;
 
-import org.js4ms.service.protocol.rest.entity.CodecManager;
-import org.js4ms.service.protocol.rest.message.HeaderName;
-import org.js4ms.service.protocol.rest.message.Request;
-import org.js4ms.service.protocol.rest.message.Response;
-import org.js4ms.service.protocol.rest.message.StatusCode;
+import org.js4ms.service.rest.entity.CodecManager;
+import org.js4ms.service.rest.message.HeaderName;
+import org.js4ms.service.rest.message.Request;
+import org.js4ms.service.rest.message.Response;
+import org.js4ms.service.rest.message.StatusCode;
 
 
 

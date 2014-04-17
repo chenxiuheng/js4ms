@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import org.js4ms.service.protocol.rest.message.Request;
-import org.js4ms.service.protocol.rest.message.Response;
+import org.js4ms.service.rest.message.Request;
+import org.js4ms.service.rest.message.Response;
 
 
 

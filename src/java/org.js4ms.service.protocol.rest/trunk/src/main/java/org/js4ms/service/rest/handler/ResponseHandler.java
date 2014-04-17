@@ -2,7 +2,7 @@ package org.js4ms.service.rest.handler;
 
 import java.io.IOException;
 
-import org.js4ms.service.protocol.rest.message.Response;
+import org.js4ms.service.rest.message.Response;
 
 
 

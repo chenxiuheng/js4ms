@@ -2,12 +2,12 @@ package org.js4ms.service.rest.handler;
 
 import java.util.Date;
 
-import org.js4ms.service.protocol.rest.common.RequestException;
-import org.js4ms.service.protocol.rest.header.DateHeader;
-import org.js4ms.service.protocol.rest.message.HeaderName;
-import org.js4ms.service.protocol.rest.message.Message;
-import org.js4ms.service.protocol.rest.message.Request;
-import org.js4ms.service.protocol.rest.message.Response;
+import org.js4ms.service.rest.common.RequestException;
+import org.js4ms.service.rest.header.DateHeader;
+import org.js4ms.service.rest.message.HeaderName;
+import org.js4ms.service.rest.message.Message;
+import org.js4ms.service.rest.message.Request;
+import org.js4ms.service.rest.message.Response;
 
 
 
