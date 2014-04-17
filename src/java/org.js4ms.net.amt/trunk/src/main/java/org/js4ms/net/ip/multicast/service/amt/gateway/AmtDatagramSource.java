@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 import org.js4ms.common.util.logging.Log;
 import org.js4ms.io.channel.MessageSource;
 import org.js4ms.io.channel.OutputChannel;
-import org.js4ms.io.net.udp.UdpDatagram;
+import org.js4ms.io.net.UdpDatagram;
 import org.js4ms.net.ip.multicast.service.proxy.SourceFilter;
 
 

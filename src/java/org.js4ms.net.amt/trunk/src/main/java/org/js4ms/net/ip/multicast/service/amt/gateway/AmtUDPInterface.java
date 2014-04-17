@@ -13,7 +13,7 @@ import org.js4ms.io.channel.MessageKeyExtractor;
 import org.js4ms.io.channel.OutputChannel;
 import org.js4ms.io.channel.OutputChannelMap;
 import org.js4ms.io.channel.OutputChannelTransform;
-import org.js4ms.io.net.udp.UdpDatagram;
+import org.js4ms.io.net.UdpDatagram;
 import org.js4ms.net.ip.format.IPPacket;
 import org.js4ms.net.ip.format.Precondition;
 import org.js4ms.net.ip.format.ipv4.IPv4Packet;
