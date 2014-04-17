@@ -39,7 +39,7 @@ import java.util.logging.Logger;
 
 import org.js4ms.common.util.logging.Log;
 import org.js4ms.common.util.logging.Logging;
-import org.js4ms.service.server.launcher.jws.ServiceLauncher;
+import org.js4ms.launcher.jws.ServiceLauncher;
 
 /**
  * @author Greg Bumgardner (gbumgard)
