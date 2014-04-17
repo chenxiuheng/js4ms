@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.net.ip.format.protocol.igmp;
+package org.js4ms.ip.protocol.igmp;
 
 import java.net.InetAddress;
 import java.nio.ByteBuffer;

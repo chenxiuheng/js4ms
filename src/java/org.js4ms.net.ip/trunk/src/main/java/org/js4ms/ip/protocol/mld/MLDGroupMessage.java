@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.net.ip.format.protocol.mld;
+package org.js4ms.ip.protocol.mld;
 
 import java.net.InetAddress;
 import java.nio.ByteBuffer;

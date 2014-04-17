@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.net.ip.format.ipv6;
+package org.js4ms.ip.ipv6;
 
 import java.nio.ByteBuffer;
 import java.util.Enumeration;
@@ -28,10 +28,10 @@ import java.util.logging.Level;
 
 import org.js4ms.common.exception.ParseException;
 import org.js4ms.common.util.buffer.parser.MissingParserException;
-import org.js4ms.net.ip.format.IPEndOfListOption;
-import org.js4ms.net.ip.format.IPExtensionHeader;
-import org.js4ms.net.ip.format.IPHeaderOption;
-import org.js4ms.net.ip.format.IPMessage;
+import org.js4ms.ip.IPEndOfListOption;
+import org.js4ms.ip.IPExtensionHeader;
+import org.js4ms.ip.IPHeaderOption;
+import org.js4ms.ip.IPMessage;
 
 
 

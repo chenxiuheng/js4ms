@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.net.ip.format.protocol.mld;
+package org.js4ms.ip.protocol.mld;
 
 import java.nio.ByteBuffer;
 import java.util.logging.Level;

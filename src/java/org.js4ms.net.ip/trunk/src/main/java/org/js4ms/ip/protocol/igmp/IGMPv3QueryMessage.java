@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.net.ip.format.protocol.igmp;
+package org.js4ms.ip.protocol.igmp;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -34,9 +34,9 @@ import org.js4ms.common.util.buffer.field.ByteBitField;
 import org.js4ms.common.util.buffer.field.ByteField;
 import org.js4ms.common.util.buffer.field.ShortField;
 import org.js4ms.common.util.logging.Logging;
-import org.js4ms.net.ip.format.IPMessage;
-import org.js4ms.net.ip.format.IPPacket;
-import org.js4ms.net.ip.format.ipv4.IPv4Packet;
+import org.js4ms.ip.IPMessage;
+import org.js4ms.ip.IPPacket;
+import org.js4ms.ip.ipv4.IPv4Packet;
 
 
 

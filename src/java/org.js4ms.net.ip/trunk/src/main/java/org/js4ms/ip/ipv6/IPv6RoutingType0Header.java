@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.net.ip.format.ipv6;
+package org.js4ms.ip.ipv6;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 
 import org.js4ms.common.exception.ParseException;
 import org.js4ms.common.util.logging.Logging;
-import org.js4ms.net.ip.format.Precondition;
+import org.js4ms.ip.Precondition;
 
 
 

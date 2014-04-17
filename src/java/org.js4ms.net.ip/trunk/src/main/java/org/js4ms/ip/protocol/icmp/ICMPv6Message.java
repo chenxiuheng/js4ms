@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.net.ip.format.protocol.icmp;
+package org.js4ms.ip.protocol.icmp;
 
 import java.nio.ByteBuffer;
 import java.util.logging.Level;
@@ -35,8 +35,8 @@ import org.js4ms.common.util.buffer.parser.BufferParserSelector;
 import org.js4ms.common.util.buffer.parser.KeyedBufferParser;
 import org.js4ms.common.util.buffer.parser.MissingParserException;
 import org.js4ms.common.util.logging.Logging;
-import org.js4ms.net.ip.format.IPMessage;
-import org.js4ms.net.ip.format.IPPacket;
+import org.js4ms.ip.IPMessage;
+import org.js4ms.ip.IPPacket;
 
 
 

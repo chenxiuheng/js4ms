@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.net.ip.format.ipv4;
+package org.js4ms.ip.ipv4;
 
 import java.nio.ByteBuffer;
 import java.util.logging.Level;
@@ -26,8 +26,8 @@ import java.util.logging.Logger;
 
 import org.js4ms.common.exception.ParseException;
 import org.js4ms.common.util.buffer.field.ShortField;
-import org.js4ms.net.ip.format.IPHeaderOption;
-import org.js4ms.net.ip.format.IPMultiByteHeaderOption;
+import org.js4ms.ip.IPHeaderOption;
+import org.js4ms.ip.IPMultiByteHeaderOption;
 
 
 

@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.net.ip.format.ipv6;
+package org.js4ms.ip.ipv6;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,10 +39,10 @@ import org.js4ms.common.util.buffer.field.ShortBitField;
 import org.js4ms.common.util.buffer.field.ShortField;
 import org.js4ms.common.util.buffer.parser.MissingParserException;
 import org.js4ms.common.util.logging.Logging;
-import org.js4ms.net.ip.format.IPAuthenticationHeader;
-import org.js4ms.net.ip.format.IPExtensionHeader;
-import org.js4ms.net.ip.format.IPMessage;
-import org.js4ms.net.ip.format.IPPacket;
+import org.js4ms.ip.IPAuthenticationHeader;
+import org.js4ms.ip.IPExtensionHeader;
+import org.js4ms.ip.IPMessage;
+import org.js4ms.ip.IPPacket;
 
 
 
