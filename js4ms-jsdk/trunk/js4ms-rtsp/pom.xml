@@ -47,5 +47,10 @@
       <artifactId>js4ms-http</artifactId>
       <version>0.0.1-SNAPSHOT</version>
     </dependency>
-    </dependencies>
+    <dependency>
+      <groupId>javax.sip</groupId>
+      <artifactId>jain-sip-ri</artifactId>
+      <version>1.2.159</version>
+    </dependency>
+  </dependencies>
 </project>
