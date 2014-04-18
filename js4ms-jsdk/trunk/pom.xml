@@ -7,6 +7,19 @@
   <packaging>pom</packaging>
   <name>Java SDK for Muliticast Services</name>
   <description>Parent project for js4ms packages.</description>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.5.1</version>
+        <configuration>
+          <source>1.7</source>
+          <target>1.7</target>
+      </configuration>
+      </plugin>
+    </plugins>
+  </build>
   <modules>
     <module>js4ms-common</module>
     <module>js4ms-io</module>
