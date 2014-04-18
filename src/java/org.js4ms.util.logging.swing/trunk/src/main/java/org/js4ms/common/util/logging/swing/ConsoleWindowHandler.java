@@ -1,4 +1,4 @@
-package org.js4ms.util.logging.swing;
+package org.js4ms.common.util.logging.swing;
 
 import java.nio.charset.Charset;
 import java.util.logging.LogRecord;
