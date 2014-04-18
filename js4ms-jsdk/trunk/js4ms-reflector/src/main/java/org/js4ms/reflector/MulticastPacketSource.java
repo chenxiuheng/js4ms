@@ -5,12 +5,12 @@ import java.net.InetAddress;
 import java.nio.ByteBuffer;
 
 import org.js4ms.amt.gateway.AmtDatagramSource;
+import org.js4ms.amt.proxy.SourceFilter;
 import org.js4ms.io.channel.MessageSource;
 import org.js4ms.io.channel.MessageTransform;
 import org.js4ms.io.channel.OutputChannel;
 import org.js4ms.io.channel.OutputChannelTransform;
 import org.js4ms.io.net.UdpDatagram;
-import org.js4ms.net.ip.multicast.service.proxy.SourceFilter;
 
 
 
