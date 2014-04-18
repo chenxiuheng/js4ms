@@ -7,6 +7,12 @@ import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.js4ms.amt.proxy.IPv4MembershipQueryTransform;
+import org.js4ms.amt.proxy.IPv4MembershipReportTransform;
+import org.js4ms.amt.proxy.IPv6MembershipQueryTransform;
+import org.js4ms.amt.proxy.IPv6MembershipReportTransform;
+import org.js4ms.amt.proxy.MembershipQuery;
+import org.js4ms.amt.proxy.MembershipReport;
 import org.js4ms.common.util.logging.Log;
 import org.js4ms.common.util.logging.Logging;
 import org.js4ms.io.channel.MessageKeyExtractor;
@@ -21,12 +27,6 @@ import org.js4ms.ip.ipv4.IPv4Packet;
 import org.js4ms.ip.ipv6.IPv6Packet;
 import org.js4ms.ip.protocol.igmp.IGMPMessage;
 import org.js4ms.ip.protocol.mld.MLDMessage;
-import org.js4ms.net.ip.multicast.service.proxy.IPv4MembershipQueryTransform;
-import org.js4ms.net.ip.multicast.service.proxy.IPv4MembershipReportTransform;
-import org.js4ms.net.ip.multicast.service.proxy.IPv6MembershipQueryTransform;
-import org.js4ms.net.ip.multicast.service.proxy.IPv6MembershipReportTransform;
-import org.js4ms.net.ip.multicast.service.proxy.MembershipQuery;
-import org.js4ms.net.ip.multicast.service.proxy.MembershipReport;
 
 
 
