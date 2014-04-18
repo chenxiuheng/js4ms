@@ -12,6 +12,5 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.server"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.http"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.rest"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.ip"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
