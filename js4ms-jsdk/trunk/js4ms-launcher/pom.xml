@@ -11,7 +11,7 @@
   <artifactId>js4ms-launcher</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>js4ms-launcher</name>
-  <url>http://maven.apache.org</url>
+  <description>Classes used to launch Java and Java Web Start applications.</description>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>

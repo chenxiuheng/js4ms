@@ -11,7 +11,7 @@
   <artifactId>js4ms-rest</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>js4ms-rest</name>
-  <url>http://maven.apache.org</url>
+  <description>Core components for implementing RESTful protocols such as HTTP and RTSP.</description>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>

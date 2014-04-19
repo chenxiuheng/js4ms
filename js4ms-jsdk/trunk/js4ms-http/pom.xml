@@ -11,7 +11,7 @@
   <artifactId>js4ms-http</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>js4ms-http</name>
-  <url>http://maven.apache.org</url>
+  <description>HTTP protocol classes</description>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>

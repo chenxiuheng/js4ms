@@ -11,7 +11,7 @@
   <artifactId>js4ms-io</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>js4ms-io</name>
-  <url>http://maven.apache.org</url>
+  <description>Stream and message channel classes used in other js4ms packages.</description>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>

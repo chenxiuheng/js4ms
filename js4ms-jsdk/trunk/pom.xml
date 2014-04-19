@@ -6,7 +6,86 @@
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Java SDK for Muliticast Services</name>
-  <description>Parent project for js4ms packages.</description>
+  <description>Parent project for JS4MS packages.</description>
+  <url>https://code.js4ms.org</url>
+  <organization>
+    <name>Java SDK for Multicast Services Open Source Project</name>
+    <url>https://code.js4ms.org</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>gbumgard</id>
+      <name>Greg Bumgardner</name>
+      <email>gbumgard@gmail.com</email>
+      <organization>Larkwood Labs Software</organization>
+      <organizationUrl>http://www.larkwoodlabs.com</organizationUrl>
+      <roles>
+        <role>architect</role>
+        <role>developer</role>
+      </roles>
+      <timezone>-8</timezone>
+    </developer>
+  </developers>
+  <issueManagement>
+    <system>Google Code</system>
+    <url>https://code.google.com/p/js4ms/issues</url>
+  </issueManagement>
+  <scm>
+    <connection>scm:svn:https://js4ms.googlecode.com/svn</connection>
+    <developerConnection>scm:svn:https://js4ms.googlecode.com/svn</developerConnection>
+    <tag>HEAD</tag>
+    <url>https://code.google.com/p/js4ms/source/browse</url>
+  </scm>
+  <distributionManagement>
+    <site>
+      <id>js4ms.org</id>
+      <url>file:://${project.build.directory}/staging</url>
+    </site>
+  </distributionManagement>
+  <mailingLists>
+    <mailingList>
+      <name>Announcements</name>
+      <archive>https://groups.google.com/d/forum/js4ms-announcements</archive>
+      <subscribe>https://groups.google.com/d/forum/js4ms-announcements/subscribe</subscribe>
+      <unsubscribe>js4ms-announcements+unsubscribe@googlegroups.com</unsubscribe>
+    </mailingList>
+    <mailingList>
+      <name>Commits</name>
+      <archive>https://groups.google.com/d/forum/js4ms-commits</archive>
+      <subscribe>https://groups.google.com/d/forum/js4ms-commits/subscribe</subscribe>
+      <unsubscribe>js4ms-commits+unsubscribe@googlegroups.com</unsubscribe>
+    </mailingList>
+    <mailingList>
+      <name>Issues</name>
+      <archive>https://groups.google.com/d/forum/js4ms-issues</archive>
+      <subscribe>https://groups.google.com/d/forum/js4ms-issues/subscribe</subscribe>
+      <unsubscribe>js4ms-issues+unsubscribe@googlegroups.com</unsubscribe>
+    </mailingList>
+    <mailingList>
+      <name>Community Forum</name>
+      <archive>https://groups.google.com/d/forum/js4ms-community-forum</archive>
+      <subscribe>https://groups.google.com/d/forum/js4ms-community-forum/subscribe</subscribe>
+      <unsubscribe>js4ms-community-forum+unsubscribe@googlegroups.com</unsubscribe>
+    </mailingList>
+    <mailingList>
+      <name>Developer Forum</name>
+      <archive>https://groups.google.com/d/forum/js4ms-developer-forum</archive>
+      <subscribe>https://groups.google.com/d/forum/js4ms-developer-forum/subscribe</subscribe>
+      <unsubscribe>js4ms-developer-forum+unsubscribe@googlegroups.com</unsubscribe>
+    </mailingList>
+    <mailingList>
+      <name>Support Forum</name>
+      <archive>https://groups.google.com/d/forum/js4ms-support-forum</archive>
+      <subscribe>https://groups.google.com/d/forum/js4ms-support-forum/subscribe</subscribe>
+      <unsubscribe>js4ms-support-forum+unsubscribe@googlegroups.com</unsubscribe>
+    </mailingList>
+  </mailingLists>
   <build>
     <plugins>
       <plugin>
@@ -18,8 +97,65 @@
           <target>1.7</target>
       </configuration>
       </plugin>
+      <plugin>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.1.1</version>
+        <executions>
+          <execution>
+            <id>bundle-sources</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar-no-fork</goal>
+            <!-- 
+              <goal>test-jar-no-fork</goal>
+            -->
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>3.3</version>
+      </plugin>
     </plugins>
   </build>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.9.1</version>
+        <configuration>
+          <source>1.7</source>
+          <failOnError>false</failOnError>
+          <!--  <detectLinks>true</detectLinks> -->
+        </configuration>
+        <reportSets>
+          <reportSet>
+            <id>non-aggregate</id>
+            <configuration>
+            </configuration>
+            <reports>
+              <report>javadoc</report>
+            </reports>
+          </reportSet>
+          <reportSet>
+            <id>aggregate</id>
+            <configuration>
+            </configuration>
+            <reports>
+              <report>aggregate</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+        </plugin>
+      <plugin>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>2.7</version>
+      </plugin>
+    </plugins>
+  </reporting>
   <modules>
     <module>js4ms-common</module>
     <module>js4ms-io</module>
