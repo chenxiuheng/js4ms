@@ -11,10 +11,7 @@
   <artifactId>js4ms-jws-launcher</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>js4ms-jws-launcher</name>
-  <url>http://maven.apache.org</url>
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
+  <description>Applet for launching a Java Web Start application as an independent process.</description>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>

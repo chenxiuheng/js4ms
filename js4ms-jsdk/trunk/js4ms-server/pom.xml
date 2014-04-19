@@ -12,9 +12,6 @@
   <version>0.0.1-SNAPSHOT</version>
   <name>js4ms-server</name>
   <description>Components for implementing connection oriented services.</description>
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>

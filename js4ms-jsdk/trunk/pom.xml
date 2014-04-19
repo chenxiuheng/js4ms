@@ -45,7 +45,7 @@
   <distributionManagement>
     <site>
       <id>js4ms.org</id>
-      <url>file:://${project.build.directory}/staging</url>
+      <url>file::///Users/gbumgard/Documents/workspace-js4ms/js4ms-sdk/target/staging</url>
     </site>
   </distributionManagement>
   <mailingLists>
@@ -86,6 +86,10 @@
       <unsubscribe>js4ms-support-forum+unsubscribe@googlegroups.com</unsubscribe>
     </mailingList>
   </mailingLists>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+  </properties>
   <build>
     <plugins>
       <plugin>
