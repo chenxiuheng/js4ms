@@ -167,5 +167,6 @@
     <module>js4ms-rtsp</module>
     <module>js4ms-launcher</module>
     <module>js4ms-reflector</module>
+    <module>js4ms-jws-reflector</module>
   </modules>
 </project>
