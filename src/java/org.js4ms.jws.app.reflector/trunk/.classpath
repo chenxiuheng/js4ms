@@ -8,7 +8,7 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="/jain-sdp/jain-sdp-1.0.100.jar"/>
 	<classpathentry kind="lib" path="/jnlp/jnlp.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.common"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.js4ms.reflector"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/js4ms-reflector"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/js4ms-common"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
