@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.js4ms.jws.applet.launcher;
+package org.js4ms.jws.launcher;
 
 import java.applet.Applet;
 import java.io.File;
