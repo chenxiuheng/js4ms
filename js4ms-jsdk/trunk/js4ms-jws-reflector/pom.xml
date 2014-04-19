@@ -23,6 +23,16 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.js4ms.common</groupId>
+      <artifactId>js4ms-common</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.js4ms.reflector</groupId>
+      <artifactId>js4ms-reflector</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
       <groupId>javax.sip</groupId>
       <artifactId>jain-sip-ri</artifactId>
       <version>1.2.159</version>

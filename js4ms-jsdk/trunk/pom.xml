@@ -168,5 +168,6 @@
     <module>js4ms-launcher</module>
     <module>js4ms-reflector</module>
     <module>js4ms-jws-reflector</module>
+    <module>js4ms-jws-launcher</module>
   </modules>
 </project>
