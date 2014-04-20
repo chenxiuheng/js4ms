@@ -6,4 +6,7 @@
   <packaging>pom</packaging>
   <name>js4ms-jws-reflector</name>
   <description>Parent project for RTSP multicast reflector Java Web Start application</description>
+  <modules>
+    <module>jar</module>
+  </modules>
 </project>
