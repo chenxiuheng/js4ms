@@ -1,24 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.js4ms</groupId>
-  <artifactId>js4ms-jsdk</artifactId>
+  <parent>
+    <groupId>org.js4ms</groupId>
+    <artifactId>js4ms</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <groupId>org.js4ms.jsdk</groupId>
+  <artifactId>jsdk</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Java SDK for Muliticast Services</name>
   <description>Parent project for JS4MS packages.</description>
   <modules>
-    <module>js4ms-common</module>
-    <module>js4ms-io</module>
-    <module>js4ms-ip</module>
-    <module>js4ms-amt</module>
-    <module>js4ms-server</module>
-    <module>js4ms-rest</module>
-    <module>js4ms-http</module>
-    <module>js4ms-rtsp</module>
-    <module>js4ms-launcher</module>
-    <module>js4ms-reflector</module>
-    <module>js4ms-jws-reflector-jar</module>
-    <module>js4ms-jws-launcher</module>
+    <module>common</module>
+    <module>io</module>
+    <module>ip</module>
+    <module>amt</module>
+    <module>server</module>
+    <module>rest</module>
+    <module>http</module>
+    <module>rtsp</module>
+    <module>launcher</module>
+    <module>reflector</module>
   </modules>
 </project>

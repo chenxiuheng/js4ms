@@ -3,15 +3,15 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.js4ms</groupId>
+    <groupId>org.js4ms.jsdk</groupId>
     <artifactId>js4ms-jsdk</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <groupId>org.js4ms.server</groupId>
-  <artifactId>js4ms-server</artifactId>
+  <groupId>org.js4ms.jsdk</groupId>
+  <artifactId>launcher</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>js4ms-server</name>
-  <description>Components for implementing connection oriented services.</description>
+  <name>js4ms-launcher</name>
+  <description>Classes used to launch Java VM and Java Web Start applications as independent processes.</description>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -20,8 +20,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.js4ms.common</groupId>
-      <artifactId>js4ms-common</artifactId>
+      <groupId>org.js4ms.jsdk</groupId>
+      <artifactId>common</artifactId>
       <version>0.0.1-SNAPSHOT</version>
     </dependency>
   </dependencies>
