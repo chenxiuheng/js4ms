@@ -8,12 +8,12 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
   <groupId>org.js4ms.jws.reflector</groupId>
-  <artifactId>js4ms-jws-reflector</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <artifactId>js4ms-jws-reflector-jar</artifactId>
+  <version>0.0.1.${maven.build.timestamp}-SNAPSHOT</version>
   <name>js4ms-jws-reflector</name>
   <description>RTSP multicast reflector Java Web Start application.</description>
   <build>
-    <finalName>RtspMulticastReflectorApp__V${project.version}.v${maven.build.timestamp}</finalName>
+    <finalName>RtspMulticastReflectorApp__V${project.version}</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

@@ -43,10 +43,16 @@
     <url>https://code.google.com/p/js4ms/source/browse</url>
   </scm>
   <distributionManagement>
-    <site>
-      <id>js4ms.org</id>
-      <url>file::///Users/gbumgard/Documents/workspace-js4ms/js4ms-sdk/target/staging</url>
-    </site>
+    <repository>
+       <id>deployment</id>
+       <name>Internal Releases</name>
+       <url>http://localhost:8081/nexus/content/repositories/releases/</url>
+    </repository>
+    <snapshotRepository>
+       <id>deployment</id>
+       <name>Internal Releases</name>
+       <url>http://localhost:8081/nexus/content/repositories/snapshots/</url>
+    </snapshotRepository>
   </distributionManagement>
   <mailingLists>
     <mailingList>
@@ -172,7 +178,7 @@
     <module>js4ms-rtsp</module>
     <module>js4ms-launcher</module>
     <module>js4ms-reflector</module>
-    <module>js4ms-jws-reflector</module>
+    <module>js4ms-jws-reflector-jar</module>
     <module>js4ms-jws-launcher</module>
   </modules>
 </project>
