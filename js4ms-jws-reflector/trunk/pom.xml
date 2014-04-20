@@ -1,0 +1,9 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.js4ms.jws.reflector</groupId>
+  <artifactId>js4ms-jws-reflector</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>js4ms-jws-reflector</name>
+  <description>Parent project for RTSP multicast reflector Java Web Start application</description>
+</project>
