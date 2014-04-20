@@ -12,6 +12,35 @@
   <version>0.0.1-SNAPSHOT</version>
   <name>js4ms-jws-reflector</name>
   <description>RTSP multicast reflector Java Web Start application.</description>
+  <build>
+    <finalName>RtspMulticastReflectorApp__V${project.version}.v${maven.build.timestamp}</finalName>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>2.2</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <minimizeJar>true</minimizeJar>
+              <artifactSet>
+                <excludes>
+                  <exclude>junit:junit</exclude>
+                  <exclude>org.js4ms.common:js4ms-common</exclude>
+                  <exclude>javax.sip:jain-sip-ri</exclude>
+                  <exclude>javax.jnlp:jnlp-api</exclude>
+                </excludes>
+              </artifactSet>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>

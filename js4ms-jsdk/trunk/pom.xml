@@ -9,7 +9,7 @@
   <description>Parent project for JS4MS packages.</description>
   <url>https://code.js4ms.org</url>
   <organization>
-    <name>Java SDK for Multicast Services Open Source Project</name>
+    <name>js4ms.org</name>
     <url>https://code.js4ms.org</url>
   </organization>
   <licenses>
@@ -89,6 +89,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
   </properties>
   <build>
     <plugins>
