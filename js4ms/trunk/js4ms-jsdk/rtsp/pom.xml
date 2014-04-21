@@ -10,7 +10,7 @@
   <groupId>org.js4ms.jsdk</groupId>
   <artifactId>rtsp</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>js4ms-rtsp</name>
+  <name>rtsp</name>
   <description>RTSP service components.</description>
   <dependencies>
     <dependency>

@@ -10,7 +10,7 @@
   <groupId>org.js4ms.jsdk</groupId>
   <artifactId>reflector</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>js4ms-reflector</name>
+  <name>reflector</name>
   <description>RTSP multicast reflector application.</description>
   <build>
     <plugins>

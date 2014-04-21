@@ -10,7 +10,7 @@
   <groupId>org.js4ms.jsdk</groupId>
   <artifactId>launcher</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>js4ms-launcher</name>
+  <name>launcher</name>
   <description>Classes used to launch Java VM and Java Web Start applications as independent processes.</description>
   <dependencies>
     <dependency>

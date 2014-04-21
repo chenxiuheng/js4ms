@@ -10,7 +10,7 @@
   <groupId>org.js4ms.jsdk</groupId>
   <artifactId>ip</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>js4ms-ip</name>
+  <name>ip</name>
   <description>Classes for parsing and constructing various IP protocol messages.</description>
   <dependencies>
     <dependency>

@@ -11,10 +11,10 @@
   <packaging>pom</packaging>
   <name>js4ms</name>
   <description>Parent project for all JS4MS project artifacts.</description>
-  <url>https://code.js4ms.org</url>
+  <url>https://code.google.com/p/js4ms</url>
   <organization>
     <name>js4ms.org</name>
-    <url>https://code.js4ms.org</url>
+    <url>https://code.google.com/p/js4ms</url>
   </organization>
   <licenses>
     <license>
@@ -48,20 +48,17 @@
   </scm>
   <distributionManagement>
     <repository>
-       <id>deployment</id>
-       <name>Internal Releases</name>
-       <url>http://localhost:8081/nexus/content/repositories/releases/</url>
+      <id>releases</id>
+      <url>dav:http://localhost:8081/nexus/content/repositories/releases</url>
     </repository>
     <snapshotRepository>
-       <id>deployment</id>
-       <name>Internal Releases</name>
-       <url>http://localhost:8081/nexus/content/repositories/snapshots/</url>
+      <id>snapshots</id>
+      <url>dav:http://localhost:8081/nexus/content/repositories/snapshots</url>
     </snapshotRepository>
     <site>
-       <id>deployment</id>
-       <name>Internal Releases</name>
-       <url>http://localhost:8082</url>
-     </site>
+      <id>site-snapshots</id>
+      <url>dav:http://localhost:8081/nexus/content/repositories/site-snapshots</url>
+    </site>
   </distributionManagement>
   <mailingLists>
     <mailingList>
@@ -148,8 +145,14 @@
         <artifactId>maven-site-plugin</artifactId>
         <version>3.3</version>
         <configuration>
-          <port>8082</port>
         </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.maven.wagon</groupId>
+            <artifactId>wagon-webdav-jackrabbit</artifactId>
+            <version>2.6</version>
+          </dependency>
+        </dependencies>
       </plugin>
     </plugins>
   </build>
@@ -166,17 +169,8 @@
         </configuration>
         <reportSets>
           <reportSet>
-            <id>non-aggregate</id>
-            <configuration>
-            </configuration>
-            <reports>
-              <report>javadoc</report>
-            </reports>
-          </reportSet>
-          <reportSet>
             <id>aggregate</id>
-            <configuration>
-            </configuration>
+            <inherited>false</inherited>
             <reports>
               <report>aggregate</report>
             </reports>

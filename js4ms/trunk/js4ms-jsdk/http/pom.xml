@@ -10,7 +10,7 @@
   <groupId>org.js4ms.jsdk</groupId>
   <artifactId>http</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>js4ms-http</name>
+  <name>http</name>
   <description>HTTP protocol classes.</description>
   <dependencies>
     <dependency>

@@ -10,7 +10,7 @@
   <groupId>org.js4ms.jsdk</groupId>
   <artifactId>rest</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>js4ms-rest</name>
+  <name>rest</name>
   <description>Core components for implementing RESTful protocols such as HTTP and RTSP.</description>
   <dependencies>
     <dependency>

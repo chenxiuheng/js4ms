@@ -10,7 +10,7 @@
   <groupId>org.js4ms.jsdk</groupId>
   <artifactId>amt</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>js4ms-amt</name>
+  <name>amt</name>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>

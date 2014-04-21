@@ -10,7 +10,7 @@
   <groupId>org.js4ms.jsdk</groupId>
   <artifactId>io</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>js4ms-io</name>
+  <name>io</name>
   <description>Stream and message channel classes used in other js4ms packages.</description>
   <dependencies>
     <dependency>
