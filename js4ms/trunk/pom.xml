@@ -52,6 +52,11 @@
        <name>Internal Releases</name>
        <url>http://localhost:8081/nexus/content/repositories/snapshots/</url>
     </snapshotRepository>
+    <site>
+       <id>deployment</id>
+       <name>Internal Releases</name>
+       <url>http://localhost:8082</url>
+     </site>
   </distributionManagement>
   <mailingLists>
     <mailingList>
@@ -124,6 +129,9 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
         <version>3.3</version>
+        <configuration>
+          <port>8082</port>
+        </configuration>
       </plugin>
     </plugins>
   </build>
@@ -164,6 +172,6 @@
     </plugins>
   </reporting>
   <modules>
-      <module>js4ms-sdk</module>
+      <module>js4ms-jsdk</module>
   </modules>
 </project>

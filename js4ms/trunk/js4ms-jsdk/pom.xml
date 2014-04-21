@@ -7,7 +7,7 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
   <groupId>org.js4ms.jsdk</groupId>
-  <artifactId>jsdk</artifactId>
+  <artifactId>js4ms-jsdk</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Java SDK for Muliticast Services</name>
