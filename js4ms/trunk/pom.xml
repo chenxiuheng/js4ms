@@ -178,5 +178,6 @@
   </reporting>
   <modules>
       <module>js4ms-jsdk</module>
+      <module>js4ms-jws-reflector</module>
   </modules>
 </project>

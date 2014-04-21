@@ -3,17 +3,17 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.js4ms</groupId>
-    <artifactId>js4ms-jsdk</artifactId>
+    <groupId>org.js4ms.jws.reflector</groupId>
+    <artifactId>js4ms-jws-reflector</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
   <groupId>org.js4ms.jws.reflector</groupId>
-  <artifactId>js4ms-jws-reflector-jar</artifactId>
+  <artifactId>reflector</artifactId>
   <version>0.0.1.${maven.build.timestamp}-SNAPSHOT</version>
-  <name>js4ms-jws-reflector</name>
+  <name>application</name>
   <description>RTSP multicast reflector Java Web Start application.</description>
   <build>
-    <finalName>RtspMulticastReflectorApp__V${project.version}</finalName>
+    <finalName>application__V${project.version}</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
