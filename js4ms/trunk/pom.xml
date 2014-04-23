@@ -11,6 +11,7 @@
   <packaging>pom</packaging>
   <name>js4ms</name>
   <description>Parent project for all JS4MS project artifacts.</description>
+  <inceptionYear>2009</inceptionYear>
   <url>https://code.google.com/p/js4ms</url>
   <organization>
     <name>js4ms.org</name>
@@ -125,6 +126,40 @@
             <nonFilteredFileExtension>xls</nonFilteredFileExtension>
           </nonFilteredFileExtensions>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>license-maven-plugin</artifactId>
+        <version>1.6</version>
+        <configuration>
+          <verbose>true</verbose>
+        </configuration>
+        <executions>
+          <execution>
+            <id>first</id>
+            <goals>
+              <goal>update-file-header</goal>
+            </goals>
+            <phase>process-sources</phase>
+            <configuration>
+              <organizationName>Cisco Systems, Inc.</organizationName>
+              <projectName>${project.groupId}:${project.artifactId}</projectName>
+              <licenseName>apache_v2</licenseName>
+              <descriptionTemplate>src/license/description.ftl</descriptionTemplate>
+              <canUpdateCopyright>true</canUpdateCopyright>
+              <canUpdateDescription>true</canUpdateDescription>
+              <roots>
+                <root>src</root>
+              </roots>
+              <extraExtensions>
+                  <jnlp>xml</jnlp>
+              </extraExtensions>
+              <excludes>
+                <exclude>**/jnlp/**</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

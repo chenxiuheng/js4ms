@@ -1,5 +1,27 @@
 package org.js4ms.jws.reflector;
 
+/*
+ * #%L
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *  
+ * RtspMulticastReflectorApp.java [org.js4ms.jws.reflector:jnlp-app]
+ * %%
+ * Copyright (C) 2009 - 2014 Cisco Systems, Inc.
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.Enumeration;
@@ -28,6 +50,9 @@ public class RtspMulticastReflectorApp implements SingleInstanceListener {
     public static final Logger logger = Logger.getLogger(RtspMulticastReflectorApp.class.getName());
 
     public static final String  JAVAWS_PROPERTY_PREFIX = "javaws.org.js4ms.";
+    public static final int  JAVAWS_PROPERTY_PREFIX_LENGTH = JAVAWS_PROPERTY_PREFIX.length();
+    public static final String  JNLP_PROPERTY_PREFIX = "jnlp.org.js4ms.";
+    public static final int  JNLP_PROPERTY_PREFIX_LENGTH = JNLP_PROPERTY_PREFIX.length();
 
     public static final String  SERVICE_PROPERTY_PREFIX = "org.js4ms.service.";
 
@@ -65,11 +90,14 @@ public class RtspMulticastReflectorApp implements SingleInstanceListener {
      */
     public static void transferJWSProperties() {
         Enumeration<?> iter = System.getProperties().propertyNames();
-        int prefixLength = "javaws.".length();
         while (iter.hasMoreElements()) {
             String name = (String)iter.nextElement();
             if (name.startsWith(JAVAWS_PROPERTY_PREFIX)) {
-                String propertyName = name.substring(prefixLength);
+                String propertyName = name.substring(JAVAWS_PROPERTY_PREFIX_LENGTH);
+                System.setProperty(propertyName, System.getProperty(name));
+            }
+            else if (name.startsWith(JNLP_PROPERTY_PREFIX)) {
+                String propertyName = name.substring(JNLP_PROPERTY_PREFIX_LENGTH);
                 System.setProperty(propertyName, System.getProperty(name));
             }
         }
