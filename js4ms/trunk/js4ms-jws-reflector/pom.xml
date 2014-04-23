@@ -1,6 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.js4ms</groupId>
@@ -12,7 +11,15 @@
   <packaging>pom</packaging>
   <name>js4ms-jws-reflector</name>
   <description>Parent project for the RTSP multicast reflector Java Web Start application.</description>
+  <properties>
+    <project.application.class>RtspMulticastReflectorApp</project.application.class>
+    <project.application.class-name>${project.groupId}.${project.application.class}</project.application.class-name>
+    <project.jar.name>${project.application.class}</project.jar.name>
+    <project.jar.version>${project.version}.${maven.build.timestamp}</project.jar.version>
+    <project.jar.finalName>${project.jar.name}__V${project.jar.version}</project.jar.finalName>
+  </properties>
   <modules>
-    <module>application</module>
+    <module>jnlp-app</module>
+    <module>jnlp-webapp</module>
   </modules>
 </project>
