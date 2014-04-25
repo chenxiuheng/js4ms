@@ -12,8 +12,8 @@
   <name>js4ms-jws-reflector</name>
   <description>Parent project for the RTSP multicast reflector Java Web Start application.</description>
   <properties>
-    <application.title>RTSP Multicast Reflector</application.title>
-    <application.description>A Java Web Start application the provides access to multicast streams via the RTSP protocol.</application.description>
+    <application.title>JS4MS RTSP Multicast Reflector</application.title>
+    <application.description>A Java Web Start application that provides access to multicast streams via the RTSP and AMT protocols.</application.description>
     <application.version>${project.version}</application.version>
     <application.baseClassName>RtspMulticastReflectorApp</application.baseClassName>
     <application.fullClassName>${project.groupId}.${application.baseClassName}</application.fullClassName>
@@ -32,7 +32,6 @@
           <artifactId>gmaven-plugin</artifactId>
           <executions>
              <execution>
-                <phase>validate</phase>
                 <goals>
                    <goal>execute</goal>
                 </goals>

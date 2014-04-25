@@ -11,7 +11,7 @@
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Java SDK for Muliticast Services</name>
-  <description>Parent project for JS4MS packages.</description>
+  <description>Parent project for JS4MS jars.</description>
   <modules>
     <module>common</module>
     <module>io</module>
