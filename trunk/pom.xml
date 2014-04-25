@@ -45,7 +45,7 @@
     <connection>scm:svn:https://js4ms.googlecode.com/svn</connection>
     <developerConnection>scm:svn:https://js4ms.googlecode.com/svn</developerConnection>
     <tag>HEAD</tag>
-    <url>https://code.google.com/p/js4ms/source/browse</url>
+    <url>https://code.google.com/p/js4ms/source/browse/#svn</url>
   </scm>
   <distributionManagement>
     <repository>
