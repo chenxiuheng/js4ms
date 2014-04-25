@@ -9,7 +9,7 @@
   <artifactId>js4ms</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>js4ms</name>
+  <name>${project.artifactId}</name>
   <description>Parent project for all JS4MS project artifacts.</description>
   <inceptionYear>2009</inceptionYear>
   <url>https://code.google.com/p/js4ms</url>

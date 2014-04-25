@@ -9,7 +9,7 @@
   <groupId>org.js4ms.jws.reflector</groupId>
   <artifactId>js4ms-jws-reflector</artifactId>
   <packaging>pom</packaging>
-  <name>js4ms-jws-reflector</name>
+  <name>${project.artifactId}</name>
   <description>Parent project for the RTSP multicast reflector Java Web Start application.</description>
   <properties>
     <application.title>JS4MS RTSP Multicast Reflector</application.title>
