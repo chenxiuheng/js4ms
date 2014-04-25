@@ -23,10 +23,10 @@
 <jnlp-versions>
     <resource>
         <pattern>
-            <name>${project.application.class}.jar</name>
-            <version-id>${project.version}</version-id>
+            <name>${application.baseJarFile}</name>
+            <version-id>${application.baseJarVersion}</version-id>
         </pattern>
-        <file>${project.build.finalName}.jar</file>
+        <file>${application.finalJarFile}</file>
     </resource>
 </jnlp-versions>
 

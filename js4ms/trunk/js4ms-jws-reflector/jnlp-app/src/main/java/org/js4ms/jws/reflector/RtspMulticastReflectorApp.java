@@ -28,6 +28,9 @@ import java.util.Enumeration;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.logging.Logger;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.Iterator;
 
 import javax.jnlp.ServiceManager;
 import javax.jnlp.SingleInstanceListener;
@@ -103,7 +106,42 @@ public class RtspMulticastReflectorApp implements SingleInstanceListener {
         }
     }
 
+    private static void parseArgs(HashMap<String,String> map, String[] args) {
+        for (String arg: args) {
+            arg = arg.trim();
+            if (arg.indexOf(' ') != -1) {
+                parseArgs(map, arg.split("\\s+"));
+            }
+            else {
+                if (arg.indexOf('-') == 0) {
+                  arg = arg.substring(1);
+                }
+                String[] pair = arg.split("[=]");
+                if (pair.length == 1) {
+                    map.put(pair[0],null);
+                }
+                else {
+                    map.put(pair[0],pair[1]);
+                }
+            }
+        }
+    }
+
     public static void main(final String[] args) {
+
+        HashMap<String,String> cliArgs = new HashMap<String,String>();
+
+        parseArgs(cliArgs,args);
+
+        Set<String> argNames =  cliArgs.keySet();
+        Iterator<String> iterator = argNames.iterator();
+
+        while (iterator.hasNext()) {
+            String name = iterator.next();
+            String value = cliArgs.get(name);
+            System.out.println("adding property "+name+" = "+value);
+            System.setProperty(name,value);
+        }
 
         transferJWSProperties();
 

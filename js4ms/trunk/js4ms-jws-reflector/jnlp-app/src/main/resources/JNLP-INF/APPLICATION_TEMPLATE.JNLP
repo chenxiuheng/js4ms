@@ -23,8 +23,8 @@
 
 <jnlp spec="1.0+" href="*" codebase="*">
   <information>
-    <title>${project.application.class}</title>
-    <description>${project.description}</description>
+    <title>${application.title}</title>
+    <description>${application.description}</description>
     <vendor>${project.organization.name}</vendor>
     <homepage href="${project.organization.url}" />
   </information>
@@ -33,13 +33,10 @@
   </security>
   <resources>
     <j2se version="1.7.0+" href="http://java.sun.com/products/autodl/j2se" />
-    <jar href="${project.jar.name}.jar" version="${project.version}" main="true"/>
+    <jar href="${application.baseJarFile}" version="${application.baseJarVersion}" main="true"/>
     <property name="jnlp.versionEnabled" value="true"/>
-    <property name="jnlp.org.js4ms.service.socket.port" value="*"/>
-    <property name="jnlp.org.js4ms.service.socket.address" value="*"/>
-    <property name="jnlp.org.js4ms.service.keepalive.enabled" value="*"/>
-    <property name="jnlp.org.js4ms.service.keepalive.timeout" value="*"/>
-    <property name="jnlp.org.js4ms.service.maxconnections" value="*"/>
   </resources>
-  <application-desc main-class="${project.application.class-name}" />
+  <application-desc main-class="${application.fullClassName}">
+    <argument>*</argument>
+  </application-desc>
 </jnlp>

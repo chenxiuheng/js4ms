@@ -136,12 +136,12 @@
         </configuration>
         <executions>
           <execution>
-            <id>first</id>
             <goals>
-              <goal>update-file-header</goal>
+              <goal>check-file-header</goal>
             </goals>
             <phase>process-sources</phase>
             <configuration>
+              <skipCheckLicense>true</skipCheckLicense>
               <organizationName>Cisco Systems, Inc.</organizationName>
               <projectName>${project.groupId}:${project.artifactId}</projectName>
               <licenseName>apache_v2</licenseName>
@@ -153,7 +153,8 @@
               </roots>
               <extraExtensions>
                   <jnlp>xml</jnlp>
-              </extraExtensions>
+                  <JNLP>xml</JNLP>
+                  </extraExtensions>
               <excludes>
                 <exclude>**/jnlp/**</exclude>
               </excludes>

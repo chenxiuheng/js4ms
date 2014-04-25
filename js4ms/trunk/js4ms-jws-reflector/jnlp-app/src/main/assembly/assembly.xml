@@ -32,7 +32,7 @@
       <source>src/main/resources/application.jnlp</source>
       <outputDirectory>/</outputDirectory>
       <filtered>true</filtered>
-      <destName>${project.jar.name}.jnlp</destName>
+      <destName>${application.jnlpFile}</destName>
     </file>
     <file>
       <source>src/main/resources/version.xml</source>

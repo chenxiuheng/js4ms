@@ -39,4 +39,52 @@
     <url-pattern>*.jnlp</url-pattern>
     <url-pattern>*.jar</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>jnlp-generator</servlet-name>
+    <jsp-file>/jnlp-generator.jsp</jsp-file>
+    <init-param>
+      <param-name>title</param-name>
+      <param-value>${application.title}</param-value>
+    </init-param>
+    <init-param>
+      <param-name>vendor</param-name>
+      <param-value>${project.organization.name}</param-value>
+    </init-param>
+    <init-param>
+      <param-name>homePage</param-name>
+      <param-value>${project.organization.url}</param-value>
+    </init-param>
+    <init-param>
+      <param-name>description</param-name>
+      <param-value>${application.description}</param-value>
+    </init-param>
+    <init-param>
+      <param-name>timestamp</param-name>
+      <param-value>${application.timestamp}</param-value>
+    </init-param>
+    <init-param>
+      <param-name>lastModified</param-name>
+      <param-value>${application.lastModified}</param-value>
+    </init-param>
+    <init-param>
+      <param-name>jnlpName</param-name>
+      <param-value>${application.jnlpFile}</param-value>
+    </init-param>
+    <init-param>
+      <param-name>mainClass</param-name>
+      <param-value>${application.fullClassName}</param-value>
+    </init-param>
+    <init-param>
+      <param-name>jarName</param-name>
+      <param-value>${application.baseJarFile}</param-value>
+    </init-param>
+    <init-param>
+      <param-name>jarVersion</param-name>
+      <param-value>${application.baseJarVersion}</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>jnlp-generator</servlet-name>
+    <url-pattern>/${application.jnlpFile}</url-pattern>
+  </servlet-mapping>
 </web-app>
