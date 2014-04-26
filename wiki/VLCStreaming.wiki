@@ -134,6 +134,6 @@ The following tcpdump invocation can be used to verify that these streams are be
 sudo tcpdump -n -i eth0 port 1234
 }}}
 
-The following RTSP URL can be used to play the streams via the AMT reflector running on port 5554 on localhost:
+An RTSP URL that can be used play a multicast stream via the AMT reflector running on port 5554 on localhost will look something like this:
 
 {{{rtsp://localhost:5554/reflect?sdp_url=http://149.20.1.154:8088/bigbuckbunny_320x180_ipv4.sdp&relay_address=154.17.0.1&source_address=149.20.1.154}}}
