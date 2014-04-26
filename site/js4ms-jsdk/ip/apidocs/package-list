@@ -1,7 +1,0 @@
-org.js4ms.ip
-org.js4ms.ip.ipv4
-org.js4ms.ip.ipv6
-org.js4ms.ip.protocol.icmp
-org.js4ms.ip.protocol.igmp
-org.js4ms.ip.protocol.mld
-org.js4ms.ip.protocol.udp
