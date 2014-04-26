@@ -1,0 +1,8 @@
+org.js4ms.rest.client
+org.js4ms.rest.common
+org.js4ms.rest.entity
+org.js4ms.rest.handler
+org.js4ms.rest.header
+org.js4ms.rest.message
+org.js4ms.rest.server
+org.js4ms.rest.util
