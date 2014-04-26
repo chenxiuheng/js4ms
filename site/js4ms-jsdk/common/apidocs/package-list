@@ -1,9 +1,0 @@
-org.js4ms.common.exception
-org.js4ms.common.util.buffer
-org.js4ms.common.util.buffer.field
-org.js4ms.common.util.buffer.parser
-org.js4ms.common.util.event
-org.js4ms.common.util.logging
-org.js4ms.common.util.logging.swing
-org.js4ms.common.util.pool
-org.js4ms.common.util.task
