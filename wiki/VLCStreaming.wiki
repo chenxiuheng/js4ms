@@ -136,4 +136,4 @@ sudo tcpdump -n -i eth0 port 1234
 
 The following RTSP URL can be used to play the streams via the AMT reflector running on port 5554 on localhost:
 
-[rtsp://localhost:5554/reflect?sdp_url=http://149.20.1.154:8088/bigbuckbunny_320x180_ipv4.sdp&relay_address=154.17.0.1&source_address=149.20.1.154 rtsp://localhost:5554/reflect?sdp_url=http://149.20.1.154:8088/bigbuckbunny_320x180_ipv4.sdp&relay_address=154.17.0.1&source_address=149.20.1.154]
+{{{rtsp://localhost:5554/reflect?sdp_url=http://149.20.1.154:8088/bigbuckbunny_320x180_ipv4.sdp&relay_address=154.17.0.1&source_address=149.20.1.154}}}
