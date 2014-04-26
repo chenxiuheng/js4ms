@@ -100,7 +100,7 @@ Use <font color="#000080">'update-rc.d'</font> utility to create links to script
 > update-rc.d -f vlm defaults
 }}}
 
-==Use==
+==Usage==
 
 The telnet interface is used to create and control VOD and broadcast programs. It provides a simple command interface for identifying input(s) and required output. The output options are numerous - see [http://wiki.videolan.org/Documentation:Streaming_HowTo/Advanced_Streaming_Using_the_Command_Line VLC Advanced Streaming].
 
